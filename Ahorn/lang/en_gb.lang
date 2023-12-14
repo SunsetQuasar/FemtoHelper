@@ -1,0 +1,237 @@
+# Backdrop Wind Controller
+placements.entities.FemtoHelper/BackdropWindController.tooltips.tag=The styleground tag to apply wind to.
+placements.entities.FemtoHelper/BackdropWindController.tooltips.strengthMultiplier=A multiplier for the strength of the wind effect.
+
+# Custom Cliffside Wind Flag
+placements.entities.FemtoHelper/CustomCliffsideWindFlag.tooltips.index=The index of the sprite to use. For example, index 0 of sprite "flag" would use "flag00.png".
+placements.entities.FemtoHelper/CustomCliffsideWindFlag.tooltips.spritesPath=The path of the sprite to use, relative to Graphics/Atlases/Gameplay.
+placements.entities.FemtoHelper/CustomCliffsideWindFlag.tooltips.sineFrequency=The frequency of the flag's wave.
+placements.entities.FemtoHelper/CustomCliffsideWindFlag.tooltips.sineAmplitude=The strength of the flag's wave.
+placements.entities.FemtoHelper/CustomCliffsideWindFlag.tooltips.naturalDraft=The wind speed to use when no level wind speed is set.
+
+# Custom Fake Heart
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.respawnTime=The time for the heart to respawn after being broken.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.heartBehavior=The behavior of the heart when dashed into.\nShatter: the heart will break.\nKill & Shatter: the heart will break and kill the player.\nBounce: the player will bounce off the heart without breaking it.\nPhase Through: the player will dash through the heart.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.setFlag=The value to set the custom flag to after dashing into the heart.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.flag=The flag to set after dashing into the heart.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.useFakeSounds=Whether the heart should use the vanilla fake heart sounds.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.pulse=Whether the heart should play the pulse effects.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleColor=The primary hex color code of the shatter particle (see Particle Color Mode).
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleColor2=The secondary hex color code of the shatter particle (see Particle Color Mode).
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.freezeTime=The amount of time to freeze (i.e. freeze frames) after dashing into the heart.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.audioEvent=The event to play after dashing into the heart.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleTexture=The texture of the shatter particle relative to Graphics/Atlases/Gameplay.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleFadeMode=The way the shatter particle should fade over time.\nNo Fade: the particle will not fade while active.\nLinear Fade: the particle will fade at a steady rate.\nLate Fade: the particle will delay fading until it has 1/4 life remaining.\nIn And Out: the particle will fade in for the first quarter of its life, and fade out for the last quarter.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleColorMode=The way the shatter particle colors will be chosen.\nColor 1: the particle will always be the primary color.\nChoose: the particle color will be randomly chosen between colors 1 and 2.\nBlink: the particle will swap between colors 1 and 2.\nFade: the particle will fade from color 1 to color 2.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleRotationMode=The way the shatter particle will rotate.\nStatic: the particle will start with its default orientation.\nRandom: the particle will start rotated at a random angle.\nFollow Direction: the particle will always be rotated towards its direction of travel.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleLifespanMin=The minimum lifespan of the shatter particle.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleLifespanMax=The maximum lifespan of the shatter particle.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleSize=The scale of the shatter particle.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleSizeRange=The amount that the shatter particle size can differ. For example, a size of 2.0 with a range of 0.5 would allow for particle sizes from 1.5 to 2.5.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.flashOpacity=The alpha value of the flash after dashing into the heart.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.flashColor=The hex color code of the flash after dashing into the heart.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleScaleOut=Whether the shatter particle size should decrease over its lifetime.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleSpeedMin=The minimum speed of the shatter particle.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleSpeedMax=The maximum speed of the shatter particle.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleFriction=The friction of the particle. A value above zero will decrease the particle's speed over time.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleAccelX=The acceleration of the shatter particle in the x-direction.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleAccelY=The acceleration of the shatter particle in the y-direction.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleFlipChance=Whether the shatter particle should have a chance of changing its spin direction.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleSpinSpeedMin=The minimum spin speed of the shatter particle.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleSpinSpeedMax=The maximum spin speed of the shatter particle.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleCount=The amount of shatter particles to spawn when the heart is dashed into.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.particleSpawnSpread=The distance from the heart that the shatter particles can spawn.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.burstDuration=The length of the displacement burst, in seconds.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.burstRadiusFrom=The starting radius of the displacement burst.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.burstRadiusTo=The ending radius of the displacement burst.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.burstAlpha=The alpha of the displacement burst.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.miniHeartMode=Whether the heart should have a smaller collider. Meant to be used with the CollabUtils2 mini heart sprites.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.removeBloomOnShatter=Whether or not to remove the bloom source once the heart is shattered.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.shineParticleColor=The primary color of the pixels that flash when the heart is active. Also determines the light source color. Vanilla options are:\n- A-Side (blue): 5caefa\n- B-Side (red): ff2457\n- C-Side (yellow): fffc24
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.spriteDirectory=The directory of the heart sprite relative to Graphics/Atlases/Gameplay/. Vanilla options are:\n- A-Side (blue): collectables/heartGem/0\n- B-Side (red): collectables/heartGem/1\n- C-Side (yellow): collectables/heartGem/2
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.heartColor=(Legacy) The color of the heart. The number corresponds to area modes:\n- 0: A-Side (blue)\n- 1: B-Side (red)\n- 2: C-Side (yellow)
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.noBloom=Whether or not to completely remove the bloom source from the heart.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.noWiggle=Whether or not the to remove the vertical floatiness of the heart.\nThis does not affect bouncing off of the heart or the pulsing animation.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.breakOnContact=Whether or not the heart should break on contact, without the need to dash into it.
+placements.entities.FemtoHelper/CustomFakeHeart.tooltips.silentPulse=Whether or not the heart's pulse should be silent.
+
+# Custom Moon Creature
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.acceleration=The base acceleration of the moon creature.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.colors=A comma-separated list of hex color codes. Used to randomly select the primary color of the moon creature, which is used to tint the trail, and sprite if "Tint Sprite" is selected.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.sprite=The sprite ID to use for the moon creature.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.tintSprite=Whether to tint the moon creature sprite by its primary color.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailCount=The number of nodes in the moon creature's trail.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailSubcolor1=The first hex color code of the moon creature trail.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailSubcolor2=The second hex color code of the moon creature trail.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailSubcolor1LerpAmount=The strength of the tint for the first trail subcolor, where 0 will use the primary color and 1.0 will use the subcolor.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailSubcolor2LerpAmount=The strength of the tint for the second trail subcolor, where 0 will use the primary color and 1.0 will use the subcolor.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailBaseSize=The size of the largest node in the  moon creature'strail.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.followAcceleration=The acceleration of the moon creature when it is following the player.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.maxSpeed=The maximum base speed of the moon creature.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.maxFollowSpeed=The maximum speed of the moon creature when it is following the player.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.maxFollowDistance=The maximum distance at which the moon creature will start following the player.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.minFollowTime=The minimum time the moon creature will follow the player.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.maxFollowTime=The maximum time the moon creature will follow the player.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailCatchupSpeed=The speed that the trail should catch up with movement changes.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailSpacing=The distance between each node in the moon creature's trail.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.targetRangeRadius=The maximum radius within which the moon creature will search for a target to move to when not following a player.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.minTargetTime=The minimum time the moon creature will stay at a target.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.maxTargetTime=The maximum time the moon creature will stay at a target.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailBaseAlpha=The alpha of the base of the moon creature's trail.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailTipAlpha=The alpha of the tip of the moon creature's trail.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.trailGravity=The amount of gravity to apply to the trail.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.bloomAlpha=The alpha of the moon creature's bloom.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.bloomRadius=The radius of the moon creature's bloom.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.lightColorIsMainColor=Whether to use the primary color for the moon creature's light source.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.lightColor=The hex color code of the moon creature's light source. Oonly used if "Light Color Is Main Color" is false.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.lightAlpha=The alpha of the moon creature's light source.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.lightStartFade=The distance at which the moon creature's light source will start to fade.
+placements.entities.FemtoHelper/CustomMoonCreature.tooltips.lightEndFade=The distance at which the moon creature's light source will completely fade.
+
+# Custom Parallax Big Waterfall
+placements.entities.FemtoHelper/CustomParallaxBigWaterfall.tooltips.parallax=The strength of the waterfall's parallax.
+placements.entities.FemtoHelper/CustomParallaxBigWaterfall.tooltips.fallSpeedMultiplier=A multiplier for the speed of the waterfall.
+placements.entities.FemtoHelper/CustomParallaxBigWaterfall.tooltips.surfaceOpacity=The alpha of the waterfall's edges.
+placements.entities.FemtoHelper/CustomParallaxBigWaterfall.tooltips.fillOpacity=The alpha of the waterfall's center.
+placements.entities.FemtoHelper/CustomParallaxBigWaterfall.tooltips.surfaceColor=The hex color code of the waterfall's edges.
+placements.entities.FemtoHelper/CustomParallaxBigWaterfall.tooltips.fillColor=The hex color code of the waterfall's center.
+placements.entities.FemtoHelper/CustomParallaxBigWaterfall.tooltips.layer=Which layer the waterfall should render on.
+
+# Custom Speed Rotate Spinner
+placements.entities.FemtoHelper/CustomSpeedRotateSpinner.tooltips.clockwise=The spinner will run clockwise.
+placements.entities.FemtoHelper/CustomSpeedRotateSpinner.tooltips.isDust=Changes the appearance of the spinner to be a dust sprite.
+placements.entities.FemtoHelper/CustomSpeedRotateSpinner.tooltips.isBlade=Changes the appearance of the spinner to be a blade.
+placements.entities.FemtoHelper/CustomSpeedRotateSpinner.tooltips.rotateTime=The time for the spinner to complete one full rotation.
+
+# Fool Space Custom Checkpoint
+placements.entities.FemtoHelper/FoolSpaceCustomCheckpoint.tooltips.digitA=The first digit of the summit flag.
+placements.entities.FemtoHelper/FoolSpaceCustomCheckpoint.tooltips.digitB=The second digit of the summit flag.
+placements.entities.FemtoHelper/FoolSpaceCustomCheckpoint.tooltips.spriteRoot=The directory of the checkpoint sprites relative to Graphics/Atlases/Gameplay.\nThe sprites need to match the vanilla format in ..Gameplay/scenery/summitcheckpoints.
+placements.entities.FemtoHelper/FoolSpaceCustomCheckpoint.tooltips.colors=The hex color codes of the confetti, as a comma-separated list.
+
+# Oshiro Caller
+placements.entities.FemtoHelper/OshiroCaller.tooltips.repell=Whether the caller should make Oshiro explode (or leave) instead of calling him.
+placements.entities.FemtoHelper/OshiroCaller.tooltips.justMakeOshiroLeave=Whether Oshiro should just leave instead of exploding.
+
+# Particle Emitter
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleColor=The primary hex color code of the particle (see Particle Color Mode).
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleColor2=The secondary hex color code of the particle (see Particle Color Mode).
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleTexture=The texture of the particle relative to Graphics/Atlases/Gameplay/.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleFadeMode=The way the particle should fade over time.\nNo Fade: the particle will not fade while active.\nLinear Fade: the particle will fade at a steady rate.\nLate Fade: the particle will delay fading until it has 1/4 life remaining.\nIn And Out: the particle will fade in for the first quarter of its life, and fade out for the last quarter.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleColorMode=The way the particle colors will be chosen.\nStatic: the particle will always be the primary color.\nChoose: the particle color will be randomly chosen between colors 1 and 2.\nBlink: the particle will swap between colors 1 and 2.\nFade: the particle will fade from color 1 to color 2.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleRotationMode=The way the particle will rotate.\nStatic: the particle will start with its default orientation.\nRandom: the particle will start rotated at a random angle.\nFollow Direction: the particle will always be rotated towards its direction of travel.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleLifespanMin=The minimum lifespan of the particle.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleLifespanMax=The maximum lifespan of the particle.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleSize=The scale of the particle.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleSizeRange=The amount that the particle size can differ. For example, a size of 2.0 with a range of 0.5 would allow for particle sizes from 1.5 to 2.5.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleScaleOut=Whether the particle size should decrease over its lifetime.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleSpeedMin=The minimum speed of the particle.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleSpeedMax=The maximum speed of the particle.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleFriction=The friction of the particle. A value above zero will decrease the particle's speed over time.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleAccelX=The acceleration of the particle in the x-direction.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleAccelY=The acceleration of the particle in the y-direction.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleFlipChance=Whether the particle should have a chance of changing its spin direction.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleSpinSpeedMin=The minimum spin speed of the particle.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleSpinSpeedMax=The maximum spin speed of the particle.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleCount=The amount of particles to spawn when the heart is dashed into.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleSpawnSpread=The distance from the heart that the particles can spawn.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.spawnInterval=The amount of time between particle emissions.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.spawnChance=The probability that a particle will be emitted every spawn interval.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleAngle=The initial angle the particle will be emitted at, in degrees.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleAngleRange=The amount that the particle angle can differ. For example, an angle of 180 with a range of 30 would allow for angles from 150 to 210.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.bloomAlpha=The alpha of the particle emitter's bloom point.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.bloomRadius=The radius of the particle emitter's bloom point.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.particleAlpha=The alpha of the particle.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.foreground=If set, the particle's depth is moved above FG tiles.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.tag=Whenever a Remote Particle Emitter Activator with this flag is touched, a particle will be emitted.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.flag=If this field is not empty, particles will only be emitted when a flag is active. Put "!" before the flag to invert it.
+placements.entities.FemtoHelper/ParticleEmitter.tooltips.noTexture=If set, the particles will ignore the provided texture and be drawn as a rectangle instead.\nNote that for a single pixel appearance, the particle must not have any rotation or have Particle Scale Out set.
+
+# Pseudo Polyhedron
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.rotationOffset=The amount to offset the initial rotation timer.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.rotationSpeed=The rotation speed of the polyhedron.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.baseWidth=The width of the polyhedron's base.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.baseHeight=The height of the polyhedron's base.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.tipBaseOffsetX=The x-position of the polyhedron's tip relative to its base.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.tipBaseOffsetY=The y-position of the polyhedron's tip relative to its base.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.color=The hex color code of the polyhedron.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.baseSideCount=The number of sides in the base of the polyhedron.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.isPrism=Whether the polyhedron should be a prism.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.alpha=The alpha of the polyhedron.
+placements.entities.FemtoHelper/PseudoPolyhedron.tooltips.depth=The depth of the polyhedron.
+
+# Femto Stars
+placements.effects.FemtoHelper/FemtoStars.tooltips.trailCount=The length of the stars' trail.
+placements.effects.FemtoHelper/FemtoStars.tooltips.colors=A comma-separated list of hex color codes, used as options for the star colors.
+placements.effects.FemtoHelper/FemtoStars.tooltips.minXSpeed=The minimum horizontal speed of the stars.
+placements.effects.FemtoHelper/FemtoStars.tooltips.maxXSpeed=The maximum horizontal speed of the stars.
+placements.effects.FemtoHelper/FemtoStars.tooltips.minYSpeed=The minimum vertical speed of the stars.
+placements.effects.FemtoHelper/FemtoStars.tooltips.maxYSpeed=The maximum vertical speed of the stars.
+placements.effects.FemtoHelper/FemtoStars.tooltips.extraLoopBorderX=The buffer for how much the polygons can go offscreen in the x-direction.
+placements.effects.FemtoHelper/FemtoStars.tooltips.extraLoopBorderY=The buffer for how much the polygons can go offscreen in the y-direction.
+placements.effects.FemtoHelper/FemtoStars.tooltips.starCount=The number of stars to render at a time.
+placements.effects.FemtoHelper/FemtoStars.tooltips.backgroundColor=The hex color code of the background.
+placements.effects.FemtoHelper/FemtoStars.tooltips.backgroundAlpha=The alpha of the background.
+placements.effects.FemtoHelper/FemtoStars.tooltips.sprite=The directory of the star sprites relative to Graphics/Atlases/Gameplay.\nThe sprites need to match the vanilla format in ../Gameplay/bgs/02/stars.
+placements.effects.FemtoHelper/FemtoStars.tooltips.scrollX=The parallax scrolling of the effect along the X axis.
+placements.effects.FemtoHelper/FemtoStars.tooltips.scrollY=The parallax scrolling of the effect along the Y axis.
+placements.effects.FemtoHelper/FemtoStars.tooltips.trailSeparation=The distance between each part of the stars' trail.
+placements.effects.FemtoHelper/FemtoStars.tooltips.animationRate=The base animation rate of the stars, in frames per second.
+placements.effects.FemtoHelper/FemtoStars.tooltips.alphas=A comma-separated list of alpha values, used as options for star alphas.
+
+# Polygon Stars
+placements.effects.FemtoHelper/PolygonStars.tooltips.sideCount=The number of sides the polygons have.
+placements.effects.FemtoHelper/PolygonStars.tooltips.pointinessMultiplier=A multiplier for the pointiness of the vertices.
+placements.effects.FemtoHelper/PolygonStars.tooltips.minRotationSpeed=The minimum rotation speed of the polygons.
+placements.effects.FemtoHelper/PolygonStars.tooltips.maxRotationSpeed=The maximum rotation speed of the polygons.
+placements.effects.FemtoHelper/PolygonStars.tooltips.minSize=The minimum size of the polygons.
+placements.effects.FemtoHelper/PolygonStars.tooltips.maxSize=The maximum size of the polygons.
+placements.effects.FemtoHelper/PolygonStars.tooltips.loopBorder=The buffer for how much the polygons can go offscreen.
+placements.effects.FemtoHelper/PolygonStars.tooltips.colors=A comma-separated list of hex color codes, used as options for the polygon colors.
+placements.effects.FemtoHelper/PolygonStars.tooltips.angle=The angle of the polygons, in degrees.
+placements.effects.FemtoHelper/PolygonStars.tooltips.alpha=The alpha of the polygons.
+placements.effects.FemtoHelper/PolygonStars.tooltips.minSpeed=The minimum speed of the polygons.
+placements.effects.FemtoHelper/PolygonStars.tooltips.maxSpeed=The maximum speed of the polygons.
+placements.effects.FemtoHelper/PolygonStars.tooltips.amount=The number of polygons to render at a time.
+placements.effects.FemtoHelper/PolygonStars.tooltips.scroll=The parallax scrolling of the effect.
+
+# Vector Space
+placements.effects.FemtoHelper/VectorSpace.tooltips.spacingX=The horizontal spacing between the vectors.
+placements.effects.FemtoHelper/VectorSpace.tooltips.spacingY=The vertical spacing between the vectors.
+placements.effects.FemtoHelper/VectorSpace.tooltips.velocityX=The horizontal velocity of the vector mesh.
+placements.effects.FemtoHelper/VectorSpace.tooltips.velocityY=The vertical velocity of the vector mesh.
+placements.effects.FemtoHelper/VectorSpace.tooltips.scroll=Parallax scrolling factor.
+placements.effects.FemtoHelper/VectorSpace.tooltips.sineXOffsetMin=The minimum offset for the horizontal sine function of the vectors, in degrees.
+placements.effects.FemtoHelper/VectorSpace.tooltips.sineXOffsetMax=The maximum offset for the horizontal sine function of the vectors, in degrees.
+placements.effects.FemtoHelper/VectorSpace.tooltips.sineYOffsetMin=The minimum offset for the vertical sine function of the vectors, in degrees.
+placements.effects.FemtoHelper/VectorSpace.tooltips.sineYOffsetMax=The maximum offset for the vertical sine function of the vectors, in degrees.
+placements.effects.FemtoHelper/VectorSpace.tooltips.sineXFreqMin=The minimum frequency of the horizontal sine function of the vectors, in degrees/sec.
+placements.effects.FemtoHelper/VectorSpace.tooltips.sineXFreqMax=The maximum frequency of the horizontal sine function of the vectors, in degrees/sec.
+placements.effects.FemtoHelper/VectorSpace.tooltips.sineYFreqMin=The minimum frequency of the vertical sine function of the vectors, in degrees/sec.
+placements.effects.FemtoHelper/VectorSpace.tooltips.sineYFreqMax=The maximum frequency of the vertical sine function of the vectors, in degrees/sec.
+placements.effects.FemtoHelper/VectorSpace.tooltips.amplitude=The maximum length each vector can be. Note that the full reach of the vector is a circle with that radius.
+placements.effects.FemtoHelper/VectorSpace.tooltips.renderTip=Whether the tip of the arrow is rendered or not; Disabling it may be good for performance.
+placements.effects.FemtoHelper/VectorSpace.tooltips.scaleTip=Whether the tip of the arrow gets smaller the closer it is to the origin of the vector; Disabling it may be good for performance. This check is ignored if Render Tip is disabled.
+placements.effects.FemtoHelper/VectorSpace.tooltips.alpha=The alpha of the vectors.
+placements.effects.FemtoHelper/VectorSpace.tooltips.color=A comma-separated list of all possible hex colors each vector can take.
+placements.effects.FemtoHelper/VectorSpace.tooltips.yOffsetRelativeToX=Whether or not the offset's Y component should be set relative to the X component, instead of absolute.\nFor example: If the Y offset is 90°, and this check is activated:\nThe offset will be set to (X + 90)°, instead of just 90°.
+placements.effects.FemtoHelper/VectorSpace.tooltips.yFreqRelativeToX=Whether or not the frequency's Y component should be set relative to the X component, instead of absolute.\nFor example: If the Y frequency is 90°/sec, and this check is activated:\nThe frequency will be set to (X + 90)°/sec, instead of just 90°/sec.
+
+# Wind Petals
+placements.effects.FemtoHelper/WindPetals.tooltips.colors=A comma-separated list of hex color codes, used as options for the petal colors.
+placements.effects.FemtoHelper/WindPetals.tooltips.fallingSpeedMin=The minimum falling speed of the petals.
+placements.effects.FemtoHelper/WindPetals.tooltips.fallingSpeedMax=The maximum falling speed of the petals.
+placements.effects.FemtoHelper/WindPetals.tooltips.blurCount=The length of blur to apply to the petals when wind is blowing.
+placements.effects.FemtoHelper/WindPetals.tooltips.blurDensity=The density of the blur to apply to the petals when wind is blowing.
+placements.effects.FemtoHelper/WindPetals.tooltips.texture=The texture of the petals relative to Graphics/Atlases/Gameplay.
+placements.effects.FemtoHelper/WindPetals.tooltips.particleCount=The number of petals to render at a time.
+placements.effects.FemtoHelper/WindPetals.tooltips.parallax=The parallax scrolling of the effect.
+placements.effects.FemtoHelper/WindPetals.tooltips.spinAmountMultiplier=A multiplier for the spin amount of the petals.
+placements.effects.FemtoHelper/WindPetals.tooltips.spinSpeedMultiplier=A multiplier for the spin speed of the petals.
+placements.effects.FemtoHelper/WindPetals.tooltips.alpha=The alpha of the petals.
+placements.effects.FemtoHelper/WindPetals.tooltips.scale=The scale of the petals.
+placements.effects.FemtoHelper/WindPetals.tooltips.minXDriftSpeed=The minimum drifting speed of the petals.
+placements.effects.FemtoHelper/WindPetals.tooltips.maxXDriftSpeed=The maximum drifting speed of the petals.
+
+# Remote Particle Emitter Activator 
+placements.triggers.FemtoHelper/ParticleRemoteEmit.tooltips.tag=Any Particle Emitters with this tag will be activated on entry.

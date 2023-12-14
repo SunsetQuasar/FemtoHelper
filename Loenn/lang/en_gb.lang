@@ -1,0 +1,375 @@
+mods.FemtoHelper.name=Femto Helper
+
+# ---------- Entities ----------
+
+# Solid No Squish Controller
+entities.FemtoHelper/AssistHazardController.placements.name.controller=Solid No Squish Controller
+
+# Solid No Squish Controller
+entities.FemtoHelper/LaCreatura.placements.name.creatura=La Creatura
+entities.FemtoHelper/LaCreatura.attributes.description.number=Number of butterflies that will spawn in this bunch.
+entities.FemtoHelper/LaCreatura.attributes.description.acceleration=How fast the butterflies can change their speed.
+entities.FemtoHelper/LaCreatura.attributes.description.maxSpeed=The maximum speed the butterflies can move.
+# Backdrop Wind Controller
+entities.FemtoHelper/BackdropWindController.placements.name.default=Backdrop Wind Controller
+entities.FemtoHelper/BackdropWindController.attributes.description.tag=The styleground tag to apply wind to.
+entities.FemtoHelper/BackdropWindController.attributes.description.strengthMultiplier=A multiplier for the strength of the wind effect.
+
+# Custom Cliffside Wind Flag
+entities.FemtoHelper/CustomCliffsideWindFlag.placements.name.default=Custom Wind Flag
+entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.index=The index of the sprite to use. For example, index 0 of sprite "flag" would use "flag00.png".
+entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.spritesPath=The path of the sprite to use, relative to Graphics/Atlases/Gameplay.
+entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.sineFrequency=The frequency of the flag's wave.
+entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.sineAmplitude=The strength of the flag's wave.
+entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.naturalDraft=The wind speed to use when no level wind speed is set.
+
+# Custom Fake Heart
+entities.FemtoHelper/CustomFakeHeart.placements.name.default=Custom Fake Heart
+entities.FemtoHelper/CustomFakeHeart.attributes.description.respawnTime=The time for the heart to respawn after being broken./nSet to -1 for it to never respawn (the entity stays, just inactive).
+entities.FemtoHelper/CustomFakeHeart.attributes.description.heartBehavior=The behavior of the heart when dashed into.\nShatter: the heart will break.\nKill & Shatter: the heart will break and kill the player.\nBounce: the player will bounce off the heart without breaking it.\nPhase Through: the player will dash through the heart.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.setFlag=The value to set the custom flag to after dashing into the heart.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.flag=The flag to set after dashing into the heart.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.useFakeSounds=Whether the heart should use the vanilla fake heart sounds.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.pulse=Whether the heart should play the pulse effects.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleColor=The primary hex color code of the shatter particle (see Particle Color Mode).
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleColor2=The secondary hex color code of the shatter particle (see Particle Color Mode).
+entities.FemtoHelper/CustomFakeHeart.attributes.description.freezeTime=The amount of time to freeze (i.e. freeze frames) after dashing into the heart.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.audioEvent=The event to play after dashing into the heart.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleTexture=The texture of the shatter particle relative to Graphics/Atlases/Gameplay.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleFadeMode=The way the shatter particle should fade over time.\nNo Fade: the particle will not fade while active.\nLinear Fade: the particle will fade at a steady rate.\nLate Fade: the particle will delay fading until it has 1/4 life remaining.\nIn And Out: the particle will fade in for the first quarter of its life, and fade out for the last quarter.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleColorMode=The way the shatter particle colors will be chosen.\nColor 1: the particle will always be the primary color.\nChoose: the particle color will be randomly chosen between colors 1 and 2.\nBlink: the particle will swap between colors 1 and 2.\nFade: the particle will fade from color 1 to color 2.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleRotationMode=The way the shatter particle will rotate.\nStatic: the particle will start with its default orientation.\nRandom: the particle will start rotated at a random angle.\nFollow Direction: the particle will always be rotated towards its direction of travel.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleLifespanMin=The minimum lifespan of the shatter particle.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleLifespanMax=The maximum lifespan of the shatter particle.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleSize=The scale of the shatter particle.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleSizeRange=The amount that the shatter particle size can differ. For example, a size of 2.0 with a range of 0.5 would allow for particle sizes from 1.5 to 2.5.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.flashOpacity=The alpha value of the flash after dashing into the heart.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.flashColor=The hex color code of the flash after dashing into the heart.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleScaleOut=Whether the shatter particle size should decrease over its lifetime.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleSpeedMin=The minimum speed of the shatter particle.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleSpeedMax=The maximum speed of the shatter particle.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleFriction=The friction of the particle. A value above zero will decrease the particle's speed over time.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleAccelX=The acceleration of the shatter particle in the x-direction.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleAccelY=The acceleration of the shatter particle in the y-direction.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleFlipChance=Whether the shatter particle should have a chance of changing its spin direction.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleSpinSpeedMin=The minimum spin speed of the shatter particle.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleSpinSpeedMax=The maximum spin speed of the shatter particle.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleCount=The amount of shatter particles to spawn when the heart is dashed into.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.particleSpawnSpread=The distance from the heart that the shatter particles can spawn.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.burstDuration=The length of the displacement burst, in seconds.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.burstRadiusFrom=The starting radius of the displacement burst.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.burstRadiusTo=The ending radius of the displacement burst.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.burstAlpha=The alpha of the displacement burst.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.miniHeartMode=Whether the heart should have a smaller collider. Meant to be used with the CollabUtils2 mini heart sprites.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.removeBloomOnShatter=Whether or not to remove the bloom source once the heart is shattered.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.shineParticleColor=The primary color of the pixels that flash when the heart is active. Also determines the light source color. Vanilla options are:\n- A-Side (blue): 5caefa\n- B-Side (red): ff2457\n- C-Side (yellow): fffc24
+entities.FemtoHelper/CustomFakeHeart.attributes.description.spriteDirectory=The directory of the heart sprite relative to Graphics/Atlases/Gameplay/. Vanilla options are:\n- A-Side (blue): collectables/heartGem/0\n- B-Side (red): collectables/heartGem/1\n- C-Side (yellow): collectables/heartGem/2
+entities.FemtoHelper/CustomFakeHeart.attributes.description.heartColor=(Legacy) The color of the heart. The number corresponds to area modes:\n- 0: A-Side (blue)\n- 1: B-Side (red)\n- 2: C-Side (yellow)
+entities.FemtoHelper/CustomFakeHeart.attributes.description.noBloom=Whether or not to completely remove the bloom source from the heart.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.noWiggle=Whether or not the to remove the vertical floatiness of the heart.\nThis does not affect bouncing off of the heart or the pulsing animation.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.breakOnContact=Whether or not the heart should break on contact, without the need to dash into it.
+entities.FemtoHelper/CustomFakeHeart.attributes.description.silentPulse=Whether or not the heart's pulse should be silent.
+
+# Custom Moon Creature
+entities.FemtoHelper/CustomMoonCreature.placements.name.default=Custom Moon Creature 
+entities.FemtoHelper/CustomMoonCreature.attributes.description.acceleration=The base acceleration of the moon creature.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.colors=A comma-separated list of hex color codes. Used to randomly select the primary color of the moon creature, which is used to tint the trail, and sprite if "Tint Sprite" is selected.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.sprite=The sprite ID to use for the moon creature.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.tintSprite=Whether to tint the moon creature sprite by its primary color.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailCount=The number of nodes in the moon creature's trail.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailSubcolor1=The first hex color code of the moon creature trail.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailSubcolor2=The second hex color code of the moon creature trail.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailSubcolor1LerpAmount=The strength of the tint for the first trail subcolor, where 0 will use the primary color and 1.0 will use the subcolor.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailSubcolor2LerpAmount=The strength of the tint for the second trail subcolor, where 0 will use the primary color and 1.0 will use the subcolor.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailBaseSize=The size of the largest node in the  moon creature'strail.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.followAcceleration=The acceleration of the moon creature when it is following the player.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.maxSpeed=The maximum base speed of the moon creature.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.maxFollowSpeed=The maximum speed of the moon creature when it is following the player.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.maxFollowDistance=The maximum distance at which the moon creature will start following the player.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.minFollowTime=The minimum time the moon creature will follow the player.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.maxFollowTime=The maximum time the moon creature will follow the player.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailCatchupSpeed=The speed that the trail should catch up with movement changes.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailSpacing=The distance between each node in the moon creature's trail.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.targetRangeRadius=The maximum radius within which the moon creature will search for a target to move to when not following a player.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.minTargetTime=The minimum time the moon creature will stay at a target.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.maxTargetTime=The maximum time the moon creature will stay at a target.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailBaseAlpha=The alpha of the base of the moon creature's trail.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailTipAlpha=The alpha of the tip of the moon creature's trail.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.trailGravity=The amount of gravity to apply to the trail.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.bloomAlpha=The alpha of the moon creature's bloom.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.bloomRadius=The radius of the moon creature's bloom.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.lightColorIsMainColor=Whether to use the primary color for the moon creature's light source.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.lightColor=The hex color code of the moon creature's light source. Oonly used if "Light Color Is Main Color" is false.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.lightAlpha=The alpha of the moon creature's light source.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.lightStartFade=The distance at which the moon creature's light source will start to fade.
+entities.FemtoHelper/CustomMoonCreature.attributes.description.lightEndFade=The distance at which the moon creature's light source will completely fade.
+
+# Custom Parallax Big Waterfall
+entities.FemtoHelper/CustomParallaxBigWaterfall.placements.name.fg=Custom Big Waterfall (FG)
+entities.FemtoHelper/CustomParallaxBigWaterfall.placements.name.bg=Custom Big Waterfall (BG)
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.parallax=The strength of the waterfall's parallax.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.fallSpeedMultiplier=A multiplier for the speed of the waterfall.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.surfaceOpacity=The alpha of the waterfall's edges.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.fillOpacity=The alpha of the waterfall's center.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.surfaceColor=The hex color code of the waterfall's edges.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.fillColor=The hex color code of the waterfall's center.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.layer=Which layer the waterfall should render on.
+
+# Custom Speed Rotate Spinner
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.blade_clockwise=Custom Speed Blade (Clockwise)
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.blade_counter_clockwise=Custom Speed Blade (Counter-Clockwise)
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.dust_clockwise=Custom Speed Dust (Clockwise)
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.dust_counter_clockwise=Custom Speed Dust (Counter-Clockwise)
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.starfish_clockwise=Custom Speed Starfish (Clockwise)
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.starfish_counter_clockwise=Custom Speed Starfish (Counter-Clockwise)
+entities.FemtoHelper/CustomSpeedRotateSpinner.attributes.description.clockwise=The spinner will run clockwise.
+entities.FemtoHelper/CustomSpeedRotateSpinner.attributes.description.isDust=Changes the appearance of the spinner to be a dust sprite.
+entities.FemtoHelper/CustomSpeedRotateSpinner.attributes.description.isBlade=Changes the appearance of the spinner to be a blade.
+entities.FemtoHelper/CustomSpeedRotateSpinner.attributes.description.rotateTime=The time for the spinner to complete one full rotation.
+
+# Fool Space Custom Checkpoint
+entities.FemtoHelper/FoolSpaceCustomCheckpoint.placements.name.default=Custom Summit Checkpoint
+entities.FemtoHelper/FoolSpaceCustomCheckpoint.attributes.description.digitA=The first digit of the summit flag.
+entities.FemtoHelper/FoolSpaceCustomCheckpoint.attributes.description.digitB=The second digit of the summit flag.
+entities.FemtoHelper/FoolSpaceCustomCheckpoint.attributes.description.spriteRoot=The directory of the checkpoint sprites relative to Graphics/Atlases/Gameplay.\nThe sprites need to match the vanilla format in ..Gameplay/scenery/summitcheckpoints.
+entities.FemtoHelper/FoolSpaceCustomCheckpoint.attributes.description.colors=The hex color codes of the confetti, as a comma-separated list.
+
+# Oshiro Caller
+entities.FemtoHelper/OshiroCaller.placements.name.call=Oshiro Caller (Call)
+entities.FemtoHelper/OshiroCaller.placements.name.repel=Oshiro Caller (Repel)
+entities.FemtoHelper/OshiroCaller.attributes.name.repell=Repel
+entities.FemtoHelper/OshiroCaller.attributes.description.repell=Whether the caller should make Oshiro explode (or leave) instead of calling him.
+entities.FemtoHelper/OshiroCaller.attributes.description.justMakeOshiroLeave=Whether Oshiro should just leave instead of exploding.
+
+# Particle Emitter
+entities.FemtoHelper/ParticleEmitter.placements.name.default=Particle Emitter
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleColor=The primary hex color code of the particle (see Particle Color Mode).
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleColor2=The secondary hex color code of the particle (see Particle Color Mode).
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleTexture=A comma-separated list of textures for the particle, relative to Graphics/Atlases/Gameplay/.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleFadeMode=The way the particle should fade over time.\nNo Fade: the particle will not fade while active.\nLinear Fade: the particle will fade at a steady rate.\nLate Fade: the particle will delay fading until it has 1/4 life remaining.\nIn And Out: the particle will fade in for the first quarter of its life, and fade out for the last quarter.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleColorMode=The way the particle colors will be chosen.\nColor 1: the particle will always be the primary color.\nChoose: the particle color will be randomly chosen between colors 1 and 2.\nBlink: the particle will swap between colors 1 and 2.\nFade: the particle will fade from color 1 to color 2.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleRotationMode=The way the particle will rotate.\nStatic: the particle will start with its default orientation.\nRandom: the particle will start rotated at a random angle.\nFollow Direction: the particle will always be rotated towards its direction of travel.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleLifespanMin=The minimum lifespan of the particle.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleLifespanMax=The maximum lifespan of the particle.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleSize=The scale of the particle.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleSizeRange=The amount that the particle size can differ. For example, a size of 2.0 with a range of 0.5 would allow for particle sizes from 1.5 to 2.5.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleScaleOut=Whether the particle size should decrease over its lifetime.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleSpeedMin=The minimum speed of the particle.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleSpeedMax=The maximum speed of the particle.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleFriction=The friction of the particle. A value above zero will decrease the particle's speed over time.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleAccelX=The acceleration of the particle in the x-direction.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleAccelY=The acceleration of the particle in the y-direction.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleFlipChance=Whether the particle should have a chance of changing its spin direction.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleSpinSpeedMin=The minimum spin speed of the particle.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleSpinSpeedMax=The maximum spin speed of the particle.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleCount=The amount of particles per emission.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleSpawnSpread=The distance from the heart that the particles can spawn.
+entities.FemtoHelper/ParticleEmitter.attributes.description.spawnInterval=The amount of time between particle emissions.
+entities.FemtoHelper/ParticleEmitter.attributes.description.spawnChance=The probability that a particle will be emitted every spawn interval.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleAngle=The initial angle the particle will be emitted at, in degrees.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleAngleRange=The amount that the particle angle can differ. For example, an angle of 180 with a range of 30 would allow for angles from 150 to 210.
+entities.FemtoHelper/ParticleEmitter.attributes.description.bloomAlpha=The alpha of the particle emitter's bloom point.
+entities.FemtoHelper/ParticleEmitter.attributes.description.bloomRadius=The radius of the particle emitter's bloom point.
+entities.FemtoHelper/ParticleEmitter.attributes.description.particleAlpha=The alpha of the particle.
+entities.FemtoHelper/ParticleEmitter.attributes.description.foreground=If set, the particle's depth is moved above FG tiles.
+entities.FemtoHelper/ParticleEmitter.attributes.description.flag=If this field is not empty, particles will only be emitted when a flag is active. Put "!" before the flag to invert it.
+entities.FemtoHelper/ParticleEmitter.attributes.description.tag=Whenever a Remote Particle Emitter Activator with this flag is touched, a particle will be emitted.
+entities.FemtoHelper/ParticleEmitter.attributes.description.noTexture=If set, the particles will ignore the provided texture and be drawn as a rectangle instead.\nNote that for a single pixel appearance, the particle must not have any rotation or have Particle Scale Out set.
+
+# Pseudo Polyhedron
+entities.FemtoHelper/PseudoPolyhedron.placements.name.default=Polyhedron Wireframe
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.rotationOffset=The amount to offset the initial rotation timer.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.rotationSpeed=The rotation speed of the polyhedron.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.baseWidth=The width of the polyhedron's base.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.baseHeight=The height of the polyhedron's base.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.tipBaseOffsetX=The x-position of the polyhedron's tip relative to its base.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.tipBaseOffsetY=The y-position of the polyhedron's tip relative to its base.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.color=The hex color code of the polyhedron.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.baseSideCount=The number of sides in the base of the polyhedron.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.isPrism=Whether the polyhedron should be a prism.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.alpha=The alpha of the polyhedron.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.depth=The depth of the polyhedron.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.samples=As of v1.9.3, polyhedra no longer use real time math.\nInstead, a table of positions is stored upon entity loading, and that used instead. This is the amount of positions stored.\nLower rotation speeds might look grainy if the sample amount isn't high enough.\nHigh sample count might cause lag upon room loading.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.topBaseWidth=The width of the polyhedron's upper base, if it is a prism.
+entities.FemtoHelper/PseudoPolyhedron.attributes.description.topBaseHeight=The height of the polyhedron's upper base, if it is a prism.
+
+# SMW Block
+
+entities.FemtoHelper/SMWBlock.placements.name.smwblockdefault=SMW Block (Default)
+entities.FemtoHelper/SMWBlock.placements.name.smwblockhidden=SMW Block (Kaizo/Hidden)
+entities.FemtoHelper/SMWBlock.placements.name.smwblockswitch=SMW Block (Switch)
+entities.FemtoHelper/SMWBlock.attributes.description.animationRate=Framerate for the block animations.
+entities.FemtoHelper/SMWBlock.attributes.description.ejectDistance=How far the reward gets ejected in the outwards direction.\nHigher values don't go a specific direction, but farther outwards from the block.
+entities.FemtoHelper/SMWBlock.attributes.description.ejectOffsetX=Horizontal offset of the rewards at the START of the animation.\nChanges where they come from, but not where they end up.
+entities.FemtoHelper/SMWBlock.attributes.description.ejectOffsetY=Vertical offset of the rewards at the START of the animation.\nChanges where they come from, but not where they end up.
+entities.FemtoHelper/SMWBlock.attributes.description.ejectDestinationOffsetX=Horizontal offset of the rewards at the END of the animation.\nChanges where they end up, but not where they come from.
+entities.FemtoHelper/SMWBlock.attributes.description.ejectDestinationOffsetY=Vertical offset of the rewards at the END of the animation.\nChanges where they end up, but not where they come from.
+entities.FemtoHelper/SMWBlock.attributes.description.indicate=Whether the block should be visible before being hit.
+entities.FemtoHelper/SMWBlock.attributes.description.ejectDuration=How long the animation for the rewards coming out of the block takes.
+entities.FemtoHelper/SMWBlock.attributes.description.path=The folder path for the block sprites. This indicates a folder, which means this string should always end with a forward slash.\nInside that path, the block takes the textures with these names: "indicator.png", "active.png", "used.png" and "coin.png".\nThe [indicator], [used] and [coin] textures can (but do not need to) be sliced into square shaped animation frames, as wide as the texture's height. This allows the block to store all its animation frames inside of a single texture.
+entities.FemtoHelper/SMWBlock.attributes.description.solidBeforeHit=Whether the block should be solid before being hit. This disables hitting it from the sides and from the top, essentially emulating the Kaizo Block's "one way" behavior.
+entities.FemtoHelper/SMWBlock.attributes.description.ejectDirection=Which direction the block should always eject its rewards to.
+entities.FemtoHelper/SMWBlock.attributes.description.rewardContainerWidth=How wide the container that "catches" the reward entities should be.
+entities.FemtoHelper/SMWBlock.attributes.description.rewardContainerHeight=How tall the container that "catches" the reward entities should be.
+entities.FemtoHelper/SMWBlock.attributes.description.canHitTop=Whether the block can be interacted from its top side.
+entities.FemtoHelper/SMWBlock.attributes.description.canHitBottom=Whether the block can be interacted from its bottom side.
+entities.FemtoHelper/SMWBlock.attributes.description.canHitLeft=Whether the block can be interacted from its left side.
+entities.FemtoHelper/SMWBlock.attributes.description.canHitRight=Whether the block can be interacted from its right side.
+entities.FemtoHelper/SMWBlock.attributes.description.hitFlag=The flag that gets modified when the block is hit. Leave blank for no flag.
+entities.FemtoHelper/SMWBlock.attributes.description.hitFlagBehavior=How the flag should be modified when the block is hit. Does nothing if hitFlag is blank.
+entities.FemtoHelper/SMWBlock.attributes.description.switchMode=Allows the block to be hit multiple times, but disables its reward feature entirely, focusing more on its flag modifying behavior.
+entities.FemtoHelper/SMWBlock.attributes.description.giveCoyoteFramesOnHit=Whether the block should give the player ground coyote frames when hit. Unrealistic, but allows the player to perform tech akin to Dream Hypers and Core Hypers from the block.
+entities.FemtoHelper/SMWBlock.attributes.description.audioPath=Path for the FMOD folder containing the audio events the block will use. This indicates a folder, which means this string should always end with a forward slash.\nInside that path, the block uses audio events with these names: "blockreward", "blockcoin", "blockswitch" and "blockhit".
+entities.FemtoHelper/SMWBlock.attributes.description.neededFlag=The flag that the block requires to be hittable/active. Leave blank for always active.\nPrecede the flag name with an exclamation point to negate the flag. (e.g. "!myflag" will only activate the block if "myflag" is NOT active)
+entities.FemtoHelper/SMWBlock.attributes.description.ejectFromPoint=Whether the block's rewards should ignore its relative positions to the reward container at the START of the animation and all COME FROM a single point inside the block.
+entities.FemtoHelper/SMWBlock.attributes.description.ejectToPoint=Whether the block's rewards should ignore its relative positions to the reward container at the END of the animation and all GO TO a single point outside of the block.
+entities.FemtoHelper/SMWBlock.attributes.description.spriteOffsetX=Offsets the sprite horizontally by the given amount.
+entities.FemtoHelper/SMWBlock.attributes.description.spriteOffsetY=Offsets the sprite vertically by the given amount.
+entities.FemtoHelper/SMWBlock.attributes.description.depth=The block's render depth. Higher values means further back in the scene, lower negative values means closer in front of the scene, while 0 is the player's depth.
+entities.FemtoHelper/SMWBlock.attributes.description.specialEntityHandling=Whether the block's logic should apply special handling for some vanilla entities to ensure they work correctly during and after the animation.\nThis is optional, as disabling it allows for interesting "jank" interactions with some of the entities.\nThis does nothing to modded entities.
+
+# SMW Fish
+
+entities.FemtoHelper/SMWFish.placements.name.smwfishdefault=SMW Fish
+entities.FemtoHelper/SMWFish.attributes.description.path=The folder path for the fish sprites. This indicates a folder, which means this string should always end with a forward slash.\nInside that path, the fish takes either "cheep.png" or "blurp.png" as its texture.\nThe textures can (but do not need to) be sliced into square shaped animation frames, as wide as the texture's height. This allows the block to store all its animation frames inside of a single texture.
+entities.FemtoHelper/SMWFish.attributes.description.audioPath=Path for the FMOD folder containing the audio events the fish will use. The fish uses the "enemykill" event inside the specified folder.
+entities.FemtoHelper/SMWFish.attributes.description.blurp=Whether the fish should be a Blurp. As in SMW, blurps cannot be jumped on.
+entities.FemtoHelper/SMWFish.attributes.description.big=Whether the fish should be twice its usual size.
+entities.FemtoHelper/SMWFish.attributes.description.initialSpeedX=The fish's horizontal speed when it gets activated by its respective flag.
+entities.FemtoHelper/SMWFish.attributes.description.initialSpeedX=The fish's vertical speed when it gets activated by its respective flag.
+entities.FemtoHelper/SMWFish.attributes.description.gravity=The fish's downwards acceleration when it gets activated by its respective flag.
+entities.FemtoHelper/SMWFish.attributes.description.activationFlag=The flag that activates the fish.\nPrecede the flag name with an exclamation point to negate the flag. (e.g. "!myflag" will only activate the fish if "myflag" is NOT active)
+
+# ---------- Triggers ----------
+
+# Remote Particle Emitter Activator (please spare my soul its the best name i could come up with)
+triggers.FemtoHelper/ParticleRemoteEmit.placements.name.default=Remote Particle Emitter Activator
+triggers.FemtoHelper/ParticleRemoteEmit.attributes.description.tag=Any Particle Emitters with this tag will be activated on entry.
+
+# ---------- Effects ----------
+
+# Femto Stars
+style.effects.FemtoHelper/FemtoStars.name=Femto Stars
+style.effects.FemtoHelper/FemtoStars.description.trailCount=The length of the stars' trail.
+style.effects.FemtoHelper/FemtoStars.description.colors=A comma-separated list of hex color codes, used as options for the star colors.
+style.effects.FemtoHelper/FemtoStars.description.minXSpeed=The minimum horizontal speed of the stars.
+style.effects.FemtoHelper/FemtoStars.description.maxXSpeed=The maximum horizontal speed of the stars.
+style.effects.FemtoHelper/FemtoStars.description.minYSpeed=The minimum vertical speed of the stars.
+style.effects.FemtoHelper/FemtoStars.description.maxYSpeed=The maximum vertical speed of the stars.
+style.effects.FemtoHelper/FemtoStars.description.extraLoopBorderX=The buffer for how much the polygons can go offscreen in the x-direction.
+style.effects.FemtoHelper/FemtoStars.description.extraLoopBorderY=The buffer for how much the polygons can go offscreen in the y-direction.
+style.effects.FemtoHelper/FemtoStars.description.starCount=The number of stars to render at a time.
+style.effects.FemtoHelper/FemtoStars.description.backgroundColor=The hex color code of the background.
+style.effects.FemtoHelper/FemtoStars.description.backgroundAlpha=The alpha of the background.
+style.effects.FemtoHelper/FemtoStars.description.sprite=The directory of the star sprites relative to Graphics/Atlases/Gameplay.\nThe sprites need to match the vanilla format in ../Gameplay/bgs/02/stars.
+style.effects.FemtoHelper/FemtoStars.description.scrollX=The parallax scrolling of the effect along the X axis.
+style.effects.FemtoHelper/FemtoStars.description.scrollY=The parallax scrolling of the effect along the Y axis.
+style.effects.FemtoHelper/FemtoStars.description.trailSeparation=The distance between each part of the stars' trail.
+style.effects.FemtoHelper/FemtoStars.description.animationRate=The base animation rate of the stars, in frames per second.
+style.effects.FemtoHelper/FemtoStars.description.alphas=A comma-separated list of alpha values, used as options for star alphas.
+
+# Polygon Stars
+style.effects.FemtoHelper/PolygonStars.name=Polygon Stars
+style.effects.FemtoHelper/PolygonStars.description.sideCount=The number of sides the polygons have.
+style.effects.FemtoHelper/PolygonStars.description.pointinessMultiplier=A multiplier for the pointiness of the vertices.
+style.effects.FemtoHelper/PolygonStars.description.minRotationSpeed=The minimum rotation speed of the polygons.
+style.effects.FemtoHelper/PolygonStars.description.maxRotationSpeed=The maximum rotation speed of the polygons.
+style.effects.FemtoHelper/PolygonStars.description.minSize=The minimum size of the polygons.
+style.effects.FemtoHelper/PolygonStars.description.maxSize=The maximum size of the polygons.
+style.effects.FemtoHelper/PolygonStars.description.loopBorder=The buffer for how much the polygons can go offscreen.
+style.effects.FemtoHelper/PolygonStars.description.colors=A comma-separated list of hex color codes, used as options for the polygon colors.
+style.effects.FemtoHelper/PolygonStars.description.angle=The angle of the polygons, in degrees.
+style.effects.FemtoHelper/PolygonStars.description.alpha=The alpha of the polygons.
+style.effects.FemtoHelper/PolygonStars.description.minSpeed=The minimum speed of the polygons.
+style.effects.FemtoHelper/PolygonStars.description.maxSpeed=The maximum speed of the polygons.
+style.effects.FemtoHelper/PolygonStars.description.amount=The number of polygons to render at a time.
+style.effects.FemtoHelper/PolygonStars.description.scroll=The parallax scrolling of the effect.
+
+# Vector Space
+style.effects.FemtoHelper/VectorSpace.name=Vector Space
+style.effects.FemtoHelper/VectorSpace.description.spacingX=The horizontal spacing between the vectors.
+style.effects.FemtoHelper/VectorSpace.description.spacingY=The vertical spacing between the vectors.
+style.effects.FemtoHelper/VectorSpace.description.velocityX=The horizontal velocity of the vector mesh.
+style.effects.FemtoHelper/VectorSpace.description.velocityY=The vertical velocity of the vector mesh.
+style.effects.FemtoHelper/VectorSpace.description.scroll=Parallax scrolling factor.
+style.effects.FemtoHelper/VectorSpace.description.sineXOffsetMin=The minimum offset for the horizontal sine function of the vectors, in degrees.
+style.effects.FemtoHelper/VectorSpace.description.sineXOffsetMax=The maximum offset for the horizontal sine function of the vectors, in degrees.
+style.effects.FemtoHelper/VectorSpace.description.sineYOffsetMin=The minimum offset for the vertical sine function of the vectors, in degrees.
+style.effects.FemtoHelper/VectorSpace.description.sineYOffsetMax=The maximum offset for the vertical sine function of the vectors, in degrees.
+style.effects.FemtoHelper/VectorSpace.description.sineXFreqMin=The minimum frequency of the horizontal sine function of the vectors, in degrees/sec.
+style.effects.FemtoHelper/VectorSpace.description.sineXFreqMax=The maximum frequency of the horizontal sine function of the vectors, in degrees/sec.
+style.effects.FemtoHelper/VectorSpace.description.sineYFreqMin=The minimum frequency of the vertical sine function of the vectors, in degrees/sec.
+style.effects.FemtoHelper/VectorSpace.description.sineYFreqMax=The maximum frequency of the vertical sine function of the vectors, in degrees/sec.
+style.effects.FemtoHelper/VectorSpace.description.amplitude=The maximum length each vector can be. Note that the full reach of the vector is a circle with that radius.
+style.effects.FemtoHelper/VectorSpace.description.renderTip=Whether the tip of the arrow is rendered or not; Disabling it may be good for performance.
+style.effects.FemtoHelper/VectorSpace.description.scaleTip=Whether the tip of the arrow gets smaller the closer it is to the origin of the vector; Disabling it may be good for performance.\nThis check is ignored if Render Tip is disabled.
+style.effects.FemtoHelper/VectorSpace.description.alpha=The alpha of the vectors.
+style.effects.FemtoHelper/VectorSpace.description.color=A comma-separated list of all possible hex colors each vector can take.
+style.effects.FemtoHelper/VectorSpace.description.yOffsetRelativeToX=Whether or not the offset's Y component should be set relative to the X component, instead of absolute.\nFor example: If the Y offset is 90°, and this check is activated:\nThe offset will be set to (X + 90)°, instead of just 90°.
+style.effects.FemtoHelper/VectorSpace.description.yFreqRelativeToX=Whether or not the frequency's Y component should be set relative to the X component, instead of absolute.\nFor example: If the Y frequency is 90°/sec, and this check is activated:\nThe frequency will be set to (X + 90)°/sec, instead of just 90°/sec.
+
+# Wind Petals
+style.effects.FemtoHelper/WindPetals.name=Wind Petals
+style.effects.FemtoHelper/WindPetals.description.colors=A comma-separated list of hex color codes, used as options for the petal colors.
+style.effects.FemtoHelper/WindPetals.description.fallingSpeedMin=The minimum falling speed of the petals.
+style.effects.FemtoHelper/WindPetals.description.fallingSpeedMax=The maximum falling speed of the petals.
+style.effects.FemtoHelper/WindPetals.description.blurCount=The length of blur to apply to the petals when wind is blowing.
+style.effects.FemtoHelper/WindPetals.description.blurDensity=The density of the blur to apply to the petals when wind is blowing.
+style.effects.FemtoHelper/WindPetals.description.texture=The texture of the petals relative to Graphics/Atlases/Gameplay.
+style.effects.FemtoHelper/WindPetals.description.particleCount=The number of petals to render at a time.
+style.effects.FemtoHelper/WindPetals.description.parallax=The parallax scrolling of the effect.
+style.effects.FemtoHelper/WindPetals.description.spinAmountMultiplier=A multiplier for the spin amount of the petals.
+style.effects.FemtoHelper/WindPetals.description.spinSpeedMultiplier=A multiplier for the spin speed of the petals.
+style.effects.FemtoHelper/WindPetals.description.alpha=The alpha of the petals.
+style.effects.FemtoHelper/WindPetals.description.scale=The scale of the petals.
+style.effects.FemtoHelper/WindPetals.description.minXDriftSpeed=The minimum drifting speed of the petals.
+style.effects.FemtoHelper/WindPetals.description.maxXDriftSpeed=The maximum drifting speed of the petals.
+
+# Digital Cascade 
+style.effects.FemtoHelper/DigitalCascade.name=Digital Cascade
+style.effects.FemtoHelper/DigitalCascade.description.symbolAmount=The amount of symbols in the effect.
+style.effects.FemtoHelper/DigitalCascade.description.colors=A comma-separated list of all possible colors each symbol can take.
+style.effects.FemtoHelper/DigitalCascade.description.alpha=The effect's transparency as a whole.
+style.effects.FemtoHelper/DigitalCascade.description.minSpeed=The minimum speed for each symbol.
+style.effects.FemtoHelper/DigitalCascade.description.maxSpeed=The maximum speed for each symbol.
+style.effects.FemtoHelper/DigitalCascade.description.angle=Determines the angle at which the symbols go, in degrees.
+style.effects.FemtoHelper/DigitalCascade.description.extraLoopBorderX=The amount of horizontal off-screen padding the symbol has before looping to the opposite side of the screen.
+style.effects.FemtoHelper/DigitalCascade.description.extraLoopBorderX=The amount of vertical off-screen padding the symbol has before looping to the opposite side of the screen.
+style.effects.FemtoHelper/DigitalCascade.description.spritePath=The path for the symbol sprites. The effect takes every symbol with this path plus a number at the end of the file name. (e.g. "bgs/Mymod/symbol", will use "symbol00.png", "symbol01.png", "symbol02.png" ...)
+style.effects.FemtoHelper/DigitalCascade.description.minLifetime=The minimum time the symbol takes before flipping to another one. The lifetime is recalculated every flip.
+style.effects.FemtoHelper/DigitalCascade.description.maxLifetime=The maximum time the symbol takes before flipping to another one. The lifetime is recalculated every flip.
+style.effects.FemtoHelper/DigitalCascade.description.fadeTime=How long the symbol's flipping animation takes.
+style.effects.FemtoHelper/DigitalCascade.description.randomSymbol=Whether a random symbol is chosen when flipping, instead of each symbol flipping to the next one.
+style.effects.FemtoHelper/DigitalCascade.description.afterimageFadeTime=How long a symbol's afterimage takes to fade out.
+style.effects.FemtoHelper/DigitalCascade.description.timeBetweenAfterimages=The time each symbol takes to "produce" an afterimage.
+style.effects.FemtoHelper/DigitalCascade.description.scroll=Parallax scroll factor.
+style.effects.FemtoHelper/DigitalCascade.description.fadeScaleMode=Determines a symbol's flipping animation.\nNo Scaling: No animation. The symbol simply snaps into the next one.\nX and Y Scaling: The symbol scales horizontally and vertically when flipping into the next one.\nX Scaling Only: The symbol only scales horizontally when flipping into the next one.\nY Scaling Only: The symbol only scales vertically when flipping into the next one.
+style.effects.FemtoHelper/DigitalCascade.description.noFlipping=Disables symbol flipping altogether.
+style.effects.FemtoHelper/DigitalCascade.description.afterimageAlpha=How transparent the afterimages appear.
+
+# Distorted Parallax
+
+style.effects.FemtoHelper/DistortedParallax.name=Distorted Parallax
+style.effects.FemtoHelper/DistortedParallax.description.texture=The texture's path.
+style.effects.FemtoHelper/DistortedParallax.description.posX=The styleground's horizontal position.
+style.effects.FemtoHelper/DistortedParallax.description.posY=The styleground's vertical position.
+style.effects.FemtoHelper/DistortedParallax.description.speedX=The styleground's horizontal velocity, in pixels/second.
+style.effects.FemtoHelper/DistortedParallax.description.speedY=The styleground's vertical velocity, in pixels/second.
+style.effects.FemtoHelper/DistortedParallax.description.scrollX=The styleground's horizontal parallax factor.
+style.effects.FemtoHelper/DistortedParallax.description.scrollY=The styleground's vertical parallax factor.
+style.effects.FemtoHelper/DistortedParallax.description.loopX=Whether the styleground should repeat itself horizontally.
+style.effects.FemtoHelper/DistortedParallax.description.loopY=Whether the styleground should repeat itself vertically.
+style.effects.FemtoHelper/DistortedParallax.description.color=The styleground's color.
+style.effects.FemtoHelper/DistortedParallax.description.alpha=The styleground's transparency.
+style.effects.FemtoHelper/DistortedParallax.description.blendState=The styleground's blending mode.\nAlpha Blend: Blends whatever is behind the styleground with itself with a weight determined by its alpha.\nAdditive: Adds its color information (multiplied by its alpha) to what is behind it.
+style.effects.FemtoHelper/DistortedParallax.description.amplitudeX=How strong the horizontal waves should be.
+style.effects.FemtoHelper/DistortedParallax.description.amplitudeY=How strong the vertical waves should be.
+style.effects.FemtoHelper/DistortedParallax.description.periodX=How narrow or wide the horizontal waves should be.
+style.effects.FemtoHelper/DistortedParallax.description.periodY=How narrow or wide the vertical waves should be.
+style.effects.FemtoHelper/DistortedParallax.description.waveSpeedX=How fast the horizontal waving animates.
+style.effects.FemtoHelper/DistortedParallax.description.waveSpeedY=How fast the vertical waving animates.
+style.effects.FemtoHelper/DistortedParallax.description.offsetX=Offsets the horizontal waving by a given amount.
+style.effects.FemtoHelper/DistortedParallax.description.offsetY=Offsets the vertical waving by a given amount.
+style.effects.FemtoHelper/DistortedParallax.description.flipX=Whether the styleground should be horizontally flipped.
+style.effects.FemtoHelper/DistortedParallax.description.flipY=Whether the styleground should be vertically flipped.
+style.effects.FemtoHelper/DistortedParallax.description.sliceMode=How the effect's code slices the given texture to distort the styleground.\nHorizontal: The horizontal waving is transversal, and the vertical waving is longitudinal.\nVertical: The horizontal waving is longitudinal, and the vertical waving is transversal.

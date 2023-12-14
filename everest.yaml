@@ -1,0 +1,13 @@
+- Name: FemtoHelper
+  Version: 1.11.1
+  DLL: bin/Debug/net452/FemtoHelper.dll
+  Dependencies:
+    - Name: Everest
+      Version: 1.3971.0
+  OptionalDependencies:
+    - Name: GravityHelper
+      Version: 1.1.38
+    - Name: CommunalHelper
+      Version: 1.17.2
+    - Name: CavernHelper
+      Version: 1.3.6
