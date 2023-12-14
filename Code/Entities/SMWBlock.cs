@@ -375,7 +375,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
                     player.Position.Y += Top - player.Bottom;
                     player.Speed = Vector2.Zero;
                 }
-                if (!(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || FemtoModule.CommunalHelperSupport.HasDreamTunnelDash.Invoke())) player.StateMachine.State = 0;
+                if (!(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || FemtoModule.CommunalHelperSupport.HasDreamTunnelDash?.Invoke() == true)) player.StateMachine.State = 0;
                 if (player.Ducking && dir == 0) { player.Ducking = false; player.Position.Y += 5; };
                 if (player.Ducking && dir == 3 && FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1) { player.Ducking = false; player.Position.Y -= 5; };
                 if (giveCoyoteFramesOnHit)player.StartJumpGraceTime();
