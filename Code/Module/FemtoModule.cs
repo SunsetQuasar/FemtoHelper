@@ -171,6 +171,10 @@ namespace Celeste.Mod.FemtoHelper
 
         public static bool onCollideHHook(On.Celeste.Actor.orig_MoveHExact orig, Actor self, int moveH, Collision onCollide, Solid pusher)
         {
+            if(self is Debris)
+            {
+                return orig(self, moveH, onCollide, pusher);
+            }
             int orig_moveH = moveH;
             Holdable h = self.Get<Holdable>();
             if (h != null)
@@ -231,6 +235,10 @@ namespace Celeste.Mod.FemtoHelper
 
         public static bool onCollideVHook(On.Celeste.Actor.orig_MoveVExact orig, Actor self, int moveV, Collision onCollide, Solid pusher)
         {
+            if (self is Debris)
+            {
+                return orig(self, moveV, onCollide, pusher);
+            }
             Holdable h = self.Get<Holdable>();
             int orig_moveV = moveV;
             if (h != null)
