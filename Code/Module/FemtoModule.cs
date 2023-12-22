@@ -11,8 +11,6 @@ using Celeste.Mod.FemtoHelper.Entities;
 using System.Reflection;
 using MonoMod.Utils;
 using MonoMod.ModInterop;
-using static On.Celeste.Actor;
-using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper
 {
@@ -173,20 +171,22 @@ namespace Celeste.Mod.FemtoHelper
 
         public static bool onCollideHHook(On.Celeste.Actor.orig_MoveHExact orig, Actor self, int moveH, Collision onCollide, Solid pusher)
         {
-            Vector2 targetPosition = self.Position + Vector2.UnitX * moveH;
-            int num = Math.Sign(moveH);
-            int num2 = 0;
-            float orig_x = self.X;
             int orig_moveH = moveH;
-            while (moveH != 0)
+            Holdable h = self.Get<Holdable>();
+            if (h != null)
             {
-                Solid solid = self.CollideFirst<Solid>(self.Position + Vector2.UnitX * num);
-                if (solid != null)
+                Vector2 targetPosition = self.Position + Vector2.UnitX * moveH;
+                int num = Math.Sign(moveH);
+                int num2 = 0;
+                float orig_x = self.X;
+                
+                while (moveH != 0)
                 {
-                    Holdable h = self.Get<Holdable>();
-                    if (h != null)
+                    Solid solid = self.CollideFirst<Solid>(self.Position + Vector2.UnitX * num);
+                    if (solid != null)
                     {
-                        if (false)
+
+                        if (false) // disabled for now
                         {
                             if (solid is CrushBlock)
                             {
@@ -220,32 +220,33 @@ namespace Celeste.Mod.FemtoHelper
                             }
                         }
                     }
+                    num2 += num;
+                    moveH -= num;
+                    self.X += num;
                 }
-                num2 += num;
-                moveH -= num;
-                self.X += num;
+                self.X = orig_x;
             }
-            self.X = orig_x;
-
             return orig(self, orig_moveH, onCollide, pusher);
         }
 
         public static bool onCollideVHook(On.Celeste.Actor.orig_MoveVExact orig, Actor self, int moveV, Collision onCollide, Solid pusher)
         {
-            Vector2 targetPosition = self.Position + Vector2.UnitY * moveV;
-            int num = Math.Sign(moveV);
-            int num2 = 0;
-            float orig_y = self.Y;
+            Holdable h = self.Get<Holdable>();
             int orig_moveV = moveV;
-            while (moveV != 0)
+            if (h != null)
             {
-                Platform platform = self.CollideFirst<Solid>(self.Position + Vector2.UnitY * num);
-                if (platform != null)
+                Vector2 targetPosition = self.Position + Vector2.UnitY * moveV;
+                int num = Math.Sign(moveV);
+                int num2 = 0;
+                float orig_y = self.Y;
+                
+                while (moveV != 0)
                 {
-                    Holdable h = self.Get<Holdable>();
-                    if (h != null)
+                    Platform platform = self.CollideFirst<Solid>(self.Position + Vector2.UnitY * num);
+                    if (platform != null)
                     {
-                        if (false)
+
+                        if (false) //disabled for now
                         {
                             if (platform is CrushBlock)
                             {
@@ -279,13 +280,14 @@ namespace Celeste.Mod.FemtoHelper
                                 return orig(self, orig_moveV, onCollide, pusher);
                             }
                         }
+
                     }
+                    num2 += num;
+                    moveV -= num;
+                    self.Y += num;
                 }
-                num2 += num;
-                moveV -= num;
-                self.Y += num;
+                self.Y = orig_y;
             }
-            self.Y = orig_y;
 
             return orig(self, orig_moveV, onCollide, pusher);
         }

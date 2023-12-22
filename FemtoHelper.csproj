@@ -36,9 +36,12 @@
       <None Remove="Lua\**" />
     </ItemGroup>
 
+    
+
     <ItemGroup>
         <PackageReference Include="MonoMod.RuntimeDetour" Version="22.01.04.03" PrivateAssets="all" ExcludeAssets="runtime" />
 		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
+        <PackageReference Include="CelesteAnalyzer" Version="1.0.3.1" />
 	</ItemGroup>
     <ItemGroup>
         <Reference Include="$(CelestePrefix)\Celeste.exe" Publicize="true">

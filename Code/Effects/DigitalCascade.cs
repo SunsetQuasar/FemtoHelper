@@ -8,8 +8,17 @@ using System.Collections.Generic;
 
 public class DigitalCascade : Backdrop
 {
-	private struct Cascatee
+	private class Cascatee
 	{
+		public Cascatee(Vector2 position, Vector2 speed, float size, Color color, MTexture texture, float life, int spriteIndex) {
+            Position = position;
+            Texture = texture;
+            Size = size;
+            Color = color;
+			Speed = speed;
+			Lifetime = initLifetime = life;
+			this.spriteIndex = spriteIndex;
+        }
 		public Vector2 Position;
 
 		public Vector2 Speed;
@@ -28,8 +37,15 @@ public class DigitalCascade : Backdrop
 
 		public float AItimer;
     }
-    private struct Afterimage
+    private class Afterimage
     {
+		public Afterimage(Vector2 position, MTexture texture, float size, Color color)
+		{
+			Position = position;
+			Texture = texture;
+			Size = size;
+			Color = color;
+        }
         public Vector2 Position;
 
         public float Size;
@@ -40,9 +56,9 @@ public class DigitalCascade : Backdrop
 
         public float Age;
     }
-	private Cascatee[] cascatees;
+	private List<Cascatee> cascatees;
 
-	private Afterimage[] afterimages;
+	private List<Afterimage> afterimages;
 
 	private Vector2 lastCamera = Vector2.Zero;
 
@@ -90,9 +106,9 @@ public class DigitalCascade : Backdrop
 
 		scrolling = scroll;
 
-		cascatees = new Cascatee[symbolAmount];
+		cascatees = new List<Cascatee>(symbolAmount);
 
-		afterimages = new Afterimage[afterimagesCap];
+		afterimages = new List<Afterimage>();
 
 		float angleRad = Calc.DegToRad * angle;
 
@@ -109,21 +125,21 @@ public class DigitalCascade : Backdrop
 
 		infiniteLifetime = inflife;
 
-		for (int i = 0; i < cascatees.Length; i++)
+		for (int i = 0; i < symbolAmount; i++)
 		{
-			float chosenSpeed = Calc.Random.Range(minspeed, maxspeed);
-			cascatees[i].Position = new Vector2(
+			int inde = Calc.Random.Next(textures.Count);
+            float chosenSpeed = Calc.Random.Range(minspeed, maxspeed);
+
+			cascatees.Add(new Cascatee(new Vector2(
 				Calc.Random.Range(0 - halfloopborderX, 320f + halfloopborderX),
-				Calc.Random.Range(0 - halfloopborderY, 180f + halfloopborderY)
-				);
-			cascatees[i].Speed = new Vector2((float)Math.Sin(angleRad) * chosenSpeed, (float)Math.Cos(angleRad) * chosenSpeed);
-			cascatees[i].Size = 1f;
-			cascatees[i].Color = possibleColors[Calc.Random.Next(possibleColors.Length)];
-			cascatees[i].spriteIndex = Calc.Random.Next(textures.Count);
-			cascatees[i].Texture = textures[cascatees[i].spriteIndex];
-			cascatees[i].Lifetime = Calc.Random.Range(minLife, maxLife);
-			cascatees[i].initLifetime = cascatees[i].Lifetime;
-			cascatees[i].AItimer = Calc.Random.NextFloat(AIemitTime);
+				Calc.Random.Range(0 - halfloopborderY, 180f + halfloopborderY)),
+				new Vector2((float)Math.Sin(angleRad) * chosenSpeed, (float)Math.Cos(angleRad) * chosenSpeed),
+				1f,
+				possibleColors[Calc.Random.Next(possibleColors.Length)],
+				textures[inde],
+                Calc.Random.Range(minLife, maxLife),
+				inde)
+			);
 		}
 	}
 
@@ -132,23 +148,18 @@ public class DigitalCascade : Backdrop
 		base.Update(scene);
 		Vector2 position = (scene as Level).Camera.Position;
 		Vector2 vector = position - lastCamera;
-		for (int ai = 0; ai < afterimageCount; ai++)
+		for (int ai = 0; ai < afterimages.Count; ai++)
 		{
 			afterimages[ai].Age += Engine.DeltaTime;
 			afterimages[ai].Position += Vector2.Zero * Engine.DeltaTime - vector * scrolling;
 			if (afterimages[ai].Age >= AIfadeTime)
 			{
-				afterimages[ai].Age = afterimages[afterimageCount - 1].Age;
-				afterimages[ai].Position = afterimages[afterimageCount - 1].Position;
-				afterimages[ai].Texture = afterimages[afterimageCount - 1].Texture;
-				afterimages[ai].Size = afterimages[afterimageCount - 1].Size;
-				afterimages[ai].Color = afterimages[afterimageCount - 1].Color;
-				afterimageCount--;
+				afterimages.RemoveAt(ai);
 				ai--;
 			}
 
 		}
-		for (int i = 0; i < cascatees.Length; i++)
+		for (int i = 0; i < cascatees.Count; i++)
 		{
 			cascatees[i].Position += cascatees[i].Speed * Engine.DeltaTime - vector * scrolling;
 
@@ -211,12 +222,7 @@ public class DigitalCascade : Backdrop
             {
 				cascatees[i].AItimer = AIemitTime;
                 {
-					afterimages[afterimageCount].Age = 0;
-					afterimages[afterimageCount].Position = cascatees[i].Position;
-					afterimages[afterimageCount].Texture = cascatees[i].Texture;
-					afterimages[afterimageCount].Size = cascatees[i].Size;
-					afterimages[afterimageCount].Color = cascatees[i].Color;
-					afterimageCount = Math.Min(afterimageCount + 1, afterimages.Length - 1);
+					afterimages.Add(new Afterimage(cascatees[i].Position, cascatees[i].Texture, cascatees[i].Size, cascatees[i].Color));
 						
 				}
 			}
@@ -227,7 +233,7 @@ public class DigitalCascade : Backdrop
 
 	public override void Render(Scene scene)
 	{
-		for (int i = 0; i < cascatees.Length; i++)
+		for (int i = 0; i < cascatees.Count; i++)
 		{
 			cascatees[i].Texture.Draw(
 				new Vector2(
@@ -253,7 +259,7 @@ public class DigitalCascade : Backdrop
 				)
 			);
 		}
-		for (int ai = 0; ai < afterimageCount; ai++)
+		for (int ai = 0; ai < afterimages.Count; ai++)
         {
 						afterimages[ai].Texture.Draw(
 				new Vector2(

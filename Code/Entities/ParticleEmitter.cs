@@ -36,7 +36,6 @@ namespace Celeste.Mod.FemtoHelper
 		public ParticleEmitter(EntityData data, Vector2 offset)
 			: base(data.Position + offset)
 		{
-			Level level = Scene as Level;
 			Add(new BloomPoint(data.Float("BloomAlpha"), data.Float("BloomRadius", 6f)));
 			particleSpawnSpread = data.Float("particleSpawnSpread");
 			particleCount = data.Int("particleCount");
