@@ -240,11 +240,22 @@ entities.FemtoHelper/SMWFish.attributes.description.initialSpeedX=The fish's ver
 entities.FemtoHelper/SMWFish.attributes.description.gravity=The fish's downwards acceleration when it gets activated by its respective flag.
 entities.FemtoHelper/SMWFish.attributes.description.activationFlag=The flag that activates the fish.\nPrecede the flag name with an exclamation point to negate the flag. (e.g. "!myflag" will only activate the fish if "myflag" is NOT active)
 
+# Vital Drain Controller
+
+entities.FemtoHelper/VitalDrainController.placements.name.gaseous=Vital Drain Controller
+entities.FemtoHelper/SMWFish.attributes.description.colorgradeA=The colorgrade that is set when you're safe (maximum vitality value)
+entities.FemtoHelper/SMWFish.attributes.description.colorgradeB=The colorgrade that is faded to as your vitality is drained
+
 # ---------- Triggers ----------
 
 # Remote Particle Emitter Activator (please spare my soul its the best name i could come up with)
+
 triggers.FemtoHelper/ParticleRemoteEmit.placements.name.default=Remote Particle Emitter Activator
 triggers.FemtoHelper/ParticleRemoteEmit.attributes.description.tag=Any Particle Emitters with this tag will be activated on entry.
+
+# Vital Safety Trigger
+
+triggers.FemtoHelper/VitalSafetyTrigger.placements.name.default=Vital Safety Trigger
 
 # ---------- Effects ----------
 

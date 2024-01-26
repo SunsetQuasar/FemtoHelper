@@ -324,6 +324,7 @@ namespace Celeste.Mod.FemtoHelper
             On.Celeste.Actor.MoveHExact += onCollideHHook;
             On.Celeste.Actor.MoveVExact += onCollideVHook;
             CodecumberPortStuff.Load();
+            VitalDrainController.Load();
         }
 
         // Optional, initialize anything after Celeste has initialized itself properly.
@@ -353,6 +354,7 @@ namespace Celeste.Mod.FemtoHelper
             On.Celeste.Actor.MoveHExact -= onCollideHHook;
             On.Celeste.Actor.MoveVExact -= onCollideVHook;
             CodecumberPortStuff.Unload();
+            VitalDrainController.Unload();
         }
         private Backdrop Level_OnLoadBackdrop(MapData map, BinaryPacker.Element child, BinaryPacker.Element above)
         {
