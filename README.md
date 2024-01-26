@@ -1,1 +1,1 @@
-this is a messy work in progress!
+todo: make an actual readme lmaooooooo
