@@ -21,6 +21,8 @@ FemtoHelperVitalDrainController.placements = {
         musicParamMin = 0,
         musicParamMax = 1,
         cameraZoomTarget = 1,
+        useFlag = "",
+        invertFlag = false,
     }
 }
 

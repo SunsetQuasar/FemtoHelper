@@ -34,6 +34,10 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public Vector2 cameraPreviousDiff;
 
+        public string flag;
+        public bool usingFlag;
+        public bool invertFlag;
+
         public VitalDrainController(EntityData data, Vector2 offset) : base(data.Position + offset)
         {
             Tag = Tags.Persistent | TagsExt.SubHUD;
@@ -56,6 +60,12 @@ namespace Celeste.Mod.FemtoHelper.Entities
             musicParamMax = data.Float("musicParamMax", 1f);
             anxiety = data.Float("anxiety", 0.3f);
             cameraZoomTarget = data.Float("cameraZoomTarget", 1f);
+
+            flag = data.Attr("useFlag", "");
+            usingFlag = string.IsNullOrWhiteSpace(flag);
+
+            invertFlag = data.Bool("invertFlag", false);
+
             Oxygen = 500f;
         }
         public override void Added(Scene scene)
@@ -112,10 +122,12 @@ namespace Celeste.Mod.FemtoHelper.Entities
             base.Update();
             Player player = Scene.Tracker.GetEntity<Player>();
             Level level = (Scene as Level);
+            bool flg = (Scene as Level).Session.GetFlag(flag);
+            if (invertFlag) flg = !flg;
             if (player != null)
             {
 
-                if (!player.CollideCheck<VitalSafetyTrigger>())
+                if (usingFlag ? (!player.CollideCheck<VitalSafetyTrigger>()) : (!flg))
                 {
                     level.Session.SetFlag(Flag, true);
                     Oxygen = Math.Max(Oxygen - DrainRate * Engine.DeltaTime, 0f);
