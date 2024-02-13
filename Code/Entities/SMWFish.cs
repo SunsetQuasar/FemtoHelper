@@ -43,7 +43,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public TrollFish(EntityData data, Vector2 offset) : base(data.Position + offset)
         {
-            Depth = -120000;
+            Depth = data.Int("depth", -120000);
             Speed = new Vector2(data.Float("initialSpeedX", 0), data.Float("initialSpeedY", 0));
             gravity = data.Float("gravity", 260);
             flag = data.Attr("activationFlag", "fish_flag");
@@ -82,7 +82,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
         private void bonk (Player player)
         {
             Audio.Play(audioPath + "enemykill");
-            Celeste.Freeze(0.2f);
+            Celeste.Freeze(0.1f);
             player.Bounce(base.Top + 2f);
             dead = true;
             Speed = (Vector2.Normalize(Position - player.Position) * 63.24f);

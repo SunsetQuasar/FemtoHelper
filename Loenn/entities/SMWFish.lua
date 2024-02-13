@@ -19,7 +19,8 @@ FemtoHelperSMWFish.placements = {
         initialSpeedX = 0, 
         initialSpeedY = 0,
         gravity = 260,
-        activationFlag = "fish_flag"
+        activationFlag = "fish_flag",
+        depth = -120000
     }
 }
 
