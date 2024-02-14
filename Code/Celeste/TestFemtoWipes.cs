@@ -16,34 +16,48 @@ namespace Celeste.Mod.FemtoHelper.Wipes
 		public TestFemtoWipes()
 		{
 			coroutine = new Coroutine(routine());
-		}
+            ScreenWipe.WipeColor = Color.Black;
+        }
 
-		private IEnumerator routine()
+        [Command("test_femto_wipes", "test Femto Helper custom wipes")]
+        private static void CmdFemtoWipes()
+        {
+            Engine.Scene = new TestFemtoWipes();
+        }
+
+        private IEnumerator routine()
 		{
-			float dur = 3f;
+			float dur = 1f;
 			yield return 1f;
 			while (true)
 			{
-				ScreenWipe.WipeColor = Color.Black;
+
 				new CirclerWipe(this, wipeIn: false).Duration = dur;
 				yield return dur;
-				lastColor = Color.White;
+                new CirclerWipe(this, wipeIn: true).Duration = dur;
+                yield return dur;
 
-				ScreenWipe.WipeColor = Calc.HexToColor("ff0034");
-				new SquareWipe(this, wipeIn: false).Duration = dur;
+                new SquareWipe(this, wipeIn: false).Duration = dur;
 				yield return dur;
-				lastColor = ScreenWipe.WipeColor;
+                new SquareWipe(this, wipeIn: true).Duration = dur;
+                yield return dur;
 
-				ScreenWipe.WipeColor = Calc.HexToColor("0b0960");
-				new CliffhangerWipe(this, wipeIn: false).Duration = dur;
-				yield return dur;
-				lastColor = ScreenWipe.WipeColor;
+                new CliffhangerWipe(this, wipeIn: false).Duration = dur;
+                yield return dur;
+                new CliffhangerWipe(this, wipeIn: true).Duration = dur;
+                yield return dur;
 
-				ScreenWipe.WipeColor = Calc.HexToColor("39bf00");
-				new SineWipe(this, wipeIn: false).Duration = dur;
-				yield return dur;
-				lastColor = ScreenWipe.WipeColor;
-			}
+                new SineWipe(this, wipeIn: false).Duration = dur;
+                yield return dur;
+                new SineWipe(this, wipeIn: true).Duration = dur;
+                yield return dur;
+
+                new DiamondWipe(this, wipeIn: false).Duration = dur;
+                yield return dur;
+                new DiamondWipe(this, wipeIn: true).Duration = dur;
+                yield return dur;
+
+            }
 		}
 
 		public override void Update()

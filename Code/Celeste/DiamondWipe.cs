@@ -1,12 +1,15 @@
-﻿using System;
-using Celeste;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Celeste.Mod.FemtoHelper.Wipes
 {
-    public class SquareWipe : ScreenWipe
+    public class DiamondWipe : ScreenWipe
     {
         public static readonly BlendState SubtractBlendmode = new BlendState
         {
@@ -22,7 +25,7 @@ namespace Celeste.Mod.FemtoHelper.Wipes
 
         private VertexPositionColor[] vertex = new VertexPositionColor[6];
 
-        public SquareWipe(Scene scene, bool wipeIn, Action onComplete = null)
+        public DiamondWipe(Scene scene, bool wipeIn, Action onComplete = null)
             : base(scene, wipeIn, onComplete)
         {
             for (int i = 0; i < vertex.Length; i++)
@@ -43,15 +46,16 @@ namespace Celeste.Mod.FemtoHelper.Wipes
             //    Draw.Rect(-1f, (1080f - num) * 0.5f, 1922f, num, (!WipeIn) ? Color.White : Color.Black);
             //    Draw.SpriteBatch.End();
             //}
-            float num2 = (float)Math.Pow(Percent, 3.5) * 1.4f;
-            float num3 = WipeIn ? num2 : - num2;
-            vertex[0].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2), Engine.Width / 2 * num2), 0f);
-            vertex[1].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2) + (float)(1 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
-            vertex[2].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2) + (float)(2 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
+            float num2 = ((Percent * Percent) + (Percent * Percent * Percent)) / 2;
+            float num3 = WipeIn ? num2 : -num2;
+            Vector2 Center = new Vector2(Engine.Width / 2f, Engine.Height / 2f);
+            vertex[0].Position = new Vector3(Center.X, Center.Y - (num2 * (Center.X + Center.Y)), 0);
+            vertex[1].Position = new Vector3(Center.X - (num2 * (Center.X + Center.Y)), Center.Y, 0);
+            vertex[2].Position = new Vector3(Center.X, Center.Y + (num2 * (Center.X + Center.Y)), 0);
+            vertex[3].Position = new Vector3(Center.X, Center.Y - (num2 * (Center.X + Center.Y)), 0);
+            vertex[4].Position = new Vector3(Center.X + (num2 * (Center.X + Center.Y)), Center.Y, 0);
+            vertex[5].Position = new Vector3(Center.X, Center.Y + (num2 * (Center.X + Center.Y)), 0);
 
-            vertex[3].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2) + (float)(2 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
-            vertex[4].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2) + (float)(3 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
-            vertex[5].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2), Engine.Width / 2 * num2), 0f);
 
             GFX.DrawVertices(Matrix.Identity, vertex, vertex.Length);
         }
@@ -71,3 +75,4 @@ namespace Celeste.Mod.FemtoHelper.Wipes
         }
     }
 }
+
