@@ -11,6 +11,9 @@ using Celeste.Mod.FemtoHelper.Entities;
 using System.Reflection;
 using MonoMod.Utils;
 using MonoMod.ModInterop;
+using System.Collections.Generic;
+using Celeste.Mod.FemtoHelper.Code.Effects;
+using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper
 {
@@ -325,6 +328,18 @@ namespace Celeste.Mod.FemtoHelper
             On.Celeste.Actor.MoveVExact += onCollideVHook;
             CodecumberPortStuff.Load();
             VitalDrainController.Load();
+
+            Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
+        }
+
+        public static void ReloadDistortedParallax(Player player)
+        {
+            Level level = player.Scene as Level;
+            List<NewDistortedParallax> d = level.Background.GetEach<NewDistortedParallax>().ToList();
+            foreach (NewDistortedParallax parallax in d)
+            {
+                parallax.Reset();
+            }
         }
 
         // Optional, initialize anything after Celeste has initialized itself properly.
@@ -447,6 +462,9 @@ namespace Celeste.Mod.FemtoHelper
             }
             return null;
         }
+
+
+
     }
 }
 
