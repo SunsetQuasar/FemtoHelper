@@ -1,16 +1,9 @@
-FEMTOHELPER_ULTRADASH_DESKTOP_MYPC= My Mountain
-FEMTOHELPER_ULTRADASH_DESKTOP_RECYCLEBIN= Recycle Bin
-FEMTOHELPER_ULTRADASH_DESKTOP_POWERPOINT= tech_plus.ppt
-FEMTOHELPER_ULTRADASH_DESKTOP_LM= Lunar Magic
-FEMTOHELPER_ULTRADASH_DESKTOP_PEKKA= PekkaED
-FEMTOHELPER_ULTRADASH_DESKTOP_FEMTOTECH= FemtoTech{n}Workspace
-FEMTOHELPER_ULTRADASH_DESKTOP_AHORN= Ahorn
-FEMTOHELPER_ULTRADASH_DESKTOP_WAVEDASH= wavedash.ppt
-FEMTOHELPER_ULTRADASH_DESKTOP_NYOOM= reg_wancel.ppt
-FEMTOHELPER_ULTRADASH_DESKTOP_STARTBUTTON= BerryOS Golden
+FemtoHelper_PlutoniumText_Example= Hello World! 
+FemtoHelper_PlutoniumText_Example2= Femto Helper v1.12.0
 
 FemtoHelper_Memo_exampleText=
 Example text.{n}Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus lobortis augue mollis diam imperdiet ullamcorper. Praesent viverra hendrerit lorem, eget blandit lectus maximus eget. Cras a magna mauris. In hac habitasse platea dictumst. Proin facilisis magna nec rhoncus ornare. Fusce vitae lacinia dui, pellentesque pellentesque felis. Cras a turpis et. 
 
 FEMTOHELPER_ERRORHANDLER_INDEX_ZERO=
 "Total Indexes" can't be zero!
+
