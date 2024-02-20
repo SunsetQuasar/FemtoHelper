@@ -224,10 +224,8 @@ namespace Celeste.Mod.FemtoHelper.Code.Effects
             parameters["TransformMatrix"]?.SetValue(halfPixelOffset * projection);
             parameters["ViewMatrix"]?.SetValue(Matrix.Identity);
 
-
             graphicsDevice.SetRenderTarget(buffer);
             graphicsDevice.Clear(Color.Transparent);
-
 
         }
 
