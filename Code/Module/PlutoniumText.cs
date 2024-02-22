@@ -83,24 +83,24 @@ namespace Celeste.Mod.FemtoHelper
                 seed = Calc.Random.NextFloat() * 12801;
             }
         }
-        public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, int id = 0)
+        public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
         {
             float stringlen = spacing * str.Length;
-            Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(fontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, new TextEffectData(), id);
+            Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(fontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, new TextEffectData(), scale, id);
         }
 
-        public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, TextEffectData data, int id = 0)
+        public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, TextEffectData data, float scale = 1, int id = 0)
         {
             float stringlen = spacing * str.Length;
-            Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(fontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, data, id);
+            Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(fontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, data, scale, id);
         }
 
-        public void Print(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, int id = 0)
+        public void Print(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
         {
-            Print(pos, str, shadow, spacing, mainColor, outlineColor, new TextEffectData(), id);
+            Print(pos, str, shadow, spacing, mainColor, outlineColor, new TextEffectData(), scale, id);
         }
 
-        public void Print(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, TextEffectData data, int id = 0)
+        public void Print(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, TextEffectData data, float scale = 1, int id = 0)
         {
 
             SpriteEffects flip = SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -109,6 +109,7 @@ namespace Celeste.Mod.FemtoHelper
             List<Vector2> effectOffsets = [];
             List<char> theseChars = [];
 
+            pos = pos.Floor();
 
             if (!data.empty)
             {
@@ -151,7 +152,7 @@ namespace Celeste.Mod.FemtoHelper
             {
                 foreach (char c in str) //draw all outlines/shadows
                 {
-                    float offset = index * spacing;
+                    float offset = index * spacing * scale;
                     Vector2 charpos = pos + (Vector2.UnitX * offset);
                     charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
                     if (!data.empty && index < effectOffsets.Count) charpos += effectOffsets[index];
@@ -176,11 +177,11 @@ namespace Celeste.Mod.FemtoHelper
                     //Logger.Log(nameof(PlutoniumHelperModule), "outline color: " + outlineColor.ToString());
                     if (shadow)
                     {
-                        charTextures[chr].Draw(charpos + Vector2.One, Vector2.Zero, outlineColor, 1, 0, flip);
+                        charTextures[chr].Draw(charpos + (Vector2.One * scale), Vector2.Zero, outlineColor, scale, 0, flip);
                     }
                     else
                     {
-                        DrawOutlineExceptGood(charTextures[chr], charpos, Vector2.Zero, outlineColor, flip);
+                        DrawOutlineExceptGood(charTextures[chr], charpos, Vector2.Zero, outlineColor, flip, scale);
                     }
                     index++;
                 }
@@ -192,7 +193,7 @@ namespace Celeste.Mod.FemtoHelper
 
             foreach (char c in str) //draw all characters
             {
-                float offset = index * spacing;
+                float offset = index * spacing * scale;
                 Vector2 charpos = pos + (Vector2.UnitX * offset);
                 charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
                 if (!data.empty && index < effectOffsets.Count) charpos += effectOffsets[index];
@@ -214,15 +215,15 @@ namespace Celeste.Mod.FemtoHelper
                     else chr = charset[c];
                 }
 
-                charTextures[chr].Draw(charpos, Vector2.Zero, mainColor, 1, 0, flip);
+                charTextures[chr].Draw(charpos, Vector2.Zero, mainColor, scale, 0, flip);
                 index++;
             }
 
         }
 
-        public static void DrawOutlineExceptGood(MTexture t, Vector2 position, Vector2 origin, Color color, SpriteEffects flip)
+        public static void DrawOutlineExceptGood(MTexture t, Vector2 position, Vector2 origin, Color color, SpriteEffects flip, float scale)
         {
-            float scaleFix = t.ScaleFix;
+            float scaleFix = t.ScaleFix * scale;
             Rectangle clipRect = t.ClipRect;
             Vector2 origin2 = (origin - t.DrawOffset) / scaleFix;
             for (int i = -1; i <= 1; i++)
@@ -231,7 +232,7 @@ namespace Celeste.Mod.FemtoHelper
                 {
                     if (i != 0 || j != 0)
                     {
-                        Draw.SpriteBatch.Draw(t.Texture.Texture_Safe, position + new Vector2(i, j), clipRect, color, 0f, origin2, scaleFix, flip, 0f);
+                        Draw.SpriteBatch.Draw(t.Texture.Texture_Safe, position + (new Vector2(i, j) * scale), clipRect, color, 0f, origin2, scaleFix, flip, 0f);
                     }
                 }
             }

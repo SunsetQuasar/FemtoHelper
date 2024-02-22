@@ -31,7 +31,7 @@ namespace Celeste.Mod.FemtoHelper
 
 		public string flag;
 
-		public string tag;
+		public string tag_;
 
 		public ParticleEmitter(EntityData data, Vector2 offset)
 			: base(data.Position + offset)
@@ -45,7 +45,7 @@ namespace Celeste.Mod.FemtoHelper
 			particleAngleRange = data.Float("particleAngleRange");
 			isFG = data.Bool("foreground", false);
 			flag = data.Attr("flag", "");
-			tag = data.Attr("tag", "");
+			tag_ = data.Attr("tag", "");
 			string[] texString = data.Attr("particleTexture").Split(',');
 			Chooser<MTexture> texchoice = new Chooser<MTexture>();
 			for (int i = 0; i < texString.Length; i++)

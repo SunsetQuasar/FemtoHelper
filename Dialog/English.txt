@@ -1,5 +1,5 @@
-FemtoHelper_PlutoniumText_Example= Hello World! 
-FemtoHelper_PlutoniumText_Example2= Femto Helper v1.12.0
+FemtoHelper_PlutoniumText_Example= Sample Text
+FemtoHelper_PlutoniumText_Example2= O
 
 FemtoHelper_Memo_exampleText=
 Example text.{n}Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus lobortis augue mollis diam imperdiet ullamcorper. Praesent viverra hendrerit lorem, eget blandit lectus maximus eget. Cras a magna mauris. In hac habitasse platea dictumst. Proin facilisis magna nec rhoncus ornare. Fusce vitae lacinia dui, pellentesque pellentesque felis. Cras a turpis et. 

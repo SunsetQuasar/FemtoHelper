@@ -9,12 +9,11 @@ using System;
 [CustomEntity("FemtoHelper/ParticleRemoteEmit")]
 internal class ParticleRemoteEmit : Trigger
 {
-	private string tag;
+	private string tag_;
 
     public ParticleRemoteEmit(EntityData data, Vector2 offset) : base(data, offset)
 	{
-		tag = data.Attr("tag");
-
+		tag_ = data.Attr("tag");
 	}
 
 	public override void OnEnter(Player player)
@@ -33,21 +32,21 @@ internal class ParticleRemoteEmit : Trigger
 			{
 				flagge = level.Session.GetFlag(emitter.flag);
 			}
-			if (emitter.tag == tag)
+			if (emitter.tag_ == tag_)
             {
 				if (flagge == true || emitter.flag == "")
 				{
 					for (int i = 0; i < emitter.particleCount; i++)
 					{
-							float num = emitter.particleAngleRange / 360f * ((float)Math.PI * 2f);
-							if (emitter.isFG)
-							{
-								SceneAs<Level>().ParticlesFG.Emit(emitter.emitterParticle, 1, emitter.Center, Vector2.One * emitter.particleSpawnSpread, emitter.particleAngle / 360f * ((float)Math.PI * 2f) + (Calc.Random.NextFloat() * num - num / 2f));
-							}
-							else
-							{
-								SceneAs<Level>().ParticlesBG.Emit(emitter.emitterParticle, 1, emitter.Center, Vector2.One * emitter.particleSpawnSpread, emitter.particleAngle / 360f * ((float)Math.PI * 2f) + (Calc.Random.NextFloat() * num - num / 2f));
-							};
+						float num = emitter.particleAngleRange / 360f * ((float)Math.PI * 2f);
+						if (emitter.isFG)
+						{
+							SceneAs<Level>().ParticlesFG.Emit(emitter.emitterParticle, 1, emitter.Center, Vector2.One * emitter.particleSpawnSpread, emitter.particleAngle / 360f * ((float)Math.PI * 2f) + (Calc.Random.NextFloat() * num - num / 2f));
+						}
+						else
+						{
+							SceneAs<Level>().ParticlesBG.Emit(emitter.emitterParticle, 1, emitter.Center, Vector2.One * emitter.particleSpawnSpread, emitter.particleAngle / 360f * ((float)Math.PI * 2f) + (Calc.Random.NextFloat() * num - num / 2f));
+						};
 					}
 				}
 			}

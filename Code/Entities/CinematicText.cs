@@ -1,5 +1,7 @@
 ﻿using Celeste.Mod.Entities;
+using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using System;
 using System.Collections;
@@ -9,6 +11,7 @@ using System.Text.RegularExpressions;
 namespace Celeste.Mod.FemtoHelper.Entities
 {
     [CustomEntity("FemtoHelper/CinematicText")]
+    [Tracked]
     public class CinematicText : Entity
     {
         public string str;
@@ -23,7 +26,6 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public float movingCharPercent;
         public bool active = false;
         public Vector2 movingCharOffset;
-        public Vector2 textOrigin;
         public float delay;
         public float speedMultiplier;
         public string audio;
@@ -39,11 +41,15 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public SoundSource soundSource;
 
+        public string activationTag;
+
         public Regex noSound = new Regex(@"\.|!|,| |\?|\/|'|\*");
+
+        public float scale;
+        public bool hud;
         public CinematicText(EntityData data, Vector2 offset) : base(data.Position + offset)
         {
             base.Collider = new Hitbox(data.Width, data.Height);
-            Add(new PlayerCollider(onPlayer));
 
             str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
 
@@ -72,8 +78,6 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             audio = data.Attr("textSound", "event:/FemtoHelper/example_text_sound");
 
-            textOrigin = data.Nodes[0] + offset;
-
             disappearDelay = data.Float("disappearTime", 3f);
 
             if (data.Bool("effects", false)) effectData = new TextEffectData(
@@ -91,10 +95,15 @@ namespace Celeste.Mod.FemtoHelper.Entities
             else effectData = new TextEffectData();
 
             soundSource = new SoundSource();
-            soundSource.Position = Position - textOrigin;
+
+            activationTag = data.Attr("activationTag", "tag1");
+
+            scale = data.Float("scale", 1);
+            hud = data.Bool("hud", false);
+            if (hud) Tag |= TagsExt.SubHUD;
         }
 
-        public void onPlayer(Player player)
+        public void Enter(Player player)
         {
             if (entered) return;
             timer = delay;
@@ -144,22 +153,44 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             if (!active) return;
 
+            if (hud)
+            {
+                SubHudRenderer.EndRender();
+
+                SubHudRenderer.BeginRender(BlendState.AlphaBlend, SamplerState.PointClamp);
+            }
+
             Vector2 position = (Scene as Level).Camera.Position;
             Vector2 vector = position + new Vector2(160f, 90f);
-            Vector2 position2 = (textOrigin - position + (textOrigin - vector) * (parallax - 1)) + position;
+            Vector2 position2 = (Position - position + (Position - vector) * (parallax - 1)) + position;
 
             int offset = finalString.Length * spacing;
             float alpha = Ease.SineInOut(disappearPercent);
 
+            float scale2 = scale;
+            if (hud)
+            {
+                position2 -= position;
+                position2 *= 6;
+                scale2 *= 6;
+            }
+
             //outlines
 
-            text.Print(position2, finalString, shadow, spacing, Color.Transparent, color2 * alpha, effectData);
-            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent)) + (Vector2.UnitX * offset), movingChar.ToString(), shadow, spacing, Color.Transparent, color2 * movingCharPercent * alpha, effectData, cur);
+            text.Print(position2, finalString, shadow, spacing, Color.Transparent, color2 * alpha, effectData, scale2);
+            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, Color.Transparent, color2 * movingCharPercent * alpha, effectData, scale2, cur);
 
             //main text
 
-            text.Print(position2, finalString, shadow, spacing, color1 * alpha, Color.Transparent, effectData);
-            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent)) + (Vector2.UnitX * offset), movingChar.ToString(), shadow, spacing, color1 * movingCharPercent * alpha, Color.Transparent, effectData, cur);
+            text.Print(position2, finalString, shadow, spacing, color1 * alpha, Color.Transparent, effectData, scale2);
+            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, color1 * movingCharPercent * alpha, Color.Transparent, effectData, scale2, cur);
+
+            if (hud)
+            {
+                SubHudRenderer.EndRender();
+
+                SubHudRenderer.BeginRender();
+            }
         }
 
         public override void DebugRender(Camera camera)
@@ -167,7 +198,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             base.DebugRender(camera);
             Vector2 position = (Scene as Level).Camera.Position;
             Vector2 vector = position + new Vector2(160f, 90f);
-            Vector2 position2 = (textOrigin - position + (textOrigin - vector) * (parallax - 1)) + position;
+            Vector2 position2 = (Position - position + (Position - vector) * (parallax - 1)) + position;
             Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
         }
     }
