@@ -43,7 +43,7 @@ namespace Celeste.Mod.FemtoHelper
         public static FemtoModule Instance;
         public static SpriteBank femtoSpriteBank;
         public override Type SessionType => typeof(FemtoHelperSession);
-        public static FemtoHelperSession session2 => (FemtoHelperSession)Instance._Session;
+        public static FemtoHelperSession Session => (FemtoHelperSession)Instance._Session;
 
         public FemtoModule()
         {

@@ -42,14 +42,15 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public SoundSource soundSource;
 
         public string activationTag;
+        public string nextTextTag;
 
         public Regex noSound = new Regex(@"\.|!|,| |\?|\/|'|\*");
 
         public float scale;
         public bool hud;
+        public bool ignoreRegex;
         public CinematicText(EntityData data, Vector2 offset) : base(data.Position + offset)
         {
-            base.Collider = new Hitbox(data.Width, data.Height);
 
             str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
 
@@ -97,10 +98,13 @@ namespace Celeste.Mod.FemtoHelper.Entities
             soundSource = new SoundSource();
 
             activationTag = data.Attr("activationTag", "tag1");
+            nextTextTag = data.Attr("nextTextTag", "");
 
             scale = data.Float("scale", 1);
             hud = data.Bool("hud", false);
             if (hud) Tag |= TagsExt.SubHUD;
+
+            ignoreRegex = data.Bool("ignoreAudioRegex", false);
         }
 
         public void Enter(Player player)
@@ -134,10 +138,20 @@ namespace Celeste.Mod.FemtoHelper.Entities
                     movingCharPercent = Math.Min(movingCharPercent + Engine.DeltaTime * speedMultiplier, 1);
                     yield return null;
                 }
-                if (!noSound.IsMatch(movingChar.ToString()) && !string.IsNullOrEmpty(audio)) soundSource.Play(audio);
+                if ((!noSound.IsMatch(movingChar.ToString()) || (ignoreRegex && movingChar != ' ')) && !string.IsNullOrEmpty(audio)) soundSource.Play(audio);
                 finalString += movingChar;
             }
             movingChar = ' ';
+            if (!string.IsNullOrEmpty(nextTextTag))
+            {
+                foreach (CinematicText t in Scene.Tracker.GetEntities<CinematicText>())
+                {
+                    if (t.activationTag == nextTextTag)
+                    {
+                        t.Enter(null);
+                    }
+                }
+            }
             if (disappearDelay == -1) yield break;
             yield return disappearDelay;
             for (disappearPercent = 1f; disappearPercent >= 0; disappearPercent -= Engine.DeltaTime)
@@ -157,7 +171,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 SubHudRenderer.EndRender();
 
-                SubHudRenderer.BeginRender(BlendState.AlphaBlend, SamplerState.PointClamp);
+                Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
             }
 
             Vector2 position = (Scene as Level).Camera.Position;
@@ -183,8 +197,10 @@ namespace Celeste.Mod.FemtoHelper.Entities
             //main text
 
             text.Print(position2, finalString, shadow, spacing, color1 * alpha, Color.Transparent, effectData, scale2);
-            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, color1 * movingCharPercent * alpha, Color.Transparent, effectData, scale2, cur);
+            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, color1 * (movingCharPercent * alpha), Color.Transparent, effectData, scale2, cur);
 
+            
+                
             if (hud)
             {
                 SubHudRenderer.EndRender();

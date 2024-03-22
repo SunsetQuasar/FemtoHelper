@@ -85,13 +85,13 @@ namespace Celeste.Mod.FemtoHelper
         }
         public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
         {
-            float stringlen = spacing * str.Length;
+            float stringlen = spacing * str.Length * scale;
             Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(fontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, new TextEffectData(), scale, id);
         }
 
         public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, TextEffectData data, float scale = 1, int id = 0)
         {
-            float stringlen = spacing * str.Length;
+            float stringlen = spacing * str.Length * scale;
             Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(fontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, data, scale, id);
         }
 
@@ -123,7 +123,7 @@ namespace Celeste.Mod.FemtoHelper
                     Calc.PushRandom((int)(seed + (82 * i2 * i)));
                     if (data.shakey || (data.twitchy && Calc.Random.Chance(data.twitchChance)))
                     {
-                        Vector2 num = new Vector2(Calc.Random.NextFloat(2f * data.shakeAmount) - data.shakeAmount, Calc.Random.NextFloat(2f * data.shakeAmount) - data.shakeAmount);
+                        Vector2 num = new Vector2(Calc.Random.NextFloat(2f * data.shakeAmount) - data.shakeAmount, Calc.Random.NextFloat(2f * data.shakeAmount) - data.shakeAmount) * scale;
                         effectOffsets[(int)i] += num;
                     }
                     Calc.PopRandom();
@@ -133,7 +133,7 @@ namespace Celeste.Mod.FemtoHelper
                             (
                             (float)Math.Sin((Scene.TimeActive * data.waveSpeed) + data.phaseOffset + (i2 * data.phaseIncrement)) * data.waveAmp.X,
                             (float)Math.Sin((Scene.TimeActive * data.waveSpeed) + (i2 * data.phaseIncrement)) * data.waveAmp.Y
-                            );
+                            ) * scale;
                         effectOffsets[(int)i] += num;
                     }
 

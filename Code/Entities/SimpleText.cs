@@ -51,20 +51,24 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 SubHudRenderer.EndRender();
 
-                SubHudRenderer.BeginRender(BlendState.AlphaBlend, SamplerState.PointClamp);
+                Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
             }
            
-            Vector2 position = (base.Scene as Level).Camera.Position;
+            Vector2 position = (Scene as Level).Camera.Position;
             Vector2 vector = position + new Vector2(160f, 90f);
             Vector2 position2 = (Position - position + (Position - vector) * (parallax - 1)) + position;
+
             float scale2 = scale;
-            if (hud) {
+
+            if (hud)
+            {
                 position2 -= position;
                 position2 *= 6;
                 scale2 *= 6;
             }
 
             text.PrintCentered(position2, str, shadow, spacing, color1, color2, scale2);
+
             if (hud)
             {
                 SubHudRenderer.EndRender();
