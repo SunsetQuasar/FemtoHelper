@@ -49,7 +49,10 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public float scale;
         public bool hud;
         public bool ignoreRegex;
-        public CinematicText(EntityData data, Vector2 offset) : base(data.Position + offset)
+
+        public bool onlyOnce;
+        public EntityID id;
+        public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
         {
 
             str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
@@ -105,6 +108,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
             if (hud) Tag |= TagsExt.SubHUD;
 
             ignoreRegex = data.Bool("ignoreAudioRegex", false);
+            onlyOnce = data.Bool("onlyOnce", false);
+            this.id = id;
         }
 
         public void Enter(Player player)
@@ -158,6 +163,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 yield return null;
             }
+            if (onlyOnce) (Scene as Level).Session.DoNotLoad.Add(id);
             RemoveSelf();
         }
 

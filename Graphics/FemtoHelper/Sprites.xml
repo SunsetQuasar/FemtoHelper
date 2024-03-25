@@ -1,16 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Sprites>
     <oshirocaller path="objects/FemtoHelper/oshiroCaller/" start="idle">
-     <Justify x="0.5" y="0.5"/>
-     <Loop id="caller" path="caller" delay="0.08" frames="0,1,2,3,4"/>
-     <Loop id="idle" path="caller" delay="0.08" frames="0,1,2,3,4"/>
-     <Loop id="repeller" path="repeller" delay="0.08" frames="0,1,2,3,4"/>
+        <Justify x="0.5" y="0.5"/>
+        <Loop id="caller" path="caller" delay="0.08" frames="0,1,2,3,4"/>
+        <Loop id="idle" path="caller" delay="0.08" frames="0,1,2,3,4"/>
+        <Loop id="repeller" path="repeller" delay="0.08" frames="0,1,2,3,4"/>
     </oshirocaller>
     <butterfly path="objects/FemtoHelper/butterfly/" start="right">
-     <Justify x="0.5" y="0.5"/>
-     <Loop id="right" path="" delay="0.06" frames="00,01,02,03,04"/>
-     <Loop id="left" path="flip" delay="0.06" frames="00,01,02,03,04"/>
-     <Anim id="turn_right" path="turn" goto="right" delay="0.06" frames="02,01,00"/>
-     <Anim id="turn_left" path="turn" goto="left" delay="0.06" frames="00,01,02"/>
+        <Justify x="0.5" y="0.5"/>
+        <Loop id="right" path="" delay="0.06" frames="00,01,02,03,04"/>
+        <Loop id="left" path="flip" delay="0.06" frames="00,01,02,03,04"/>
+        <Anim id="turn_right" path="turn" goto="right" delay="0.06" frames="02,01,00"/>
+        <Anim id="turn_left" path="turn" goto="left" delay="0.06" frames="00,01,02"/>
     </butterfly>
+
+    <FemtoHelper_boosting_booster_red path="objects/ZBC2023/Codecumber/booster/" start="loop">
+        <Justify x="0.5" y="0.5"/>
+        <Anim id="appear" path="boosterRed" delay="0.04" frames="26-34" goto="loop"/>
+        <Loop id="loop" path="boosterRed" delay="0.1" frames="0-4"/>
+        <Loop id="inside" path="boosterRed" delay="0.1" frames="5-8"/>
+        <Loop id="spin" path="boosterRed" delay="0.06" frames="18-25"/>
+        <Anim id="pop" path="boosterRed" delay="0.08" frames="9-17"/>
+    </FemtoHelper_boosting_booster_red>
+
+    <FemtoHelper_boosting_booster_purp path="objects/ZBC2023/Codecumber/booster/" start="loop">
+        <Justify x="0.5" y="0.5"/>
+        <Anim id="appear" path="boosterPurp" delay="0.04" frames="26-34" goto="loop"/>
+        <Loop id="loop" path="boosterPurp" delay="0.1" frames="0-4"/>
+        <Loop id="inside" path="boosterPurp" delay="0.1" frames="5-8"/>
+        <Loop id="spin" path="boosterPurp" delay="0.06" frames="18-25"/>
+        <Anim id="pop" path="boosterRed" delay="0.08" frames="9-17"/>
+    </FemtoHelper_boosting_booster_purp>
 </Sprites>

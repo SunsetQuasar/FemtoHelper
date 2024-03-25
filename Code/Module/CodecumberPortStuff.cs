@@ -25,7 +25,7 @@ namespace Celeste.Mod.FemtoHelper
         {
             MovingWaterBlock.Load();
             RotateDashRefill.Load();
-            //BoostingBoosterSorryIStoleFromCommunalHelper.Load();
+            BoostingBoosterSorryIStoleFromCommunalHelper.Load();
             On.Celeste.Solid.Update += NoAssistSquishHook;
             On.Celeste.Player.OnSquish += NoAssistSquishPlayer;
             On.Celeste.Player.DreamDashUpdate += DreamDashBounceHook;
@@ -35,7 +35,7 @@ namespace Celeste.Mod.FemtoHelper
         {
             MovingWaterBlock.Unload();
             RotateDashRefill.Unload();
-            //BoostingBoosterSorryIStoleFromCommunalHelper.Unload();
+            BoostingBoosterSorryIStoleFromCommunalHelper.Unload();
             On.Celeste.Solid.Update -= NoAssistSquishHook;
             On.Celeste.Player.OnSquish -= NoAssistSquishPlayer;
             On.Celeste.Player.DreamDashUpdate -= DreamDashBounceHook;
