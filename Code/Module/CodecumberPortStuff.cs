@@ -16,6 +16,7 @@ using Celeste.Mod.Entities;
 using Mono.Cecil.Cil;
 using Microsoft.Xna.Framework.Graphics;
 using Celeste.Mod.FemtoHelper.Entities;
+using Celeste.Mod.Femtohelper.Entities;
 
 namespace Celeste.Mod.FemtoHelper
 {
@@ -26,6 +27,7 @@ namespace Celeste.Mod.FemtoHelper
             MovingWaterBlock.Load();
             RotateDashRefill.Load();
             BoostingBoosterSorryIStoleFromCommunalHelper.Load();
+            EvilTheoCrystal.Load();
             On.Celeste.Solid.Update += NoAssistSquishHook;
             On.Celeste.Player.OnSquish += NoAssistSquishPlayer;
             On.Celeste.Player.DreamDashUpdate += DreamDashBounceHook;
@@ -36,6 +38,7 @@ namespace Celeste.Mod.FemtoHelper
             MovingWaterBlock.Unload();
             RotateDashRefill.Unload();
             BoostingBoosterSorryIStoleFromCommunalHelper.Unload();
+            EvilTheoCrystal.Unload();
             On.Celeste.Solid.Update -= NoAssistSquishHook;
             On.Celeste.Player.OnSquish -= NoAssistSquishPlayer;
             On.Celeste.Player.DreamDashUpdate -= DreamDashBounceHook;

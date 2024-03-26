@@ -136,9 +136,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
             string text = data.Attr("texture", "objects/refill/");
             string[] colors = data.Attr("colors", "dba0d0,ca6dd1,e6aec1,e376df").Split(',');
             if (colors.Length != 4) colors = "dba0d0,ca6dd1,e6aec1,e376df".Split(',');
-            p_shatter = Refill.P_Shatter;
-            p_regen = Refill.P_Regen;
-            p_glow = Refill.P_Glow;
+            p_shatter = new ParticleType(Refill.P_Shatter);
+            p_regen = new ParticleType(Refill.P_Regen);
+            p_glow = new ParticleType(Refill.P_Glow);
             p_shatter.Color = Calc.HexToColor(colors[0]);
             p_shatter.Color2 = Calc.HexToColor(colors[1]);
             p_regen.Color = p_glow.Color = Calc.HexToColor(colors[2]);

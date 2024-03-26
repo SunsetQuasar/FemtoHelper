@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Sprites>
+
     <oshirocaller path="objects/FemtoHelper/oshiroCaller/" start="idle">
         <Justify x="0.5" y="0.5"/>
         <Loop id="caller" path="caller" delay="0.08" frames="0,1,2,3,4"/>
         <Loop id="idle" path="caller" delay="0.08" frames="0,1,2,3,4"/>
         <Loop id="repeller" path="repeller" delay="0.08" frames="0,1,2,3,4"/>
     </oshirocaller>
+
     <butterfly path="objects/FemtoHelper/butterfly/" start="right">
         <Justify x="0.5" y="0.5"/>
         <Loop id="right" path="" delay="0.06" frames="00,01,02,03,04"/>
@@ -31,4 +33,12 @@
         <Loop id="spin" path="boosterPurp" delay="0.06" frames="18-25"/>
         <Anim id="pop" path="boosterRed" delay="0.08" frames="9-17"/>
     </FemtoHelper_boosting_booster_purp>
+    
+    <theo_crystal_evil path="characters/ZBC2023/spear_queer/theo/" start="idle">
+        <Origin x="32" y="42"/>
+        <Loop id="idle" path="idleEvil" delay="0.08"/>
+        <Anim id="shatter" path="shatter" delay="0.08" goto="shattered"/>
+    <Loop id="shattered" path="shatter" frames="16" delay="0.08"/>
+  </theo_crystal_evil>
+
 </Sprites>
