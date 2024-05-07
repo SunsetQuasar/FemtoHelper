@@ -65,7 +65,7 @@ namespace Celeste.Mod.FemtoHelper
             charset = new Dictionary<char, int>();
             charTextures = new List<MTexture>();
             string characters = charList = char_list;
-            // " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\".,ç"
+            // " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'".,ç"
             // " !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 
             for (int i = 0; i < characters.Length; i++)

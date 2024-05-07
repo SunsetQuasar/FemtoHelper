@@ -41,8 +41,11 @@ effect.defaultData = {
     blendState = "alphablend",
     filterMode = "point",
     alpha = 1,
+
     flipX = false,
     flipY = false,
+    fadeIn = true,
+
     xXAmplitude = 0,
     xXPeriod = 40,
     xXOffset = 0,

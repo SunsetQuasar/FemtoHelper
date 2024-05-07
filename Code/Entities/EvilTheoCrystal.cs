@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using Celeste;
 using Celeste.Mod.Entities;
 using Celeste.Mod.FemtoHelper;
@@ -51,6 +52,8 @@ namespace Celeste.Mod.Femtohelper.Entities
 
         private float tutorialTimer;
 
+        public VertexLight light;
+
         public EvilTheoCrystal(Vector2 position)
             : base(position)
         {
@@ -74,8 +77,7 @@ namespace Celeste.Mod.Femtohelper.Entities
             onCollideH = OnCollideH;
             onCollideV = OnCollideV;
             LiftSpeedGraceTime = 0.1f;
-            Add(new VertexLight(base.Collider.Center, Color.White, 1f, 32, 64));
-            base.Tag = Tags.TransitionUpdate;
+            Add(light = new VertexLight(base.Collider.Center, Color.White, 1f, 32, 64));
             Add(new MirrorReflection());
         }
 
@@ -88,13 +90,6 @@ namespace Celeste.Mod.Femtohelper.Entities
         {
             base.Added(scene);
             Level = SceneAs<Level>();
-            foreach (EvilTheoCrystal entity in Level.Tracker.GetEntities<TheoCrystal>())
-            {
-                if (entity != this && entity.Hold.IsHeld)
-                {
-                    RemoveSelf();
-                }
-            }
             if (Level.Session.Level == "e-00")
             {
                 tutorialGui = new BirdTutorialGui(this, new Vector2(0f, -24f), Dialog.Clean("tutorial_carry"), Dialog.Clean("tutorial_hold"), BirdTutorialGui.ButtonPrompt.Grab);
@@ -108,6 +103,7 @@ namespace Celeste.Mod.Femtohelper.Entities
             base.Update();
             if (shattering || dead)
             {
+                Hold.cannotHoldTimer = 9999f;
                 return;
             }
             if (swatTimer > 0f)
@@ -180,13 +176,10 @@ namespace Celeste.Mod.Femtohelper.Entities
                 previousPosition = base.ExactPosition;
                 MoveH(Speed.X * Engine.DeltaTime, onCollideH);
                 MoveV(Speed.Y * Engine.DeltaTime, onCollideV);
-                if (base.Center.X > (float)Level.Bounds.Right)
+                if (base.Right > (float)Level.Bounds.Right)
                 {
-                    MoveH(32f * Engine.DeltaTime);
-                    if (base.Left - 8f > (float)Level.Bounds.Right)
-                    {
-                        RemoveSelf();
-                    }
+                    base.Right = (float)Level.Bounds.Right;
+                    Speed.X *= -0.4f;
                 }
                 else if (base.Left < (float)Level.Bounds.Left)
                 {
@@ -490,14 +483,25 @@ namespace Celeste.Mod.Femtohelper.Entities
         {
             if (!dead)
             {
+                Add(new Coroutine(DimLights()));
+                if (Hold.IsHeld) Hold.Release(Vector2.Zero);
+                Hold.cannotHoldTimer = 9999f;
                 dead = true;
-                Player entity = Level.Tracker.GetEntity<Player>();
-                entity?.Die(-Vector2.UnitX * (float)entity.Facing);
                 Audio.Play("event:/char/madeline/death", Position);
                 Add(new DeathEffect(Calc.HexToColor("FF7063"), base.Center - Position));
                 sprite.Visible = false;
                 base.Depth = -1000000;
                 AllowPushing = false;
+            }
+        }
+
+        public IEnumerator DimLights()
+        {
+            for(float p = 0; p < 1; p += Engine.DeltaTime)
+            {
+                light.Alpha = Ease.SineInOut(1 - p);
+                light.HandleGraphicsReset();
+                yield return null;
             }
         }
 
