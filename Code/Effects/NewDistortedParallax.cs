@@ -238,6 +238,9 @@ public class NewDistortedParallax : Backdrop
 
         Renderer.EndSpritebatch();
 
+        Texture t = graphicsDevice.Textures[2];
+        SamplerState s = graphicsDevice.SamplerStates[2];
+
         graphicsDevice.Textures[2] = texture; // skin mod helper: your greed is ruining the economy
         graphicsDevice.SamplerStates[2] = filter;
 
@@ -247,6 +250,9 @@ public class NewDistortedParallax : Backdrop
 
         Draw.SpriteBatch.End();
         Renderer.StartSpritebatch(prevBlendState);
+
+        graphicsDevice.Textures[2] = t;
+        graphicsDevice.SamplerStates[2] = s;
     }
 }
 
