@@ -6,6 +6,7 @@ using Monocle;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Celeste.Mod.FemtoHelper.Entities
@@ -52,6 +53,11 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public bool onlyOnce;
         public EntityID id;
+
+        public bool instantReload;
+        public bool HasInstantReloaded;
+
+        public VirtualRenderTarget buffer;
         public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
         {
 
@@ -71,6 +77,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
             Vector2 size = new Vector2(data.Int("fontWidth", 7), data.Int("fontHeight", 7));
 
             Add(text = new PlutoniumText(path, list, size));
+
+            Add(new BeforeRenderHook(BeforeRender));
 
             parallax = data.Float("parallax", 1);
 
@@ -105,11 +113,47 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             scale = data.Float("scale", 1);
             hud = data.Bool("hud", false);
-            if (hud) Tag |= TagsExt.SubHUD;
+            if (hud)
+            {
+                Tag |= TagsExt.SubHUD;
+                buffer = VirtualContent.CreateRenderTarget("plutoniumText_" + id.ToString(), 1920, 1080);
+            }
+            else
+            {
+                buffer = VirtualContent.CreateRenderTarget("plutoniumText_" + id.ToString(), 320, 180);
+            }
 
             ignoreRegex = data.Bool("ignoreAudioRegex", false);
             onlyOnce = data.Bool("onlyOnce", false);
+            instantReload = data.Bool("instantReload", false);
             this.id = id;
+        }
+
+        public override void Awake(Scene scene)
+        {
+            base.Awake(scene);
+            if (instantReload && (scene as Level).Session.GetFlag("PlutoniumInstaReload_" + id.ToString()))
+            {
+                InstantReload(0f);
+            }
+        }
+
+        public void InstantReload(float extra)
+        {
+            if (HasInstantReloaded) return;
+            active = entered = HasInstantReloaded = true;
+            finalString = str;
+            Add(new Coroutine(InstaSequence()));
+            foreach (CinematicText t in Scene.Tracker.GetEntities<CinematicText>())
+            {
+                if (t.activationTag == nextTextTag)
+                {
+                    float extraTime = extra + ((1 / t.speedMultiplier) * (t.str.Length - t.str.Count(f => f == ' ')));
+                    t.disappearDelay += extraTime;
+                    t.InstantReload(extraTime);
+                    // simulate the next text string being formed later by literally calculating how much time it takes to form and pretending it takes that much longer to disappear. fucking lol.
+                }
+            }
         }
 
         public void Enter(Player player)
@@ -130,6 +174,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             }
             active = true;
             Add(new Coroutine(Sequence()));
+            if(instantReload) (Scene as Level).Session.SetFlag("PlutoniumInstaReload_" + id.ToString());
         }
 
         public IEnumerator Sequence()
@@ -167,11 +212,62 @@ namespace Celeste.Mod.FemtoHelper.Entities
             RemoveSelf();
         }
 
+        public IEnumerator InstaSequence()
+        {
+            if (disappearDelay == -1) yield break;
+            yield return disappearDelay;
+            for (disappearPercent = 1f; disappearPercent >= 0; disappearPercent -= Engine.DeltaTime)
+            {
+                yield return null;
+            }
+            RemoveSelf();
+        }
+
+        public void BeforeRender()
+        {
+            if (!active) return;
+
+            Engine.Graphics.GraphicsDevice.SetRenderTarget(buffer);
+            Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
+
+            Vector2 position = (Scene as Level).Camera.Position;
+            Vector2 vector = position + new Vector2(160f, 90f);
+            Vector2 position2 = (Position - position + (Position - vector) * (parallax - 1)) + position;
+
+            int offset = finalString.Length * spacing;
+
+            float scale2 = scale;
+
+            position2 -= position;
+
+            if (hud)
+            {
+                position2 *= 6;
+                scale2 *= 6;
+            }
+
+            //outlines
+
+            text.Print(position2, finalString, shadow, spacing, Color.Transparent, color2, effectData, scale2);
+            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, Color.Transparent, color2 * movingCharPercent, effectData, scale2, cur);
+
+            //main text
+
+            text.Print(position2, finalString, shadow, spacing, color1, Color.Transparent, effectData, scale2);
+            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, color1 * movingCharPercent, Color.Transparent, effectData, scale2, cur);
+
+            Draw.SpriteBatch.End();
+        }
+
         public override void Render()
         {
             base.Render();
 
             if (!active) return;
+
+            float alpha = Ease.SineInOut(disappearPercent);
 
             if (hud)
             {
@@ -180,33 +276,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
             }
 
-            Vector2 position = (Scene as Level).Camera.Position;
-            Vector2 vector = position + new Vector2(160f, 90f);
-            Vector2 position2 = (Position - position + (Position - vector) * (parallax - 1)) + position;
+            Draw.SpriteBatch.Draw(buffer, hud ? Vector2.Zero : (Scene as Level).Camera.Position, Color.White * alpha);
 
-            int offset = finalString.Length * spacing;
-            float alpha = Ease.SineInOut(disappearPercent);
-
-            float scale2 = scale;
-            if (hud)
-            {
-                position2 -= position;
-                position2 *= 6;
-                scale2 *= 6;
-            }
-
-            //outlines
-
-            text.Print(position2, finalString, shadow, spacing, Color.Transparent, color2 * alpha, effectData, scale2);
-            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, Color.Transparent, color2 * movingCharPercent * alpha, effectData, scale2, cur);
-
-            //main text
-
-            text.Print(position2, finalString, shadow, spacing, color1 * alpha, Color.Transparent, effectData, scale2);
-            text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, color1 * (movingCharPercent * alpha), Color.Transparent, effectData, scale2, cur);
-
-            
-                
             if (hud)
             {
                 SubHudRenderer.EndRender();
