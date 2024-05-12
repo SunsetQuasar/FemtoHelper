@@ -243,8 +243,67 @@ entities.FemtoHelper/SMWFish.attributes.description.activationFlag=The flag that
 # Vital Drain Controller
 
 entities.FemtoHelper/VitalDrainController.placements.name.gaseous=Vital Drain Controller
-entities.FemtoHelper/SMWFish.attributes.description.colorgradeA=The colorgrade that is set when you're safe (maximum vitality value)
-entities.FemtoHelper/SMWFish.attributes.description.colorgradeB=The colorgrade that is faded to as your vitality is drained
+entities.FemtoHelper/VitalDrainController.attributes.description.colorgradeA=The colorgrade that is set when you're safe (maximum vitality value)
+entities.FemtoHelper/VitalDrainController.attributes.description.colorgradeB=The colorgrade that is faded to as your vitality is drained
+
+# Simple Text
+
+entities.FemtoHelper/SimpleText.placements.name.default=Simple Text
+entities.FemtoHelper/SimpleText.attributes.description.charList=The list of all existing characters in the font.\nThe font image must match this list, and the list must start with a space.
+entities.FemtoHelper/SimpleText.attributes.description.depth=The entity's depth. Higher values are further back, lower values are in front, and the Player has depth 0.
+entities.FemtoHelper/SimpleText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support FancyText dialog effects.
+entities.FemtoHelper/SimpleText.attributes.description.fontHeight=The height of a character in the given font.
+entities.FemtoHelper/SimpleText.attributes.description.fontPath=The font image.\nThe characters in this image must match 1 to 1 with the charList attribute and be of the correct size or the text will appear garbled.
+entities.FemtoHelper/SimpleText.attributes.description.fontWidth=The width of a character in the given font.
+entities.FemtoHelper/SimpleText.attributes.description.hud=When set, this draws the text in the HUD layer;\nPrevents the text from being affected by level darkness.
+entities.FemtoHelper/SimpleText.attributes.description.mainColor=Main color for the text, in RGBA format.\nIf no alpha is informed, it falls back to FF.
+entities.FemtoHelper/SimpleText.attributes.description.outlineColor=Outline color for the text, in RGBA format.\nIf no alpha is informed, it falls back to FF.
+entities.FemtoHelper/SimpleText.attributes.description.parallax=Parallax factor.\nValues higher than 1 are suited for FG elements, and values between 1 and 0 are suited for BG elements.
+entities.FemtoHelper/SimpleText.attributes.description.scale=Text scale factor. Looks best with HUD mode, otherwise nearest neighbor interpolation can make it look strange.
+entities.FemtoHelper/SimpleText.attributes.description.shadow=Draws a small shadow instead of an outline.
+entities.FemtoHelper/SimpleText.attributes.description.spacing=Spacing between characters.
+
+# Cinematic Text
+
+entities.FemtoHelper/CinematicText.placements.name.default=Cinematic Text
+entities.FemtoHelper/CinematicText.attributes.description.charList=The list of all existing characters in the font.\nThe font image must match this list, and the list must start with a space.
+entities.FemtoHelper/CinematicText.attributes.description.depth=The entity's depth. Higher values are further back, lower values are in front, and the Player has depth 0.
+entities.FemtoHelper/CinematicText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support FancyText dialog effects.
+entities.FemtoHelper/CinematicText.attributes.description.fontHeight=The height of a character in the given font.
+entities.FemtoHelper/CinematicText.attributes.description.fontPath=The font image.\nThe characters in this image must match 1 to 1 with the charList attribute and be of the correct size or the text will appear garbled.
+entities.FemtoHelper/CinematicText.attributes.description.fontWidth=The width of a character in the given font.
+entities.FemtoHelper/CinematicText.attributes.description.hud=When set, this draws the text in the HUD layer;\nPrevents the text from being affected by level darkness.
+entities.FemtoHelper/CinematicText.attributes.description.mainColor=Main color for the text, in RGBA format.\nIf no alpha is informed, it falls back to FF.
+entities.FemtoHelper/CinematicText.attributes.description.outlineColor=Outline color for the text, in RGBA format.\nIf no alpha is informed, it falls back to FF.
+entities.FemtoHelper/CinematicText.attributes.description.parallax=Parallax factor.\nValues higher than 1 are suited for FG elements, and values between 1 and 0 are suited for BG elements.
+entities.FemtoHelper/CinematicText.attributes.description.scale=Text scale factor. Looks best with HUD mode, otherwise nearest neighbor interpolation can make it look strange.
+entities.FemtoHelper/CinematicText.attributes.description.shadow=Draws a small shadow instead of an outline.
+entities.FemtoHelper/CinematicText.attributes.description.spacing=Spacing between characters.
+entities.FemtoHelper/CinematicText.attributes.description.activationTag=The text will be activated if this matches with a CinematicTextTrigger tag.
+entities.FemtoHelper/CinematicText.attributes.description.charOriginX=Where the incoming character comes from, X component.
+entities.FemtoHelper/CinematicText.attributes.description.charOriginY=Where the incoming character comes from, Y component.
+entities.FemtoHelper/CinematicText.attributes.description.delay=Delay in seconds before the text starts animating after being triggered.
+entities.FemtoHelper/CinematicText.attributes.description.disappearTime=Delay in seconds before the text starts to fade out after finishing its animation.\nSet to -1 to make the text permanent.
+entities.FemtoHelper/CinematicText.attributes.description.effects=Determines if the text has special effects.\nTurn off for better performance.
+entities.FemtoHelper/CinematicText.attributes.description.ignoreAudioRegex=Whether the animation does or does not exclude punctuation when playing the character sound.
+entities.FemtoHelper/CinematicText.attributes.description.instantReload=Makes it so the text and its children play instantly and automatically once they've animated once.
+entities.FemtoHelper/CinematicText.attributes.description.instantLoad=Makes it so the text and its children play instantly and automatically.
+entities.FemtoHelper/CinematicText.attributes.description.nextTextTag=This text will trigger texts with this tag once it finishes animating.
+entities.FemtoHelper/CinematicText.attributes.description.obfuscated=Makes the text's characters appear randomized.
+entities.FemtoHelper/CinematicText.attributes.description.onlyOnce=Makes it so the text does not load more than once.
+entities.FemtoHelper/CinematicText.attributes.description.phaseIncrement=(Wave) The angle increment between characters, in degrees.
+entities.FemtoHelper/CinematicText.attributes.description.shake=Makes the characters shake.
+entities.FemtoHelper/CinematicText.attributes.description.shakeAmount=(Shake) How much the characters shake.
+entities.FemtoHelper/CinematicText.attributes.description.speed=The text animation speed.\nEach character takes (1/Speed) seconds to animate.
+entities.FemtoHelper/CinematicText.attributes.description.textSound=FMOD event for the character animation sound.
+entities.FemtoHelper/CinematicText.attributes.description.twitch=Makes the characters occasionally twitch by the shake amount.
+entities.FemtoHelper/CinematicText.attributes.description.twitchChance=(Twitch) The percent chance for a character to twitch.
+entities.FemtoHelper/CinematicText.attributes.description.wave=Makes the characters wave around.
+entities.FemtoHelper/CinematicText.attributes.description.wavePhaseOffset(Wave) The initial wave angle offset, in degrees.
+entities.FemtoHelper/CinematicText.attributes.description.waveSpeed=(Wave) The wave angle variation, in degrees/sec.
+entities.FemtoHelper/CinematicText.attributes.description.waveX=(Wave) The horizontal wave amplitude, in pixels.
+entities.FemtoHelper/CinematicText.attributes.description.waveY=(Wave) The vertical wave amplitude, in pixels.
+
 
 # ---------- Triggers ----------
 
@@ -252,6 +311,9 @@ entities.FemtoHelper/SMWFish.attributes.description.colorgradeB=The colorgrade t
 
 triggers.FemtoHelper/ParticleRemoteEmit.placements.name.default=Remote Particle Emitter Activator
 triggers.FemtoHelper/ParticleRemoteEmit.attributes.description.tag=Any Particle Emitters with this tag will be activated on entry.
+
+triggers.FemtoHelper/CinematicTextTrigger.placements.name.default=Cinematic Text Activator
+triggers.FemtoHelper/CinematicTextTrigger.attributes.description.activationTag=Any Cinematic Text entity with this tag will be activated on entry.
 
 # Vital Safety Trigger
 

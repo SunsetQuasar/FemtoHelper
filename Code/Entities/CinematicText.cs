@@ -57,6 +57,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public bool instantReload;
         public bool HasInstantReloaded;
 
+        public bool instantLoad;
+
         public VirtualRenderTarget buffer;
         public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
         {
@@ -126,13 +128,14 @@ namespace Celeste.Mod.FemtoHelper.Entities
             ignoreRegex = data.Bool("ignoreAudioRegex", false);
             onlyOnce = data.Bool("onlyOnce", false);
             instantReload = data.Bool("instantReload", false);
+            instantLoad = data.Bool("instantLoad", false);
             this.id = id;
         }
 
         public override void Awake(Scene scene)
         {
             base.Awake(scene);
-            if (instantReload && (scene as Level).Session.GetFlag("PlutoniumInstaReload_" + id.ToString()))
+            if (instantLoad || (instantReload && (scene as Level).Session.GetFlag("PlutoniumInstaReload_" + id.ToString())))
             {
                 InstantReload(0f);
             }
@@ -148,7 +151,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 if (t.activationTag == nextTextTag)
                 {
-                    float extraTime = extra + ((1 / t.speedMultiplier) * (t.str.Length - t.str.Count(f => f == ' ')));
+                    float extraTime = extra + ((1 / (t.speedMultiplier == 0 ? t.speedMultiplier : float.Epsilon)) * (t.str.Length - t.str.Count(f => f == ' ')));
                     t.disappearDelay += extraTime;
                     t.InstantReload(extraTime);
                     // simulate the next text string being formed later by literally calculating how much time it takes to form and pretending it takes that much longer to disappear. fucking lol.
@@ -276,7 +279,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
             }
 
-            Draw.SpriteBatch.Draw(buffer, hud ? Vector2.Zero : (Scene as Level).Camera.Position, Color.White * alpha);
+            Draw.SpriteBatch.Draw(buffer, hud ? Vector2.Zero : (Scene as Level).Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, (SaveData.Instance.Assists.MirrorMode && hud) ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
 
             if (hud)
             {
