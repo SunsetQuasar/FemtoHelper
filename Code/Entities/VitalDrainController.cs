@@ -76,7 +76,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 if (gas != this)
                 {
-                    RemoveSelf();
+                    Oxygen = gas.Oxygen;
+                    gas.RemoveSelf();
                 }
             }
             Add(new Coroutine(StylegroundRoutine()));
