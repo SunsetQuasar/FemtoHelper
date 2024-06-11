@@ -68,9 +68,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             Oxygen = 500f;
         }
-        public override void Added(Scene scene)
+        public override void Awake(Scene scene)
         {
-            base.Added(scene);
+            base.Awake(scene);
 
             foreach (VitalDrainController gas in scene.Tracker.GetEntities<VitalDrainController>())
             {

@@ -29,7 +29,7 @@ namespace Celeste.Mod.FemtoHelper.Wipes
 			Engine.Graphics.GraphicsDevice.SetRenderTarget(Celeste.WipeTarget);
 			Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			float num = !WipeIn ? 1 - Ease.CubeIn(Percent) : Ease.CubeOut(Percent);
+			float num = Calc.Clamp((!WipeIn ? 1 - Ease.QuintInOut(Percent) : Ease.QuintInOut(Percent)) * 1.2f, 0, 1);
 
 			for (float i = 1; i < bars + 4; i++)
 			{

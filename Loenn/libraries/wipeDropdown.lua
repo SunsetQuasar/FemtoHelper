@@ -8,5 +8,7 @@ celesteEnums.wipe_names["Square [Femto Helper]"] = "Celeste.Mod.FemtoHelper.Wipe
 celesteEnums.wipe_names["Sinewave [Femto Helper]"] = "Celeste.Mod.FemtoHelper.Wipes.SineWipe"
 celesteEnums.wipe_names["Bars [Femto Helper]"] = "Celeste.Mod.FemtoHelper.Wipes.CirclerWipe"
 celesteEnums.wipe_names["Diamond [Femto Helper]"] = "Celeste.Mod.FemtoHelper.Wipes.DiamondWipe"
+celesteEnums.wipe_names["Diagrid [Femto Helper]"] = "Celeste.Mod.FemtoHelper.Wipes.DiagridWipe"
+-- celesteEnums.wipe_names["Unwise [Femto Helper]"] = "Celeste.Mod.FemtoHelper.Wipes.UnwiseWipe"
 
 return {}
