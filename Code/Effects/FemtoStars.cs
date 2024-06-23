@@ -1,6 +1,7 @@
 ﻿// Celeste.StarsBG
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Celeste;
 using Celeste.Mod;
 using Celeste.Mod.Entities;
@@ -24,8 +25,6 @@ public class FemtoStars : Backdrop
 		public Color mainColor;
 
 		public Vector2 speed;
-
-		public float alpha;
 	}
 
 	private const int StarCount = 100;
@@ -59,9 +58,6 @@ public class FemtoStars : Backdrop
 	public string alpha;
 
 	private float separation;
-
-	private string[] alphas;
-	private float[] alphas2;
 	public FemtoStars(int blurCount, string colors3, float minXSpeed, float maxXSpeed, float minYSpeed, float maxYSpeed, float loopBorderX, float loopBorderY, int count, string backgroundColor, float backgroundAlpha, string sprite, float scrollX, float scrollY, float transparency, float trailSeparation, float animationRate, string transp2)
 	{
 		trailCount = blurCount;
@@ -74,19 +70,15 @@ public class FemtoStars : Backdrop
 		alphaLegacy = transparency;
 		alpha = transp2;
 		separation = trailSeparation;
-		string[] array = colors3.Split(',');
 		var alphas3 = Array.ConvertAll(
-		alpha.Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries),
-		Double.Parse);
-		colors2 = (Color[])(object)new Color[array.Length];
-		for (int i = 0; i < colors2.Length; i++)
-		{
-			colors2[i] = Calc.HexToColor(array[i]);
-		}
-		textures = new List<List<MTexture>>();
-		textures.Add(GFX.Game.GetAtlasSubtextures(sprite + "/a"));
-		textures.Add(GFX.Game.GetAtlasSubtextures(sprite + "/b"));
-		textures.Add(GFX.Game.GetAtlasSubtextures(sprite + "/c"));
+		alpha.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries), double.Parse);
+		colors2 = colors3.Split(',').Select(str => Calc.HexToColorWithAlpha(str.Trim())).ToArray();
+		textures =
+        [
+            GFX.Game.GetAtlasSubtextures(sprite + "/a"),
+            GFX.Game.GetAtlasSubtextures(sprite + "/b"),
+            GFX.Game.GetAtlasSubtextures(sprite + "/c"),
+        ];
 		center = new Vector2(textures[0][0].Width, textures[0][0].Height) / 2f;
 		stars = new Star[count];
 		for (int i = 0; i < stars.Length; i++)

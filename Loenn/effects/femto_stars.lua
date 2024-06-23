@@ -15,7 +15,7 @@ femto_stars.fieldInformation = {
 
 femto_stars.defaultData = {
     trailCount = 8,
-    colors = "008080",
+    colors = "008080FF",
     minXSpeed = 0.0,
     maxXSpeed = 0.0,
     minYSpeed = 12.0,

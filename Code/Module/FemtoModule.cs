@@ -49,42 +49,7 @@ namespace Celeste.Mod.FemtoHelper
         {
             Instance = this;
         }
-        private static void ModifyBossSpritesOnCustomFinalBoss(ILContext il)
-        {
-            ILCursor cursor = new ILCursor(il);
-            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdstr("badeline_boss")))
-            {
-                cursor.Emit(OpCodes.Ldarg_0);
-                cursor.EmitDelegate<Func<string, FinalBoss, string>>(ChangeFBSpriteRef);
-            }
-        }
 
-        private static string ChangeFBSpriteRef(string orig, FinalBoss b)
-        {
-            if (b is CrystalHeartBoss) return "badeline_boss_femtohelper"; //Change this value as needed
-            return orig;
-        }
-
-        private static void CrystalHeartBossExtraEffects(On.Celeste.FinalBoss.orig_OnPlayer orig, FinalBoss CustomFinalBoss, Player player)
-        {
-            orig.Invoke(CustomFinalBoss, player);
-            if (CustomFinalBoss is CrystalHeartBoss)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    (player.Scene as Level).Add(new AbsorbOrb(CustomFinalBoss.Position, CustomFinalBoss));
-                    Audio.Play("event:/FemtoHelper/boss_spikes_burst_quiet", CustomFinalBoss.Position);
-                }
-            }
-        }
-        private static void CrystalHeartBossShrinkHitbox(On.Celeste.FinalBoss.orig_Added orig, FinalBoss CustomFinalBoss, Scene scene)
-        {
-            orig.Invoke(CustomFinalBoss, scene);
-            if (CustomFinalBoss is CrystalHeartBoss)
-            {
-                CustomFinalBoss.Collider.Width /= 1.5f;
-            }
-        }
 
         private static void Puffer_KaizoCollideHHook(On.Celeste.Puffer.orig_OnCollideH orig, Puffer self, CollisionData data)
         {
@@ -172,7 +137,7 @@ namespace Celeste.Mod.FemtoHelper
             self.Collider = new Hitbox(6f, 6f, -3f, -3f);
         }
 
-        public static bool onCollideHHook(On.Celeste.Actor.orig_MoveHExact orig, Actor self, int moveH, Collision onCollide, Solid pusher)
+        public static bool onCollideHHook(On.Celeste.Actor.orig_MoveHExact orig, Actor self, int moveH, Collision onCollide, Solid pusher) //TODO: this is trash, rewrite these two hooks as il hooks that modify the behavior of actors' oncollide functions
         {
             if(self is Debris)
             {
@@ -317,9 +282,6 @@ namespace Celeste.Mod.FemtoHelper
             typeof(CavernHelperSupport).ModInterop(); //:333
 
             Everest.Events.Level.OnLoadBackdrop += Level_OnLoadBackdrop;
-            IL.Celeste.FinalBoss.CreateBossSprite += ModifyBossSpritesOnCustomFinalBoss;
-            On.Celeste.FinalBoss.OnPlayer += CrystalHeartBossExtraEffects;
-            On.Celeste.FinalBoss.Added += CrystalHeartBossShrinkHitbox;
             On.Celeste.Puffer.OnCollideH += Puffer_KaizoCollideHHook;
             On.Celeste.Puffer.OnCollideV += Puffer_KaizoCollideVHook;
             On.Celeste.Puffer.Explode += Puffer_SplodeKaizoHook;
@@ -328,6 +290,7 @@ namespace Celeste.Mod.FemtoHelper
             On.Celeste.Actor.MoveVExact += onCollideVHook;
             CodecumberPortStuff.Load();
             VitalDrainController.Load();
+            CrystalHeartBoss.Load();
 
             Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
         }
@@ -359,9 +322,6 @@ namespace Celeste.Mod.FemtoHelper
         public override void Unload()
         {
             Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
-            IL.Celeste.FinalBoss.CreateBossSprite -= ModifyBossSpritesOnCustomFinalBoss;
-            On.Celeste.FinalBoss.OnPlayer -= CrystalHeartBossExtraEffects;
-            On.Celeste.FinalBoss.Added -= CrystalHeartBossShrinkHitbox;
             On.Celeste.Puffer.OnCollideH -= Puffer_KaizoCollideHHook;
             On.Celeste.Puffer.OnCollideV -= Puffer_KaizoCollideVHook;
             On.Celeste.Puffer.Explode -= Puffer_SplodeKaizoHook;
@@ -370,6 +330,7 @@ namespace Celeste.Mod.FemtoHelper
             On.Celeste.Actor.MoveVExact -= onCollideVHook;
             CodecumberPortStuff.Unload();
             VitalDrainController.Unload();
+            CrystalHeartBoss.Unload();
         }
         private Backdrop Level_OnLoadBackdrop(MapData map, BinaryPacker.Element child, BinaryPacker.Element above)
         {

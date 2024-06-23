@@ -11,8 +11,6 @@ public class TGU_CS0_Intro : CutsceneEntity
 
 	private Player player;
 
-	private BadelineDummy badeline;
-
 	private BirdNPC bird;
 
 	private float fade = 1f;
@@ -138,10 +136,6 @@ public class TGU_CS0_Intro : CutsceneEntity
 		while (!player.OnGround() && player.Bottom < (float)level.Bounds.Bottom)
 		{
 			player.MoveVExact(16);
-		}
-		if (badeline != null)
-		{
-			badeline.RemoveSelf();
 		}
 		if (bird != null)
 		{

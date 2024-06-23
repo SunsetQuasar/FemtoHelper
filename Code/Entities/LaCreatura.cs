@@ -46,7 +46,7 @@ public class LaCreatura : Entity
 	private float FollowAcceleration = 120f;
 
 	private float MaxSpeed = 40f;
-
+	
 	private const float MaxFollowSpeed = 70f;
 
 	private const float MaxFollowDistance = 200f;

@@ -77,8 +77,6 @@ public class DigitalCascade : Backdrop
 
 	private bool randomSymbol;
 
-	private int afterimageCount = 0;
-
 	private float AIfadeTime;
 
 	private float AIemitTime;

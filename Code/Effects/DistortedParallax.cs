@@ -20,7 +20,7 @@ namespace Celeste.Mod.FemtoHelper.Effects
 		}
 
 
-        private float fadeIn = 1f;
+        private float fadein = 1f;
 
 		private MTexture[] slices;
 
@@ -35,8 +35,6 @@ namespace Celeste.Mod.FemtoHelper.Effects
 		private Vector2 waveAnimSpeed = new Vector2(3, 3);
 
 		private sliceModes sliceMode = sliceModes.TransLong;
-
-		private static readonly FieldInfo spriteBatchSamplerState = typeof(SpriteBatch).GetField("samplerState", BindingFlags.Instance | BindingFlags.NonPublic);
 
 		public DistortedParallax(string texture, float X, float Y, float spdX, float spdY, float scrollX, float scrollY, bool doesLoopX, bool doesLoopY, Color color, BlendState blend, float freqX, float freqY, float ampX, float ampY, float wavespdX, float wavespdY, Vector2 offset, bool flX, bool flY, sliceModes vert) : base(GFX.Game[texture])
 		{
@@ -93,11 +91,11 @@ namespace Celeste.Mod.FemtoHelper.Effects
 			Position += WindMultiplier * (scene as Level).Wind * Engine.DeltaTime;
 			if (DoFadeIn)
 			{
-				fadeIn = Calc.Approach(fadeIn, Visible ? 1 : 0, Engine.DeltaTime);
+                fadein = Calc.Approach(fadein, Visible ? 1 : 0, Engine.DeltaTime);
 			}
 			else
 			{
-				fadeIn = (Visible ? 1 : 0);
+				fadein = (Visible ? 1 : 0);
 			}
 		}
 
@@ -105,7 +103,7 @@ namespace Celeste.Mod.FemtoHelper.Effects
 		{
 			Vector2 vector = ((scene as Level).Camera.Position + CameraOffset).Floor();
 			Vector2 vector2 = (Position - vector * Scroll).Floor();
-			float num = fadeIn * Alpha * FadeAlphaMultiplier;
+			float num = fadein * Alpha * FadeAlphaMultiplier;
 			if (FadeX != null)
 			{
 				num *= FadeX.Value(vector.X + 160f);

@@ -40,7 +40,7 @@ public class PolygonStars : Backdrop
 
 	private float Alpha;
 
-	private float Scroll;
+	private float scroll;
 
 	public PolygonStars(int sides, float pointiness, float minRotation, float maxRotation, float minSize, float maxSize, float border, string color, float angle_, float alpha, float minSpeed, float maxSpeed, int amount, float scroll)
 	{
@@ -48,7 +48,7 @@ public class PolygonStars : Backdrop
 		pointinessMultiplier = pointiness;
 		loopBorder = border;
 		Alpha = alpha;
-		Scroll = scroll;
+		this.scroll = scroll;
 		stars = new Stars[amount];
 		string[] array = color.Split(',');
 		Colors = (Color[])(object)new Color[array.Length];
@@ -75,7 +75,7 @@ public class PolygonStars : Backdrop
 		Vector2 value = position - lastCamera;
 		for (int i = 0; i < stars.Length; i++)
 		{
-			stars[i].Position += angle * stars[i].Speed * Engine.DeltaTime - value * Scroll;
+			stars[i].Position += angle * stars[i].Speed * Engine.DeltaTime - value * scroll;
 			stars[i].Rotation += stars[i].RotationSpeed * Engine.DeltaTime;
 		}
 		lastCamera = position;

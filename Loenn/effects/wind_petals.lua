@@ -11,7 +11,7 @@ wind_petals.fieldInformation = {
 }
 
 wind_petals.defaultData = {
-    colors = "66cc22",
+    colors = "66CC22FF",
     fallingSpeedMin = 6.0,
     fallingSpeedMax = 16.0,
     blurCount = 15,

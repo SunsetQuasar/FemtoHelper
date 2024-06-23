@@ -5,78 +5,15 @@ using System.Collections.Generic;
 using Celeste;
 using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod;
+using MonoMod.Cil;
 
 [CustomEntity("FemtoHelper/CrystalHeartBoss")]
 [Tracked(false)]
 public class CrystalHeartBoss : FinalBoss
 {
-	public static ParticleType P_Burst;
-
-	public const float CameraXPastMax = 140f;
-
-	private const float MoveSpeed = 600f;
-
-	private const float AvoidRadius = 12f;
-
-	public Sprite Sprite;
-
-	public PlayerSprite NormalSprite;
-
-	private PlayerHair normalHair;
-
-	private Vector2 avoidPos;
-
-	public float CameraYPastMax;
-
-	public bool Moving;
-
-	public bool Sitting;
-
-	private int facing;
-
-	private Level level;
-
-	private Circle circle;
-
-	private Vector2[] nodes;
-
-	private int nodeIndex;
-
-	private int patternIndex;
-
-	private Coroutine attackCoroutine;
-
-	private Coroutine triggerBlocksCoroutine;
-
-	private List<Entity> fallingBlocks;
-
-	private List<Entity> movingBlocks;
-
-	private bool playerHasMoved;
-
-	private SineWave floatSine;
-
-	private bool dialog;
-
-	private bool startHit;
-
-	private VertexLight light;
-
-	private Wiggler scaleWiggler;
-
-	private FinalBossStarfield bossBg;
-
-	private SoundSource chargeSfx;
-
-	private SoundSource laserSfx;
-
-	private bool canChangeMusic;
-
-	public Vector2 BeamOrigin => base.Center + Sprite.Position + new Vector2(0f, -14f);
-
-	public Vector2 ShotOrigin => base.Center + Sprite.Position + new Vector2(6f * Sprite.Scale.X, 2f);
 	public CrystalHeartBoss(Vector2 position, Vector2[] nodes, int patternIndex, float cameraYPastMax, bool dialog, bool startHit, bool cameraLockY)
 		: base(position, nodes, patternIndex, cameraYPastMax, dialog, startHit, cameraLockY)
 	{
@@ -109,4 +46,55 @@ public class CrystalHeartBoss : FinalBoss
 		orig_ctor(e, offset);
 		canChangeMusic = e.Bool("canChangeMusic", defaultValue: true);
 	}
+
+    public static void Load()
+    {
+        IL.Celeste.FinalBoss.CreateBossSprite += ModifyBossSpritesOnCustomFinalBoss;
+        On.Celeste.FinalBoss.OnPlayer += CrystalHeartBossExtraEffects;
+        On.Celeste.FinalBoss.Added += CrystalHeartBossShrinkHitbox;
+    }
+
+    public static void Unload()
+    {
+        IL.Celeste.FinalBoss.CreateBossSprite -= ModifyBossSpritesOnCustomFinalBoss;
+        On.Celeste.FinalBoss.OnPlayer -= CrystalHeartBossExtraEffects;
+        On.Celeste.FinalBoss.Added -= CrystalHeartBossShrinkHitbox;
+    }
+
+    private static void ModifyBossSpritesOnCustomFinalBoss(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+        if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdstr("badeline_boss")))
+        {
+            cursor.Emit(OpCodes.Ldarg_0);
+            cursor.EmitDelegate<Func<string, FinalBoss, string>>(ChangeFBSpriteRef);
+        }
+    }
+
+    private static string ChangeFBSpriteRef(string orig, FinalBoss b)
+    {
+        if (b is CrystalHeartBoss) return "badeline_boss_femtohelper"; //Change this value as needed
+        return orig;
+    }
+
+    private static void CrystalHeartBossExtraEffects(On.Celeste.FinalBoss.orig_OnPlayer orig, FinalBoss CustomFinalBoss, Player player)
+    {
+        orig.Invoke(CustomFinalBoss, player);
+        if (CustomFinalBoss is CrystalHeartBoss)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                (player.Scene as Level).Add(new AbsorbOrb(CustomFinalBoss.Position, CustomFinalBoss));
+                Audio.Play("event:/FemtoHelper/boss_spikes_burst_quiet", CustomFinalBoss.Position);
+            }
+        }
+    }
+    private static void CrystalHeartBossShrinkHitbox(On.Celeste.FinalBoss.orig_Added orig, FinalBoss CustomFinalBoss, Scene scene)
+    {
+        orig.Invoke(CustomFinalBoss, scene);
+        if (CustomFinalBoss is CrystalHeartBoss)
+        {
+            CustomFinalBoss.Collider.Width /= 1.5f;
+        }
+    }
 }

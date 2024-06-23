@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Linq;
 using Celeste;
 using Microsoft.Xna.Framework;
 using Monocle;
@@ -32,7 +33,7 @@ public class VectorSpace : Backdrop
 
 	private Color[] Colors;
 
-	private float Scroll;
+	private float scroll;
 
 	private	int howmanyx;
 	private int howmanyy;
@@ -47,8 +48,6 @@ public class VectorSpace : Backdrop
 	private bool scaleTip;
 	private bool renderTip;
 
-	private const float alicesCoolConstant = 19452950000f;
-
 	public VectorSpace(float spacing_x, float spacing_y, float speed_x, float speed_y, float scroll, string color, float xOffsetMin, float xOffsetMax, float yOffsetMin, float yOffsetMax, float x_freqMin, float x_freqMax, float y_freqMin, float y_freqMax, float amplitude, bool trender, bool tscale, float alpha, bool YFrelX, bool YOrelX)
 	{
 		extras = Math.Max(
@@ -58,7 +57,7 @@ public class VectorSpace : Backdrop
 
 		g_amplitude = amplitude;
 
-		Scroll = scroll;
+		this.scroll = scroll;
 
 		howmanyx = (int)Math.Ceiling(320 / spacing_x) + extras;
 		howmanyy = (int)Math.Ceiling(180 / spacing_y) + extras;
@@ -71,13 +70,11 @@ public class VectorSpace : Backdrop
 
 		vecs = new Vectand[(howmanyx * howmanyy)];
 		//Alpha = alpha;
-		string[] array = color.Split(',');
-		Colors = (Color[])(object)new Color[array.Length];
-		
-		for (int i = 0; i < Colors.Length; i++)
-		{
-			Colors[i] = Calc.HexToColor(array[i]) * alpha;
-		}
+		Colors = color
+				.Split(',')
+				.Select(str => Calc.HexToColor(str.Trim()) * alpha)
+				.ToArray();
+
 
 		for (int i = 0; i < vecs.Length; i++)
 		{
@@ -120,7 +117,7 @@ public class VectorSpace : Backdrop
 		Vector2 value = position - lastCamera;
 		for (int i = 0; i < vecs.Length; i++)
 		{
-			vecs[i].Position += vecs[i].Speed * Engine.DeltaTime - value * Scroll;
+			vecs[i].Position += vecs[i].Speed * Engine.DeltaTime - value * scroll;
 			//stars[i].Rotation += stars[i].RotationSpeed * Engine.DeltaTime;
 
 			if (vecs[i].Position.X < 0 || vecs[i].Position.X > howmanyx * spacingX)

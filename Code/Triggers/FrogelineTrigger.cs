@@ -40,12 +40,6 @@ internal class FrogelineTrigger : Trigger
 			base.Scene.Add(new FS_CS0_HubIntro(base.Scene, player));
 			RemoveSelf();
 		}
-		if (eventName == "bouncybash_intro" && !level.Session.GetFlag("BB_intro"))
-		{
-			level.Session.SetFlag("BB_intro");
-			base.Scene.Add(new BB_CS_PLEASEWORK(player));
-			RemoveSelf();
-		}
 		if (eventName == "funy_meme" && !level.Session.GetFlag("funy_meme"))
 		{
 			level.Session.SetFlag("funy_meme");
