@@ -16,7 +16,7 @@
         <Anim id="turn_left" path="turn" goto="left" delay="0.06" frames="00,01,02"/>
     </butterfly>
 
-    <FemtoHelper_boosting_booster_red path="objects/ZBC2023/Codecumber/booster/" start="loop">
+    <FemtoHelper_boosting_booster_red path="objects/FemtoHelper/booster/" start="loop">
         <Justify x="0.5" y="0.5"/>
         <Anim id="appear" path="boosterRed" delay="0.04" frames="26-34" goto="loop"/>
         <Loop id="loop" path="boosterRed" delay="0.1" frames="0-4"/>
@@ -25,7 +25,7 @@
         <Anim id="pop" path="boosterRed" delay="0.08" frames="9-17"/>
     </FemtoHelper_boosting_booster_red>
 
-    <FemtoHelper_boosting_booster_purp path="objects/ZBC2023/Codecumber/booster/" start="loop">
+    <FemtoHelper_boosting_booster_purp path="objects/FemtoHelper/booster/" start="loop">
         <Justify x="0.5" y="0.5"/>
         <Anim id="appear" path="boosterPurp" delay="0.04" frames="26-34" goto="loop"/>
         <Loop id="loop" path="boosterPurp" delay="0.1" frames="0-4"/>
