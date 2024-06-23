@@ -16,7 +16,6 @@ using Celeste.Mod.Entities;
 using Mono.Cecil.Cil;
 using Microsoft.Xna.Framework.Graphics;
 using Celeste.Mod.FemtoHelper.Entities;
-using Celeste.Mod.Femtohelper.Entities;
 
 namespace Celeste.Mod.FemtoHelper
 {
