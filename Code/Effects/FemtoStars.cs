@@ -35,7 +35,7 @@ public class FemtoStars : Backdrop
 
 	private List<List<MTexture>> textures;
 
-	private float falling;
+	//private float falling;
 
 	private Vector2 center;
 

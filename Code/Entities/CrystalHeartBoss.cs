@@ -79,7 +79,7 @@ public class CrystalHeartBoss : FinalBoss
 
     private static void CrystalHeartBossExtraEffects(On.Celeste.FinalBoss.orig_OnPlayer orig, FinalBoss CustomFinalBoss, Player player)
     {
-        orig.Invoke(CustomFinalBoss, player);
+        orig(CustomFinalBoss, player);
         if (CustomFinalBoss is CrystalHeartBoss)
         {
             for (int i = 0; i < 4; i++)
@@ -91,7 +91,7 @@ public class CrystalHeartBoss : FinalBoss
     }
     private static void CrystalHeartBossShrinkHitbox(On.Celeste.FinalBoss.orig_Added orig, FinalBoss CustomFinalBoss, Scene scene)
     {
-        orig.Invoke(CustomFinalBoss, scene);
+        orig(CustomFinalBoss, scene);
         if (CustomFinalBoss is CrystalHeartBoss)
         {
             CustomFinalBoss.Collider.Width /= 1.5f;

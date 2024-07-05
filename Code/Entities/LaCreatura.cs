@@ -43,7 +43,7 @@ public class LaCreatura : Entity
 
 	private float Acceleration = 90f;
 
-	private float FollowAcceleration = 120f;
+	private const float FollowAcceleration = 120f;
 
 	private float MaxSpeed = 40f;
 	
@@ -51,7 +51,7 @@ public class LaCreatura : Entity
 
 	private const float MaxFollowDistance = 200f;
 
-	private readonly int spawn;
+	//private readonly int spawn;
 
 	private Rectangle originLevelBounds;
 

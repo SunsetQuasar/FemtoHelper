@@ -19,12 +19,6 @@ namespace Celeste.Mod.FemtoHelper.Wipes
             ScreenWipe.WipeColor = Color.Black;
         }
 
-        [Command("test_femto_wipes", "test Femto Helper custom wipes")]
-        private static void CmdFemtoWipes()
-        {
-            Engine.Scene = new TestFemtoWipes();
-        }
-
         private IEnumerator routine()
 		{
 			float dur = 1f;
