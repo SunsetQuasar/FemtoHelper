@@ -145,14 +145,10 @@ public class FemtoModule : EverestModule
         Engine.Scene = new TestFemtoWipes();
     }
 
-    [Command("soundtest", "(FemtoHelper command) warps to the Everest sound test")]
+    [Command("soundtest", "(FemtoHelper command) warps to the Everest sound test, type \"overworld\" first for this to work")]
     private static void CmdSoundTest()
     {
-        Engine.Scene = new OverworldLoader(Overworld.StartMode.MainMenu);
-        Engine.Scene.OnEndOfFrame += delegate
-        {
-            (Engine.Scene as Overworld).Goto<OuiSoundTest>();
-        };
+        OuiModOptions.Instance.Overworld.Goto<OuiSoundTest>();
     }
 
     // Set up any hooks, event handlers and your mod in general here.
