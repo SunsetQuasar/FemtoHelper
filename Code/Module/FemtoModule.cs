@@ -16,6 +16,7 @@ using Celeste.Mod.FemtoHelper.Code.Effects;
 using System.Linq;
 using Celeste.Mod.FemtoHelper.Wipes;
 using Celeste.Mod.UI;
+using Celeste.Mod.FemtoHelper.Code.Entities;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -196,7 +197,9 @@ public class FemtoModule : EverestModule
         Holdable h = self.Get<Holdable>();
         if (h == null) return data;
 
-        if (false) // disabled for now
+        ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
+
+        if (controller != null) // disabled for now
         {
             if (data.Hit is CrushBlock)
             {
@@ -249,7 +252,9 @@ public class FemtoModule : EverestModule
         Holdable h = self.Get<Holdable>();
         if (h == null) return data;
 
-        if (false) //disabled for now
+        ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
+
+        if (controller != null) // disabled for now
         {
             if (data.Hit is CrushBlock)
             {
