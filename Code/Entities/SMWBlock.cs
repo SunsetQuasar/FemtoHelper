@@ -15,6 +15,7 @@ using Celeste.Mod.FemtoHelper;
 using Celeste.Mod.FemtoHelper.Entities;
 using static Celeste.DashSwitch;
 using static Celeste.Tentacles;
+using Microsoft.Xna.Framework.Content;
 
 namespace Celeste.Mod.FemtoHelper.Entities
 {
@@ -457,27 +458,18 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             Vector2 offset_start = !ejectFromPoint ? offset : Vector2.Zero;
             Vector2 offset_end = !ejectToPoint ? offset : Vector2.Zero;
-
-            if (entity is CrystalStaticSpinner)
-            {
-                MethodInfo weh = (entity as CrystalStaticSpinner).GetType().GetMethod("CreateSprites", BindingFlags.NonPublic | BindingFlags.Instance);
-                weh.Invoke(entity, null);
-            }
             Vector2 PlatformOffset = Vector2.Zero;
             if (entity.ToString() == "Celeste.MovingPlatform")
             {
-                FieldInfo wuhh = (entity as MovingPlatform).GetType().GetField("end", BindingFlags.NonPublic | BindingFlags.Instance);
-                PlatformOffset = (Vector2)wuhh.GetValue(entity as MovingPlatform) - (entity as MovingPlatform).Position;
+                PlatformOffset = (entity as MovingPlatform).end - (entity as MovingPlatform).Position;
             }
             if (entity.ToString() == "Celeste.MovingPlatformLine")
             {
-                FieldInfo wuhh = (entity as MovingPlatformLine).GetType().GetField("end", BindingFlags.NonPublic | BindingFlags.Instance);
-                PlatformOffset = (Vector2)wuhh.GetValue(entity as MovingPlatformLine) - (entity as MovingPlatformLine).Position;
+                PlatformOffset = (entity as MovingPlatformLine).end - (entity as MovingPlatformLine).Position;
             }
             if (entity.ToString() == "Celeste.SwitchGate")
             {
-                FieldInfo wuhh = (entity as SwitchGate).GetType().GetField("node", BindingFlags.NonPublic | BindingFlags.Instance);
-                PlatformOffset = (Vector2)wuhh.GetValue(entity as SwitchGate) - (entity as SwitchGate).Position;
+                PlatformOffset = (entity as SwitchGate).node - (entity as SwitchGate).Position;
             }
 
 
@@ -486,148 +478,118 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 if (specialHandling)
                 {
-                    FieldInfo wuh;
                     if (entity is Platform)
                     {
                         (entity as Platform).MoveTo(new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
                     }
-                    if (entity.ToString() == "Celeste.Cloud")
+                    switch (entity.ToString())
                     {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
-                        wuh = (entity as Cloud).GetType().GetField("startY", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue((entity as Cloud), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased));
-                    }
-                    else if (entity.ToString() == "Celeste.BounceBlock")
-                    {
-                        wuh = (entity as BounceBlock).GetType().GetField("startPos", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue((entity as BounceBlock), new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-                    }
-                    else if (entity.ToString() == "Celeste.Booster")
-                    {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
-                        wuh = (entity as Booster).GetType().GetField("outline", BindingFlags.NonPublic | BindingFlags.Instance);
-                        Entity pleasekillme = (Entity)wuh.GetValue(entity as Booster);
-                        FieldInfo pkm2 = pleasekillme.GetType().GetField("Position", BindingFlags.Public | BindingFlags.Instance);
-                        pkm2.SetValue(pleasekillme, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-
-                    }
-                    else if (entity.ToString() == "Celeste.Bumper")
-                    {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
-                        wuh = (entity as Bumper).GetType().GetField("anchor", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as Bumper, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-
-                    }
-                    else if (entity.ToString() == "Celeste.FloatingDebris")
-                    {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
-                        wuh = (entity as FloatingDebris).GetType().GetField("start", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as FloatingDebris, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-
-                    }
-                    else if (entity.ToString() == "Celeste.IntroCar")
-                    {
-                        wuh = (entity as IntroCar).GetType().GetField("startY", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as IntroCar, MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased));
-                        wuh = (entity as IntroCar).GetType().GetField("wheels", BindingFlags.NonPublic | BindingFlags.Instance);
-                        Entity pleasekillme = (Entity)wuh.GetValue(entity as IntroCar);
-                        FieldInfo pkm2 = pleasekillme.GetType().GetField("Position", BindingFlags.Public | BindingFlags.Instance);
-                        pkm2.SetValue(pleasekillme, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-
-                    }
-                    else if (entity.ToString() == "Celeste.LightningBreakerBox")
-                    {
-                        wuh = (entity as LightningBreakerBox).GetType().GetField("start", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as LightningBreakerBox, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-
-                    }
-
-                    else if (entity.ToString() == "Celeste.MoonCreature")
-                    {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
-                        wuh = (entity as MoonCreature).GetType().GetField("start", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as MoonCreature, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-                        wuh = (entity as MoonCreature).GetType().GetField("target", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as MoonCreature, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-                    }
-                    else if (entity is CustomMoonCreature)
-                    {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
-                        (entity as CustomMoonCreature).start = (entity as CustomMoonCreature).target = new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased));
-                        for (int i = 0; i < (entity as CustomMoonCreature).trail.Length; i++)
-                        {
-                            (entity as CustomMoonCreature).trail[i].Position = new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased));
-                        }
-                    }
-                    else if (entity.ToString() == "Celeste.MoveBlock")
-                    {
-                        wuh = (entity as MoveBlock).GetType().GetField("startPosition", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as MoveBlock, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-
-                    }
-                    else if (entity.ToString() == "Celeste.MovingPlatform")
-                    {
-                        wuh = (entity as MovingPlatform).GetType().GetField("start", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as MovingPlatform, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-                        wuh = (entity as MovingPlatform).GetType().GetField("end", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as MovingPlatform, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X + PlatformOffset.X, to.X + offset_end.X + PlatformOffset.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y + PlatformOffset.Y, to.Y + offset_end.Y + PlatformOffset.Y, t.Eased)));
-
-                    }
-
-                    else if (entity.ToString() == "Celeste.MovingPlatformLine")
-                    {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
-                        wuh = (entity as MovingPlatformLine).GetType().GetField("end", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as MovingPlatformLine, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X + PlatformOffset.X, to.X + offset_end.X + PlatformOffset.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y + PlatformOffset.Y, to.Y + offset_end.Y + PlatformOffset.Y, t.Eased)));
-
-                    }
-
-                    else if (entity.ToString() == "Celeste.SinkingPlatform")
-                    {
-                        wuh = (entity as SinkingPlatform).GetType().GetField("startY", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as SinkingPlatform, MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased));
-
-                    }
-                    else if (entity.ToString() == "Celeste.StarJumpBlock")
-                    {
-                        wuh = (entity as StarJumpBlock).GetType().GetField("startY", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as StarJumpBlock, MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased));
-
-                    }
-                    else if (entity.ToString() == "Celeste.Puffer")
-                    {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
-                        wuh = (entity as Puffer).GetType().GetField("startPosition", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as Puffer, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-                        wuh = (entity as Puffer).GetType().GetField("anchorPosition", BindingFlags.NonPublic | BindingFlags.Instance);
-                        wuh.SetValue(entity as Puffer, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-                    }
-                    else if (entity.ToString() == "Celeste.DashSwitch")
-                    {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
-                        (entity as DashSwitch).pressedTarget = (entity as DashSwitch).side switch
-                        {
-                            Sides.Down => entity.Position + Vector2.UnitY * 8f,
-                            Sides.Up => entity.Position + Vector2.UnitY * -8f,
-                            Sides.Right => entity.Position + Position + Vector2.UnitX * 8f,
-                            Sides.Left => entity.Position + Vector2.UnitX * -8f,
-                            _ => Position
-                        };
-                    }
-                    else
-
-                    {
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                        case "Celeste.Cloud":
+                            (entity as Cloud).startY = entity.Position.Y;
+                            break;
+                        case "Celeste.BounceBlock":
+                            (entity as BounceBlock).startPos = entity.Position;
+                            break;
+                        case "Celeste.Booster":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                            (entity as Booster).outline.Position = entity.Position;
+                            break;
+                        case "Celeste.Bumper":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                            (entity as Bumper).anchor = entity.Position;
+                            break;
+                        case "Celeste.FloatingDebris":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                            (entity as FloatingDebris).start = entity.Position;
+                            break;
+                        case "Celeste.IntroCar":
+                            (entity as IntroCar).startY = entity.Position.Y;
+                            (entity as IntroCar).wheels.Position = entity.Position;
+                            break;
+                        case "Celeste.LightningBreakerBox":
+                            (entity as LightningBreakerBox).start = entity.Position;
+                            break;
+                        case "Celeste.MoonCreature":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                            (entity as MoonCreature).start = (entity as MoonCreature).target = entity.Position;
+                            break;
+                        case "CustomMoonCreature":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                            (entity as CustomMoonCreature).start = (entity as CustomMoonCreature).target = entity.Position;
+                            for (int i = 0; i < (entity as CustomMoonCreature).trail.Length; i++)
+                            {
+                                (entity as CustomMoonCreature).trail[i].Position = new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased));
+                            }
+                            break;
+                        case "Celeste.MoveBlock":
+                            (entity as MoveBlock).startPosition = entity.Position;
+                            break;
+                        case "Celeste.MovingPlatform":
+                            (entity as MovingPlatform).start = new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased));
+                            (entity as MovingPlatform).end = new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X + PlatformOffset.X, to.X + offset_end.X + PlatformOffset.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y + PlatformOffset.Y, to.Y + offset_end.Y + PlatformOffset.Y, t.Eased));
+                            break;
+                        case "Celeste.MovingPlatformLine":
+                            (entity as MovingPlatformLine).end = new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X + PlatformOffset.X, to.X + offset_end.X + PlatformOffset.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y + PlatformOffset.Y, to.Y + offset_end.Y + PlatformOffset.Y, t.Eased));
+                            break;
+                        case "Celeste.SinkingPlatform":
+                            (entity as SinkingPlatform).startY = entity.Position.Y;
+                            break;
+                        case "Celeste.StarJumpBlock":
+                            (entity as StarJumpBlock).startY = entity.Position.Y;
+                            break;
+                        case "Celeste.Puffer":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                            (entity as Puffer).anchorPosition = (entity as Puffer).startPosition = entity.Position;
+                            break;
+                        case "Celeste.DashSwitch":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                            (entity as DashSwitch).pressedTarget = (entity as DashSwitch).side switch
+                            {
+                                Sides.Down => entity.Position + Vector2.UnitY * 8f,
+                                Sides.Up => entity.Position + Vector2.UnitY * -8f,
+                                Sides.Right => entity.Position + Position + Vector2.UnitX * 8f,
+                                Sides.Left => entity.Position + Vector2.UnitX * -8f,
+                                _ => Position
+                            };
+                            break;
+                        case "Celeste.CrystalStaticSpinner":
+                            CrystalStaticSpinner spinner = (entity as CrystalStaticSpinner);
+                            entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                            if (spinner.filler != null)
+                            {
+                                spinner.filler.RemoveSelf();
+                            }
+                            spinner.filler = null;
+                            if (spinner.border != null)
+                            {
+                                spinner.border.RemoveSelf();
+                            }
+                            spinner.border = null;
+                            List<Image> list = spinner.Components.GetAll<Image>().ToList();
+                            for (int i = 0; i < list.Count; i++)
+                            {
+                                list[i].RemoveSelf();
+                            }
+                            spinner.expanded = false;
+                            (entity as CrystalStaticSpinner).CreateSprites();
+                            break;
+                        case "Celeste.SwitchGate":
+                            (entity as SwitchGate).node = entity.Position + PlatformOffset;
+                            (entity as SwitchGate).Get<Coroutine>().RemoveSelf();
+                            (entity as SwitchGate).Add(new Coroutine((entity as SwitchGate).Sequence((entity as SwitchGate).node)));
+                            break;
+                        default:
+                            entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                            break;
                     }
                 }
                 else
@@ -640,6 +602,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
             entity.Active = entity.Visible = true;
             yield return ejectDuration;
         }
+
+        
 
         public DashCollisionResults OnDashed(Player player, Vector2 direction)
         {
