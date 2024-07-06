@@ -17,6 +17,7 @@ using System.Linq;
 using Celeste.Mod.FemtoHelper.Wipes;
 using Celeste.Mod.UI;
 using Celeste.Mod.FemtoHelper.Code.Entities;
+using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -172,12 +173,61 @@ public class FemtoModule : EverestModule
         On.Celeste.Seeker.RegenerateCoroutine += Seeker_RegenKaizoHook;
         IL.Celeste.Actor.MoveHExact += onCollideH_IL;
         IL.Celeste.Actor.MoveVExact += onCollideV_IL;
+        On.Celeste.CoreModeToggle.Update += CoreModeToggle_Update;
         CodecumberPortStuff.Load();
         VitalDrainController.Load();
         CrystalHeartBoss.Load();
 
         Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
     }
+
+
+    public override void Unload()
+    {
+        Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
+        On.Celeste.Puffer.OnCollideH -= Puffer_KaizoCollideHHook;
+        On.Celeste.Puffer.OnCollideV -= Puffer_KaizoCollideVHook;
+        On.Celeste.Puffer.Explode -= Puffer_SplodeKaizoHook;
+        On.Celeste.Seeker.RegenerateCoroutine -= Seeker_RegenKaizoHook;
+        IL.Celeste.Actor.MoveHExact -= onCollideH_IL;
+        IL.Celeste.Actor.MoveVExact -= onCollideV_IL;
+        On.Celeste.CoreModeToggle.Update -= CoreModeToggle_Update;
+        CodecumberPortStuff.Unload();
+        VitalDrainController.Unload();
+        CrystalHeartBoss.Unload();
+    }
+
+    private static void CoreModeToggle_Update(On.Celeste.CoreModeToggle.orig_Update orig, CoreModeToggle self)
+    {
+        orig(self);
+        ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
+
+        if (controller != null && controller.InteractWithCoreSwitch)
+        {
+            if (self.CollideCheckByComponent<Holdable>() && self.Usable && self.cooldownTimer <= 0f)
+            {
+                self.playSounds = true;
+                Level level = self.SceneAs<Level>();
+                if (level.CoreMode == global::Celeste.Session.CoreModes.Cold)
+                {
+                    level.CoreMode = global::Celeste.Session.CoreModes.Hot;
+                }
+                else
+                {
+                    level.CoreMode = global::Celeste.Session.CoreModes.Cold;
+                }
+                if (self.persistent)
+                {
+                    level.Session.CoreMode = level.CoreMode;
+                }
+                Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+                level.Flash(Color.White * 0.15f, drawPlayerOver: true);
+                Celeste.Freeze(0.05f);
+                self.cooldownTimer = 1f;
+            }
+        }
+    }
+
 
     private static void onCollideH_IL(ILContext il)
     {
@@ -199,19 +249,88 @@ public class FemtoModule : EverestModule
 
         ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
 
-        if (controller != null) // disabled for now
+        if (controller != null)
         {
-            if (data.Hit is CrushBlock)
+            if (controller.InteractWithCrushBlock && data.Hit is CrushBlock)
             {
                 if ((data.Hit as CrushBlock).CanActivate(-data.Direction))
                 {
-                    if (Math.Abs(h.GetSpeed().X) >= 120) (data.Hit as CrushBlock).Attack(-data.Direction);
+                    if (Math.Abs(h.GetSpeed().X) >= controller.CrushBlockSpeedReq.X) (data.Hit as CrushBlock).Attack(-data.Direction);
                 }
             }
 
-            if (data.Hit is DashBlock)
+            if (controller.InteractWithDashBlock && data.Hit is DashBlock)
             {
-                if (Math.Abs(h.GetSpeed().X) >= 120) (data.Hit as DashBlock).Break(self.Center, data.Direction, true, true);
+                if (Math.Abs(h.GetSpeed().X) >= controller.DashBlockSpeedReq.X) (data.Hit as DashBlock).Break(self.Center, data.Direction, true, true);
+            }
+
+            if (controller.InteractWithBreakerBox && data.Hit is LightningBreakerBox)
+            {
+                LightningBreakerBox l = (data.Hit as LightningBreakerBox);
+                if (!(data.Direction == Vector2.UnitX && l.spikesLeft) && !(data.Direction == -Vector2.UnitX && l.spikesRight) && Math.Abs(h.GetSpeed().X) >= controller.BreakerBoxSpeedReq.X)
+                {
+                    (l.Scene as Level).DirectionalShake(data.Direction);
+                    l.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
+                    l.health--;
+                    if (l.health > 0)
+                    {
+                        l.Add(l.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
+                        Celeste.Freeze(0.1f);
+                        l.shakeCounter = 0.2f;
+                        l.shaker.On = true;
+                        l.bounceDir = data.Direction;
+                        l.bounce.Start();
+                        l.smashParticles = true;
+                        l.Pulse();
+                        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+                    }
+                    else
+                    {
+                        if (l.firstHitSfx != null)
+                        {
+                            l.firstHitSfx.Stop();
+                        }
+                        Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", l.Position);
+                        Celeste.Freeze(0.2f);
+                        l.Break();
+                        Input.Rumble(RumbleStrength.Strong, RumbleLength.Long);
+                        l.SmashParticles(data.Direction.Perpendicular());
+                        l.SmashParticles(-data.Direction.Perpendicular());
+                    }
+                }
+            }
+            if(controller.InteractWithSwapBlocks && data.Hit is SwapBlock)
+            {
+                SwapBlock s = data.Hit as SwapBlock;
+                if (Math.Abs(h.GetSpeed().X) >= controller.SwapBlockSpeedReq.X)
+                {
+                    s.Swapping = s.lerp < 1f;
+                    s.target = 1;
+                    s.returnTimer = 0.8f;
+                    s.burst = (s.Scene as Level).Displacement.AddBurst(s.Center, 0.2f, 0f, 16f);
+                    if (s.lerp >= 0.2f)
+                    {
+                        s.speed = s.maxForwardSpeed;
+                    }
+                    else
+                    {
+                        s.speed = MathHelper.Lerp(s.maxForwardSpeed * 0.333f, s.maxForwardSpeed, s.lerp / 0.2f);
+                    }
+                    Audio.Stop(s.returnSfx);
+                    Audio.Stop(s.moveSfx);
+                    if (!s.Swapping)
+                    {
+                        Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", s.Center);
+                    }
+                    else
+                    {
+                        s.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", s.Center);
+                    }
+                }
+            }
+            if (controller.InteractWithMoveBlocks && (data.Hit is MoveBlock) && (Math.Abs(h.GetSpeed().X) >= controller.MoveBlockSpeedReq.X))
+            {
+                (data.Hit as MoveBlock).triggered = true;
             }
         }
 
@@ -254,21 +373,89 @@ public class FemtoModule : EverestModule
 
         ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
 
-        if (controller != null) // disabled for now
+        if (controller != null)
         {
-            if (data.Hit is CrushBlock)
+            if (controller.InteractWithCrushBlock && data.Hit is CrushBlock)
             {
                 if ((data.Hit as CrushBlock).CanActivate(-data.Direction))
                 {
-                    if (Math.Abs(h.GetSpeed().Y) >= 120) (data.Hit as CrushBlock).Attack(-data.Direction);
+                    if (Math.Abs(h.GetSpeed().Y) >= controller.CrushBlockSpeedReq.Y) (data.Hit as CrushBlock).Attack(-data.Direction);
                 }
             }
 
-            if (data.Hit is DashBlock)
+            if (controller.InteractWithDashBlock && data.Hit is DashBlock)
             {
-                if (Math.Abs(h.GetSpeed().Y) >= 120) (data.Hit as DashBlock).Break(self.Center, data.Direction, true, true);
+                if (Math.Abs(h.GetSpeed().Y) >= controller.DashBlockSpeedReq.Y) (data.Hit as DashBlock).Break(self.Center, data.Direction, true, true);
             }
 
+            if (controller.InteractWithBreakerBox && data.Hit is LightningBreakerBox)
+            {
+                LightningBreakerBox l = (data.Hit as LightningBreakerBox);
+                if (!(data.Direction == Vector2.UnitX && l.spikesLeft) && !(data.Direction == -Vector2.UnitX && l.spikesRight) && Math.Abs(h.GetSpeed().Y) >= controller.BreakerBoxSpeedReq.Y)
+                {
+                    (l.Scene as Level).DirectionalShake(data.Direction);
+                    l.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
+                    l.health--;
+                    if (l.health > 0)
+                    {
+                        l.Add(l.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
+                        Celeste.Freeze(0.1f);
+                        l.shakeCounter = 0.2f;
+                        l.shaker.On = true;
+                        l.bounceDir = data.Direction;
+                        l.bounce.Start();
+                        l.smashParticles = true;
+                        l.Pulse();
+                        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+                    }
+                    else
+                    {
+                        if (l.firstHitSfx != null)
+                        {
+                            l.firstHitSfx.Stop();
+                        }
+                        Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", l.Position);
+                        Celeste.Freeze(0.2f);
+                        l.Break();
+                        Input.Rumble(RumbleStrength.Strong, RumbleLength.Long);
+                        l.SmashParticles(data.Direction.Perpendicular());
+                        l.SmashParticles(-data.Direction.Perpendicular());
+                    }
+                }
+            }
+            if (controller.InteractWithSwapBlocks && data.Hit is SwapBlock)
+            {
+                SwapBlock s = data.Hit as SwapBlock;
+                if (Math.Abs(h.GetSpeed().Y) >= controller.SwapBlockSpeedReq.Y)
+                {
+                    s.Swapping = s.lerp < 1f;
+                    s.target = 1;
+                    s.returnTimer = 0.8f;
+                    s.burst = (s.Scene as Level).Displacement.AddBurst(s.Center, 0.2f, 0f, 16f);
+                    if (s.lerp >= 0.2f)
+                    {
+                        s.speed = s.maxForwardSpeed;
+                    }
+                    else
+                    {
+                        s.speed = MathHelper.Lerp(s.maxForwardSpeed * 0.333f, s.maxForwardSpeed, s.lerp / 0.2f);
+                    }
+                    Audio.Stop(s.returnSfx);
+                    Audio.Stop(s.moveSfx);
+                    if (!s.Swapping)
+                    {
+                        Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", s.Center);
+                    }
+                    else
+                    {
+                        s.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", s.Center);
+                    }
+                }
+            }
+            if (controller.InteractWithMoveBlocks && (data.Hit is MoveBlock) && (Math.Abs(h.GetSpeed().Y) >= controller.MoveBlockSpeedReq.Y))
+            {
+                (data.Hit as MoveBlock).triggered = true;
+            }
         }
 
         if (data.Hit is Generic_SMWBlock)
@@ -314,19 +501,7 @@ public class FemtoModule : EverestModule
     }
 
     // Unload the entirety of your mod's content. Free up any native resources.
-    public override void Unload()
-    {
-        Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
-        On.Celeste.Puffer.OnCollideH -= Puffer_KaizoCollideHHook;
-        On.Celeste.Puffer.OnCollideV -= Puffer_KaizoCollideVHook;
-        On.Celeste.Puffer.Explode -= Puffer_SplodeKaizoHook;
-        On.Celeste.Seeker.RegenerateCoroutine -= Seeker_RegenKaizoHook;
-        IL.Celeste.Actor.MoveHExact -= onCollideH_IL;
-        IL.Celeste.Actor.MoveVExact -= onCollideV_IL;
-        CodecumberPortStuff.Unload();
-        VitalDrainController.Unload();
-        CrystalHeartBoss.Unload();
-    }
+
     private Backdrop Level_OnLoadBackdrop(MapData map, BinaryPacker.Element child, BinaryPacker.Element above)
     {
         if (child.Name.Equals("FemtoHelper/WindPetals", StringComparison.OrdinalIgnoreCase))

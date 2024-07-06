@@ -13,13 +13,11 @@ using System.Reflection;
 using MonoMod.ModInterop;
 using Celeste.Mod.FemtoHelper;
 using Celeste.Mod.FemtoHelper.Entities;
+using static Celeste.DashSwitch;
+using static Celeste.Tentacles;
 
 namespace Celeste.Mod.FemtoHelper.Entities
 {
-
-    /// <summary>
-    /// this sucks ass oh my god please look away i'm so embarassed
-    /// </summary>
     [Tracked]
     [CustomEntity("FemtoHelper/SMWBlock")]
     public class Generic_SMWBlock : Solid
@@ -611,7 +609,19 @@ namespace Celeste.Mod.FemtoHelper.Entities
                         wuh.SetValue(entity as Puffer, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
                         wuh = (entity as Puffer).GetType().GetField("anchorPosition", BindingFlags.NonPublic | BindingFlags.Instance);
                         wuh.SetValue(entity as Puffer, new Vector2(MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased)));
-
+                    }
+                    else if (entity.ToString() == "Celeste.DashSwitch")
+                    {
+                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + ejectOffset.X + offset_start.X, to.X + offset_end.X, t.Eased);
+                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
+                        (entity as DashSwitch).pressedTarget = (entity as DashSwitch).side switch
+                        {
+                            Sides.Down => entity.Position + Vector2.UnitY * 8f,
+                            Sides.Up => entity.Position + Vector2.UnitY * -8f,
+                            Sides.Right => entity.Position + Position + Vector2.UnitX * 8f,
+                            Sides.Left => entity.Position + Vector2.UnitX * -8f,
+                            _ => Position
+                        };
                     }
                     else
 
