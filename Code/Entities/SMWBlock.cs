@@ -2,20 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Celeste;
 using Celeste.Mod;
 using Celeste.Mod.Entities;
 using Monocle;
 using System.Collections;
-using System.Reflection;
-using MonoMod.ModInterop;
 using Celeste.Mod.FemtoHelper;
 using Celeste.Mod.FemtoHelper.Entities;
-using static Celeste.DashSwitch;
-using static Celeste.Tentacles;
-using Microsoft.Xna.Framework.Content;
+
 
 namespace Celeste.Mod.FemtoHelper.Entities
 {
@@ -552,10 +546,10 @@ namespace Celeste.Mod.FemtoHelper.Entities
                             entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + ejectOffset.Y + offset_start.Y, to.Y + offset_end.Y, t.Eased);
                             (entity as DashSwitch).pressedTarget = (entity as DashSwitch).side switch
                             {
-                                Sides.Down => entity.Position + Vector2.UnitY * 8f,
-                                Sides.Up => entity.Position + Vector2.UnitY * -8f,
-                                Sides.Right => entity.Position + Position + Vector2.UnitX * 8f,
-                                Sides.Left => entity.Position + Vector2.UnitX * -8f,
+                                DashSwitch.Sides.Down => entity.Position + Vector2.UnitY * 8f,
+                                DashSwitch.Sides.Up => entity.Position + Vector2.UnitY * -8f,
+                                DashSwitch.Sides.Right => entity.Position + Position + Vector2.UnitX * 8f,
+                                DashSwitch.Sides.Left => entity.Position + Vector2.UnitX * -8f,
                                 _ => Position
                             };
                             break;
