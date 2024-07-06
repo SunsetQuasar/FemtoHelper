@@ -16,21 +16,20 @@ using System.Runtime.InteropServices.ComTypes;
 namespace Celeste.Mod.FemtoHelper.Entities
 {
     [Tracked]
-    public class ExtraTrailManager : Entity
+    public class ExtraTrailManager : Component
     {
         public Player player;
         public float dashTrailTimer;
         public int dashTrailCounter;
         public int dashParticleCount;
-        public ExtraTrailManager() : base()
+        public ExtraTrailManager() : base(true, true)
         {
 
         }
-
-        public override void Awake(Scene scene)
+        public override void Added(Entity entity)
         {
-            base.Awake(scene);
-            player = Scene.Tracker.GetEntity<Player>();
+            base.Added(entity);
+            player = entity as Player;
         }
 
         public override void Update()
@@ -293,11 +292,12 @@ namespace Celeste.Mod.FemtoHelper.Entities
             On.Celeste.Player.Update -= RotateDashBugCheck;
         }
 
+
+
         private static void RotateDashInitialize(On.Celeste.LevelLoader.orig_LoadingThread orig, LevelLoader self)
         {
             orig(self);
             RotateDashInitialize();
-            self.Level.Add(FemtoModule.Session.TrailManager = new ExtraTrailManager());
         }
 
         private static PlayerDeadBody RotateDashDeathHook(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats)
@@ -328,10 +328,13 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 self.StateMachine.State = 0;
                 FemtoModule.Session.HasRotateDash = false;
                 FemtoModule.Session.HasStartedRotateDashing = false;
-                FemtoModule.Session.TrailManager.dashTrailTimer = 0.06f;
-                FemtoModule.Session.TrailManager.dashTrailCounter = 3;
-                FemtoModule.Session.TrailManager.dashParticleCount = 10;
-
+                ExtraTrailManager t = self.Get<ExtraTrailManager>();
+                if(t != null)
+                {
+                    t.dashTrailTimer = 0.06f;
+                    t.dashTrailCounter = 3;
+                    t.dashParticleCount = 10;
+                }
                 self.level.Displacement.AddBurst(self.Center, 0.4f, 8f, 64f, 0.5f, Ease.QuadOut, Ease.QuadOut);
                 yield return null;
 
@@ -370,6 +373,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
         {
             orig(self, scene);
             self.Add(new RotateDashIndicator());
+            self.Add(new ExtraTrailManager());
         }
 
         public static void RotateDashInitialize()

@@ -28,6 +28,7 @@ public class FemtoModule : EverestModule
     public static class GravityHelperSupport
     {
         public static Func<int> GetPlayerGravity;
+        public static Action<int, float> SetPlayerGravity;
     }
 
     [ModImportName("CommunalHelper.DashStates")]
