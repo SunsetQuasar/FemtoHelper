@@ -324,6 +324,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 Engine.TimeRate = 1;
 
                 self.Speed = Vector2.Transform(self.Speed, Matrix.CreateRotationZ(-FemtoModule.Session.RotateDashAngle));
+                (self.Scene as Level).DirectionalShake(self.Speed.SafeNormalize());
                 self.Speed *= FemtoModule.Session.RotateDashScalar;
                 self.StateMachine.State = 0;
                 FemtoModule.Session.HasRotateDash = false;

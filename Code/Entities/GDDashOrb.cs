@@ -123,6 +123,7 @@ public class GDDashOrb : Entity
         {
             if (Input.Jump.Pressed && !lastJump)
             {
+                Input.Jump.ConsumeBuffer();
                 if (player != null)
                 {
                     if (player.StateMachine.state == Player.StDash) player.StateMachine.ForceState(Player.StNormal);

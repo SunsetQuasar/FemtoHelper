@@ -10,10 +10,14 @@ entities.FemtoHelper/LaCreatura.placements.name.creatura=La Creatura
 entities.FemtoHelper/LaCreatura.attributes.description.number=Number of butterflies that will spawn in this bunch.
 entities.FemtoHelper/LaCreatura.attributes.description.acceleration=How fast the butterflies can change their speed.
 entities.FemtoHelper/LaCreatura.attributes.description.maxSpeed=The maximum speed the butterflies can move.
+
 # Backdrop Wind Controller
 entities.FemtoHelper/BackdropWindController.placements.name.default=Backdrop Wind Controller
 entities.FemtoHelper/BackdropWindController.attributes.description.tag=The styleground tag to apply wind to.
 entities.FemtoHelper/BackdropWindController.attributes.description.strengthMultiplier=A multiplier for the strength of the wind effect.
+
+# Extra Holdable Interactions Controller
+entities.FemtoHelper/EHIController.placements.name.default=Extra Holdable Interactions Controller
 
 # Custom Cliffside Wind Flag
 entities.FemtoHelper/CustomCliffsideWindFlag.placements.name.default=Custom Wind Flag
