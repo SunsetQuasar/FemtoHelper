@@ -95,11 +95,9 @@ public class CustomSpeedRotateSpinner : Entity
 		base.Update();
 		if (isBlade)
 		{
-			if (base.Scene.OnInterval(0.04f))
+			if (base.Scene.OnInterval(0.04f) && !noParticles)
 			{
-				if (noParticles == false) {
-					SceneAs<Level>().ParticlesBG.Emit(BladeTrackSpinner.P_Trail, 2, Position, Vector2.One * 3f);
-				}
+				SceneAs<Level>().ParticlesBG.Emit(BladeTrackSpinner.P_Trail, 2, Position, Vector2.One * 3f);
 			}
 			if (base.Scene.OnInterval(1f))
 			{
@@ -111,23 +109,17 @@ public class CustomSpeedRotateSpinner : Entity
 			if (Moving)
 			{
 				dusty.EyeDirection = dusty.EyeTargetDirection = Calc.AngleToVector(Angle + ((float)Math.PI / 2f * (float)(Clockwise ? 1 : (-1))), 1f);
-				if (base.Scene.OnInterval(0.02f))
+				if (base.Scene.OnInterval(0.02f) && !noParticles)
 				{
-					if (noParticles == false)
-					{
-						SceneAs<Level>().ParticlesBG.Emit(DustStaticSpinner.P_Move, 1, Position, Vector2.One * 4f);
-					}
+					SceneAs<Level>().ParticlesBG.Emit(DustStaticSpinner.P_Move, 1, Position, Vector2.One * 4f);
 				}
 			}
 		}
 		else
 		{
-			if (Moving && base.Scene.OnInterval(0.03f))
+			if (Moving && base.Scene.OnInterval(0.03f) && !noParticles)
 			{
-				if (noParticles == false)
-				{
-					SceneAs<Level>().ParticlesBG.Emit(StarTrackSpinner.P_Trail[colorID], 1, Position, Vector2.One * 3f);
-				}
+				SceneAs<Level>().ParticlesBG.Emit(StarTrackSpinner.P_Trail[colorID], 1, Position, Vector2.One * 3f);
 			}
 			if (base.Scene.OnInterval(0.8f))
 			{
@@ -166,10 +158,10 @@ public class CustomSpeedRotateSpinner : Entity
 	{
 		if (player.Die((player.Position - Position).SafeNormalize()) != null)
 		{
-			if (isDust)
+			if(dusty != null)
 			{
-				dusty.OnHitPlayer();
-			}
+                dusty.OnHitPlayer();
+            }
 			Moving = false;
 		}
 	}

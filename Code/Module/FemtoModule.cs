@@ -252,7 +252,7 @@ public class FemtoModule : EverestModule
 
         if (controller != null)
         {
-            if (controller.InteractWithCrushBlock && data.Hit is CrushBlock)
+            if (controller.InteractWithCrushBlocks && data.Hit is CrushBlock)
             {
                 if ((data.Hit as CrushBlock).CanActivate(-data.Direction))
                 {
@@ -260,12 +260,12 @@ public class FemtoModule : EverestModule
                 }
             }
 
-            if (controller.InteractWithDashBlock && data.Hit is DashBlock)
+            if (controller.InteractWithDashBlocks && data.Hit is DashBlock)
             {
                 if (Math.Abs(h.GetSpeed().X) >= controller.DashBlockSpeedReq.X) (data.Hit as DashBlock).Break(self.Center, data.Direction, true, true);
             }
 
-            if (controller.InteractWithBreakerBox && data.Hit is LightningBreakerBox)
+            if (controller.InteractWithBreakerBoxes && data.Hit is LightningBreakerBox)
             {
                 LightningBreakerBox l = (data.Hit as LightningBreakerBox);
                 if (!(data.Direction == Vector2.UnitX && l.spikesLeft) && !(data.Direction == -Vector2.UnitX && l.spikesRight) && Math.Abs(h.GetSpeed().X) >= controller.BreakerBoxSpeedReq.X)
@@ -333,6 +333,10 @@ public class FemtoModule : EverestModule
             {
                 (data.Hit as MoveBlock).triggered = true;
             }
+            if (controller.InteractWithFallingBlocksH && (data.Hit is FallingBlock) && (Math.Abs(h.GetSpeed().X) >= controller.FallingBlockSpeedReq.X))
+            {
+                (data.Hit as FallingBlock).Triggered = true;
+            }
         }
 
         if (data.Hit is Generic_SMWBlock)
@@ -376,7 +380,7 @@ public class FemtoModule : EverestModule
 
         if (controller != null)
         {
-            if (controller.InteractWithCrushBlock && data.Hit is CrushBlock)
+            if (controller.InteractWithCrushBlocks && data.Hit is CrushBlock)
             {
                 if ((data.Hit as CrushBlock).CanActivate(-data.Direction))
                 {
@@ -384,12 +388,12 @@ public class FemtoModule : EverestModule
                 }
             }
 
-            if (controller.InteractWithDashBlock && data.Hit is DashBlock)
+            if (controller.InteractWithDashBlocks && data.Hit is DashBlock)
             {
                 if (Math.Abs(h.GetSpeed().Y) >= controller.DashBlockSpeedReq.Y) (data.Hit as DashBlock).Break(self.Center, data.Direction, true, true);
             }
 
-            if (controller.InteractWithBreakerBox && data.Hit is LightningBreakerBox)
+            if (controller.InteractWithBreakerBoxes && data.Hit is LightningBreakerBox)
             {
                 LightningBreakerBox l = (data.Hit as LightningBreakerBox);
                 if (!(data.Direction == Vector2.UnitX && l.spikesLeft) && !(data.Direction == -Vector2.UnitX && l.spikesRight) && Math.Abs(h.GetSpeed().Y) >= controller.BreakerBoxSpeedReq.Y)
@@ -456,6 +460,10 @@ public class FemtoModule : EverestModule
             if (controller.InteractWithMoveBlocks && (data.Hit is MoveBlock) && (Math.Abs(h.GetSpeed().Y) >= controller.MoveBlockSpeedReq.Y))
             {
                 (data.Hit as MoveBlock).triggered = true;
+            }
+            if (controller.InteractWithFallingBlocksV && (data.Hit is FallingBlock) && (Math.Abs(h.GetSpeed().Y) >= controller.FallingBlockSpeedReq.Y))
+            {
+                (data.Hit as FallingBlock).Triggered = true;
             }
         }
 

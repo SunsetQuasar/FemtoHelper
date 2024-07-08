@@ -1,7 +1,4 @@
 local drawableSpriteStruct = require("structs.drawable_sprite")
-local fonts = require("fonts")
-
-love.graphics.setFont(fonts.font)
 
 local FemtoHelperCustomSpeedRotateSpinner = {}
 
@@ -10,6 +7,8 @@ local speeds = {
     normal = "Normal",
     fast = "Fast",
 }
+
+local dustEdgeColor = {1.0, 0.0, 0.0}
 
 -- Values are {dust, star}
 local FemtoHelperCustomSpeedRotateSpinnerTypes = {
@@ -36,7 +35,8 @@ for typeName, typeAttributes in pairs(FemtoHelperCustomSpeedRotateSpinnerTypes) 
                 clockwise = clockwise,
                 isDust = dust,
                 isBlade = star,
-                rotateTime = 1.8
+                rotateTime = 1.8,
+                noParticles = false
             }
         })
     end
@@ -56,10 +56,14 @@ local function getSprite(room, entity, alpha)
     elseif dust then
         local dustBaseTexture = "danger/dustcreature/base01"
         local dustCenterTexture = "danger/dustcreature/center00"
-
+        local dustBaseOutlineTexture = "dust_creature_outlines/base01"
         table.insert(sprites, drawableSpriteStruct.fromTexture(dustBaseTexture, entity))
         table.insert(sprites, drawableSpriteStruct.fromTexture(dustCenterTexture, entity))
+        local dustBaseOutlineSprite = drawableSpriteStruct.fromInternalTexture(dustBaseOutlineTexture, entity)
+        
+        dustBaseOutlineSprite:setColor(dustEdgeColor)
 
+        table.insert(sprites, dustBaseOutlineSprite)
     else
         local starfishTexture = "danger/starfish15"
 

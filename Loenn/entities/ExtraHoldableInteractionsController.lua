@@ -22,7 +22,11 @@ FemtoHelperExtraHoldableInteractionsController.placements = {
         crushBlockYSpeedReq = 120,
         breakerBoxBlockYSpeedReq = 120,
         moveBlockYSpeedReq = 120,
-        swapBlockYSpeedReq = 120
+        swapBlockYSpeedReq = 120,
+        activateFallingBlocksHorizontal = false,
+        activateFallingBlocksVertical = false,
+        fallingBlockXSpeedReq = 120,
+        fallingBlockYSpeedReq = 0
     }
 }
 
