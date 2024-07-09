@@ -239,5 +239,23 @@ namespace Celeste.Mod.FemtoHelper
 
             //Draw.SpriteBatch.Draw(t.Texture.Texture_Safe, position, clipRect, Color.White, 0f, origin2, scaleFix, SpriteEffects.None, 0f);
         }
+        public static void Load()
+        {
+            On.Celeste.DustEdges.BeforeRender += DustEdges_BeforeRender;
+        }
+
+        private static void DustEdges_BeforeRender(On.Celeste.DustEdges.orig_BeforeRender orig, DustEdges self)
+        {
+            Texture temp1 = Engine.Graphics.GraphicsDevice.Textures[1];
+            Texture temp2 = Engine.Graphics.GraphicsDevice.Textures[2];
+            orig(self);
+            Engine.Graphics.GraphicsDevice.Textures[1] = temp1;
+            Engine.Graphics.GraphicsDevice.Textures[2] = temp2;
+        }
+
+        public static void Unload()
+        {
+            On.Celeste.DustEdges.BeforeRender -= DustEdges_BeforeRender;
+        }
     }
 }

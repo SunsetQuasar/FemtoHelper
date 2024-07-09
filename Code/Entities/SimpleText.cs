@@ -46,14 +46,13 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public override void Render()
         {
             base.Render();
-
             if (hud)
             {
                 SubHudRenderer.EndRender();
 
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
             }
-           
+
             Vector2 position = (Scene as Level).Camera.Position;
             Vector2 vector = position + new Vector2(160f, 90f);
             Vector2 position2 = (Position - position + (Position - vector) * (parallax - 1)) + position;

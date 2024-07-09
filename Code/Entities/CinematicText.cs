@@ -276,7 +276,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 SubHudRenderer.EndRender();
 
-                Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
+                Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
             }
 
             Draw.SpriteBatch.Draw(buffer, hud ? Vector2.Zero : (Scene as Level).Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, (SaveData.Instance.Assists.MirrorMode && hud) ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
