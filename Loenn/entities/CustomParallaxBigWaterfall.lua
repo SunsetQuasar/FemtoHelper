@@ -12,6 +12,12 @@ FemtoHelperCustomParallaxBigWaterfall.fieldInformation = {
     layer = {
         options = {"FG", "BG"},
         editable = false
+    },
+    surfaceColor = {
+        fieldType = "color"
+    },
+    fillColor = {
+        fieldType = "color"
     }
 }
 FemtoHelperCustomParallaxBigWaterfall.placements = {

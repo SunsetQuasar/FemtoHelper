@@ -7,6 +7,11 @@ local FemtoHelperPseudoPolyhedron = {}
 
 FemtoHelperPseudoPolyhedron.name = "FemtoHelper/PseudoPolyhedron"
 FemtoHelperPseudoPolyhedron.justification = {0.5, 0.5}
+FemtoHelperPseudoPolyhedron.fieldInformation = {
+   color = {
+      fieldType = "color"
+   }
+}
 FemtoHelperPseudoPolyhedron.placements = {
     name = "default",
     data = {

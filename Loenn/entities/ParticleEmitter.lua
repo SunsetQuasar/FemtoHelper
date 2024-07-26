@@ -35,6 +35,12 @@ FemtoHelperParticleEmitter.fieldInformation = {
             {"Follow Direction", 2}
         },
         editable = false
+    },
+    particleColor = {
+      fieldType = "color"
+    },
+    particleColor2 = {
+      fieldType = "color"
     }
 }
 FemtoHelperParticleEmitter.placements = {

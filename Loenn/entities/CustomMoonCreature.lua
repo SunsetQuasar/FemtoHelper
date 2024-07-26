@@ -3,6 +3,17 @@ local FemtoHelperCustomMoonCreature = {}
 FemtoHelperCustomMoonCreature.name = "FemtoHelper/CustomMoonCreature"
 FemtoHelperCustomMoonCreature.depth = 0
 FemtoHelperCustomMoonCreature.texture = "scenery/moon_creatures/tiny01"
+FemtoHelperCustomMoonCreature.fieldInformation = {
+    trailSubcolor1 = {
+        fieldType = "color"
+    },
+    trailSubcolor2 = {
+        fieldType = "color"
+    },
+    lightColor = {
+        fieldType = "color"
+    }
+}
 FemtoHelperCustomMoonCreature.placements = {
     name = "default",
     data = {

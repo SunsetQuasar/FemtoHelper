@@ -38,6 +38,18 @@ FemtoHelperCustomFakeHeart.fieldInformation = {
             {"Follow Direction", 2}
         },
         editable = false
+    },
+    flashColor = {
+        fieldType = "color"
+    },
+    particleColor = {
+        fieldType = "color"
+    },
+    particleColor2 = {
+        fieldType = "color"
+    },
+    shineParticleColor = {
+        fieldType = "color"
     }
 }
 FemtoHelperCustomFakeHeart.placements = {
