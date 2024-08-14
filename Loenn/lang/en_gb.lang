@@ -18,6 +18,53 @@ entities.FemtoHelper/BackdropWindController.attributes.description.strengthMulti
 
 # Extra Holdable Interactions Controller
 entities.FemtoHelper/EHIController.placements.name.default=Extra Holdable Interactions Controller
+entities.FemtoHelper/EHIController.attributes.description.breakDashBlocks=Whether the controller should allow Holdable entities to break Dash Blocks.
+entities.FemtoHelper/EHIController.attributes.description.activateKevins=Whether the controller should allow Holdable entities to activate Kevin Blocks.
+entities.FemtoHelper/EHIController.attributes.description.flipCoreSwitches=Whether the controller should allow Holdable entities to flip Core Switches.
+entities.FemtoHelper/EHIController.attributes.description.hitLightningBreakerBoxes=Whether the controller should allow Holdable entities to hit Lightning Breaker Boxes.
+entities.FemtoHelper/EHIController.attributes.description.activateMoveBlocks=Whether the controller should allow Holdable entities to activate Move Blocks when hit.
+entities.FemtoHelper/EHIController.attributes.description.activateSwapBlocks=Whether the controller should allow Holdable entities to activate Swap Blocks when hit.
+entities.FemtoHelper/EHIController.attributes.description.dashBlockXSpeedReq=The horizontal speed requirement for breaking Dash Blocks.
+entities.FemtoHelper/EHIController.attributes.description.crushBlockXSpeedReq=The horizontal speed requirement for activating Kevin Blocks.
+entities.FemtoHelper/EHIController.attributes.description.breakerBoxXSpeedReq=The horizontal speed requirement for hitting Lightning Breaker Boxes.
+entities.FemtoHelper/EHIController.attributes.description.moveBlockXSpeedReq=The horizontal speed requirement for activating Move Blocks when hit.
+entities.FemtoHelper/EHIController.attributes.description.swapBlockXSpeedReq=The horizontal speed requirement for activating Swap Blocks when hit.
+entities.FemtoHelper/EHIController.attributes.description.dashBlockYSpeedReq=The vertical speed requirement for breaking Dash Blocks.
+entities.FemtoHelper/EHIController.attributes.description.crushBlockYSpeedReq=The vertical speed requirement for activating Kevin Blocks.
+entities.FemtoHelper/EHIController.attributes.description.breakerBoxBlockYSpeedReq=The vertical speed requirement for hitting Lightning Breaker Boxes.
+entities.FemtoHelper/EHIController.attributes.description.moveBlockYSpeedReq=The vertical speed requirement for activating Move Blocks when hit.
+entities.FemtoHelper/EHIController.attributes.description.swapBlockYSpeedReq=The vertical speed requirement for activating Swap Blocks when hit.
+entities.FemtoHelper/EHIController.attributes.description.activateFallingBlocksHorizontal=Whether the controller should allow Holdable entities to activate Falling Blocks horizontally.
+entities.FemtoHelper/EHIController.attributes.description.activateFallingBlocksVertical=Whether the controller should allow Holdable entities to activate Falling Blocks vertically.
+entities.FemtoHelper/EHIController.attributes.description.fallingBlockXSpeedReq=The horizontal speed requirement for activating Falling Blocks.
+entities.FemtoHelper/EHIController.attributes.description.fallingBlockYSpeedReq=The vertical speed requirement for activating Falling Blocks.
+
+# GD Boost Orb
+entities.FemtoHelper/GDDashOrb.placements.name.default=GD Boost Orb (Green)
+entities.FemtoHelper/GDDashOrb.placements.name.pink=GD Boost Orb (Pink)
+entities.FemtoHelper/GDDashOrb.attributes.description.angle=The angle the orb points, in degrees.
+entities.FemtoHelper/GDDashOrb.attributes.description.speed=The speed boost the orb gives after the player activates it by pressing jump.
+entities.FemtoHelper/GDDashOrb.attributes.description.pink=Whether the orb should flip the player's gravity after being activated.\nDoes nothing if GravityHelper isn't installed.
+entities.FemtoHelper/GDDashOrb.attributes.description.additive=Whether the orb should add to the player's current speed, instead of overriding it.
+
+# Directional Sprites Line
+entities.FemtoHelper/DirectionalLine.placements.name.default=Directional Sprites Line
+entities.FemtoHelper/DirectionalLine.attributes.description.activationTime=The time it takes for the line's elements to fade in when activated by a flag.
+entities.FemtoHelper/DirectionalLine.attributes.description.alphaOutPercent=How much of the line, from the end, should have the elements fading out;\n0 for no fade out, 1 for the entire line.
+entities.FemtoHelper/DirectionalLine.attributes.description.deactivationFlag=When this flag is active, the line deactivates, and its elements fade out.\nTakes priority over the activation flag.\nLeave empty for no deactivation.
+entities.FemtoHelper/DirectionalLine.attributes.description.alphaInEase=The easing mode for the element fade in.
+entities.FemtoHelper/DirectionalLine.attributes.description.duration=The time it takes for one of the elements to travel from the starting node to the end node.
+entities.FemtoHelper/DirectionalLine.attributes.description.spriteCount=The amount of elements in the line.
+entities.FemtoHelper/DirectionalLine.attributes.description.activationFlag=When this flag is active, the line activates, and its elements fade in.\nThe deactivation flag takes priority over this.\nLeave empty for no flag activation.
+entities.FemtoHelper/DirectionalLine.attributes.description.texture=The element's texture.
+entities.FemtoHelper/DirectionalLine.attributes.description.depth=The line's depth;\nHigher values means further back in the scene, lower negative values means closer in front of the scene, while 0 is the player's depth.
+entities.FemtoHelper/DirectionalLine.attributes.description.deactivationTime=The time it takes for the line's elements to fade out when deactivated by a flag.
+entities.FemtoHelper/DirectionalLine.attributes.description.alphaMultiplier=The line's transparency multiplier.
+entities.FemtoHelper/DirectionalLine.attributes.description.alphaOutEase=The easing mode for the element fade out.
+entities.FemtoHelper/DirectionalLine.attributes.description.positionEase=The easing mode for the element's movement.
+entities.FemtoHelper/DirectionalLine.attributes.description.alphaInPercent=How much of the line, from the start, should have the elements fading in;\n0 for no fade in, 1 for the entire line.
+entities.FemtoHelper/DirectionalLine.attributes.description.orientSprite=Whether the sprites should point in the travel direction or stay stationary.
+entities.FemtoHelper/DirectionalLine.attributes.description.color=The element's color.\nSupports alpha for premultiplied colors, as RRGGBBAA;
 
 # Custom Cliffside Wind Flag
 entities.FemtoHelper/CustomCliffsideWindFlag.placements.name.default=Custom Wind Flag
@@ -220,6 +267,7 @@ entities.FemtoHelper/SMWBlock.attributes.description.canHitBottom=Whether the bl
 entities.FemtoHelper/SMWBlock.attributes.description.canHitLeft=Whether the block can be interacted from its left side.
 entities.FemtoHelper/SMWBlock.attributes.description.canHitRight=Whether the block can be interacted from its right side.
 entities.FemtoHelper/SMWBlock.attributes.description.hitFlag=The flag that gets modified when the block is hit. Leave blank for no flag.
+entities.FemtoHelper/SMWBlock.attributes.description.switchAppearanceFlag=The flag that determines the look of the switch mode block;\nLeave empty to use Hit Flag instead.
 entities.FemtoHelper/SMWBlock.attributes.description.hitFlagBehavior=How the flag should be modified when the block is hit. Does nothing if hitFlag is blank.
 entities.FemtoHelper/SMWBlock.attributes.description.switchMode=Allows the block to be hit multiple times, but disables its reward feature entirely, focusing more on its flag modifying behavior.
 entities.FemtoHelper/SMWBlock.attributes.description.giveCoyoteFramesOnHit=Whether the block should give the player ground coyote frames when hit. Unrealistic, but allows the player to perform tech akin to Dream Hypers and Core Hypers from the block.
@@ -303,10 +351,12 @@ entities.FemtoHelper/CinematicText.attributes.description.textSound=FMOD event f
 entities.FemtoHelper/CinematicText.attributes.description.twitch=Makes the characters occasionally twitch by the shake amount.
 entities.FemtoHelper/CinematicText.attributes.description.twitchChance=(Twitch) The percent chance for a character to twitch.
 entities.FemtoHelper/CinematicText.attributes.description.wave=Makes the characters wave around.
-entities.FemtoHelper/CinematicText.attributes.description.wavePhaseOffset(Wave) The initial wave angle offset, in degrees.
+entities.FemtoHelper/CinematicText.attributes.description.wavePhaseOffset=(Wave) The initial wave angle offset, in degrees.
 entities.FemtoHelper/CinematicText.attributes.description.waveSpeed=(Wave) The wave angle variation, in degrees/sec.
 entities.FemtoHelper/CinematicText.attributes.description.waveX=(Wave) The horizontal wave amplitude, in pixels.
 entities.FemtoHelper/CinematicText.attributes.description.waveY=(Wave) The vertical wave amplitude, in pixels.
+
+
 
 
 # ---------- Triggers ----------
@@ -425,7 +475,6 @@ style.effects.FemtoHelper/DigitalCascade.description.noFlipping=Disables symbol 
 style.effects.FemtoHelper/DigitalCascade.description.afterimageAlpha=How transparent the afterimages appear.
 
 # Distorted Parallax
-
 style.effects.FemtoHelper/DistortedParallax.name=Distorted Parallax (Obsolete)
 style.effects.FemtoHelper/DistortedParallax.description.texture=The texture's path.
 style.effects.FemtoHelper/DistortedParallax.description.posX=The styleground's horizontal position.
@@ -452,5 +501,49 @@ style.effects.FemtoHelper/DistortedParallax.description.flipY=Whether the styleg
 style.effects.FemtoHelper/DistortedParallax.description.sliceMode=How the effect's code slices the given texture to distort the styleground.\nHorizontal: The horizontal waving is transversal, and the vertical waving is longitudinal.\nVertical: The horizontal waving is longitudinal, and the vertical waving is transversal.
 
 # New Distorted Parallax
-
 style.effects.FemtoHelper/NewDistortedParallax.name=Distorted Parallax (New)
+style.effects.FemtoHelper/NewDistortedParallax.description.offsetX=Determines the initial horizontal position of the parallax.
+style.effects.FemtoHelper/NewDistortedParallax.description.offsetY=Determines the initial vertical position of the parallax.
+style.effects.FemtoHelper/NewDistortedParallax.description.texture=The texture that the parallax should use.
+style.effects.FemtoHelper/NewDistortedParallax.description.loopX=Whether the styleground should loop horizontally.
+style.effects.FemtoHelper/NewDistortedParallax.description.loopY=Whether the styleground should loop vertically.
+style.effects.FemtoHelper/NewDistortedParallax.description.scrollX=The styleground's horizontal parallax factor.\nValues between 0 and 1 appear as if they are in the background;\nValues above 1 appear as if they are in the foreground;\nA value of 1 means it moves along with the camera.
+style.effects.FemtoHelper/NewDistortedParallax.description.scrollY=The styleground's vertical parallax factor.\nValues between 0 and 1 appear as if they are in the background;\nValues above 1 appear as if they are in the foreground;\nA value of 1 means it moves along with the camera.
+style.effects.FemtoHelper/NewDistortedParallax.description.speedX=The styleground's horizontal movement speed;\nPositive values go right, negative values go left.
+style.effects.FemtoHelper/NewDistortedParallax.description.speedY=The styleground's vertical movement speed;\nPositive values go down, negative values go up.
+style.effects.FemtoHelper/NewDistortedParallax.description.color=The styleground's color, in hexadecimal.\nSupports alpha for premultiplied colors, as RRGGBBAA;
+style.effects.FemtoHelper/NewDistortedParallax.description.blendState=The styleground's blending mode;\nAlpha Blend: Blends whatever is behind the styleground with itself with a weight determined by its alpha.\nAdditive: Adds its color information (multiplied by its alpha) to what is behind it.\nMultiply: performs multiplication on the background, effectively tinting what is behind it.\nSubtract: Subtracts its color information (multiplied by its alpha) to what is behind it.
+style.effects.FemtoHelper/NewDistortedParallax.description.filterMode=The styleground's texture filtering mode;\nPoint gives the default "pixelated look", whereas Linear and Anisotropic add anti-aliasing, which may be useful in some cases.
+style.effects.FemtoHelper/NewDistortedParallax.description.alpha=Color alpha multiplier. different from the Color's alpha as in it multiplies the color channels as well.
+style.effects.FemtoHelper/NewDistortedParallax.description.flipX=Flips the styleground horizontally.
+style.effects.FemtoHelper/NewDistortedParallax.description.flipY=Flips the styleground vertically.
+style.effects.FemtoHelper/NewDistortedParallax.description.fadeIn=Determines if the styleground should fade in when the player enters a room containing it.
+
+style.effects.FemtoHelper/NewDistortedParallax.description.xXAmplitude=The amplitude (in pixels) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground horizontally in relation to its horizontal screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.xXPeriod=The period (in pixels/180°) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground horizontally in relation to its horizontal screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.xXOffset=The offset (in degrees) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground horizontally in relation to its horizontal screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.xXWaveSpeed=The wave speed (in degrees/second) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground horizontally in relation to its horizontal screen position.
+
+style.effects.FemtoHelper/NewDistortedParallax.description.xYAmplitude=The amplitude (in pixels) for the X in relation to Y wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.xYPeriod=The period (in pixels/180°) for the X in relation to X wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.xYOffset=The offset (in degrees) for the X in relation to X wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.xYWaveSpeed=The wave speed (in degrees/second) for the X in relation to X wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
+
+style.effects.FemtoHelper/NewDistortedParallax.description.yXAmplitude=The amplitude (in pixels) for the Y in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yXPeriod=The period (in pixels/180°) for the X in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yXOffset=The offset (in degrees) for the X in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yXWaveSpeed=The wave speed (in degrees/second) for the X in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
+
+style.effects.FemtoHelper/NewDistortedParallax.description.yYAmplitudee=The amplitude (in pixels) for the Y in relation to Y wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yYPeriod=The period (in pixels/180°) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yYOffset=The offset (in degrees) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yYWaveSpeed=The wave speed (in degrees/second) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
+
+style.effects.FemtoHelper/NewDistortedParallax.description.scale=The styleground's scale multiplier. This affects parallax.
+style.effects.FemtoHelper/NewDistortedParallax.description.scaleAmplitude=The amplitude for the scale over time wave.
+style.effects.FemtoHelper/NewDistortedParallax.description.scaleSpeed=The wave speed (in degrees/second) for the scale over time wave.
+style.effects.FemtoHelper/NewDistortedParallax.description.scaleOffset=The offset (in degrees) for the scale over time wave.
+style.effects.FemtoHelper/NewDistortedParallax.description.rotationSpeed=The styleground's rotation speed, in degrees/second.\nRotation presents strange effects with parallax, and is only recommended to use when the parallax factor is zero.
+style.effects.FemtoHelper/NewDistortedParallax.description.rotationOffset=The styleground's initial rotation offset, in degrees.\nRotation presents strange effects with parallax, and is only recommended to use when the parallax factor is zero.
+style.effects.FemtoHelper/NewDistortedParallax.description.shaderPath=The path to the shader's .cso file, Relative to Effects/.\nAllows for advanced control over the styleground logic; The default shader's source code is avaiable inside the mod zip.\nVisit https://github.com/JaThePlayer/FrostHelper/wiki/Shader-Starter-Guide for more information on shaders.
+style.effects.FemtoHelper/NewDistortedParallax.description.waveRotationFix=Makes it so the waving effect does not rotate with the styleground's rotation;\nThis has been determined the "default" behavior, but the old behavior is kept as an option.

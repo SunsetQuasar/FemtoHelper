@@ -11,12 +11,29 @@ FemtoHelperGDDashOrb.depth = 0
 FemtoHelperGDDashOrb.justification = {0.5, 0.5}
 FemtoHelperGDDashOrb.depth = 2000
 FemtoHelperGDDashOrb.placements = {
-    name = "default",
-    data = {
-        angle = 0,
-        speed = 240,
-        pink = false
+    {
+        name = "default",
+        data = {
+            _gravityHelper = true,
+            angle = 0,
+            speed = 240,
+            additive = false,
+            pink = false
+        }
+    },
+    {
+        name = "pink",
+        data = {
+            _gravityHelper = true,
+            angle = 0,
+            speed = 240,
+            additive = false,
+            pink = true
+        }
     }
+}
+FemtoHelperGDDashOrb.ignoredFields = {
+    "_name", "_id","_gravityHelper"
 }
 
 function FemtoHelperGDDashOrb.sprite(room, entity)

@@ -55,6 +55,7 @@ FemtoHelperSMWBlock.placements = {
         canHitLeft = true,
         canHitRight = true,
         hitFlag = "",
+        switchAppearanceFlag = "",
         hitFlagBehavior = 2,
         switchMode = false,
         giveCoyoteFramesOnHit = false,
@@ -91,6 +92,7 @@ FemtoHelperSMWBlock.placements = {
         canHitLeft = true,
         canHitRight = true,
         hitFlag = "",
+        switchAppearanceFlag = "",
         hitFlagBehavior = 2,
         switchMode = false,
         giveCoyoteFramesOnHit = false,
@@ -127,6 +129,7 @@ FemtoHelperSMWBlock.placements = {
         canHitLeft = true,
         canHitRight = true,
         hitFlag = "smwblock_flag",
+        switchAppearanceFlag = "",
         hitFlagBehavior = 2,
         switchMode = true,
         giveCoyoteFramesOnHit = false,
@@ -165,8 +168,8 @@ function FemtoHelperSMWBlock.sprite(room, entity)
 
             spr = {
                 sprite,
-                drawableLine.fromPoints({entity.x + (entity.width/2), entity.y + (entity.height/2), node.x + (rWidth/2), node.y + (rHeight/2)}, {1, 0, 0.5, 0.3}, 1),
-                drawableRectangle.fromRectangle("fill", node.x, node.y, rWidth, rHeight, {1, 0, 0.5, 0.4}, {1, 0.5, 1, 0.6})
+                drawableLine.fromPoints({entity.x + (entity.width/2), entity.y + (entity.height/2), node.x + (rWidth/2), node.y + (rHeight/2)}, entity.switchMode and {0.3, 0.3, 0.3, 0.2} or {1, 0, 0.5, 0.3}, 1),
+                drawableRectangle.fromRectangle("bordered", node.x, node.y, rWidth, rHeight, entity.switchMode and {0.3, 0.3, 0.3, 0.2} or {1, 0, 0.5, 0.4}, entity.switchMode and {0.4, 0.4, 0.4, 0.4} or {1, 0.5, 0.7, 0.6})
             }
         end
     end

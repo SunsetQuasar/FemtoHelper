@@ -39,9 +39,11 @@ public class DirectionalLine : Entity
         positionEaser = GetEaser(data.Attr("positionEase", "CubeInOut"));
         alphaEaserIn = GetEaser(data.Attr("alphaInEase", "CubeInOut"));
         alphaEaserOut = GetEaser(data.Attr("alphaOutEase", "CubeInOut"));
-        alphaInPercent = data.Float("alphaInPercent", 0.3f);
-        alphaOutPercent = data.Float("alphaOutPercent", 0.3f);
-        if ((alphaInPercent + alphaOutPercent > 1) || alphaInPercent > 1 || alphaInPercent < 0 || alphaOutPercent > 1 || alphaOutPercent < 0) alphaInPercent = alphaOutPercent = 0.5f;
+        alphaInPercent = Calc.Clamp(data.Float("alphaInPercent", 0.3f), 0, 1);
+        alphaOutPercent = Calc.Clamp(data.Float("alphaOutPercent", 0.3f), 0, 1);
+        alphaInPercent = Calc.Clamp(alphaInPercent, 0, 1 - alphaOutPercent);
+        alphaOutPercent = Calc.Clamp(alphaOutPercent, 0, 1 - alphaInPercent);
+        if (alphaInPercent + alphaOutPercent > 1) alphaInPercent = alphaOutPercent = 0.5f;
         sprite = GFX.Game[data.Attr("texture", "objects/FemtoHelper/directionalArrow/arrow")];
         color = Calc.HexToColorWithAlpha(data.Attr("color", "ffffffff"));
         endpoint = data.NodesOffset(offset)[0];
@@ -58,11 +60,25 @@ public class DirectionalLine : Entity
         Depth = data.Int("depth", -250);
     }
 
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+        Level level = scene as Level;
+        if (!string.IsNullOrEmpty(deactivationFlag) && level.Session.GetFlag(deactivationFlag))
+        {
+            activationAlpha = 0;
+        }
+        else if (activationAlpha < 1 && (string.IsNullOrEmpty(activationFlag) || level.Session.GetFlag(activationFlag)))
+        {
+            activationAlpha = 1;
+        }
+    }
+
     public override void Update()
     {
         base.Update();
         Level level = Scene as Level;
-        if(!string.IsNullOrEmpty(deactivationFlag) && level.Session.GetFlag(deactivationFlag))
+        if (!string.IsNullOrEmpty(deactivationFlag) && level.Session.GetFlag(deactivationFlag))
         {
             activationAlpha = Math.Max(activationAlpha - Engine.DeltaTime / Math.Max(deactivationTime, float.Epsilon), 0);
         } 

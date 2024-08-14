@@ -32,6 +32,8 @@ public class GDDashOrb : Entity
     public float timer;
 
     public bool pink;
+
+    public bool additive;
     public Color baseColor => pink ? Calc.HexToColor("FF30F0") : Calc.HexToColor("20EE30");
 
     public ParticleType DashParticles;
@@ -71,12 +73,13 @@ public class GDDashOrb : Entity
         angle = data.Float("angle", 0f) * Calc.DegToRad;
         speed = data.Float("speed", 240f);
         pink = data.Bool("pink", false);
+        additive = data.Bool("additive", false);
 
         orb = GFX.Game["objects/FemtoHelper/gddashorb/dashorb"];
         ring = GFX.Game["objects/FemtoHelper/gddashorb/dashring"];
         Add(new VertexLight(baseColor, 0.9f, 20, 40));
         Add(new BloomPoint(0.4f, 18));
-        timer = Calc.Random.NextFloat((float)Tau);
+        timer = Calc.Random.NextFloat(Tau);
 
         DashParticles = new ParticleType
         {
@@ -130,7 +133,10 @@ public class GDDashOrb : Entity
                     player.launched = true;
                     Vector2 spd = Calc.AngleToVector(angle, speed);
                     if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1) spd.Y *= -1;
-                    player.Speed = spd;
+                    if (additive)
+                    {
+                        player.Speed += spd;
+                    } else player.Speed = spd;
                     if (pink) FemtoModule.GravityHelperSupport.SetPlayerGravity?.Invoke(2, 1);
                     ExtraTrailManager t = player.Get<ExtraTrailManager>();
                     if(t != null)
@@ -145,7 +151,7 @@ public class GDDashOrb : Entity
                 Audio.Play("event:/char/madeline/dash_pink_right", Position).setPitch(1.2f + Calc.Random.Range(-0.1f, 0.1f));
                 pulsepercent = 1f;
                 cooldown = 0.1f;
-                for (float i = (float)Tau / 12f; i < (float)Tau; i += (float)Tau / 12f)
+                for (float i = Tau / 12f; i < Tau; i += Tau / 12f)
                 {
                     (Scene as Level).Particles.Emit(DashParticles, Position, i);
                 }

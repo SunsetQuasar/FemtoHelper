@@ -114,6 +114,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public bool canHitTop, canHitBottom, canHitLeft, canHitRight;
 
         public string hitFlag;
+        public string switchModeRenderFlag;
 
         public int hitFlagBehavior;
 
@@ -189,6 +190,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             hitFlagBehavior = data.Int("hitFlagBehavior", 2);
 
             switchMode = data.Bool("switchMode", false);
+            switchModeRenderFlag = data.Attr("switchAppearanceFlag", "");
 
             giveCoyoteFramesOnHit = data.Bool("giveCoyoteFramesOnHit", false);
 
@@ -302,7 +304,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
                     {
                         if(hasIndicator || hasBeenHitOnce)
                         {
-                            if ((Scene as Level).Session.GetFlag(hitFlag))
+                            if ((string.IsNullOrEmpty(switchModeRenderFlag) ? (Scene as Level).Session.GetFlag(hitFlag) : (Scene as Level).Session.GetFlag(switchModeRenderFlag)))
                             {
                                 used2.Draw(Position + spriteOffset, Vector2.Zero, color);
                             }
