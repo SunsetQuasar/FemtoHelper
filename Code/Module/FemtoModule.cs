@@ -238,7 +238,7 @@ public class FemtoModule : EverestModule
         ILCursor cursor = new ILCursor(il);
         while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdloc(4)))
         {
-            Logger.Log(LogLevel.Info, "FemtoHelper/onCollideH_IL", $"Emitting extra collision actions at {cursor.Index} in CIL code for {cursor.Method.FullName}");
+            //Logger.Log(LogLevel.Info, "FemtoHelper/onCollideH_IL", $"Emitting extra collision actions at {cursor.Index} in CIL code for {cursor.Method.FullName}");
 
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.EmitDelegate(InvokeExtraCollisionActionsH);
@@ -366,7 +366,7 @@ public class FemtoModule : EverestModule
         ILCursor cursor = new ILCursor(il);
         while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdloc(4)))
         {
-            Logger.Log(LogLevel.Info, "FemtoHelper/onCollideV_IL", $"Emitting extra collision actions at {cursor.Index} in CIL code for {cursor.Method.FullName}");
+            //Logger.Log(LogLevel.Info, "FemtoHelper/onCollideV_IL", $"Emitting extra collision actions at {cursor.Index} in CIL code for {cursor.Method.FullName}");
 
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.EmitDelegate(InvokeExtraCollisionActionsV);

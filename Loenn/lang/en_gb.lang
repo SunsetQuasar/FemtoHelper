@@ -426,7 +426,7 @@ style.effects.FemtoHelper/DigitalCascade.description.afterimageAlpha=How transpa
 
 # Distorted Parallax
 
-style.effects.FemtoHelper/DistortedParallax.name=Distorted Parallax
+style.effects.FemtoHelper/DistortedParallax.name=Distorted Parallax (Obsolete)
 style.effects.FemtoHelper/DistortedParallax.description.texture=The texture's path.
 style.effects.FemtoHelper/DistortedParallax.description.posX=The styleground's horizontal position.
 style.effects.FemtoHelper/DistortedParallax.description.posY=The styleground's vertical position.
@@ -450,3 +450,7 @@ style.effects.FemtoHelper/DistortedParallax.description.offsetY=Offsets the vert
 style.effects.FemtoHelper/DistortedParallax.description.flipX=Whether the styleground should be horizontally flipped.
 style.effects.FemtoHelper/DistortedParallax.description.flipY=Whether the styleground should be vertically flipped.
 style.effects.FemtoHelper/DistortedParallax.description.sliceMode=How the effect's code slices the given texture to distort the styleground.\nHorizontal: The horizontal waving is transversal, and the vertical waving is longitudinal.\nVertical: The horizontal waving is longitudinal, and the vertical waving is transversal.
+
+# New Distorted Parallax
+
+style.effects.FemtoHelper/NewDistortedParallax.name=Distorted Parallax (New)

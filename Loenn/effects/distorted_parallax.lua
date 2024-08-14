@@ -50,4 +50,5 @@ effect.defaultData = {
     sliceMode = 0,
 }
 
-return effect
+return nil --"FemtoHelper/DistortedParallax" is obsolete
+--return effect

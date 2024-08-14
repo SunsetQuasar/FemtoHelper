@@ -77,7 +77,7 @@ public class EvilTheoCrystal : Actor
         onCollideH = OnCollideH;
         onCollideV = OnCollideV;
         LiftSpeedGraceTime = 0.1f;
-        Add(light = new VertexLight(base.Collider.Center, Color.White, 1f, 32, 64));
+        Add(light = new VertexLight(base.Collider.Center, Color.Red, 1f, 32, 64));
         Add(new MirrorReflection());
     }
 

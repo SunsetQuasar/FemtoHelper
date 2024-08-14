@@ -37,12 +37,7 @@ local defaultColor = {89 / 255, 88 / 255, 102 / 255}
 
 function FemtoHelperPseudoPolyhedron.sprite(room, entity)
 
-   local sprite = "ahorn/PseudoPolyhedron"
    local color = entity.color
-
-   local psprite = drawableSprite.fromTexture(sprite, entity)
-
-   psprite:setColor(color)
 
    local sides = entity.baseSideCount
 
