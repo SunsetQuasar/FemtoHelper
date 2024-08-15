@@ -136,6 +136,10 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public bool specialHandling;
 
+        public bool visibleReward;
+        public bool activeReward;
+        public bool collidableReward;
+
         public Generic_SMWBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
         {
             Depth = data.Int("depth", -15000);
@@ -173,6 +177,10 @@ namespace Celeste.Mod.FemtoHelper.Entities
             if (node == null) node = Position;
 
             rewardcatcher = new Rectangle((int)node.X, (int)node.Y, data.Int("rewardContainerWidth", 16), data.Int("rewardContainerHeight", 16));
+
+            visibleReward = data.Bool("visibleReward", true);
+            activeReward = data.Bool("activeReward", true);
+            collidableReward = data.Bool("collidableReward", false);
 
             bumpdir = 0;
 
@@ -229,7 +237,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
                         {
                             offsets.Add(entity.Position - new Vector2(rewardcatcher.Center.X, rewardcatcher.Center.Y));
                             rewards.Add(entity);
-                            entity.Active = entity.Visible = false;
+                            entity.Active = activeReward;
+                            entity.Visible = visibleReward;
+                            entity.Collidable = collidableReward;
                         }
                     }
                 }

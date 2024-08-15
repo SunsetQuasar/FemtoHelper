@@ -279,6 +279,9 @@ entities.FemtoHelper/SMWBlock.attributes.description.spriteOffsetX=Offsets the s
 entities.FemtoHelper/SMWBlock.attributes.description.spriteOffsetY=Offsets the sprite vertically by the given amount.
 entities.FemtoHelper/SMWBlock.attributes.description.depth=The block's render depth. Higher values means further back in the scene, lower negative values means closer in front of the scene, while 0 is the player's depth.
 entities.FemtoHelper/SMWBlock.attributes.description.specialEntityHandling=Whether the block's logic should apply special handling for some vanilla entities to ensure they work correctly during and after the animation.\nThis is optional, as disabling it allows for interesting "jank" interactions with some of the entities.\nThis does nothing to modded entities.
+entities.FemtoHelper/SMWBlock.attributes.description.activeReward=If checked, the reward entities will be active, even when "inside" the block.
+entities.FemtoHelper/SMWBlock.attributes.description.visibleReward=If checked, the reward entities will be visible, even when "inside" the block.
+entities.FemtoHelper/SMWBlock.attributes.description.collidableReward=If checked, the reward entities will be collidable, even when "inside" the block.
 
 # SMW Fish
 

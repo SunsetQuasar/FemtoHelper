@@ -66,7 +66,10 @@ FemtoHelperSMWBlock.placements = {
         spriteOffsetX = 0,
         spriteOffsetY = 0,
         depth = -15000,
-        specialEntityHandling = true
+        specialEntityHandling = true,
+        visibleReward = true,
+        activeReward = true,
+        collidableReward = false
     },
 },
 {
@@ -103,7 +106,10 @@ FemtoHelperSMWBlock.placements = {
         spriteOffsetX = 0,
         spriteOffsetY = 0,
         depth = -15000,
-        specialEntityHandling = true
+        specialEntityHandling = true,
+        visibleReward = true,
+        activeReward = true,
+        collidableReward = false
     }
 },
 {
@@ -140,7 +146,10 @@ FemtoHelperSMWBlock.placements = {
         spriteOffsetX = 0,
         spriteOffsetY = 0,
         depth = -15000,
-        specialEntityHandling = true
+        specialEntityHandling = true,
+        visibleReward = true,
+        activeReward = true,
+        collidableReward = false
     }
 }
 }
@@ -166,10 +175,14 @@ function FemtoHelperSMWBlock.sprite(room, entity)
             end
             sprite:setJustification(0, 0)
 
+            local color1 = entity.switchMode and {0.3, 0.3, 0.3, 0.1} or {1, 0, 0.5, 0.4}
+            local color2 = entity.switchMode and {0.4, 0.4, 0.4, 0.2} or {1, 0.5, 0.7, 0.6}
+            local color3 = entity.switchMode and {0.3, 0.3, 0.3, 0.07} or {1, 0, 0.5, 0.3}
+
             spr = {
                 sprite,
-                drawableLine.fromPoints({entity.x + (entity.width/2), entity.y + (entity.height/2), node.x + (rWidth/2), node.y + (rHeight/2)}, entity.switchMode and {0.3, 0.3, 0.3, 0.2} or {1, 0, 0.5, 0.3}, 1),
-                drawableRectangle.fromRectangle("bordered", node.x, node.y, rWidth, rHeight, entity.switchMode and {0.3, 0.3, 0.3, 0.2} or {1, 0, 0.5, 0.4}, entity.switchMode and {0.4, 0.4, 0.4, 0.4} or {1, 0.5, 0.7, 0.6})
+                drawableLine.fromPoints({entity.x + (entity.width/2), entity.y + (entity.height/2), node.x + (rWidth/2), node.y + (rHeight/2)}, color3, 1),
+                drawableRectangle.fromRectangle("bordered", node.x, node.y, rWidth, rHeight, color1, color2)
             }
         end
     end
