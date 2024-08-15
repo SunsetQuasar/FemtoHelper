@@ -2,7 +2,7 @@
 
     <PropertyGroup>
 		<NoWarn>CS0436</NoWarn>
-        <TargetFramework>net452</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <AssemblyName>FemtoHelper</AssemblyName>
         <RootNamespace>Celeste.Mod.FemtoHelper</RootNamespace>
         <LangVersion>latest</LangVersion>

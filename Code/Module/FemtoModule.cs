@@ -290,10 +290,7 @@ public class FemtoModule : EverestModule
                     }
                     else
                     {
-                        if (l.firstHitSfx != null)
-                        {
-                            l.firstHitSfx.Stop();
-                        }
+                        l.firstHitSfx?.Stop();
                         Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", l.Position);
                         Celeste.Freeze(0.2f);
                         l.Break();
