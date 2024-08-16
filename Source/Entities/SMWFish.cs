@@ -56,7 +56,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             textureframes = texture.Width / texture.Height;
 
             Collider = new Circle(big ? 16 : 8, 0, 0);
-            if (!blurp) bonkbox = new Hitbox(big ? 32 : 16, (big ? 8 : 4), (big ? -12 : -6), (big ? -14 : -8));
+            if (!blurp) bonkbox = new Hitbox(big ? 32 : 16, (big ? 8 : 4), (big ? -24 : -12), (big ? -16 : -8));
 
             audioPath = data.Attr("audioPath", "event:/FemtoHelper/");
 
