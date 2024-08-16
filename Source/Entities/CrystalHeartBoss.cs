@@ -44,7 +44,7 @@ public class CrystalHeartBoss : FinalBoss
 	public CrystalHeartBoss(EntityData e, Vector2 offset) : base (e, offset)
 	{
 		orig_ctor(e, offset);
-		canChangeMusic = e.Bool("canChangeMusic", defaultValue: true);
+        GetType().GetField("canChangeMusic", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(this, e.Bool("canChangeMusic", defaultValue: true));
 	}
 
     public static void Load()
