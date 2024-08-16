@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -28,19 +29,24 @@ public class GloriousPassage : Entity
     public bool simple;
     public bool done;
     public bool faceLeft;
+    public int spawnIndex;
+    public bool interactToOpen;
     public GloriousPassage(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Collider = new Hitbox(data.Width, data.Height);
         Add(new PlayerCollider(onPlayer, Collider));
-        Depth = 120;
 
+        Depth = data.Int("depth", 120);
         flag = data.Attr("flag", "door_check");
         roomName = data.Attr("roomName", "").Trim();
-        audio = data.Attr("audio", "event:/paeceful_sibs_chamber/smw_door_opens");
-        closed = GFX.Game[data.Attr("closedPath", "objects/ss2024/gloriousPassage/closed")];
-        open = GFX.Game[data.Attr("openPath", "objects/ss2024/gloriousPassage/open")];
+        audio = data.Attr("audio", "event:/FemtoHelper/smw_door_opens");
+        closed = GFX.Game[data.Attr("closedPath", "objects/FemtoHelper/SMWDoor/closed")];
+        open = GFX.Game[data.Attr("openPath", "objects/FemtoHelper/SMWDoor/open")];
         simple = data.Bool("simpleTrigger", false);
         faceLeft = data.Bool("faceLeft", false);
+        spawnIndex = data.Int("spawnpointIndex");
+        interactToOpen = !data.Bool("pressUpToOpen", false);
+        if (interactToOpen) Add(new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width/2, -8), onTalk));
     }
 
     public override void Awake(Scene scene)
@@ -49,11 +55,23 @@ public class GloriousPassage : Entity
         (Scene as Level).Session.SetFlag(flag, false);
     }
 
+    public void onTalk(Player player)
+    {
+        if (!done)
+        {
+            (Scene as Level).Session.SetFlag(flag, true);
+            if (!string.IsNullOrEmpty(audio)) Audio.Play(audio);
+            Add(new Coroutine(Routine(player)));
+            done = true;
+        }
+    }
+
     public void onPlayer(Player player)
     {
         if (simple && !done)
         {
             (Scene as Level).Session.SetFlag(flag, true);
+            if (!string.IsNullOrEmpty(audio)) Audio.Play(audio);
             Add(new Coroutine(Routine(player)));
             done = true;
             return;
@@ -65,14 +83,14 @@ public class GloriousPassage : Entity
     public override void Update()
     {
         base.Update();
-        if (yeahforsure && !done)
+        if (yeahforsure && !done && !interactToOpen)
         {
             if (player.OnGround())
             {
                 if (Input.MoveY.Value == -1 && lastinput != -1)
                 {
                     (Scene as Level).Session.SetFlag(flag, true);
-                    Audio.Play(audio);
+                    if(!string.IsNullOrEmpty(audio)) Audio.Play(audio);
                     Add(new Coroutine(Routine(player)));
                     done = true;
                 }
@@ -123,7 +141,8 @@ public class GloriousPassage : Entity
                 Vector2 cameraDelta = level.Camera.Position - pos;
                 level.Remove(player);
                 level.UnloadLevel();
-                if (level.Session.MapData.Get(roomName) != null)
+                LevelData newLevelData = level.Session.MapData.Get(roomName);
+                if (newLevelData != null)
                 {
                     level.Session.Level = roomName;
                 }
@@ -131,18 +150,18 @@ public class GloriousPassage : Entity
                 {
                     foreach (LevelData d in level.Session.MapData.Levels)
                     {
-                        if (d.Name.Trim() == roomName) level.Session.Level = d.Name;
+                        if (d.Name.Trim() == roomName) {
+                            level.Session.Level = d.Name;
+                        }
                     }
                 }
 
 
-
-                level.Session.RespawnPoint = level.GetSpawnPoint(new Vector2(level.Bounds.Left, level.Bounds.Top));
+                level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(spawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
 
                 level.Session.FirstLevel = false;
                 level.Add(player);
                 level.LoadLevel(Player.IntroTypes.Transition);
-
 
 
                 player.Position = level.Session.RespawnPoint.Value;

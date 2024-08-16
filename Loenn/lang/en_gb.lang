@@ -66,6 +66,20 @@ entities.FemtoHelper/DirectionalLine.attributes.description.alphaInPercent=How m
 entities.FemtoHelper/DirectionalLine.attributes.description.orientSprite=Whether the sprites should point in the travel direction or stay stationary.
 entities.FemtoHelper/DirectionalLine.attributes.description.color=The element's color.\nSupports alpha for premultiplied colors, as RRGGBBAA;
 
+entities.FemtoHelper/GloriousPassage.placements.name.passage=Teleport Door
+entities.FemtoHelper/GloriousPassage.placements.name.passageUp=Teleport Door (Up Press)
+entities.FemtoHelper/GloriousPassage.placements.name.passageSimple=Teleport Door (Simple Area)
+entities.FemtoHelper/GloriousPassage.attributes.description.roomName=The room the door should lead to.\nInvalid room names will cause the door to lead to the same room it is from.
+entities.FemtoHelper/GloriousPassage.attributes.description.spawnpointIndex=Which spawnpoint the player should be teleported to.
+entities.FemtoHelper/GloriousPassage.attributes.description.faceLeft=Whether the player should spawn facing left after using the door.
+entities.FemtoHelper/GloriousPassage.attributes.description.depth=The door's depth;\nHigher values means further back in the scene, lower negative values means closer in front of the scene, while 0 is the player's depth.
+entities.FemtoHelper/GloriousPassage.attributes.description.closedPath=Texture path for the door when it is closed.
+entities.FemtoHelper/GloriousPassage.attributes.description.simpleTrigger=Turns the door into a simple teleportation area.
+entities.FemtoHelper/GloriousPassage.attributes.description.audio=Audio event that plays when the door is opened;\nLeave blank for no sound.
+entities.FemtoHelper/GloriousPassage.attributes.description.openPath=Texture path for the door when it is open.
+entities.FemtoHelper/GloriousPassage.attributes.description.pressUpToOpen=Makes it so the door is opened by pressing up (like in Super Mario games).
+entities.FemtoHelper/GloriousPassage.attributes.description.flag=The flag set when the door is opened.
+
 # Custom Cliffside Wind Flag
 entities.FemtoHelper/CustomCliffsideWindFlag.placements.name.default=Custom Wind Flag
 entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.index=The index of the sprite to use. For example, index 0 of sprite "flag" would use "flag00.png".
