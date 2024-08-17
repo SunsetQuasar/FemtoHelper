@@ -6,6 +6,4 @@ Contributions are welcome; If you wish to, feel free to fork the repo and open a
 
 This repo is intended for the development of the mod only. Download the helper for use in modding: https://gamebanana.com/mods/53722
 
-Visit the [wiki](https://github.com/SunsetQuasar/FemtoHelper/wiki) for information on each feature.
-
 
