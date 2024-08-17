@@ -319,14 +319,16 @@ entities.FemtoHelper/SMWBlock.attributes.description.collidableReward=If checked
 # SMW Fish
 
 entities.FemtoHelper/SMWFish.placements.name.smwfishdefault=SMW Fish
+entities.FemtoHelper/SMWFish.placements.name.smwfishblurp=SMW Fish (Blurp)
 entities.FemtoHelper/SMWFish.attributes.description.path=The folder path for the fish sprites. This indicates a folder, which means this string should always end with a forward slash.\nInside that path, the fish takes either "cheep.png" or "blurp.png" as its texture.\nThe textures can (but do not need to) be sliced into square shaped animation frames, as wide as the texture's height. This allows the block to store all its animation frames inside of a single texture.
 entities.FemtoHelper/SMWFish.attributes.description.audioPath=Path for the FMOD folder containing the audio events the fish will use. The fish uses the "enemykill" event inside the specified folder.
 entities.FemtoHelper/SMWFish.attributes.description.blurp=Whether the fish should be a Blurp. As in SMW, blurps cannot be jumped on.
 entities.FemtoHelper/SMWFish.attributes.description.big=Whether the fish should be twice its usual size.
+entities.FemtoHelper/SMWFish.attributes.description.faceRight=Whether the fish should face right instead of left.
 entities.FemtoHelper/SMWFish.attributes.description.initialSpeedX=The fish's horizontal speed when it gets activated by its respective flag.
 entities.FemtoHelper/SMWFish.attributes.description.initialSpeedX=The fish's vertical speed when it gets activated by its respective flag.
 entities.FemtoHelper/SMWFish.attributes.description.gravity=The fish's downwards acceleration when it gets activated by its respective flag.
-entities.FemtoHelper/SMWFish.attributes.description.activationFlag=The flag that activates the fish.\nPrecede the flag name with an exclamation point to negate the flag. (e.g. "!myflag" will only activate the fish if "myflag" is NOT active)
+entities.FemtoHelper/SMWFish.attributes.description.activationFlag=The flag that activates the fish.\nPrecede the flag name with an exclamation point to negate the flag. (e.g. "!myflag" will only activate the fish if "myflag" is NOT active)\nLeave empty for the fish to always be active.
 
 # Vital Drain Controller
 
@@ -547,7 +549,7 @@ style.effects.FemtoHelper/NewDistortedParallax.description.scrollX=The stylegrou
 style.effects.FemtoHelper/NewDistortedParallax.description.scrollY=The styleground's vertical parallax factor.\nValues between 0 and 1 appear as if they are in the background;\nValues above 1 appear as if they are in the foreground;\nA value of 1 means it moves along with the camera.
 style.effects.FemtoHelper/NewDistortedParallax.description.speedX=The styleground's horizontal movement speed;\nPositive values go right, negative values go left.
 style.effects.FemtoHelper/NewDistortedParallax.description.speedY=The styleground's vertical movement speed;\nPositive values go down, negative values go up.
-style.effects.FemtoHelper/NewDistortedParallax.description.color=The styleground's color, in hexadecimal.\nSupports alpha for premultiplied colors, as RRGGBBAA;
+style.effects.FemtoHelper/NewDistortedParallax.description.color=The styleground's color, in hexadecimal.
 style.effects.FemtoHelper/NewDistortedParallax.description.blendState=The styleground's blending mode;\nAlpha Blend: Blends whatever is behind the styleground with itself with a weight determined by its alpha.\nAdditive: Adds its color information (multiplied by its alpha) to what is behind it.\nMultiply: performs multiplication on the background, effectively tinting what is behind it.\nSubtract: Subtracts its color information (multiplied by its alpha) to what is behind it.
 style.effects.FemtoHelper/NewDistortedParallax.description.filterMode=The styleground's texture filtering mode;\nPoint gives the default "pixelated look", whereas Linear and Anisotropic add anti-aliasing, which may be useful in some cases.
 style.effects.FemtoHelper/NewDistortedParallax.description.alpha=Color alpha multiplier. different from the Color's alpha as in it multiplies the color channels as well.

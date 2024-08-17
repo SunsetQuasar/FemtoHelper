@@ -17,7 +17,7 @@ FemtoHelperCinematicText.fieldInformation = {
 FemtoHelperCinematicText.placements = {
     name = "default",
     data = {
-        activationTag = "tag1",
+        activationTag = "tag",
         charList = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\\\".,",
         charOriginX = 0,
         charOriginY = -2,

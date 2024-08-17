@@ -40,6 +40,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public string audioPath;
 
+        public bool faceRight;
+
         public TrollFish(EntityData data, Vector2 offset) : base(data.Position + offset)
         {
             Depth = data.Int("depth", -120000);
@@ -48,6 +50,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             flag = data.Attr("activationFlag", "fish_flag");
             blurp = data.Bool("blurp", false);
             big = data.Bool("big", false);
+            faceRight = data.Bool("faceRight", false);
 
             texture = blurp ? GFX.Game[data.Attr("path", "objects/FemtoHelper/SMWFish/normal/") + "blurp"] : GFX.Game[data.Attr("path", "objects/FemtoHelper/SMWFish/normal/") + "cheep"];
 
@@ -131,7 +134,10 @@ namespace Celeste.Mod.FemtoHelper.Entities
             base.Render();
             textureslice = texture.GetSubtexture(((int)Math.Floor(texturetimer) % textureframes) * texture.Height, 0, texture.Height, texture.Height);
 
-            textureslice.DrawCentered(Position, dead ? Calc.HexToColor("CCCCCC") : Color.White, big ? 2 : 1, deadspin);
+            Vector2 size = faceRight ? new Vector2(-1, 1) : Vector2.One;
+            if (big) size *= 2;
+
+            textureslice.DrawCentered(Position, dead ? Calc.HexToColor("CCCCCC") : Color.White, size, deadspin);
         }
     }
 }

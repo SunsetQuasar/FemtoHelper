@@ -10,17 +10,35 @@ FemtoHelperSMWFish.name = "FemtoHelper/SMWFish"
 FemtoHelperSMWFish.depth = -120000
 FemtoHelperSMWFish.justification = {0, 0}
 FemtoHelperSMWFish.placements = {
-    name = "smwfishdefault",
-    data = {
-        path = "objects/FemtoHelper/SMWFish/normal/",
-        audioPath = "event:/FemtoHelper/",
-        blurp = false,
-        big = false,
-        initialSpeedX = 0, 
-        initialSpeedY = 0,
-        gravity = 260,
-        activationFlag = "fish_flag",
-        depth = -120000
+    {
+        name = "smwfishdefault",
+        data = {
+            path = "objects/FemtoHelper/SMWFish/normal/",
+            audioPath = "event:/FemtoHelper/",
+            blurp = false,
+            big = false,
+            initialSpeedX = 0, 
+            initialSpeedY = 0,
+            gravity = 260,
+            activationFlag = "fish_flag",
+            depth = -120000,
+            faceRight = false
+        }
+    },
+    {
+        name = "smwfishblurp",
+        data = {
+            path = "objects/FemtoHelper/SMWFish/normal/",
+            audioPath = "event:/FemtoHelper/",
+            blurp = true,
+            big = false,
+            initialSpeedX = 0, 
+            initialSpeedY = 0,
+            gravity = 260,
+            activationFlag = "fish_flag",
+            depth = -120000,
+            faceRight = false
+        }
     }
 }
 
@@ -33,17 +51,33 @@ function FemtoHelperSMWFish.sprite(room, entity)
     sprite:useRelativeQuad(0, 0, sprite.meta.height, sprite.meta.height)
 
     if entity.big then 
-        sprite:addPosition(-sprite.meta.height, -sprite.meta.height)
+        if entity.faceRight then
+            sprite:addPosition(sprite.meta.height, -sprite.meta.height)
+        else
+            sprite:addPosition(-sprite.meta.height, -sprite.meta.height)
+        end
     else 
-        sprite:addPosition(-sprite.meta.height / 2, -sprite.meta.height / 2)
+        if entity.faceRight then
+            sprite:addPosition(sprite.meta.height / 2, -sprite.meta.height / 2)
+        else
+            sprite:addPosition(-sprite.meta.height / 2, -sprite.meta.height / 2)
+        end
     end
 
     sprite:setJustification(0.5, 0.5)
 
     if entity.big then
-        sprite:setScale(2, 2)
+        if entity.faceRight then
+            sprite:setScale(-2, 2)
+        else
+            sprite:setScale(2, 2)
+        end
     else
-        sprite:setScale(1, 1)
+        if entity.faceRight then
+            sprite:setScale(-1, 1)
+        else
+            sprite:setScale(1, 1)
+        end
     end
 
     return sprite

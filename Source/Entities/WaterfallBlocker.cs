@@ -16,12 +16,8 @@ public class WaterfallBlocker : Water
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        Collider = null;
         Components.RemoveAll<DisplacementRenderHook>();
-        scene.OnEndOfFrame += () =>
-        {
-            RemoveSelf();
-        };
+        scene.OnEndOfFrame += RemoveSelf;
     }
     public override void Update()
     {
