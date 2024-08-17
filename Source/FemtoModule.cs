@@ -1,12 +1,13 @@
-﻿using Monocle;
+﻿global using Monocle;
+global using Microsoft.Xna.Framework;
+global using Celeste.Mod.Entities;
+
 using System;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System.Collections;
-using Microsoft.Xna.Framework;
 using Celeste.Mod.FemtoHelper.Effects;
 using Microsoft.Xna.Framework.Graphics;
-using Celeste.Mod.Entities;
 using Celeste.Mod.FemtoHelper.Entities;
 using System.Reflection;
 using MonoMod.Utils;
@@ -17,7 +18,6 @@ using System.Linq;
 using Celeste.Mod.FemtoHelper.Wipes;
 using Celeste.Mod.UI;
 using Celeste.Mod.FemtoHelper.Code.Entities;
-using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper;
 

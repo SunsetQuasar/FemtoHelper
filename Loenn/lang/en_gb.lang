@@ -47,6 +47,24 @@ entities.FemtoHelper/GDDashOrb.attributes.description.speed=The speed boost the 
 entities.FemtoHelper/GDDashOrb.attributes.description.pink=Whether the orb should flip the player's gravity after being activated.\nDoes nothing if GravityHelper isn't installed.
 entities.FemtoHelper/GDDashOrb.attributes.description.additive=Whether the orb should add to the player's current speed, instead of overriding it.
 
+# Waterfall Blocker
+entities.FemtoHelper/WaterfallBlocker.placements.name.default=Waterfall Blocker
+
+# Timed Flag Refill
+entities.FemtoHelper/TimedFlagRefill.placements.name.boolean=Timed Flag Refill
+entities.FemtoHelper/TimedFlagRefill.placements.name.booleanTwo=Timed Flag Refill (Two Dashes)
+entities.FemtoHelper/TimedFlagRefill.attributes.description.twoDash=Gives two dashes instead of one.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.flag=The flag the refill controls.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.stopMomentum=Makes it so collecting the refill stops the player's momentum.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.path=The refill's sprite path.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.particleColors=The refill's particle colors.\nShould be a comma-separated list of exactly four particle colors:\nShatter Color 1, Shatter Color 2, Glow Color 1, Glow color 2.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.alwaysUse=Makes it so the refill ignores dash/stamina requirements and always collects.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.flagMode=How the controlled flag should behave.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.duration=The amount of frames the flag should be affected for.\nUse -1 to set the flag permanently.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.refillDash=Whether the refill should refill the player's dash.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.refillStamina=Whether the refill should refill the player's stamina.
+
 # Directional Sprites Line
 entities.FemtoHelper/DirectionalLine.placements.name.default=Directional Sprites Line
 entities.FemtoHelper/DirectionalLine.attributes.description.activationTime=The time it takes for the line's elements to fade in when activated by a flag.
@@ -66,6 +84,7 @@ entities.FemtoHelper/DirectionalLine.attributes.description.alphaInPercent=How m
 entities.FemtoHelper/DirectionalLine.attributes.description.orientSprite=Whether the sprites should point in the travel direction or stay stationary.
 entities.FemtoHelper/DirectionalLine.attributes.description.color=The element's color.\nSupports alpha for premultiplied colors, as RRGGBBAA;
 
+# Teleport Door
 entities.FemtoHelper/GloriousPassage.placements.name.passage=Teleport Door
 entities.FemtoHelper/GloriousPassage.placements.name.passageUp=Teleport Door (Up Press)
 entities.FemtoHelper/GloriousPassage.placements.name.passageSimple=Teleport Door (Simple Area)
