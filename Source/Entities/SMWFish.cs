@@ -124,8 +124,6 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 {
                     texturetimer += Engine.DeltaTime * 7;
                 }
-
-                
             }
         }
 

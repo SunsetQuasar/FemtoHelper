@@ -176,9 +176,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             rewardcatcher = new Rectangle((int)node.X, (int)node.Y, data.Int("rewardContainerWidth", 16), data.Int("rewardContainerHeight", 16));
 
-            visibleReward = data.Bool("visibleReward", true);
-            activeReward = data.Bool("activeReward", true);
-            collidableReward = data.Bool("collidableReward", false);
+            visibleReward = data.Bool("visibleReward", false);
+            activeReward = data.Bool("activeReward", false);
+            collidableReward = data.Bool("collidableReward", true);
 
             bumpdir = 0;
 
@@ -603,7 +603,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 }
             };
             Add(tween);
-            entity.Active = entity.Visible = true;
+            entity.Active = entity.Visible = entity.Collidable = true;
             yield return ejectDuration;
         }
 
