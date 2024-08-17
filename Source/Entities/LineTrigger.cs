@@ -22,7 +22,6 @@ public class LineTrigger : Entity
     public LineTrigger(EntityData data, Vector2 offset) : base(data.Position + offset) 
     {
         node = data.NodesOffset(offset)[0];
-        if (node == null) RemoveSelf();
         if (node.X < Position.X)
         {
             Vector2 num = node;

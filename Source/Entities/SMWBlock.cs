@@ -174,8 +174,6 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             node = data.NodesOffset(offset)[0];
 
-            if (node == null) node = Position;
-
             rewardcatcher = new Rectangle((int)node.X, (int)node.Y, data.Int("rewardContainerWidth", 16), data.Int("rewardContainerHeight", 16));
 
             visibleReward = data.Bool("visibleReward", true);

@@ -60,56 +60,44 @@ public class FemtoModule : EverestModule
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            Type selfRef = self.GetType();
-
-            FieldInfo SpeedInfo = selfRef.GetField("hitSpeed", BindingFlags.NonPublic | BindingFlags.Instance);
-
-            Vector2 RefSpeed = (Vector2)(SpeedInfo?.GetValue(self));
             if (data.Hit is Generic_SMWBlock && !(data.Hit as Generic_SMWBlock).active)
             {
-                if (RefSpeed.X > 0)
+                if (self.hitSpeed.X > 0)
                 {
                     if ((data.Hit as Generic_SMWBlock).canHitLeft) (data.Hit as Generic_SMWBlock).Hit(null, 1);
                 }
-                if (RefSpeed.X < 0)
+                if (self.hitSpeed.X < 0)
                 {
                     if ((data.Hit as Generic_SMWBlock).canHitRight) (data.Hit as Generic_SMWBlock).Hit(null, 2);
                 }
 
             }
         }
-        orig.Invoke(self, data);
+        orig(self, data);
     }
     private static void Puffer_KaizoCollideVHook(On.Celeste.Puffer.orig_OnCollideV orig, Puffer self, CollisionData data)
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            Type selfRef = self.GetType();
-
-            FieldInfo SpeedInfo = selfRef.GetField("hitSpeed", BindingFlags.NonPublic | BindingFlags.Instance);
-
-            Vector2 RefSpeed = (Vector2)(SpeedInfo?.GetValue(self));
-
-
             if (data.Hit is Generic_SMWBlock && !(data.Hit as Generic_SMWBlock).active)
             {
-                if (RefSpeed.Y > 0)
+                if (self.hitSpeed.Y > 0)
                 {
                     if ((data.Hit as Generic_SMWBlock).canHitTop) (data.Hit as Generic_SMWBlock).Hit(null, 3);
                 }
-                if (RefSpeed.Y < 0)
+                if (self.hitSpeed.Y < 0)
                 {
                     if ((data.Hit as Generic_SMWBlock).canHitBottom) (data.Hit as Generic_SMWBlock).Hit(null, 0);
                 }
 
             }
         }
-        orig.Invoke(self, data);
+        orig(self, data);
     }
 
     private static void Puffer_SplodeKaizoHook(On.Celeste.Puffer.orig_Explode orig, Puffer self)
     {
-        orig.Invoke(self);
+        orig(self);
         Collider collider = self.Collider;
         self.Collider = new Circle(40f);
         foreach (Generic_SMWBlock entity in self.Scene.Tracker.GetEntities<Generic_SMWBlock>())
