@@ -369,7 +369,7 @@ entities.FemtoHelper/CinematicText.attributes.description.parallax=Parallax fact
 entities.FemtoHelper/CinematicText.attributes.description.scale=Text scale factor. Looks best with HUD mode, otherwise nearest neighbor interpolation can make it look strange.
 entities.FemtoHelper/CinematicText.attributes.description.shadow=Draws a small shadow instead of an outline.
 entities.FemtoHelper/CinematicText.attributes.description.spacing=Spacing between characters.
-entities.FemtoHelper/CinematicText.attributes.description.activationTag=The text will be activated if this matches with a CinematicTextTrigger tag.
+entities.FemtoHelper/CinematicText.attributes.description.activationTag=The text will be activated if this matches with a CinematicTextTrigger tag.\nLeave empty for it to play automatically on room load.
 entities.FemtoHelper/CinematicText.attributes.description.charOriginX=Where the incoming character comes from, X component.
 entities.FemtoHelper/CinematicText.attributes.description.charOriginY=Where the incoming character comes from, Y component.
 entities.FemtoHelper/CinematicText.attributes.description.delay=Delay in seconds before the text starts animating after being triggered.
@@ -393,6 +393,7 @@ entities.FemtoHelper/CinematicText.attributes.description.wavePhaseOffset=(Wave)
 entities.FemtoHelper/CinematicText.attributes.description.waveSpeed=(Wave) The wave angle variation, in degrees/sec.
 entities.FemtoHelper/CinematicText.attributes.description.waveX=(Wave) The horizontal wave amplitude, in pixels.
 entities.FemtoHelper/CinematicText.attributes.description.waveY=(Wave) The vertical wave amplitude, in pixels.
+entities.FemtoHelper/CinematicText.attributes.description.retriggerable=Allows the text to be triggered again after it fades out.
 
 
 
