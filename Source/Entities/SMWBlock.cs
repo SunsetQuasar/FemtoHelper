@@ -603,9 +603,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 }
             };
             Add(tween);
-            entity.Active = true;
-            entity.Visible = true;
-            entity.Collidable = true;
+            if (inactiveReward) entity.Active = true;
+            if (invisibleReward) entity.Visible = true;
+            if (uncollidableReward) entity.Collidable = true;
             yield return ejectDuration;
         }
 
