@@ -58,6 +58,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public bool HasInstantReloaded;
 
         public bool instantLoad;
+        public bool retriggerable;
 
         public VirtualRenderTarget buffer;
         public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
@@ -129,12 +130,18 @@ namespace Celeste.Mod.FemtoHelper.Entities
             onlyOnce = data.Bool("onlyOnce", false);
             instantReload = data.Bool("instantReload", false);
             instantLoad = data.Bool("instantLoad", false);
+
+            retriggerable = data.Bool("retriggerable", false);
+
             this.id = id;
         }
 
         public override void Awake(Scene scene)
         {
             base.Awake(scene);
+
+            if (string.IsNullOrEmpty(activationTag)) Enter();
+
             if (instantLoad || (instantReload && (scene as Level).Session.GetFlag("PlutoniumInstaReload_" + id.ToString())))
             {
                 InstantReload(0f);
@@ -159,7 +166,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             }
         }
 
-        public void Enter(Player player)
+        public void Enter()
         {
             if (entered) return;
             timer = delay;
@@ -201,7 +208,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 {
                     if (t.activationTag == nextTextTag)
                     {
-                        t.Enter(null);
+                        t.Enter();
                     }
                 }
             }
@@ -212,7 +219,13 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 yield return null;
             }
             if (onlyOnce) (Scene as Level).Session.DoNotLoad.Add(id);
-            RemoveSelf();
+            if (retriggerable)
+            {
+                active = entered = false;
+                disappearPercent = 1f;
+                finalString = "";
+            }
+            else RemoveSelf();
         }
 
         public IEnumerator InstaSequence()
@@ -223,7 +236,13 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 yield return null;
             }
-            RemoveSelf();
+            if (retriggerable)
+            {
+                active = entered = false;
+                disappearPercent = 1f;
+                finalString = "";
+            }
+            else RemoveSelf();
         }
 
         public void BeforeRender()

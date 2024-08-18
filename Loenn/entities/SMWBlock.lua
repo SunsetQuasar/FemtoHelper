@@ -67,9 +67,9 @@ FemtoHelperSMWBlock.placements = {
         spriteOffsetY = 0,
         depth = -15000,
         specialEntityHandling = true,
-        visibleReward = true,
-        activeReward = true,
-        collidableReward = false
+        affectVisible = true,
+        affectActive = true,
+        affectCollidable = false
     },
 },
 {
@@ -107,9 +107,9 @@ FemtoHelperSMWBlock.placements = {
         spriteOffsetY = 0,
         depth = -15000,
         specialEntityHandling = true,
-        visibleReward = true,
-        activeReward = true,
-        collidableReward = false
+        affectVisible = true,
+        affectActive = true,
+        affectCollidable = false
     }
 },
 {
@@ -147,9 +147,9 @@ FemtoHelperSMWBlock.placements = {
         spriteOffsetY = 0,
         depth = -15000,
         specialEntityHandling = true,
-        visibleReward = true,
-        activeReward = true,
-        collidableReward = false
+        affectVisible = true,
+        affectActive = true,
+        affectCollidable = false
     }
 }
 }

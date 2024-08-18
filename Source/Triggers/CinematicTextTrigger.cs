@@ -39,7 +39,7 @@ public class CinematicTextTrigger : Trigger
         {
             if(t.activationTag == activationTag)
             {
-                t.Enter(player);
+                t.Enter();
             }
         }
     }

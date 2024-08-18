@@ -136,9 +136,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public bool specialHandling;
 
-        public bool visibleReward;
-        public bool activeReward;
-        public bool collidableReward;
+        public bool invisibleReward;
+        public bool inactiveReward;
+        public bool uncollidableReward;
 
         public Generic_SMWBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
         {
@@ -176,9 +176,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             rewardcatcher = new Rectangle((int)node.X, (int)node.Y, data.Int("rewardContainerWidth", 16), data.Int("rewardContainerHeight", 16));
 
-            visibleReward = data.Bool("visibleReward", false);
-            activeReward = data.Bool("activeReward", false);
-            collidableReward = data.Bool("collidableReward", true);
+            invisibleReward = data.Bool("affectVisible", true);
+            inactiveReward = data.Bool("affectActive", true);
+            uncollidableReward = data.Bool("affectCollidable", false);
 
             bumpdir = 0;
 
@@ -235,9 +235,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
                         {
                             offsets.Add(entity.Position - new Vector2(rewardcatcher.Center.X, rewardcatcher.Center.Y));
                             rewards.Add(entity);
-                            entity.Active = activeReward;
-                            entity.Visible = visibleReward;
-                            entity.Collidable = collidableReward;
+                            if(inactiveReward) entity.Active = false;
+                            if(invisibleReward) entity.Visible = false;
+                            if(uncollidableReward) entity.Collidable = false;
                         }
                     }
                 }
@@ -603,7 +603,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 }
             };
             Add(tween);
-            entity.Active = entity.Visible = entity.Collidable = true;
+            entity.Active = true;
+            entity.Visible = true;
+            entity.Collidable = true;
             yield return ejectDuration;
         }
 

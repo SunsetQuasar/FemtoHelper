@@ -54,6 +54,7 @@ FemtoHelperCinematicText.placements = {
         waveSpeed = 2,
         waveX = 0,
         waveY = 1,
+        retriggerable = false,
     }
 }
 

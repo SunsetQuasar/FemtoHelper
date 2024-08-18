@@ -7,6 +7,7 @@ local FemtoHelperDirectionalLineIndicator = {}
 
 FemtoHelperDirectionalLineIndicator.name = "FemtoHelper/DirectionalLine"
 FemtoHelperDirectionalLineIndicator.nodeLimits = {1, 1}
+FemtoHelperDirectionalLineIndicator.nodeVisibility = "never"
 
 FemtoHelperDirectionalLineIndicator.fieldInformation = {
     positionEase = {
@@ -169,25 +170,17 @@ function FemtoHelperDirectionalLineIndicator.sprite(room, entity)
             end
         end
     end
-
     return sprites
 end
 
-function FemtoHelperDirectionalLineIndicator.nodeSprite()
-end
-
-function FemtoHelperDirectionalLineIndicator.nodeRectangle(room, entity, node, nodeIndex)
-    return utils.rectangle(node.x-6, node.y-6, 12, 12)
-end
 
 function FemtoHelperDirectionalLineIndicator.selection(room, entity)
-    local x, y = entity.x, entity.y
-
-    local mainRectangle = utils.rectangle(x-6, y-6, 12, 12)
-    return mainRectangle
+    local mainRectangle = utils.rectangle(entity.x-8, entity.y-8, 16, 16)
+    local nodeRectangle = {}
+    for _, node in ipairs(entity.nodes) do
+        table.insert(nodeRectangle, utils.rectangle(node.x-4, node.y-4, 8, 8))
+    end
+    return mainRectangle, nodeRectangle
 end
-
-
-
 
 return FemtoHelperDirectionalLineIndicator
