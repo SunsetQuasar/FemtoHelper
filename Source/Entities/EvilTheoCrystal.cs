@@ -523,7 +523,7 @@ public class EvilTheoCrystal : Actor
         {
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(80f)))
             {
-                Logger.Log(LogLevel.Info, "FemtoHelper/EvilTheoCrystal", $"doing the things at {cursor.Index} in CIL code for {cursor.Method.FullName}");
+                //Logger.Log(LogLevel.Info, "FemtoHelper/EvilTheoCrystal", $"doing the things at {cursor.Index} in CIL code for {cursor.Method.FullName}");
 
                 cursor.Emit(OpCodes.Ldarg_0);
 
