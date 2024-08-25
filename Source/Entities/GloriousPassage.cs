@@ -85,7 +85,7 @@ public class GloriousPassage : Entity
         base.Update();
         if (yeahforsure && !done && !interactToOpen)
         {
-            if (player.OnGround())
+            if (player != null && player.OnGround())
             {
                 if (Input.MoveY.Value == -1 && lastinput != -1)
                 {
