@@ -124,7 +124,7 @@ public class GloriousPassage : Entity
             Level level = Scene as Level;
             level.Session.SetFlag("transition_assist", false);
             Player player = Scene.Tracker.GetEntity<Player>();
-            level.OnEndOfFrame += delegate
+            level.OnEndOfFrame += () =>
             {
                 new Vector2(level.LevelOffset.X + (float)level.Bounds.Width - player.X, player.Y - level.LevelOffset.Y);
                 Vector2 levelOffset = level.LevelOffset;
