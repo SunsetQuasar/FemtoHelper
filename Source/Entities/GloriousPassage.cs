@@ -122,6 +122,7 @@ public class GloriousPassage : Entity
         {
             Engine.TimeRate = 1;
             Level level = Scene as Level;
+            level.Session.SetFlag("transition_assist", false);
             Player player = Scene.Tracker.GetEntity<Player>();
             level.OnEndOfFrame += delegate
             {
@@ -196,6 +197,7 @@ public class GloriousPassage : Entity
                     leader.PastPoints[i] += playerDelta;
                 }
                 leader.TransferFollowers();
+                level.Session.SetFlag("transition_assist", true);
                 player.Speed = Vector2.Zero;
                 level.DoScreenWipe(wipeIn: true);
                 level.Add(new DelayedCameraRequest(player));

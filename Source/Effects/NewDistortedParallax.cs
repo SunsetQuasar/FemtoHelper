@@ -1,16 +1,9 @@
 ﻿using Celeste.Mod.Backdrops;
-using Celeste.Mod.UI;
-using FMOD;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Celeste.Mod.FemtoHelper.Code.Effects;
 
@@ -233,7 +226,6 @@ public class NewDistortedParallax : Backdrop
     {
         GraphicsDevice graphicsDevice = Draw.SpriteBatch.GraphicsDevice;
 
-        //base.Render(scene);
         BlendState prevBlendState = graphicsDevice.BlendState;
 
         Renderer.EndSpritebatch();
@@ -246,6 +238,7 @@ public class NewDistortedParallax : Backdrop
 
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, blend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, effect, Matrix.Identity);
 
+        base.Render(scene);
         Draw.SpriteBatch.Draw((RenderTarget2D)buffer, Vector2.Zero, Color.White);
 
         Draw.SpriteBatch.End();
