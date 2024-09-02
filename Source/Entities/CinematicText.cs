@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.Entities;
 using Celeste.Mod.UI;
+using Microsoft.Build.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
@@ -22,7 +23,7 @@ public class CinematicText : Entity
     public int spacing;
     public PlutoniumText text;
     public float parallax;
-    public string finalString = "";
+    public int finalStringLen = 0;
     public char movingChar = ' ';
     public float movingCharPercent;
     public bool active = false;
@@ -60,11 +61,53 @@ public class CinematicText : Entity
     public bool instantLoad;
     public bool retriggerable;
 
+    public List<PlutoniumTextNodes.Node> nodes;
+
     public VirtualRenderTarget buffer;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
+        nodes = new List<PlutoniumTextNodes.Node>();
 
         str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
+
+        string[] split_str = Regex.Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")), "(\\s|\\{|\\})");
+        string[] split_str2 = new string[split_str.Length];
+        int num = 0;
+        for (int i = 0; i < split_str.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(split_str[i]))
+            {
+                split_str2[num++] = split_str[i];
+            }
+        }
+
+        for (int i = 0; i < split_str2.Length; i++)
+        {
+            if (split_str2[i] == "{")
+            {
+                i++;
+
+                for (; i < split_str2.Length && split_str2[i] != "}"; i++)
+                {
+                    if (!string.IsNullOrWhiteSpace(split_str2[i]))
+                    {
+                        string[] splitOnceAgain = split_str2[i].Split(';');
+                        if (splitOnceAgain.Length == 3)
+                        {
+                            nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
+                        }
+                        else
+                        {
+                            nodes.Add(new PlutoniumTextNodes.Counter(split_str2[i]));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                nodes.Add(new PlutoniumTextNodes.Text(split_str2[i]));
+            }
+        }
 
         color1 = Calc.HexToColorWithAlpha(data.Attr("mainColor", "ffffffff"));
         color2 = Calc.HexToColorWithAlpha(data.Attr("outlineColor", "000000ff"));
@@ -138,6 +181,8 @@ public class CinematicText : Entity
 
     public override void Awake(Scene scene)
     {
+        str = PlutoniumTextNodes.ConstructString(nodes, scene as Level);
+
         base.Awake(scene);
 
         if (string.IsNullOrEmpty(activationTag)) Enter();
@@ -152,7 +197,7 @@ public class CinematicText : Entity
     {
         if (HasInstantReloaded) return;
         active = entered = HasInstantReloaded = true;
-        finalString = str;
+        finalStringLen = str.Length;
         Add(new Coroutine(InstaSequence()));
         foreach (CinematicText t in Scene.Tracker.GetEntities<CinematicText>())
         {
@@ -175,6 +220,9 @@ public class CinematicText : Entity
 
     public override void Update()
     {
+        string oldstr = str;
+        str = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>());
+        if(str.Length > oldstr.Length)finalStringLen += str.Length - oldstr.Length;
         base.Update();
         if (!entered || active) return;
         if (timer > 0)
@@ -199,7 +247,7 @@ public class CinematicText : Entity
                 yield return null;
             }
             if ((!noSound.IsMatch(movingChar.ToString()) || (ignoreRegex && movingChar != ' ')) && !string.IsNullOrEmpty(audio)) soundSource.Play(audio);
-            finalString += movingChar;
+            finalStringLen++;
         }
         movingChar = ' ';
         if (!string.IsNullOrEmpty(nextTextTag))
@@ -212,6 +260,7 @@ public class CinematicText : Entity
                 }
             }
         }
+        
         if (disappearDelay == -1) yield break;
         yield return disappearDelay;
         for (disappearPercent = 1f; disappearPercent >= 0; disappearPercent -= Engine.DeltaTime)
@@ -223,7 +272,7 @@ public class CinematicText : Entity
         {
             active = entered = false;
             disappearPercent = 1f;
-            finalString = "";
+            finalStringLen = 0;
         }
         else RemoveSelf();
     }
@@ -240,13 +289,17 @@ public class CinematicText : Entity
         {
             active = entered = false;
             disappearPercent = 1f;
-            finalString = "";
+            finalStringLen = 0;
         }
         else RemoveSelf();
     }
 
     public void BeforeRender()
     {
+
+
+        string finalString2 = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>())[0..Math.Min(finalStringLen, str.Length)];
+
         if (!active) return;
 
         Engine.Graphics.GraphicsDevice.SetRenderTarget(buffer);
@@ -258,7 +311,7 @@ public class CinematicText : Entity
         Vector2 vector = position + new Vector2(160f, 90f);
         Vector2 position2 = (Position - position + (Position - vector) * (parallax - 1)) + position;
 
-        int offset = finalString.Length * spacing;
+        int offset = finalStringLen * spacing;
 
         float scale2 = scale;
 
@@ -272,12 +325,12 @@ public class CinematicText : Entity
 
         //outlines
 
-        text.Print(position2, finalString, shadow, spacing, Color.Transparent, color2, effectData, scale2);
+        text.Print(position2, finalString2, shadow, spacing, Color.Transparent, color2, effectData, scale2);
         text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, Color.Transparent, color2 * movingCharPercent, effectData, scale2, cur);
 
         //main text
 
-        text.Print(position2, finalString, shadow, spacing, color1, Color.Transparent, effectData, scale2);
+        text.Print(position2, finalString2, shadow, spacing, color1, Color.Transparent, effectData, scale2);
         text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, color1 * movingCharPercent, Color.Transparent, effectData, scale2, cur);
 
         Draw.SpriteBatch.End();
