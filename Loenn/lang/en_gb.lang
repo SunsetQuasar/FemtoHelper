@@ -7,9 +7,14 @@ entities.FemtoHelper/AssistHazardController.placements.name.controller=Solid No 
 
 # Solid No Squish Controller
 entities.FemtoHelper/LaCreatura.placements.name.creatura=La Creatura
-entities.FemtoHelper/LaCreatura.attributes.description.number=Number of butterflies that will spawn in this bunch.
 entities.FemtoHelper/LaCreatura.attributes.description.acceleration=How fast the butterflies can change their speed.
 entities.FemtoHelper/LaCreatura.attributes.description.maxSpeed=The maximum speed the butterflies can move.
+entities.FemtoHelper/LaCreatura.attributes.description.bloomRadius=The butterfly's bloom radius.
+entities.FemtoHelper/LaCreatura.attributes.description.bloomAlpha=The butterfly's bloom intensity.
+entities.FemtoHelper/LaCreatura.attributes.description.lightStartFade=Where on the butterfly's light starts fading out.
+entities.FemtoHelper/LaCreatura.attributes.description.lightEndFade=Where on the butterfly's light finishes fading out.
+entities.FemtoHelper/LaCreatura.attributes.description.lightAlpha=The butterfly's light intensity.
+entities.FemtoHelper/LaCreatura.attributes.description.colors=Comma-separated list of possible butterfly colors.
 
 # Backdrop Wind Controller
 entities.FemtoHelper/BackdropWindController.placements.name.default=Backdrop Wind Controller
@@ -358,7 +363,7 @@ entities.FemtoHelper/SimpleText.attributes.description.spacing=Spacing between c
 entities.FemtoHelper/CinematicText.placements.name.default=Cinematic Text
 entities.FemtoHelper/CinematicText.attributes.description.charList=The list of all existing characters in the font.\nThe font image must match this list, and the list must start with a space.
 entities.FemtoHelper/CinematicText.attributes.description.depth=The entity's depth. Higher values are further back, lower values are in front, and the Player has depth 0.
-entities.FemtoHelper/CinematicText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support FancyText dialog effects.
+entities.FemtoHelper/CinematicText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support FancyText dialog effects.\nUse brackets to display counters and flags;\n{my_counter} displays "my_counter"'s value;\n{my_flag;value_if_on;value_if_off} displays "value_if_on" if the flag "my_flag" is on, and "value_if_off" if the flag is off.
 entities.FemtoHelper/CinematicText.attributes.description.fontHeight=The height of a character in the given font.
 entities.FemtoHelper/CinematicText.attributes.description.fontPath=The font image.\nThe characters in this image must match 1 to 1 with the charList attribute and be of the correct size or the text will appear garbled.
 entities.FemtoHelper/CinematicText.attributes.description.fontWidth=The width of a character in the given font.

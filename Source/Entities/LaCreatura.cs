@@ -6,6 +6,7 @@ using Celeste.Mod.FemtoHelper;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
+using System.Linq;
 
 [CustomEntity("FemtoHelper/LaCreatura")]
 public class LaCreatura : Entity
@@ -60,45 +61,64 @@ public class LaCreatura : Entity
 	private VertexLight light;
 
 	private bool facingRight;
-	public LaCreatura(EntityData data, Vector2 offset) : this(data.Position + offset)
+
+	public float bloomSize;
+	public float bloomAlpha;
+	public int lightStartFade;
+	public int lightEndFade;
+	public float lightAlpha;
+	public LaCreatura(EntityData data, Vector2 offset) : base(data.Position + offset)
 	{
 		Acceleration = data.Float("acceleration", 90f);
 		MaxSpeed = data.Float("maxSpeed", 40f);
-	}
-	public LaCreatura(Vector2 position)
-	{
 
-		base.Tag = Tags.TransitionUpdate;
-		base.Depth = -13010;
-		base.Collider = new Hitbox(20f, 20f, -10f, -10f);
-		start = position;
-		targetTimer = 0f;
-		GetRandomTarget();
-		Position = target;
-		Add(new PlayerCollider(OnPlayer));
-		OrbColor = Calc.HexToColor("b0e6ff");
-		CenterColor = Calc.Random.Choose(Calc.HexToColor("74db93"), Calc.HexToColor("dbc874"), Calc.HexToColor("74a1db"), Calc.HexToColor("e0779f"), Calc.HexToColor("9677e0"));
-		Color value = Color.Lerp(CenterColor, Calc.HexToColor("bde4ee"), 0.5f);
-		Color value2 = Color.Lerp(CenterColor, Calc.HexToColor("2f2941"), 0.5f);
-		trail = new TrailNode[6];
-		for (int i = 0; i < 6; i++)
+		if (data.Has("colors"))
 		{
-			trail[i] = new TrailNode
-			{
-				Position = Position,
-				Color = Color.Lerp(value, value2, (float)i / 4f) * (0.2f - (0.1f * i / 6))
-			};
-		}
-		Add(Sprite = FemtoModule.femtoSpriteBank.Create("butterfly"));
-	}
+            CenterColor = Calc.Random.Choose(data.Attr("colors", "74db93,dbc874,74a1db,e0779f,9677e0")
+				.Split(',')
+				.Select(str => Calc.HexToColor(str.Trim()))
+				.ToArray());
+		} 
+		else
+		{
+            CenterColor = Calc.Random.Choose(Calc.HexToColor("74db93"), Calc.HexToColor("dbc874"), Calc.HexToColor("74a1db"), Calc.HexToColor("e0779f"), Calc.HexToColor("9677e0"));
+        }
+        base.Tag = Tags.TransitionUpdate;
+        base.Depth = -13010;
+        base.Collider = new Hitbox(20f, 20f, -10f, -10f);
+        start = data.Position + offset;
+        targetTimer = 0f;
+        GetRandomTarget();
+        Position = target;
+        Add(new PlayerCollider(OnPlayer));
+        OrbColor = Calc.HexToColor("b0e6ff");
+        Color value = Color.Lerp(CenterColor, Calc.HexToColor("bde4ee"), 0.5f);
+        Color value2 = Color.Lerp(CenterColor, Calc.HexToColor("2f2941"), 0.5f);
+        trail = new TrailNode[6];
+        for (int i = 0; i < 6; i++)
+        {
+            trail[i] = new TrailNode
+            {
+                Position = Position,
+                Color = Color.Lerp(value, value2, (float)i / 4f) * (0.2f - (0.1f * i / 6))
+            };
+        }
+        Add(Sprite = FemtoModule.femtoSpriteBank.Create("butterfly"));
+		bloomSize = data.Float("bloomRadius", 16f);
+		bloomAlpha = data.Float("bloomAlpha", 0.75f);
+		lightStartFade = data.Int("lightStartFade", 12);
+		lightEndFade = data.Int("lightEndFade", 24);
+		lightAlpha = data.Float("lightAlpha", 1f);
+
+    }
 
 	public override void Added(Scene scene)
 	{
 		base.Added(scene);
 		Sprite.Play("right");
 		Sprite.Color = CenterColor;
-		Add(bloom = new BloomPoint(0.75f, 16f));
-		Add(light = new VertexLight(CenterColor, 1f, 12, 24));
+		if (bloomAlpha > 0) Add(bloom = new BloomPoint(bloomAlpha, bloomSize));
+        if (lightAlpha > 0) Add(light = new VertexLight(CenterColor, lightAlpha, lightStartFade, lightEndFade));
 
 		originLevelBounds = (scene as Level).Bounds;
 	}

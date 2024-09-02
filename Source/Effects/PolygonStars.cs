@@ -1,6 +1,7 @@
 ﻿// Celeste.DreamStars
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Celeste;
 using Celeste.Mod.Entities;
 using FMOD;
@@ -50,13 +51,11 @@ public class PolygonStars : Backdrop
 		Alpha = alpha;
 		this.scroll = scroll;
 		stars = new Stars[amount];
-		string[] array = color.Split(',');
-		Colors = (Color[])(object)new Color[array.Length];
-		for (int i = 0; i < Colors.Length; i++)
-		{
-			Colors[i] = Calc.HexToColor(array[i]);
-		}
-		angle = new Vector2((float)Math.Sin(angle_ / 180 * Math.PI), (float)Math.Cos(angle_ / 180 * Math.PI));
+        Colors = color
+				.Split(',')
+				.Select(str => Calc.HexToColor(str.Trim()) * alpha)
+				.ToArray();
+        angle = new Vector2((float)Math.Sin(angle_ / 180 * Math.PI), (float)Math.Cos(angle_ / 180 * Math.PI));
 		for (int i = 0; i < stars.Length; i++)
 		{
 			stars[i].Position = new Vector2(Calc.Random.NextFloat(320f + loopBorder) - (loopBorder / 2), Calc.Random.NextFloat(180f + loopBorder) - (loopBorder / 2));
