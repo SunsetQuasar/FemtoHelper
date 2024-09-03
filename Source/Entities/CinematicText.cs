@@ -64,6 +64,8 @@ public class CinematicText : Entity
     public List<PlutoniumTextNodes.Node> nodes;
 
     public VirtualRenderTarget buffer;
+
+    public bool finished;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
         nodes = new List<PlutoniumTextNodes.Node>();
@@ -220,9 +222,6 @@ public class CinematicText : Entity
 
     public override void Update()
     {
-        string oldstr = str;
-        str = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>());
-        if(str.Length > oldstr.Length)finalStringLen += str.Length - oldstr.Length;
         base.Update();
         if (!entered || active) return;
         if (timer > 0)
@@ -260,7 +259,7 @@ public class CinematicText : Entity
                 }
             }
         }
-        
+        finished = true;
         if (disappearDelay == -1) yield break;
         yield return disappearDelay;
         for (disappearPercent = 1f; disappearPercent >= 0; disappearPercent -= Engine.DeltaTime)
@@ -273,12 +272,14 @@ public class CinematicText : Entity
             active = entered = false;
             disappearPercent = 1f;
             finalStringLen = 0;
+            finished = false;
         }
         else RemoveSelf();
     }
 
     public IEnumerator InstaSequence()
     {
+        finished = true;
         if (disappearDelay == -1) yield break;
         yield return disappearDelay;
         for (disappearPercent = 1f; disappearPercent >= 0; disappearPercent -= Engine.DeltaTime)
@@ -290,15 +291,15 @@ public class CinematicText : Entity
             active = entered = false;
             disappearPercent = 1f;
             finalStringLen = 0;
+            finished = false;
         }
         else RemoveSelf();
     }
 
     public void BeforeRender()
     {
-
-
-        string finalString2 = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>())[0..Math.Min(finalStringLen, str.Length)];
+        string finalString2 = str[0..finalStringLen];
+        if (finished) finalString2 = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>());
 
         if (!active) return;
 
