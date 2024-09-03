@@ -93,7 +93,7 @@ end
 
 function FemtoHelperParticleEmitter.sprite(room, entity)
   local emitter_texture = "loenn/FemtoHelper/ParticleEmitter"
-  local particle_texture = entity.particleTexture
+  local particle_texture = split(entity.particleTexture, ",")[1];
   local color1 = entity.particleColor
   local color2 = entity.particleColor2
 
@@ -125,7 +125,15 @@ function FemtoHelperParticleEmitter.selection(room, entity)
     return mainRectangle
 end
 
-
-
+function split(inputstr, sep)
+  if sep == nil then
+    sep = "%s"
+  end
+  local t = {}
+  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+    table.insert(t, str)
+  end
+  return t
+end
 
 return FemtoHelperParticleEmitter
