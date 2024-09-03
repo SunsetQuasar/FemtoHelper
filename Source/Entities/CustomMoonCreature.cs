@@ -188,7 +188,7 @@ public class CustomMoonCreature : Entity
 			float angleRadians = Calc.Random.NextFloat((float)Math.PI * 2f);
 			target = start + Calc.AngleToVector(angleRadians, length);
 		}
-		while ((value - target).Length() < 8f);
+		while ((value - target).Length() < targetRangeRadius / 4f);
 	}
 
 	public override void Update()

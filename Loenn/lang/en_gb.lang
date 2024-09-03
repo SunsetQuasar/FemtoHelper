@@ -5,7 +5,7 @@ mods.FemtoHelper.name=Femto Helper
 # Solid No Squish Controller
 entities.FemtoHelper/AssistHazardController.placements.name.controller=Solid No Squish Controller
 
-# Solid No Squish Controller
+# La Creatura
 entities.FemtoHelper/LaCreatura.placements.name.creatura=La Creatura
 entities.FemtoHelper/LaCreatura.attributes.description.acceleration=How fast the butterflies can change their speed.
 entities.FemtoHelper/LaCreatura.attributes.description.maxSpeed=The maximum speed the butterflies can move.
@@ -15,6 +15,10 @@ entities.FemtoHelper/LaCreatura.attributes.description.lightStartFade=Where on t
 entities.FemtoHelper/LaCreatura.attributes.description.lightEndFade=Where on the butterfly's light finishes fading out.
 entities.FemtoHelper/LaCreatura.attributes.description.lightAlpha=The butterfly's light intensity.
 entities.FemtoHelper/LaCreatura.attributes.description.colors=Comma-separated list of possible butterfly colors.
+entities.FemtoHelper/LaCreatura.attributes.description.randomStartPos=Whether the butterflies should spawn with a random offset in its range.
+entities.FemtoHelper/LaCreatura.attributes.description.targetRangeRadius=How far from the butterfly's starting position it can target when not interested in the player.
+entities.FemtoHelper/LaCreatura.attributes.description.minFollowTime=The minimum time a butterfly can follow the player for when interacted with.
+entities.FemtoHelper/LaCreatura.attributes.description.maxFollowTime=The maximum time a butterfly can follow the player for when interacted with.
 
 # Backdrop Wind Controller
 entities.FemtoHelper/BackdropWindController.placements.name.default=Backdrop Wind Controller

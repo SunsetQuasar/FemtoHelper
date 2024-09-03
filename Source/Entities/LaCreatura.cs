@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 [CustomEntity("FemtoHelper/LaCreatura")]
 public class LaCreatura : Entity
@@ -62,12 +63,13 @@ public class LaCreatura : Entity
 
 	private bool facingRight;
 
-	public float bloomSize;
-	public float bloomAlpha;
-	public int lightStartFade;
-	public int lightEndFade;
+	public float bloomSize, bloomAlpha;
+	public int lightStartFade, lightEndFade;
 	public float lightAlpha;
-	public LaCreatura(EntityData data, Vector2 offset) : base(data.Position + offset)
+	public float targetRangeRadius;
+	public float minFollowTime, maxFollowTime;
+
+    public LaCreatura(EntityData data, Vector2 offset) : base(data.Position + offset)
 	{
 		Acceleration = data.Float("acceleration", 90f);
 		MaxSpeed = data.Float("maxSpeed", 40f);
@@ -88,8 +90,11 @@ public class LaCreatura : Entity
         base.Collider = new Hitbox(20f, 20f, -10f, -10f);
         start = data.Position + offset;
         targetTimer = 0f;
-        GetRandomTarget();
-        Position = target;
+		if (data.Bool("randomStartPos", true))
+		{
+            GetRandomTarget();
+            Position = target;
+        }
         Add(new PlayerCollider(OnPlayer));
         OrbColor = Calc.HexToColor("b0e6ff");
         Color value = Color.Lerp(CenterColor, Calc.HexToColor("bde4ee"), 0.5f);
@@ -109,7 +114,9 @@ public class LaCreatura : Entity
 		lightStartFade = data.Int("lightStartFade", 12);
 		lightEndFade = data.Int("lightEndFade", 24);
 		lightAlpha = data.Float("lightAlpha", 1f);
-
+		targetRangeRadius = data.Float("targetRangeRadius", 32f);
+		minFollowTime = data.Float("minFollowTime", 6f);
+        maxFollowTime = data.Float("maxFollowTime", 12f);
     }
 
 	public override void Added(Scene scene)
@@ -128,10 +135,10 @@ public class LaCreatura : Entity
 		if (vector.LengthSquared() > bump.LengthSquared())
 		{
 			bump = vector;
-			if ((player.Center - start).Length() < 200f)
+			if ((player.Center - start).Length() < 200f && (minFollowTime + maxFollowTime) > 0)
 			{
 				following = player;
-				followingTime = Calc.Random.Range(6f, 12f);
+				followingTime = Calc.Random.Range(minFollowTime, maxFollowTime);
 				GetFollowOffset();
 			}
 		}
@@ -146,11 +153,11 @@ public class LaCreatura : Entity
 		Vector2 value = target;
 		do
 		{
-			float length = Calc.Random.NextFloat(32f);
+			float length = Calc.Random.NextFloat(targetRangeRadius);
 			float angleRadians = Calc.Random.NextFloat((float)Math.PI * 2f);
 			target = start + Calc.AngleToVector(angleRadians, length);
 		}
-		while ((value - target).Length() < 8f);
+		while ((value - target).Length() < targetRangeRadius / 4f);
 	}
 
 	public override void Update()
@@ -231,6 +238,7 @@ public class LaCreatura : Entity
 		base.DebugRender(camera);
 		Draw.Line(Position, target, Color.White * 0.5f);
 		Draw.Rect(target - new Vector2(2, 2), 4, 4, CenterColor * 0.5f);
-	}
+        Draw.Circle(start, targetRangeRadius, CenterColor * 0.5f, 16);
+    }
 }
 

@@ -24,7 +24,11 @@ FemtoHelperLaCreatura.placements = {
             lightStartFade = 12,
             lightEndFade = 24,
             lightAlpha = 1,
-            colors = "74db93,dbc874,74a1db,e0779f,9677e0"
+            colors = "74db93,dbc874,74a1db,e0779f,9677e0",
+            randomStartPos = true,
+            targetRangeRadius = 32,
+            minFollowTime = 6,
+            maxFollowTime = 12
         }
     }
 }
