@@ -64,7 +64,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             audioPath = data.Attr("audioPath", "event:/FemtoHelper/");
 
             if (!blurp) Add(new PlayerCollider(bonk, bonkbox));
-            if (data.Bool("harmless", false))Add(new PlayerCollider(someoneGotTrolled, Collider));
+            if (data.Bool("harmless", false)) Add(new PlayerCollider(someoneGotTrolled, Collider));
         }
 
         private void someoneGotTrolled(Player player)
