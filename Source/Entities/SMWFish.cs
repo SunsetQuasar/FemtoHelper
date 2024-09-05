@@ -64,7 +64,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             audioPath = data.Attr("audioPath", "event:/FemtoHelper/");
 
             if (!blurp) Add(new PlayerCollider(bonk, bonkbox));
-            Add(new PlayerCollider(someoneGotTrolled, Collider));
+            if (data.Bool("harmless", false))Add(new PlayerCollider(someoneGotTrolled, Collider));
         }
 
         private void someoneGotTrolled(Player player)
@@ -81,7 +81,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         }
 
-        private void bonk (Player player)
+        private void bonk(Player player)
         {
             Audio.Play(audioPath + "enemykill");
             Celeste.Freeze(0.1f);
@@ -96,7 +96,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
         {
             base.Update();
 
-            if(X > (Scene as Level).Bounds.Right + 128 || X < (Scene as Level).Bounds.Left - 128 || Y > (Scene as Level).Bounds.Bottom + 128 || Y < (Scene as Level).Bounds.Top - 128)
+            if (X > (Scene as Level).Bounds.Right + 128 || X < (Scene as Level).Bounds.Left - 128 || Y > (Scene as Level).Bounds.Bottom + 128 || Y < (Scene as Level).Bounds.Top - 128)
             {
                 RemoveSelf();
             }
@@ -107,7 +107,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             if (!neededflagplus)
             {
                 Collidable = Visible = false;
-            } 
+            }
             else
             {
 
@@ -119,7 +119,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 if (dead)
                 {
                     deadspin += Engine.DeltaTime * 16;
-                } 
+                }
                 else
                 {
                     texturetimer += Engine.DeltaTime * 7;

@@ -22,7 +22,8 @@ FemtoHelperSMWFish.placements = {
             gravity = 260,
             activationFlag = "fish_flag",
             depth = -120000,
-            faceRight = false
+            faceRight = false,
+            harmless = false
         }
     },
     {
@@ -37,7 +38,8 @@ FemtoHelperSMWFish.placements = {
             gravity = 260,
             activationFlag = "fish_flag",
             depth = -120000,
-            faceRight = false
+            faceRight = false,
+            harmless = false
         }
     }
 }

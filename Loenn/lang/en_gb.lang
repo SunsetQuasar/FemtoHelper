@@ -338,6 +338,7 @@ entities.FemtoHelper/SMWFish.attributes.description.initialSpeedX=The fish's hor
 entities.FemtoHelper/SMWFish.attributes.description.initialSpeedX=The fish's vertical speed when it gets activated by its respective flag.
 entities.FemtoHelper/SMWFish.attributes.description.gravity=The fish's downwards acceleration when it gets activated by its respective flag.
 entities.FemtoHelper/SMWFish.attributes.description.activationFlag=The flag that activates the fish.\nPrecede the flag name with an exclamation point to negate the flag. (e.g. "!myflag" will only activate the fish if "myflag" is NOT active)\nLeave empty for the fish to always be active.
+entities.FemtoHelper/SMWFish.attributes.description.harmless=Removes the fish's killing hitbox.
 
 # Vital Drain Controller
 
