@@ -29,6 +29,7 @@ FemtoHelperGloriousPassage.placements = {
             faceLeft = false,
 			spawnpointIndex = 0,
 			pressUpToOpen = false,
+            keepDashes = true,
 			depth = 120,
 			flag = ""
         }
@@ -46,6 +47,7 @@ FemtoHelperGloriousPassage.placements = {
             faceLeft = false,
 			spawnpointIndex = 0,
 			pressUpToOpen = true,
+            keepDashes = true,
 			depth = 120,
 			flag = ""
         }
@@ -63,6 +65,7 @@ FemtoHelperGloriousPassage.placements = {
             faceLeft = false,
 			spawnpointIndex = 0,
 			pressUpToOpen = false,
+            keepDashes = true,
 			depth = 120,
 			flag = ""
         }

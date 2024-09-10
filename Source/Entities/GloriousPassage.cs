@@ -31,6 +31,7 @@ public class GloriousPassage : Entity
     public bool faceLeft;
     public int spawnIndex;
     public bool interactToOpen;
+    public bool keepDashes;
     public GloriousPassage(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Collider = new Hitbox(data.Width, data.Height);
@@ -46,6 +47,7 @@ public class GloriousPassage : Entity
         faceLeft = data.Bool("faceLeft", false);
         spawnIndex = data.Int("spawnpointIndex");
         interactToOpen = !data.Bool("pressUpToOpen", false);
+        keepDashes = data.Bool("keepDashes", false);
         if (interactToOpen) Add(new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width/2, -8), onTalk));
     }
 
@@ -140,6 +142,7 @@ public class GloriousPassage : Entity
                 }
 
                 Vector2 cameraDelta = level.Camera.Position - pos;
+                int dashes = player.Dashes;
                 level.Remove(player);
                 level.UnloadLevel();
                 LevelData newLevelData = level.Session.MapData.Get(roomName);
@@ -185,6 +188,7 @@ public class GloriousPassage : Entity
                 */
                 player.Visible = true;
                 player.Sprite.Visible = true;
+                if(keepDashes) player.Dashes = dashes;
 
                 foreach (Follower item2 in leader.Followers.Where((Follower f) => f.Entity != null))
                 {

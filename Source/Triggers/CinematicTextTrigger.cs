@@ -17,9 +17,12 @@ public class CinematicTextTrigger : Trigger
 
     public List<CinematicText> list;
 
+    public bool stopText;
+
     public CinematicTextTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         activationTag = data.Attr("activationTag", "tag1");
+        stopText = data.Bool("stopText", false);
         list = new List<CinematicText>();
     }
 
@@ -39,7 +42,13 @@ public class CinematicTextTrigger : Trigger
         {
             if(t.activationTag == activationTag)
             {
-                t.Enter();
+                if (stopText)
+                {
+                    if (t.active) t.stopText = true;
+                } else
+                {
+                    t.Enter();
+                }
             }
         }
     }

@@ -66,8 +66,13 @@ public class CinematicText : Entity
     public VirtualRenderTarget buffer;
 
     public bool finished;
+
+    public bool stopText;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
+
+        if (data.NodesOffset(offset).Length > 0) Position = data.NodesOffset(offset)[0];
+
         nodes = new List<PlutoniumTextNodes.Node>();
 
         str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
@@ -260,8 +265,13 @@ public class CinematicText : Entity
             }
         }
         finished = true;
-        if (disappearDelay == -1) yield break;
-        yield return disappearDelay;
+        float count = 0f;
+        while(count < disappearDelay || disappearDelay == -1)
+        {
+            if (stopText) break;
+            count += Engine.DeltaTime;
+            yield return null;
+        }
         for (disappearPercent = 1f; disappearPercent >= 0; disappearPercent -= Engine.DeltaTime)
         {
             yield return null;
@@ -269,6 +279,7 @@ public class CinematicText : Entity
         if (onlyOnce) (Scene as Level).Session.DoNotLoad.Add(id);
         if (retriggerable)
         {
+            stopText = false;
             active = entered = false;
             disappearPercent = 1f;
             finalStringLen = 0;
@@ -280,14 +291,20 @@ public class CinematicText : Entity
     public IEnumerator InstaSequence()
     {
         finished = true;
-        if (disappearDelay == -1) yield break;
-        yield return disappearDelay;
+        float count = 0f;
+        while (count < disappearDelay || disappearDelay == -1)
+        {
+            if (stopText) break;
+            count += Engine.DeltaTime;
+            yield return null;
+        }
         for (disappearPercent = 1f; disappearPercent >= 0; disappearPercent -= Engine.DeltaTime)
         {
             yield return null;
         }
         if (retriggerable)
         {
+            stopText = false;
             active = entered = false;
             disappearPercent = 1f;
             finalStringLen = 0;

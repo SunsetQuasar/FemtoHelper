@@ -106,6 +106,7 @@ entities.FemtoHelper/GloriousPassage.attributes.description.simpleTrigger=Turns 
 entities.FemtoHelper/GloriousPassage.attributes.description.audio=Audio event that plays when the door is opened;\nLeave blank for no sound.
 entities.FemtoHelper/GloriousPassage.attributes.description.openPath=Texture path for the door when it is open.
 entities.FemtoHelper/GloriousPassage.attributes.description.pressUpToOpen=Makes it so the door is opened by pressing up (like in Super Mario games).
+entities.FemtoHelper/GloriousPassage.attributes.description.keepDashes=Makes it so the player's dash count is kept through the room transition.
 entities.FemtoHelper/GloriousPassage.attributes.description.flag=The flag set when the door is opened.
 
 # Custom Cliffside Wind Flag
@@ -417,6 +418,7 @@ triggers.FemtoHelper/ParticleRemoteEmit.attributes.description.tag=Any Particle 
 
 triggers.FemtoHelper/CinematicTextTrigger.placements.name.default=Cinematic Text Activator
 triggers.FemtoHelper/CinematicTextTrigger.attributes.description.activationTag=Any Cinematic Text entity with this tag will be activated on entry.
+triggers.FemtoHelper/CinematicTextTrigger.attributes.description.stopText=Stops the text entity with this tag instead of activating it.
 
 # Vital Safety Trigger
 

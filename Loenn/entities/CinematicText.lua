@@ -5,6 +5,12 @@ FemtoHelperCinematicText.depth = -3000000
 FemtoHelperCinematicText.texture = "loenn/FemtoHelper/cinematictext"
 FemtoHelperCinematicText.justification = {0.5, 0.5}
 
+FemtoHelperCinematicText.nodeLimits = {0, 1}
+
+function FemtoHelperCinematicText.nodeColor(room, entity, node, nodeIndex)
+    return {1, 1, 1, 0.5}
+end
+
 FemtoHelperCinematicText.fieldInformation = {
     mainColor = {
         fieldType = "color"
