@@ -19,10 +19,13 @@ public class CinematicTextTrigger : Trigger
 
     public bool stopText;
 
+    public bool stopImmediately;
+
     public CinematicTextTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         activationTag = data.Attr("activationTag", "tag1");
         stopText = data.Bool("stopText", false);
+        stopImmediately = data.Bool("stopImmediately", false);
         list = new List<CinematicText>();
     }
 
@@ -44,6 +47,20 @@ public class CinematicTextTrigger : Trigger
             {
                 if (stopText)
                 {
+                    if (stopImmediately)
+                    {
+                        if (!t.retriggerable)
+                        {
+                            t.RemoveSelf();
+                            return;
+                        }
+                        t.stopText = false;
+                        t.active = t.entered = false;
+                        t.disappearPercent = 1f;
+                        t.finalStringLen = 0;
+                        t.finished = false;
+                        return;
+                    }
                     if (t.active) t.stopText = true;
                 } else
                 {

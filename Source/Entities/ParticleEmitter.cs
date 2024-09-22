@@ -2,6 +2,7 @@
 using Celeste;
 using Celeste.Mod;
 using Celeste.Mod.Entities;
+using Celeste.Mod.FemtoHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 
@@ -104,13 +105,6 @@ namespace Celeste.Mod.FemtoHelper
 		public override void Update()
 		{
 			Level level = Scene as Level;
-			bool flagge;
-			if (flag.StartsWith("!")) {
-				flagge = !level.Session.GetFlag(flag.Substring(1));
-			} else
-            {
-				flagge = level.Session.GetFlag(flag);
-			}
 			base.Update();
 			spawnTimer += 1f;
 			if (!Visible || !base.Scene.OnInterval(spawnInterval))
@@ -118,7 +112,7 @@ namespace Celeste.Mod.FemtoHelper
 				return;
 			}
 			
-			if (flagge || flag == "")
+			if ((Scene as Level).FancyCheckFlag(flag))
             {
 				for (int i = 0; i < particleCount; i++)
 				{

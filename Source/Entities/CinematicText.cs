@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using Celeste.Mod.FemtoHelper.Utils;
 using Celeste.Mod.UI;
 using Microsoft.Build.Framework;
 using Microsoft.Xna.Framework;
@@ -68,6 +69,8 @@ public class CinematicText : Entity
     public bool finished;
 
     public bool stopText;
+
+    public string visibilityFlag;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
 
@@ -182,6 +185,8 @@ public class CinematicText : Entity
         instantLoad = data.Bool("instantLoad", false);
 
         retriggerable = data.Bool("retriggerable", false);
+
+        visibilityFlag = data.Attr("visibilityFlag", "");
 
         this.id = id;
     }
@@ -358,7 +363,7 @@ public class CinematicText : Entity
     {
         base.Render();
 
-        if (!active) return;
+        if (!active || !(Scene as Level).FancyCheckFlag(visibilityFlag)) return;
 
         float alpha = Ease.SineInOut(disappearPercent);
 

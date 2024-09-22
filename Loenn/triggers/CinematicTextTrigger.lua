@@ -4,7 +4,8 @@ FemtoHelperCinematicTextTrigger.placements = {
     name = "default",
     data = {
         activationTag = "tag",
-        stopText = false
+        stopText = false,
+        stopImmediately = false
     }
 }
 

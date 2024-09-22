@@ -10,6 +10,7 @@ using Celeste.Mod.Entities;
 using Monocle;
 using System.Collections;
 using System.Reflection;
+using Celeste.Mod.FemtoHelper.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities
 {
@@ -27,7 +28,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public bool big;
 
-        public bool neededflagplus;
+        public bool neededflagplus => (Scene as Level).FancyCheckFlag(flag);
 
         public bool dead;
 
@@ -100,9 +101,6 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 RemoveSelf();
             }
-
-
-            neededflagplus = flag == "" ? true : (flag.StartsWith("!") ? !(Scene as Level).Session.GetFlag(flag.Substring(1)) : (Scene as Level).Session.GetFlag(flag));
 
             if (!neededflagplus)
             {

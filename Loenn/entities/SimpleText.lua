@@ -30,6 +30,7 @@ FemtoHelperSimpleText.placements = {
         scale = 1,
         shadow = false,
         spacing = 8,
+        visibilityFlag = ""
     }
 }
 

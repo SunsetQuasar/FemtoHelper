@@ -363,6 +363,7 @@ entities.FemtoHelper/SimpleText.attributes.description.parallax=Parallax factor.
 entities.FemtoHelper/SimpleText.attributes.description.scale=Text scale factor. Looks best with HUD mode, otherwise nearest neighbor interpolation can make it look strange.
 entities.FemtoHelper/SimpleText.attributes.description.shadow=Draws a small shadow instead of an outline.
 entities.FemtoHelper/SimpleText.attributes.description.spacing=Spacing between characters.
+entities.FemtoHelper/SimpleText.attributes.description.visibilityFlag=The flag that determines if the text should be visible or not;\nPrecede with "!" to invert the flag.
 
 # Cinematic Text
 
@@ -405,6 +406,7 @@ entities.FemtoHelper/CinematicText.attributes.description.waveSpeed=(Wave) The w
 entities.FemtoHelper/CinematicText.attributes.description.waveX=(Wave) The horizontal wave amplitude, in pixels.
 entities.FemtoHelper/CinematicText.attributes.description.waveY=(Wave) The vertical wave amplitude, in pixels.
 entities.FemtoHelper/CinematicText.attributes.description.retriggerable=Allows the text to be triggered again after it fades out.
+entities.FemtoHelper/CinematicText.attributes.description.visibilityFlag=The flag that determines if the text should be visible or not;\nPrecede with "!" to invert the flag.
 
 
 
@@ -419,6 +421,7 @@ triggers.FemtoHelper/ParticleRemoteEmit.attributes.description.tag=Any Particle 
 triggers.FemtoHelper/CinematicTextTrigger.placements.name.default=Cinematic Text Activator
 triggers.FemtoHelper/CinematicTextTrigger.attributes.description.activationTag=Any Cinematic Text entity with this tag will be activated on entry.
 triggers.FemtoHelper/CinematicTextTrigger.attributes.description.stopText=Stops the text entity with this tag instead of activating it.
+triggers.FemtoHelper/CinematicTextTrigger.attributes.description.stopImmediately=Stops the text immediately, instead of fading it out.\nDoes nothing if "Stop Text" isn't checked.
 
 # Vital Safety Trigger
 

@@ -1,4 +1,5 @@
-﻿using Celeste.Mod.UI;
+﻿using Celeste.Mod.FemtoHelper.Utils;
+using Celeste.Mod.UI;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -17,6 +18,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public float parallax;
         public bool hud;
         public float scale;
+        public string visibilityFlag;
         public SimpleText(EntityData data, Vector2 offset) : base(data.Position + offset)
         {
             nodes = new List<PlutoniumTextNodes.Node>();
@@ -72,11 +74,14 @@ namespace Celeste.Mod.FemtoHelper.Entities
             parallax = data.Float("parallax", 1);
             hud = data.Bool("hud", false);
             scale = data.Float("scale", 1);
+            visibilityFlag = data.Attr("visibilityFlag", "");
             if (hud) Tag |= TagsExt.SubHUD;
         }
 
         public override void Render()
         {
+            if (!(Scene as Level).FancyCheckFlag(visibilityFlag)) return;
+
             string str2 = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>());
             base.Render();
             if (hud)

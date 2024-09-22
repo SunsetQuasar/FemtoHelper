@@ -9,6 +9,7 @@ using Monocle;
 using System.Collections;
 using Celeste.Mod.FemtoHelper;
 using Celeste.Mod.FemtoHelper.Entities;
+using Celeste.Mod.FemtoHelper.Utils;
 
 
 namespace Celeste.Mod.FemtoHelper.Entities
@@ -126,7 +127,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public string neededFlag;
 
-        public bool neededflagplus = true;
+        public bool neededflagplus => (Scene as Level).FancyCheckFlag(neededFlag);
 
         public bool ejectFromPoint, ejectToPoint;
 
@@ -218,13 +219,10 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public override void Awake(Scene scene)
         {
             base.Awake(scene);
-            neededflagplus = neededFlag == "" ? true : (neededFlag.StartsWith("!") ? !(Scene as Level).Session.GetFlag(neededFlag.Substring(1)) : (Scene as Level).Session.GetFlag(neededFlag));
         }
 
         public override void Update()
         {
-            neededflagplus = neededFlag == "" ? true : (neededFlag.StartsWith("!") ? !(Scene as Level).Session.GetFlag(neededFlag.Substring(1)) : (Scene as Level).Session.GetFlag(neededFlag));
-
             if (catched == false && !switchMode)
             {
                 foreach (Entity entity in Scene.Entities)
