@@ -100,8 +100,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
             if (hud)
             {
                 position2 -= position;
-                position2 *= 6;
-                scale2 *= 6;
+                position2 *= (Engine.ScreenMatrix.M11 * 6) < 6 ? 6 : (Engine.ScreenMatrix.M11 * 6);
+                scale2 *= (Engine.ScreenMatrix.M11 * 6) < 6 ? 6 : (Engine.ScreenMatrix.M11 * 6);
             }
 
             text.PrintCentered(position2, str2, shadow, spacing, color1, color2, scale2);
