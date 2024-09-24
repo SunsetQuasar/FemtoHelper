@@ -162,7 +162,10 @@ public class CinematicText : Entity
             );
         else effectData = new TextEffectData();
 
-        soundSource = new SoundSource();
+        soundSource = new SoundSource()
+        {
+            Position = Position
+        };
 
         activationTag = data.Attr("activationTag", "tag1");
         nextTextTag = data.Attr("nextTextTag", "");
@@ -320,6 +323,9 @@ public class CinematicText : Entity
 
     public void BeforeRender()
     {
+        Texture temp1 = Engine.Graphics.GraphicsDevice.Textures[1];
+        Texture temp2 = Engine.Graphics.GraphicsDevice.Textures[2];
+
         string finalString2 = str[0..finalStringLen];
         if (finished) finalString2 = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>());
 
@@ -357,6 +363,9 @@ public class CinematicText : Entity
         text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, color1 * movingCharPercent, Color.Transparent, effectData, scale2, cur);
 
         Draw.SpriteBatch.End();
+
+        Engine.Graphics.GraphicsDevice.Textures[1] = temp1;
+        Engine.Graphics.GraphicsDevice.Textures[2] = temp2;
     }
 
     public override void Render()
