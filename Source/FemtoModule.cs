@@ -136,12 +136,6 @@ public class FemtoModule : EverestModule
         Engine.Scene = new TestFemtoWipes();
     }
 
-    [Command("soundtest", "(FemtoHelper command) warps to the Everest sound test, type \"overworld\" first for this to work")]
-    private static void CmdSoundTest()
-    {
-        OuiModOptions.Instance.Overworld.Goto<OuiSoundTest>();
-    }
-
     // Set up any hooks, event handlers and your mod in general here.
     // Load runs before Celeste itself has initialized properly.
     public override void Load()
