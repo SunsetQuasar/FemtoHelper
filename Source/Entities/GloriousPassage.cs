@@ -61,10 +61,7 @@ public class GloriousPassage : Entity
     {
         if (!done)
         {
-            (Scene as Level).Session.SetFlag(flag, true);
-            if (!string.IsNullOrEmpty(audio)) Audio.Play(audio);
             Add(new Coroutine(Routine(player)));
-            done = true;
         }
     }
 
@@ -72,10 +69,7 @@ public class GloriousPassage : Entity
     {
         if (simple && !done)
         {
-            (Scene as Level).Session.SetFlag(flag, true);
-            if (!string.IsNullOrEmpty(audio)) Audio.Play(audio);
             Add(new Coroutine(Routine(player)));
-            done = true;
             return;
         }
         yeahforsure = true;
@@ -85,18 +79,9 @@ public class GloriousPassage : Entity
     public override void Update()
     {
         base.Update();
-        if (yeahforsure && !done && !interactToOpen)
+        if (yeahforsure && !done && !interactToOpen && player != null && player.OnGround() && Input.MoveY.Value == -1 && lastinput != -1)
         {
-            if (player != null && player.OnGround())
-            {
-                if (Input.MoveY.Value == -1 && lastinput != -1)
-                {
-                    (Scene as Level).Session.SetFlag(flag, true);
-                    if(!string.IsNullOrEmpty(audio)) Audio.Play(audio);
-                    Add(new Coroutine(Routine(player)));
-                    done = true;
-                }
-            }
+            Add(new Coroutine(Routine(player)));
         }
         lastinput = Input.MoveY.Value;
         yeahforsure = false;
@@ -104,9 +89,11 @@ public class GloriousPassage : Entity
 
     public IEnumerator Routine(Player player)
     {
-
+        if(!string.IsNullOrEmpty(flag))(Scene as Level).Session.SetFlag(flag, true);
+        if (!string.IsNullOrEmpty(audio)) Audio.Play(audio);
+        done = true;
         Level level = Scene as Level;
-        player.StateMachine.state = 11;
+        player.StateMachine.state = Player.StDummy;
 
         for (float i = 0; i < 1; i += Engine.RawDeltaTime * 4)
         {

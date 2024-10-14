@@ -51,6 +51,11 @@ namespace Celeste.Mod.FemtoHelper.Wipes
                 new DiamondWipe(this, wipeIn: true).Duration = dur;
                 yield return dur;
 
+                new DissolveWipe(this, wipeIn: false).Duration = dur;
+                yield return dur;
+                new DissolveWipe(this, wipeIn: true).Duration = dur;
+                yield return dur;
+
             }
 		}
 
