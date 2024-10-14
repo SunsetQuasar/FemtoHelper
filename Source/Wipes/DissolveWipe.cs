@@ -57,7 +57,7 @@ public class DissolveWipe : ScreenWipe
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, null, null, effect, Engine.ScreenMatrix);
         if (hasDrawn)
         {
-            Draw.SpriteBatch.Draw((RenderTarget2D)Celeste.WipeTarget, new Vector2(-1f, -1f), Color.White);
+            Draw.SpriteBatch.Draw((RenderTarget2D)Celeste.WipeTarget, new Vector2(-0f, -0f), Color.White);
         }
         Draw.SpriteBatch.End();
 
