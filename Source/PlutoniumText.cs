@@ -275,6 +275,23 @@ public class PlutoniumText : Component
 
     }
 
+    public static void Load()
+    {
+        On.Celeste.DustEdges.BeforeRender += DustEdges_BeforeRender;
+    }
+    private static void DustEdges_BeforeRender(On.Celeste.DustEdges.orig_BeforeRender orig, DustEdges self)
+    {
+        Texture temp1 = Engine.Graphics.GraphicsDevice.Textures[1];
+        Texture temp2 = Engine.Graphics.GraphicsDevice.Textures[2];
+        orig(self);
+        Engine.Graphics.GraphicsDevice.Textures[1] = temp1;
+        Engine.Graphics.GraphicsDevice.Textures[2] = temp2;
+    }
+    public static void Unload()
+    {
+        On.Celeste.DustEdges.BeforeRender -= DustEdges_BeforeRender;
+    }
+
     public static void DrawOutlineExceptGood(MTexture t, Vector2 position, Vector2 origin, Color color, SpriteEffects flip, float scale)
     {
         float scaleFix = t.ScaleFix * scale;

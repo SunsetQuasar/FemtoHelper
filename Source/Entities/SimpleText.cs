@@ -85,15 +85,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
             string str2 = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>());
             base.Render();
 
-            Texture temp1 = Engine.Graphics.GraphicsDevice.Textures[1];
-            Texture temp2 = Engine.Graphics.GraphicsDevice.Textures[2];
-
             if (hud)
             {
                 SubHudRenderer.EndRender();
-
-                Engine.Graphics.GraphicsDevice.Textures[1] = ColorGrade.from.Texture.Texture_Safe;
-                Engine.Graphics.GraphicsDevice.Textures[2] = ColorGrade.to.Texture.Texture_Safe;
 
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
             }
@@ -113,11 +107,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             text.PrintCentered(position2, str2, shadow, spacing, color1, color2, scale2);
 
-            Engine.Graphics.GraphicsDevice.Textures[1] = temp1;
-            Engine.Graphics.GraphicsDevice.Textures[2] = temp2;
-
             if (hud)
             {
+
                 SubHudRenderer.EndRender();
 
                 SubHudRenderer.BeginRender();
