@@ -32,6 +32,7 @@ public class GloriousPassage : Entity
     public int spawnIndex;
     public bool interactToOpen;
     public bool keepDashes;
+    public TalkComponent talk;
     public GloriousPassage(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Collider = new Hitbox(data.Width, data.Height);
@@ -48,7 +49,8 @@ public class GloriousPassage : Entity
         spawnIndex = data.Int("spawnpointIndex");
         interactToOpen = !data.Bool("pressUpToOpen", false);
         keepDashes = data.Bool("keepDashes", false);
-        if (interactToOpen) Add(new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width/2, -8), onTalk));
+        if (interactToOpen) Add(talk = new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width/2, -8), onTalk));
+        talk.PlayerMustBeFacing = false;
     }
 
     public override void Awake(Scene scene)

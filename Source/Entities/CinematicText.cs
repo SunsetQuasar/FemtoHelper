@@ -326,6 +326,9 @@ public class CinematicText : Entity
         Texture temp1 = Engine.Graphics.GraphicsDevice.Textures[1];
         Texture temp2 = Engine.Graphics.GraphicsDevice.Textures[2];
 
+        Engine.Graphics.GraphicsDevice.Textures[1] = ColorGrade.from.Texture.Texture_Safe;
+        Engine.Graphics.GraphicsDevice.Textures[2] = ColorGrade.to.Texture.Texture_Safe;
+
         string finalString2 = str[0..finalStringLen];
         if (finished) finalString2 = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>());
 
