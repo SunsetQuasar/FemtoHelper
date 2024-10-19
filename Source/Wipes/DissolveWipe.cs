@@ -40,8 +40,6 @@ public class DissolveWipe : ScreenWipe
 
     public override void BeforeRender(Scene scene)
     {
-        (scene as Level).Session.SetFlag("🏳️‍🌈");
-
         hasDrawn = true;
         Engine.Graphics.GraphicsDevice.SetRenderTarget(Celeste.WipeTarget);
         Engine.Graphics.GraphicsDevice.Clear(Color.Black);
