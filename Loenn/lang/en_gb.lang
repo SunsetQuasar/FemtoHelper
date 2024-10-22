@@ -5,6 +5,13 @@ mods.FemtoHelper.name=Femto Helper
 # Solid No Squish Controller
 entities.FemtoHelper/AssistHazardController.placements.name.controller=Solid No Squish Controller
 
+# Clutter Shadow Controller
+entities.FemtoHelper/ClutterShadowController.placements.name.default=Clutter Shadow Controller
+entities.FemtoHelper/ClutterShadowController.attributes.description.enabledColor=The shadow's color when the clutter is still present.
+entities.FemtoHelper/ClutterShadowController.attributes.description.disabledColor=The shadow's color when the clutter is gone.
+entities.FemtoHelper/ClutterShadowController.attributes.description.enabledAlpha=The shadow's opacity when the clutter is still present.
+entities.FemtoHelper/ClutterShadowController.attributes.description.disabledAlpha=The shadow's opacity when the clutter is gone.
+
 # La Creatura
 entities.FemtoHelper/LaCreatura.placements.name.creatura=La Creatura
 entities.FemtoHelper/LaCreatura.attributes.description.acceleration=How fast the butterflies can change their speed.

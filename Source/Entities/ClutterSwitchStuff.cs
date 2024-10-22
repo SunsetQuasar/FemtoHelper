@@ -258,11 +258,15 @@ public class ClutterShadowController : Entity
 {
     public float enabledAlpha = 0.7f;
     public float disabledAlpha = 0.3f;
+    public Color enabledColor;
+    public Color disabledColor;
 
     public ClutterShadowController(EntityData data, Vector2 offset) : base()
     {
         enabledAlpha = data.Float("enabledAlpha", 0.7f);
         disabledAlpha = data.Float("disabledAlpha", 0.3f);
+        enabledColor = Calc.HexToColor(data.Attr("enabledColor", "000000"));
+        disabledColor = Calc.HexToColor(data.Attr("disabledColor", "000000"));
     }
 
     public static void Load()
@@ -281,7 +285,7 @@ public class ClutterShadowController : Entity
         ClutterShadowController c = self.Scene.Tracker.GetEntity<ClutterShadowController>();
         if (c != null)
         {
-            self.color = Color.White * (self.enabled ? c.enabledAlpha : c.disabledAlpha);
+            self.color = (self.enabled ? c.enabledColor : c.disabledColor) * (self.enabled ? c.enabledAlpha : c.disabledAlpha);
         }
         orig(self);
         self.color = cl;
