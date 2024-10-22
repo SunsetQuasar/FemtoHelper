@@ -23,7 +23,6 @@ namespace Celeste.Mod.FemtoHelper
     {
         public static void Load()
         {
-            MovingWaterBlock.Load();
             RotateDashRefill.Load();
             BoostingBoosterSorryIStoleFromCommunalHelper.Load();
             EvilTheoCrystal.Load();
@@ -34,7 +33,6 @@ namespace Celeste.Mod.FemtoHelper
 
         public static void Unload()
         {
-            MovingWaterBlock.Unload();
             RotateDashRefill.Unload();
             BoostingBoosterSorryIStoleFromCommunalHelper.Unload();
             EvilTheoCrystal.Unload();

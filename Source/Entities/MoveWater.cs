@@ -15,7 +15,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
 {
     [TrackedAs(typeof(Water))]
     [CustomEntity("FemtoHelper/MovingWaterBlock")]
-    public class MovingWaterBlock : Water
+    public class MovingWaterBlock : GenericWaterBlock
     {
         protected DynData<Water> waterData;
 
@@ -31,7 +31,6 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public MTexture arrow;
         public MTexture deadsprite;
-        public MTexture[,] ninSlice;
 
         public ParticleType dissipate;
         public ParticleType tinydrops;
@@ -43,7 +42,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public bool dying;
 
         public float wvtimer;
-        public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, false, false, data.Width, data.Height)
+        public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height)
         {
             waterData = new DynData<Water>(this);
             waterData["FillColor"] = Color.Transparent;
@@ -53,15 +52,6 @@ namespace Celeste.Mod.FemtoHelper.Entities
             angle = (data.Float("angle", 90f) / 180) * (float)-Math.PI;
             arrow = GFX.Game["objects/FemtoHelper/moveWater/arrow"];
             deadsprite = GFX.Game["objects/FemtoHelper/moveWater/dead"];
-            ninSlice = new MTexture[3, 3];
-            MTexture nine = GFX.Game["objects/FemtoHelper/moveWater/nineSlice"];
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    ninSlice[i, j] = nine.GetSubtexture(new Rectangle(i * 8, j * 8, 8, 8));
-                }
-            }
             dissipate = Booster.P_Burst;
             dissipate.Color = Color.LightSkyBlue * 0.3f;
             wvtimer = 0f;
@@ -91,6 +81,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 SpeedMultiplier = 0.25f,
                 FadeMode = ParticleType.FadeModes.Late
             };
+
+            Add(new WaterSprite());
         }
         public override void Update()
         {
@@ -116,15 +108,14 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 }
             }
 
-            foreach (SeekerBarrier entity in base.Scene.Tracker.GetEntities<SeekerBarrier>())
-            {
-                entity.Collidable = true;
-                bool b = CollideCheck(entity);
-                entity.Collidable = false;
-                if ((b || Left < (Scene as Level).Bounds.Left || Right > (Scene as Level).Bounds.Right || Top < (Scene as Level).Bounds.Top || Bottom > (Scene as Level).Bounds.Bottom) && !dying) Add(new Coroutine(Destroy()));
-            }
+            MoveTo(Position + Calc.AngleToVector(angle, Speed) * Engine.DeltaTime);
 
-            Position += Calc.AngleToVector(angle, Speed) * Engine.DeltaTime;
+            if((Left < (Scene as Level).Bounds.Left || Right > (Scene as Level).Bounds.Right || Top < (Scene as Level).Bounds.Top || Bottom > (Scene as Level).Bounds.Bottom
+              || MoveToCollideBarriers(Position + Calc.AngleToVector(angle, Speed) * Engine.DeltaTime))
+              && !dying)
+            {
+                Add(new Coroutine(Destroy()));
+            }
 
             if (Scene.OnInterval(0.02f))
             {
@@ -143,7 +134,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
             yield return 0.1f;
 
-            Audio.Play("event:/Codecumber/movewater_break", Position);
+            Audio.Play("event:/FemtoHelper/movewater_break", Position);
             moveSfx.Stop();
             shaketimer = 0.2f;
 
@@ -160,33 +151,9 @@ namespace Celeste.Mod.FemtoHelper.Entities
             RemoveSelf();
         }
 
-        public static void Load()
+        public override void DrawDisplacement()
         {
-            On.Celeste.Water.RenderDisplacement += GoodLookingWaterISwear;
-        }
-
-        public static void Unload()
-        {
-            On.Celeste.Water.RenderDisplacement -= GoodLookingWaterISwear;
-        }
-
-        public static void GoodLookingWaterISwear(On.Celeste.Water.orig_RenderDisplacement orig, Water self)
-        {
-            MovingWaterBlock goodWater = self as MovingWaterBlock;
-            if (goodWater == null)
-            {
-                orig(self);
-            }
-            else
-            {
-                Vector2 num3 = self.Position;
-                self.Position += goodWater.shake - (Calc.AngleToVector(goodWater.angle, goodWater.Speed) * Engine.DeltaTime);
-                for (float i = -1; i < self.Width + 1; i++)
-                {
-                    Draw.Rect(self.Position + new Vector2(i, -1), 1, self.Height + 1, new Color(0.5f, 0.5f + (float)Math.Sin(i / 4f + (goodWater.wvtimer * 4)) * 0.03f, 0.4f, 1f));
-                }
-                self.Position = num3;
-            }
+            
         }
 
         public void triggerBlock()
@@ -213,31 +180,6 @@ namespace Celeste.Mod.FemtoHelper.Entities
             Vector2 num3 = Position;
             Position += shake;
             base.Render();
-            Color color = Color.White;
-            color.A = 200;
-            int num = (int)(Width / 8f);
-            int num2 = (int)(Height / 8f);
-            ninSlice[0, 0].Draw(Position + new Vector2(0f, 0f), Vector2.Zero, color);
-            ninSlice[2, 0].Draw(Position + new Vector2(Width - 8f, 0f), Vector2.Zero, color);
-            ninSlice[0, 2].Draw(Position + new Vector2(0f, Height - 8f), Vector2.Zero, color);
-            ninSlice[2, 2].Draw(Position + new Vector2(Width - 8f, Height - 8f), Vector2.Zero, color);
-            for (int i = 1; i < num - 1; i++)
-            {
-                ninSlice[1, 0].Draw(Position + new Vector2(i * 8, 0f), Vector2.Zero, color);
-                ninSlice[1, 2].Draw(Position + new Vector2(i * 8, Height - 8f), Vector2.Zero, color);
-            }
-            for (int j = 1; j < num2 - 1; j++)
-            {
-                ninSlice[0, 1].Draw(Position + new Vector2(0f, j * 8), Vector2.Zero, color);
-                ninSlice[2, 1].Draw(Position + new Vector2(Width - 8f, j * 8), Vector2.Zero, color);
-            }
-            for (int k = 1; k < num - 1; k++)
-            {
-                for (int l = 1; l < num2 - 1; l++)
-                {
-                    ninSlice[1, 1].Draw(Position + new Vector2(k, l) * 8f, Vector2.Zero, color);
-                }
-            }
             MTexture tex = arrow;
 
             float ang = angle;
