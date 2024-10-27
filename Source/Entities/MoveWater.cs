@@ -42,18 +42,26 @@ namespace Celeste.Mod.FemtoHelper.Entities
         public bool dying;
 
         public float wvtimer;
+
+        public Vector2 Anchor;
+
+        public Wiggler iconWiggler;
+        public Vector2 iconScale;
+
+        public WaterSprite sprite;
         public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height)
         {
+            Anchor = data.Position + offset;
             waterData = new DynData<Water>(this);
             waterData["FillColor"] = Color.Transparent;
             Add(moveSfx = new SoundSource());
             triggered = false;
             targetSpeed = data.Float("maxSpeed", 60f);
-            angle = (data.Float("angle", 90f) / 180) * (float)-Math.PI;
+            angle = (data.Float("angle", 90f) / 180) * MathF.PI;
             arrow = GFX.Game["objects/FemtoHelper/moveWater/arrow"];
             deadsprite = GFX.Game["objects/FemtoHelper/moveWater/dead"];
             dissipate = Booster.P_Burst;
-            dissipate.Color = Color.LightSkyBlue * 0.3f;
+            dissipate.Color = Calc.HexToColor("86E2FF") * 0.25f;
             wvtimer = 0f;
             Depth = -51000;
             tinydrops = new ParticleType
@@ -61,7 +69,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 Size = 1f,
 
                 Color = Color.LightSkyBlue * 0.6f,
-                DirectionRange = (float)Math.PI / 30f,
+                DirectionRange = MathF.PI / 30f,
                 LifeMin = 0.3f,
                 LifeMax = 0.6f,
                 SpeedMin = 5f,
@@ -73,7 +81,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 Size = 1f,
                 Color = Color.LightSkyBlue,
-                DirectionRange = (float)Math.PI / 30f,
+                DirectionRange = MathF.PI / 30f,
                 LifeMin = 0.6f,
                 LifeMax = 1f,
                 SpeedMin = 40f,
@@ -82,7 +90,14 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 FadeMode = ParticleType.FadeModes.Late
             };
 
-            Add(new WaterSprite());
+            Add(sprite = new WaterSprite());
+
+            iconScale = Vector2.One;
+
+            Add(iconWiggler = Wiggler.Create(0.4f, 6f, (t) =>
+            {
+                iconScale = Vector2.One + (new Vector2(t, -t) * 0.5f);
+            }));
         }
         public override void Update()
         {
@@ -127,6 +142,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public IEnumerator Destroy()
         {
+            iconWiggler.Start();
+            sprite.wiggle.Start();
 
             moveSfx.Param("arrow_stop", 1f);
             dying = true;
@@ -148,7 +165,20 @@ namespace Celeste.Mod.FemtoHelper.Entities
                     if (Calc.Random.Chance(0.5f)) SceneAs<Level>().ParticlesFG.Emit(dissipate, vector + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, (vector - Center).Angle());
                 }
             }
-            RemoveSelf();
+            Visible = Collidable = false;
+
+            yield return 2.2f;
+            Audio.Play("event:/game/04_cliffside/arrowblock_reform_begin", Position);
+
+            yield return 0.8f;
+            Audio.Play("event:/game/04_cliffside/greenbooster_reappear", Position).setPitch(0.8f);
+
+            iconWiggler.Start();
+            sprite.wiggle.Start();
+            Position = Anchor;
+            Collidable = Visible = true;
+            dying = triggered = false;
+
         }
 
         public override void DrawDisplacement()
@@ -170,6 +200,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
             }
             triggered = true;
             shaketimer = 0.2f;
+            iconWiggler.Start();
+            sprite.wiggle.Start();
             Audio.Play("event:/game/04_cliffside/arrowblock_activate", Position);
             moveSfx.Play("event:/game/04_cliffside/arrowblock_move");
             moveSfx.Param("arrow_stop", 0f);
@@ -188,8 +220,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 tex = deadsprite;
                 ang = 0;
             }
-            tex.DrawOutlineCentered(Center, Color.Black, 1, ang);
-            tex.DrawCentered(Center, Color.White, 1, ang);
+            tex.DrawOutlineCentered(Center, Color.Black, iconScale, ang);
+            tex.DrawCentered(Center, Color.White, iconScale, ang);
             Position = num3;
 
         }
