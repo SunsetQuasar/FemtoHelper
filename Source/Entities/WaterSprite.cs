@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
+
 public class WaterSprite : GraphicsComponent
 {
     public const int Padding = 4;
