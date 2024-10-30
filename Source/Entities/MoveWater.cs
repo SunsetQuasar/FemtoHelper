@@ -10,9 +10,38 @@ using Monocle;
 using Celeste.Mod.Entities;
 using System.Collections;
 using MonoMod.Utils;
+using static Celeste.MoonGlitchBackgroundTrigger;
+using System.IO;
 
 namespace Celeste.Mod.FemtoHelper.Entities
 {
+    public class Droplet : Entity
+    {
+        public Vector2 start;
+        public Vector2 end;
+        public Image image;
+        public Droplet Init(Vector2 From, Vector2 to, Color col)
+        {
+            Add(image = new Image(GFX.Game["objects/FemtoHelper/moveWater/droplet"]));
+            image.Scale = Vector2.Zero;
+            image.CenterOrigin();
+            image.Color = col;
+            Position = start = From;
+            end = to;
+            Tween t = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeIn, 0.8f, true);
+            t.OnUpdate += (t) =>
+            {
+                X = Calc.LerpClamp(start.X, end.X, t.Eased * t.Eased);
+                Y = Calc.LerpClamp(start.Y, end.Y, t.Eased);
+                image.Scale = Vector2.One * t.Eased;
+            };
+            t.OnComplete += (t) => RemoveSelf();
+            Add(t);
+            return this;
+        }
+       
+    }
+
     [TrackedAs(typeof(Water))]
     [CustomEntity("FemtoHelper/MovingWaterBlock")]
     public class MovingWaterBlock : GenericWaterBlock
@@ -60,8 +89,8 @@ namespace Celeste.Mod.FemtoHelper.Entities
             angle = (data.Float("angle", 90f) / 180) * MathF.PI;
             arrow = GFX.Game["objects/FemtoHelper/moveWater/arrow"];
             deadsprite = GFX.Game["objects/FemtoHelper/moveWater/dead"];
-            dissipate = Booster.P_Burst;
-            dissipate.Color = Calc.HexToColor("86E2FF") * 0.25f;
+            dissipate = new ParticleType(Booster.P_Burst);
+            dissipate.Color = Calc.HexToColor("81F4F0") * 0.25f;
             wvtimer = 0f;
             Depth = -51000;
             tinydrops = new ParticleType
@@ -118,14 +147,18 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 if (!dying)
                 {
                     Speed = Calc.Approach(Speed, targetSpeed, 80f * Engine.DeltaTime);
-                    Vector2 pos2 = Position + new Vector2(Calc.Random.NextFloat(Width), Calc.Random.NextFloat(Height));
-                    SceneAs<Level>().ParticlesFG.Emit(tinydrops, pos2, (pos2 - Center).Angle());
+                    if (Scene.OnInterval(0.04f))
+                    {
+                        Vector2 pos2 = Position + new Vector2(Calc.Random.NextFloat(Width), Calc.Random.NextFloat(Height));
+                        SceneAs<Level>().ParticlesFG.Emit(tinydrops, pos2, (pos2 - Center).Angle());
+                    }
+
                 }
             }
 
             MoveTo(Position + Calc.AngleToVector(angle, Speed) * Engine.DeltaTime);
 
-            if((Left < (Scene as Level).Bounds.Left || Right > (Scene as Level).Bounds.Right || Top < (Scene as Level).Bounds.Top || Bottom > (Scene as Level).Bounds.Bottom
+            if ((Left < (Scene as Level).Bounds.Left || Right > (Scene as Level).Bounds.Right || Top < (Scene as Level).Bounds.Top || Bottom > (Scene as Level).Bounds.Bottom
               || MoveToCollideBarriers(Position + Calc.AngleToVector(angle, Speed) * Engine.DeltaTime))
               && !dying)
             {
@@ -170,12 +203,24 @@ namespace Celeste.Mod.FemtoHelper.Entities
             yield return 2.2f;
             Audio.Play("event:/game/04_cliffside/arrowblock_reform_begin", Position);
 
+            Position = Anchor;
+
+            for (int i = 0; (float)i < Width; i += 8)
+            {
+                for (int j = 0; (float)j < Height; j += 8)
+                {
+                    Vector2 vector6 = new Vector2(X + (float)i + 4f, Y + (float)j + 4f);
+                    Vector2 vec = (vector6 - Center).SafeNormalize();
+                    Color col = Color.Lerp(Color.CadetBlue * 0.2f, Color.White * 0.3f, vec.LengthSquared());
+                    Scene.Add(Engine.Pooler.Create<Droplet>().Init(vector6 + vec * 12f, vector6, col));
+                }
+            }
+
             yield return 0.8f;
             Audio.Play("event:/game/04_cliffside/greenbooster_reappear", Position).setPitch(0.8f);
 
             iconWiggler.Start();
             sprite.wiggle.Start();
-            Position = Anchor;
             Collidable = Visible = true;
             dying = triggered = false;
 
@@ -183,7 +228,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
 
         public override void DrawDisplacement()
         {
-            
+
         }
 
         public void triggerBlock()

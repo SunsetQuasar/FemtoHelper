@@ -49,7 +49,7 @@ public class WaterSprite : GraphicsComponent
 
         entity.Add(wiggle = Wiggler.Create(0.5f, 3f, (t) =>
         {
-            extraSize = new Vector2(4 / entity.Width, -4 / entity.Height) * t;
+            extraSize = new Vector2(-4 / (Entity.Width + Padding * 2), 4 / (Entity.Height + Padding * 2)) * t;
         }));
     }
 
@@ -126,7 +126,7 @@ public class WaterSprite : GraphicsComponent
 
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, effect, GameplayRenderer.instance.Camera.Matrix);
 
-        Draw.SpriteBatch.Draw(buffer, RenderPosition - (extraSize * new Vector2(Entity.Width, Entity.Height)) - (Vector2.One * Padding), null, color, 0f, Vector2.Zero, Vector2.One + (extraSize * 2), SpriteEffects.None, 0f);
+        Draw.SpriteBatch.Draw(buffer, RenderPosition - (extraSize * new Vector2(buffer.Width, buffer.Height)) - (Vector2.One * Padding), null, color, 0f, Vector2.Zero, Vector2.One + (extraSize * 2), SpriteEffects.None, 0f);
 
         Draw.SpriteBatch.End();
 
