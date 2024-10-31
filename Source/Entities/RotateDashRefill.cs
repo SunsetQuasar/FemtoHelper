@@ -10,8 +10,6 @@ using Monocle;
 using Celeste.Mod.Entities;
 using Celeste.Mod.FemtoHelper;
 using Celeste.Mod.FemtoHelper.Entities;
-using static Celeste.TrackSpinner;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace Celeste.Mod.FemtoHelper.Entities
 {
