@@ -21,6 +21,8 @@ public abstract class GenericWaterBlock : Water
         DisplacementRenderHook d = Components.Get<DisplacementRenderHook>();
         Remove(d);
         Add(new DisplacementRenderHook(DrawDisplacement));
+
+        RemoveTag(Tags.TransitionUpdate);
     }
 
     public abstract void DrawDisplacement();

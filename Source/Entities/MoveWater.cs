@@ -127,6 +127,10 @@ namespace Celeste.Mod.FemtoHelper.Entities
             {
                 iconScale = Vector2.One + (new Vector2(t, -t) * 0.5f);
             }));
+
+            int lig = (int)(MathF.Min(Width, Height) / 2);
+
+            Add(new VertexLight(new Vector2(Width / 2, Height / 2), Color.LightCyan, 0.9f, lig - 8, lig + 8));
         }
         public override void Update()
         {
