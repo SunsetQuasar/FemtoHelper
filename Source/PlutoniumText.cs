@@ -43,6 +43,27 @@ public class PlutoniumTextNodes
             strIfOff = off;
         }
     }
+    public class ExpressionAsFlag : Node
+    {
+        public string exp;
+        public string strIfOn;
+        public string strIfOff;
+        public ExpressionAsFlag(string k, string on, string off)
+        {
+            exp = k;
+            strIfOn = on;
+            strIfOff = off;
+        }
+    }
+    public class ExpressionAsCounter : Node
+    {
+        public string exp;
+        public ExpressionAsCounter(string k)
+        {
+            exp = k;
+        }
+    }
+
     public static string ConstructString(List<Node> nodes, Level level)
     {
         string result = "";
@@ -59,6 +80,14 @@ public class PlutoniumTextNodes
             else if (n is Flag f)
             {
                 result += level.Session.GetFlag(f.key) ? f.strIfOn : f.strIfOff;
+            }
+            else if (n is ExpressionAsFlag ef)
+            {
+                result += Utils.EvaluateExpressionAsBool(ef.exp, level.Session) ? ef.strIfOn : ef.strIfOff;
+            }
+            else if (n is ExpressionAsCounter ec)
+            {
+                result += Utils.EvaluateExpressionAsInt(ec.exp, level.Session).ToString();
             }
         }
         return result;

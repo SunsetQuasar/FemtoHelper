@@ -9,7 +9,6 @@ using Monocle;
 using System.Collections;
 using Celeste.Mod.FemtoHelper;
 using Celeste.Mod.FemtoHelper.Entities;
-using Celeste.Mod.FemtoHelper.Utils;
 
 
 namespace Celeste.Mod.FemtoHelper.Entities

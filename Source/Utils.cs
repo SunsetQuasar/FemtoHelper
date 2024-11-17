@@ -5,10 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Celeste.Mod.FemtoHelper.Utils;
+namespace Celeste.Mod.FemtoHelper;
 public class Utils
 {
-
+    public static int EvaluateExpressionAsInt(string exp, Session session)
+    {
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression.Invoke(exp, out object obj))
+        {
+            return FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue.Invoke(obj, session);
+        }
+        else return 0;
+    }
+    public static bool EvaluateExpressionAsBool(string exp, Session session)
+    {
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression.Invoke(exp, out object obj))
+        {
+            return FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue.Invoke(obj, session) != 0;
+        }
+        else return false;
+    }
 }
 public static class LevelExtensions
 {

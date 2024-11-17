@@ -1,5 +1,4 @@
 ﻿using Celeste.Mod.Entities;
-using Celeste.Mod.FemtoHelper.Utils;
 using Celeste.Mod.UI;
 using Microsoft.Build.Framework;
 using Microsoft.Xna.Framework;
@@ -105,6 +104,14 @@ public class CinematicText : Entity
                         if (splitOnceAgain.Length == 3)
                         {
                             nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
+                        }
+                        else if (splitOnceAgain.Length == 4 && splitOnceAgain[0] == "exp")
+                        {
+                            nodes.Add(new PlutoniumTextNodes.ExpressionAsFlag(splitOnceAgain[1], splitOnceAgain[2], splitOnceAgain[3]));
+                        }
+                        else if (splitOnceAgain.Length == 2 && splitOnceAgain[0] == "exp")
+                        {
+                            nodes.Add(new PlutoniumTextNodes.ExpressionAsCounter(splitOnceAgain[1]));
                         }
                         else
                         {

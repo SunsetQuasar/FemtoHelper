@@ -18,6 +18,7 @@ using System.Linq;
 using Celeste.Mod.FemtoHelper.Wipes;
 using Celeste.Mod.UI;
 using Celeste.Mod.FemtoHelper.Code.Entities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -42,6 +43,15 @@ public class FemtoModule : EverestModule
     public static class CavernHelperSupport
     {
         public static Func<Action<Vector2>, Collider, Component> GetCrystalBombExplosionCollider;
+    }
+
+    [ModImportName("FrostHelper")]
+    public static class FrostHelperSupport
+    {
+        public delegate bool TryCreateSessionExpressionDelegate(string str, [NotNullWhen(true)] out object? expression);
+        public static TryCreateSessionExpressionDelegate? TryCreateSessionExpression;
+
+        public static Func<object, Session, int> GetIntSessionExpressionValue;
     }
 
     // Only one alive module instance can exist at any given time.
@@ -148,6 +158,8 @@ public class FemtoModule : EverestModule
         typeof(CommunalHelperSupport).ModInterop(); //:33
 
         typeof(CavernHelperSupport).ModInterop(); //:333
+
+        typeof(FrostHelperSupport).ModInterop(); //:3333
 
         Everest.Events.Level.OnLoadBackdrop += Level_OnLoadBackdrop;
         On.Celeste.Puffer.OnCollideH += Puffer_KaizoCollideHHook;

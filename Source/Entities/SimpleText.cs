@@ -1,6 +1,6 @@
-﻿using Celeste.Mod.FemtoHelper.Utils;
-using Celeste.Mod.UI;
+﻿using Celeste.Mod.UI;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -23,11 +23,12 @@ namespace Celeste.Mod.FemtoHelper.Entities
         {
             nodes = new List<PlutoniumTextNodes.Node>();
 
-            string[] split_str = Regex.Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")), "(\\s|\\{|\\})");
+            string[] split_str = Regex.Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")), "(\\{|\\})");
             string[] split_str2 = new string[split_str.Length];
             int num = 0;
             for (int i = 0; i < split_str.Length; i++)
             {
+                Console.WriteLine(split_str[i]);
                 if (!string.IsNullOrEmpty(split_str[i]))
                 {
                     split_str2[num++] = split_str[i];
@@ -49,6 +50,14 @@ namespace Celeste.Mod.FemtoHelper.Entities
                             {
                                 nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
                             } 
+                            else if (splitOnceAgain.Length == 4 && splitOnceAgain[0] == "exp")
+                            {
+                                nodes.Add(new PlutoniumTextNodes.ExpressionAsFlag(splitOnceAgain[1], splitOnceAgain[2], splitOnceAgain[3]));
+                            } 
+                            else if (splitOnceAgain.Length == 2 && splitOnceAgain[0] == "exp")
+                            {
+                                nodes.Add(new PlutoniumTextNodes.ExpressionAsCounter(splitOnceAgain[1]));
+                            }
                             else
                             {
                                 nodes.Add(new PlutoniumTextNodes.Counter(split_str2[i]));

@@ -2,7 +2,6 @@
 using Celeste;
 using Celeste.Mod;
 using Celeste.Mod.Entities;
-using Celeste.Mod.FemtoHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 
