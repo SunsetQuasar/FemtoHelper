@@ -33,6 +33,7 @@ public class GloriousPassage : Entity
     public bool interactToOpen;
     public bool keepDashes;
     public bool SameRoom;
+    public bool CarryHoldablesOver;
     public TalkComponent talk;
     public GloriousPassage(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
@@ -51,6 +52,7 @@ public class GloriousPassage : Entity
         interactToOpen = !data.Bool("pressUpToOpen", false);
         keepDashes = data.Bool("keepDashes", false);
         SameRoom = data.Bool("sameRoom", true);
+        CarryHoldablesOver = data.Bool("carryHoldablesOver", true);
         if (interactToOpen)
         {
             Add(talk = new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width / 2, -8), onTalk));
@@ -127,6 +129,8 @@ public class GloriousPassage : Entity
 
                 if(level.Session.Level == roomName && SameRoom)
                 {
+                    level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(spawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
+
                     pos = player.Position;
 
                     player.Position = level.Session.RespawnPoint.Value;
@@ -158,6 +162,8 @@ public class GloriousPassage : Entity
                     player.Speed = Vector2.Zero;
                     level.DoScreenWipe(wipeIn: true);
                     level.Add(new DelayedCameraRequest(player));
+
+                    done = false;
                     return;
                 }
 
