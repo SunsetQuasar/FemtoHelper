@@ -161,7 +161,7 @@ public class GloriousPassage : Entity
                     level.Session.SetFlag("transition_assist", true);
                     player.Speed = Vector2.Zero;
                     level.DoScreenWipe(wipeIn: true);
-                    level.Add(new DelayedCameraRequest(player));
+                    level.Add(new DelayedCameraRequest(player, false));
 
                     done = false;
                     return;
@@ -191,10 +191,12 @@ public class GloriousPassage : Entity
                 int dashes = player.Dashes;
                 level.Remove(player);
                 level.UnloadLevel();
+                bool error = true;
                 LevelData newLevelData = level.Session.MapData.Get(roomName);
                 if (newLevelData != null)
                 {
                     level.Session.Level = roomName;
+                    error = false;
                 }
                 else
                 {
@@ -202,6 +204,7 @@ public class GloriousPassage : Entity
                     {
                         if (d.Name.Trim() == roomName) {
                             level.Session.Level = d.Name;
+                            error = false;
                         }
                     }
                 }
@@ -255,7 +258,7 @@ public class GloriousPassage : Entity
                 level.Session.SetFlag("transition_assist", true);
                 player.Speed = Vector2.Zero;
                 level.DoScreenWipe(wipeIn: true);
-                level.Add(new DelayedCameraRequest(player));
+                level.Add(new DelayedCameraRequest(player, error));
             };
         }
     }

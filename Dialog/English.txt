@@ -7,3 +7,6 @@ Example text.{n}Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasell
 FEMTOHELPER_ERRORHANDLER_INDEX_ZERO=
 "Total Indexes" can't be zero!
 
+FEMTOHELPER_ERRORHANDLER_INVALID_ROOM=
+[MADELINE_PHONE left angry]
+That door doesn't have a valid destination room!
