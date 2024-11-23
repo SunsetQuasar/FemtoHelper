@@ -51,8 +51,8 @@ public class GloriousPassage : Entity
         spawnIndex = data.Int("spawnpointIndex");
         interactToOpen = !data.Bool("pressUpToOpen", false);
         keepDashes = data.Bool("keepDashes", false);
-        SameRoom = data.Bool("sameRoom", true);
-        CarryHoldablesOver = data.Bool("carryHoldablesOver", true);
+        SameRoom = data.Bool("sameRoom", false);
+        CarryHoldablesOver = data.Bool("carryHoldablesOver", false);
         if (interactToOpen)
         {
             Add(talk = new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width / 2, -8), onTalk));

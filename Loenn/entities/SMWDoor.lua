@@ -31,6 +31,8 @@ FemtoHelperGloriousPassage.placements = {
 			pressUpToOpen = false,
             keepDashes = true,
 			depth = 120,
+            sameRoom = true,
+            carryHoldablesOver = true,
 			flag = ""
         }
 	},
@@ -49,6 +51,8 @@ FemtoHelperGloriousPassage.placements = {
 			pressUpToOpen = true,
             keepDashes = true,
 			depth = 120,
+            sameRoom = true,
+            carryHoldablesOver = true,
 			flag = ""
         }
 	},
@@ -67,6 +71,8 @@ FemtoHelperGloriousPassage.placements = {
 			pressUpToOpen = false,
             keepDashes = true,
 			depth = 120,
+            sameRoom = true,
+            carryHoldablesOver = true,
 			flag = ""
         }
     }

@@ -114,6 +114,8 @@ entities.FemtoHelper/GloriousPassage.attributes.description.audio=Audio event th
 entities.FemtoHelper/GloriousPassage.attributes.description.openPath=Texture path for the door when it is open.
 entities.FemtoHelper/GloriousPassage.attributes.description.pressUpToOpen=Makes it so the door is opened by pressing up (like in Super Mario games).
 entities.FemtoHelper/GloriousPassage.attributes.description.keepDashes=Makes it so the player's dash count is kept through the room transition.
+entities.FemtoHelper/GloriousPassage.attributes.description.sameRoom=Don't reload the room if the source room and destination room are the same.\nDoes nothing otherwise.
+entities.FemtoHelper/GloriousPassage.attributes.description.carryHoldablesOver=Allows the player to carry holdable entities through the teleport.\nNote: may not work with all holdables, especially Eevee Helper Holdable Containers.
 entities.FemtoHelper/GloriousPassage.attributes.description.flag=The flag set when the door is opened.
 
 # Custom Cliffside Wind Flag
