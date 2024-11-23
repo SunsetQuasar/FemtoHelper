@@ -143,7 +143,7 @@ namespace Celeste.Mod.FemtoHelper.Entities
                 float lerp = Calc.Clamp(Oxygen, 0f, 500f) / 500f;
 
                 Distort.AnxietyOrigin = new Vector2((player.Center.X - level.Camera.X) / 320f, (player.Center.Y - level.Camera.Y) / 180f);
-                Distort.Anxiety = 1 - lerp;
+                Distort.anxiety = 1 - lerp;
 
                 Audio.SetMusicParam(musicParamName, Calc.ClampedMap(lerp, 1, 0, musicParamMin, musicParamMax));
 

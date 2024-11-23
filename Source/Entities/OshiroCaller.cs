@@ -1,12 +1,8 @@
 ﻿// Celeste.CustomFakeHeart
 using System;
-using System.Security.AccessControl;
 using Celeste;
-using Celeste.Mod.Entities;
 using Celeste.Mod.FemtoHelper;
-using FMOD;
-using Microsoft.Xna.Framework;
-using Monocle;
+
 
 [CustomEntity("FemtoHelper/OshiroCaller")]
 
@@ -155,7 +151,7 @@ public class OshiroCaller : Entity
 						base.Scene.Tracker.GetEntity<AngryOshiro>()?.RemoveSelf();
 						Distort.GameRate = 1f;
 						Engine.TimeRate = 1f;
-						Distort.Anxiety = 0f;
+						Distort.anxiety = 0f;
 					}
 					RemoveSelf();
 				}
@@ -218,7 +214,7 @@ public class OshiroCaller : Entity
 						base.Scene.Tracker.GetEntity<AngryOshiro>()?.RemoveSelf();
 						Distort.GameRate = 1f;
 						Engine.TimeRate = 1f;
-						Distort.Anxiety = 0f;
+						Distort.anxiety = 0f;
 					}
 					RemoveSelf();
 				}
