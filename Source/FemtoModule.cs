@@ -48,8 +48,8 @@ public class FemtoModule : EverestModule
     [ModImportName("FrostHelper")]
     public static class FrostHelperSupport
     {
-        public delegate bool TryCreateSessionExpressionDelegate(string str, [NotNullWhen(true)] out object? expression);
-        public static TryCreateSessionExpressionDelegate? TryCreateSessionExpression;
+        public delegate bool TryCreateSessionExpressionDelegate(string str, [NotNullWhen(true)] out object expression);
+        public static TryCreateSessionExpressionDelegate TryCreateSessionExpression;
 
         public static Func<object, Session, int> GetIntSessionExpressionValue;
     }

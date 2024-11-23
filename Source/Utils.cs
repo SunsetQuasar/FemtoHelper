@@ -10,17 +10,17 @@ public class Utils
 {
     public static int EvaluateExpressionAsInt(string exp, Session session)
     {
-        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression.Invoke(exp, out object obj))
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
         {
-            return FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue.Invoke(obj, session);
+            return FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue?.Invoke(obj, session) ?? 0;
         }
         else return 0;
     }
     public static bool EvaluateExpressionAsBool(string exp, Session session)
     {
-        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression.Invoke(exp, out object obj))
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
         {
-            return FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue.Invoke(obj, session) != 0;
+            return (FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue?.Invoke(obj, session) ?? 0) != 0;
         }
         else return false;
     }
