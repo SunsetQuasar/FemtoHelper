@@ -1,12 +1,5 @@
-﻿using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Microsoft.Xna.Framework;
-using Monocle;
+﻿using Celeste.Mod.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Monocle.Ease;
 
 namespace Celeste.Mod.FemtoHelper.Entities;

@@ -1,20 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Celeste;
-using On.Celeste;
-using Microsoft.Xna.Framework;
-using Celeste.Mod;
 using System.Collections;
-using Monocle;
-using IL.Celeste;
-using MonoMod.Cil;
-using MonoMod;
-using Celeste.Mod.Entities;
-using Mono.Cecil.Cil;
-using Microsoft.Xna.Framework.Graphics;
 using Celeste.Mod.FemtoHelper.Entities;
 
 namespace Celeste.Mod.FemtoHelper

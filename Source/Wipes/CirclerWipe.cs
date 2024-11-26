@@ -1,9 +1,7 @@
 ﻿// Celeste.HeartWipe
 using System;
-using Celeste;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Monocle;
+
 namespace Celeste.Mod.FemtoHelper.Wipes
 {
     public class CirclerWipe : ScreenWipe

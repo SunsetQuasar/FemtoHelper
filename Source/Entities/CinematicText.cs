@@ -1,10 +1,6 @@
-﻿using Celeste.Mod.Entities;
-using Celeste.Mod.FemtoHelper.Utils;
+﻿using Celeste.Mod.FemtoHelper.Utils;
 using Celeste.Mod.UI;
-using Microsoft.Build.Framework;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Monocle;
 using System;
 using System.Collections;
 using System.Collections.Generic;

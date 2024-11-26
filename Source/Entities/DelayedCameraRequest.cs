@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Monocle;
-using System.Collections;
-using System.Drawing;
+﻿
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

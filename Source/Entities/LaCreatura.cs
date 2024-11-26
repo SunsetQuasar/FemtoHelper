@@ -1,13 +1,8 @@
 ﻿// Celeste.DashBlock
 using Celeste;
-using Celeste.Mod;
-using Celeste.Mod.Entities;
 using Celeste.Mod.FemtoHelper;
-using Microsoft.Xna.Framework;
-using Monocle;
 using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 [CustomEntity("FemtoHelper/LaCreatura")]
 public class LaCreatura : Entity

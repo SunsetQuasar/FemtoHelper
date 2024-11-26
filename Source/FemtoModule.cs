@@ -9,14 +9,12 @@ using System.Collections;
 using Celeste.Mod.FemtoHelper.Effects;
 using Microsoft.Xna.Framework.Graphics;
 using Celeste.Mod.FemtoHelper.Entities;
-using System.Reflection;
 using MonoMod.Utils;
 using MonoMod.ModInterop;
 using System.Collections.Generic;
 using Celeste.Mod.FemtoHelper.Code.Effects;
 using System.Linq;
 using Celeste.Mod.FemtoHelper.Wipes;
-using Celeste.Mod.UI;
 using Celeste.Mod.FemtoHelper.Code.Entities;
 
 namespace Celeste.Mod.FemtoHelper;

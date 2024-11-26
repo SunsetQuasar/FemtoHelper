@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using Celeste;
-using Celeste.Mod.Entities;
-using Celeste.Mod.FemtoHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
@@ -527,7 +524,7 @@ public class EvilTheoCrystal : Actor
 
                 cursor.Emit(OpCodes.Ldarg_0);
 
-                cursor.EmitDelegate<Func<Player, float>>(upthrowcheck);
+                cursor.EmitDelegate(upthrowcheck);
                 cursor.Emit(OpCodes.Mul);
             }
 

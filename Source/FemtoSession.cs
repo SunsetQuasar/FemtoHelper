@@ -1,12 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Celeste.Mod.FemtoHelper;
-using Celeste.Mod;
-using Microsoft.Xna.Framework;
-using Monocle;
+
 
 namespace Celeste.Mod.FemtoHelper
 {

@@ -1,13 +1,6 @@
 ﻿// Celeste.FinalBoss
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Celeste;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
-using Monocle;
-using MonoMod;
 using MonoMod.Cil;
 
 [CustomEntity("FemtoHelper/CrystalHeartBoss")]
@@ -67,7 +60,7 @@ public class CrystalHeartBoss : FinalBoss
         if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdstr("badeline_boss")))
         {
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate<Func<string, FinalBoss, string>>(ChangeFBSpriteRef);
+            cursor.EmitDelegate(ChangeFBSpriteRef);
         }
     }
 

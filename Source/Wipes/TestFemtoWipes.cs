@@ -1,8 +1,5 @@
 ﻿// Celeste.TestWipes
 using System.Collections;
-using Celeste;
-using Microsoft.Xna.Framework;
-using Monocle;
 
 namespace Celeste.Mod.FemtoHelper.Wipes
 {

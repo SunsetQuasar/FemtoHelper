@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using Celeste;
-using IL.Celeste.Mod.Registry.DecalRegistryHandlers;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Celeste.Mod.FemtoHelper.Wipes;
@@ -44,7 +41,7 @@ public class SolarWipe : ScreenWipe
     public override void BeforeRender(Scene scene)
     {
         hasDrawn = true;
-        Engine.Graphics.GraphicsDevice.SetRenderTarget(global::Celeste.Celeste.WipeTarget);
+        Engine.Graphics.GraphicsDevice.SetRenderTarget(Celeste.WipeTarget);
         Engine.Graphics.GraphicsDevice.Clear(WipeIn ? Color.Black : Color.White);
         int index = 0;
         for (float i = 0; i < num; i++)
