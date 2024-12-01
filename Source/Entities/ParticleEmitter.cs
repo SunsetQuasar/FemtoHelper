@@ -7,50 +7,50 @@ namespace Celeste.Mod.FemtoHelper;
 [Tracked]
 public class ParticleEmitter : Entity
 {
-	public ParticleType emitterParticle;
+	public readonly ParticleType EmitterParticle;
 
-	public float particleSpawnSpread;
+	public readonly float ParticleSpawnSpread;
 
-	public float spawnTimer = 0f;
+	public float SpawnTimer = 0f;
 
-	public int particleCount;
+	public readonly int ParticleCount;
 
-	public float spawnInterval;
+	public readonly float SpawnInterval;
 
-	public float spawnChance;
+	public readonly float SpawnChance;
 
-	public float particleAngle;
+	public readonly float ParticleAngle;
 
-	public float particleAngleRange;
+	public readonly float ParticleAngleRange;
 
-	public bool isFG = false;
+	public readonly bool IsFg = false;
 
-	public string flag;
+	public readonly string Flag;
 
-	public string tag_;
+	public readonly string Tag;
 
 	public ParticleEmitter(EntityData data, Vector2 offset)
 		: base(data.Position + offset)
 	{
 		Add(new BloomPoint(data.Float("BloomAlpha"), data.Float("BloomRadius", 6f)));
-		particleSpawnSpread = data.Float("particleSpawnSpread");
-		particleCount = data.Int("particleCount");
-		spawnInterval = data.Float("spawnInterval");
-		spawnChance = data.Float("spawnChance");
-		particleAngle = data.Float("particleAngle");
-		particleAngleRange = data.Float("particleAngleRange");
-		isFG = data.Bool("foreground", false);
-		flag = data.Attr("flag", "");
-		tag_ = data.Attr("tag", "");
+		ParticleSpawnSpread = data.Float("particleSpawnSpread");
+		ParticleCount = data.Int("particleCount");
+		SpawnInterval = data.Float("spawnInterval");
+		SpawnChance = data.Float("spawnChance");
+		ParticleAngle = data.Float("particleAngle");
+		ParticleAngleRange = data.Float("particleAngleRange");
+		IsFg = data.Bool("foreground", false);
+		Flag = data.Attr("flag", "");
+		Tag = data.Attr("tag", "");
 		string[] texString = data.Attr("particleTexture").Split(',');
 		Chooser<MTexture> texchoice = new Chooser<MTexture>();
-		for (int i = 0; i < texString.Length; i++)
-            {
-			texchoice.Add(GFX.Game[texString[i]], 1);
+		foreach (var t in texString)
+		{
+			texchoice.Add(GFX.Game[t], 1);
 		}
 		if (!data.Bool("noTexture", false))
-            {
-			emitterParticle = new ParticleType
+		{
+			EmitterParticle = new ParticleType
 			{
 				SourceChooser = texchoice,
 				Color = Calc.HexToColorWithAlpha(data.Attr("particleColor", "40FF9080")) * data.Float("particleAlpha"),
@@ -73,8 +73,8 @@ public class ParticleEmitter : Entity
 			};
 		} 
 		else
-            {
-			emitterParticle = new ParticleType
+		{
+			EmitterParticle = new ParticleType
 			{
 				Color = Calc.HexToColorWithAlpha(data.Attr("particleColor", "40FF9080")) * data.Float("particleAlpha"),
 				Color2 = Calc.HexToColorWithAlpha(data.Attr("particleColor2", "20408000")) * data.Float("particleAlpha"),
@@ -101,26 +101,26 @@ public class ParticleEmitter : Entity
 	{
 		Level level = Scene as Level;
 		base.Update();
-		spawnTimer += 1f;
-		if (!Visible || !base.Scene.OnInterval(spawnInterval))
+		SpawnTimer += 1f;
+		if (!Visible || !Scene.OnInterval(SpawnInterval))
 		{
 			return;
 		}
 		
-		if ((Scene as Level).FancyCheckFlag(flag))
-            {
-			for (int i = 0; i < particleCount; i++)
+		if ((Scene as Level).FancyCheckFlag(Flag))
+		{
+			for (int i = 0; i < ParticleCount; i++)
 			{
-				if (Calc.Random.NextFloat() < spawnChance / 100f)
+				if (Calc.Random.NextFloat() < SpawnChance / 100f)
 				{
-					float num = particleAngleRange / 360f * ((float)Math.PI * 2f);
-					if (isFG)
+					float num = ParticleAngleRange / 360f * ((float)Math.PI * 2f);
+					if (IsFg)
 					{
-						SceneAs<Level>().ParticlesFG.Emit(emitterParticle, 1, base.Center, Vector2.One * particleSpawnSpread, particleAngle / 360f * ((float)Math.PI * 2f) + (Calc.Random.NextFloat() * num - num / 2f));
+						SceneAs<Level>().ParticlesFG.Emit(EmitterParticle, 1, Center, Vector2.One * ParticleSpawnSpread, ParticleAngle / 360f * ((float)Math.PI * 2f) + (Calc.Random.NextFloat() * num - num / 2f));
 					}
 					else
 					{
-						SceneAs<Level>().ParticlesBG.Emit(emitterParticle, 1, base.Center, Vector2.One * particleSpawnSpread, particleAngle / 360f * ((float)Math.PI * 2f) + (Calc.Random.NextFloat() * num - num / 2f));
+						SceneAs<Level>().ParticlesBG.Emit(EmitterParticle, 1, Center, Vector2.One * ParticleSpawnSpread, ParticleAngle / 360f * ((float)Math.PI * 2f) + (Calc.Random.NextFloat() * num - num / 2f));
 					};
 				}
 			}

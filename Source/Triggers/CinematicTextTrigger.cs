@@ -11,61 +11,50 @@ using System.Threading.Tasks;
 namespace Celeste.Mod.FemtoHelper.Triggers;
 
 [CustomEntity("FemtoHelper/CinematicTextTrigger")]
-public class CinematicTextTrigger : Trigger
+public class CinematicTextTrigger(EntityData data, Vector2 offset) : Trigger(data, offset)
 {
-    public string activationTag;
+    public readonly string ActivationTag = data.Attr("activationTag", "tag1");
 
-    public List<CinematicText> list;
+    public readonly List<CinematicText> List = [];
 
-    public bool stopText;
+    public readonly bool StopText = data.Bool("stopText", false);
 
-    public bool stopImmediately;
-
-    public CinematicTextTrigger(EntityData data, Vector2 offset) : base(data, offset)
-    {
-        activationTag = data.Attr("activationTag", "tag1");
-        stopText = data.Bool("stopText", false);
-        stopImmediately = data.Bool("stopImmediately", false);
-        list = new List<CinematicText>();
-    }
+    public readonly bool StopImmediately = data.Bool("stopImmediately", false);
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
         foreach(CinematicText t in Scene.Tracker.GetEntities<CinematicText>())
         {
-            list.Add(t);
+            List.Add(t);
         }
     }
 
     public override void OnStay(Player player)
     {
         base.OnStay(player);
-        foreach(CinematicText t in list)
+        foreach (var t in List.Where(t => t.ActivationTag == ActivationTag))
         {
-            if(t.activationTag == activationTag)
+            if (StopText)
             {
-                if (stopText)
+                if (StopImmediately)
                 {
-                    if (stopImmediately)
+                    if (!t.Retriggerable)
                     {
-                        if (!t.retriggerable)
-                        {
-                            t.RemoveSelf();
-                            return;
-                        }
-                        t.stopText = false;
-                        t.active = t.entered = false;
-                        t.disappearPercent = 1f;
-                        t.finalStringLen = 0;
-                        t.finished = false;
+                        t.RemoveSelf();
                         return;
                     }
-                    if (t.active) t.stopText = true;
-                } else
-                {
-                    t.Enter();
+                    t.StopText = false;
+                    t.Active = t.Entered = false;
+                    t.DisappearPercent = 1f;
+                    t.FinalStringLen = 0;
+                    t.Finished = false;
+                    return;
                 }
+                if (t.Active) t.StopText = true;
+            } else
+            {
+                t.Enter();
             }
         }
     }

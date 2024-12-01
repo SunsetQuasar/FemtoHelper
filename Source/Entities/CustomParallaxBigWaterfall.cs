@@ -9,50 +9,46 @@ public class CustomParallaxBigWaterfall : Entity
 {
 	private enum Layers
 	{
-		FG,
-		BG
+		Fg,
+		Bg
 	}
 
-	private Layers layer;
+	private readonly Layers layer;
 
-	private float width;
+	private readonly float width;
 
-	private float height;
+	private readonly float height;
 
-	private float parallax;
+	private readonly float parallax;
 
-	private float fallSpeedMultiplier;
+	private readonly float fallSpeedMultiplier;
 
-	private float surfaceOpacity;
+	private readonly List<float> lines = new List<float>();
 
-	private float fillOpacity;
+	private readonly Color surfaceColor;
 
-	private List<float> lines = new List<float>();
-
-	private Color surfaceColor;
-
-	private Color fillColor;
+	private readonly Color fillColor;
 
 	private float sine;
 
-	private SoundSource loopingSfx;
+	private readonly SoundSource loopingSfx;
 
 	private float fade;
 
-	private Vector2 RenderPosition => RenderPositionAtCamera((base.Scene as Level).Camera.Position + new Vector2(160f, 90f));
+	private Vector2 RenderPosition => RenderPositionAtCamera((Scene as Level).Camera.Position + new Vector2(160f, 90f));
 
 	public CustomParallaxBigWaterfall(EntityData data, Vector2 offset) : base(data.Position + offset)
 	{
-		base.Tag = Tags.TransitionUpdate;
-		layer = data.Enum("layer", Layers.BG);
+		Tag = Tags.TransitionUpdate;
+		layer = data.Enum("layer", Layers.Bg);
 		width = data.Width;
 		height = data.Height;
 		fallSpeedMultiplier = data.Float("fallSpeedMultiplier");
-		surfaceOpacity = data.Float("surfaceOpacity");
-		fillOpacity = data.Float("fillOpacity");
-		if (layer == Layers.FG)
+		var surfaceOpacity = data.Float("surfaceOpacity");
+		var fillOpacity = data.Float("fillOpacity");
+		if (layer == Layers.Fg)
 		{
-			base.Depth = -49900;
+			Depth = -49900;
 			parallax = data.Float("parallax");
 			surfaceColor = Calc.HexToColor(data.Attr("surfaceColor")) * surfaceOpacity;
 			fillColor = Calc.HexToColor(data.Attr("fillColor")) * fillOpacity;
@@ -64,7 +60,7 @@ public class CustomParallaxBigWaterfall : Entity
 		}
 		else
 		{
-			base.Depth = 10010;
+			Depth = 10010;
 			parallax = data.Float("parallax");
 			surfaceColor = Calc.HexToColor(data.Attr("surfaceColor")) * surfaceOpacity;
 			fillColor = Calc.HexToColor(data.Attr("fillColor")) * fillOpacity;
@@ -83,20 +79,18 @@ public class CustomParallaxBigWaterfall : Entity
 				fade = 1f - f;
 			}
 		});
-		if (width > 16f)
+		if (!(width > 16f)) return;
+		int num = Calc.Random.Next((int)(width / 16f));
+		for (int i = 0; i < num; i++)
 		{
-			int num = Calc.Random.Next((int)(width / 16f));
-			for (int i = 0; i < num; i++)
-			{
-				lines.Add(8f + Calc.Random.NextFloat(width - 16f));
-			}
+			lines.Add(8f + Calc.Random.NextFloat(width - 16f));
 		}
 	}
 
 	public override void Added(Scene scene)
 	{
 		base.Added(scene);
-		if ((base.Scene as Level).Transitioning)
+		if ((Scene as Level).Transitioning)
 		{
 			fade = 0f;
 		}
@@ -106,11 +100,11 @@ public class CustomParallaxBigWaterfall : Entity
 	{
 		Vector2 value = Position + new Vector2(width, height) / 2f - camera;
 		Vector2 zero = Vector2.Zero;
-		if (layer == Layers.BG)
+		if (layer == Layers.Bg)
 		{
 			zero -= value * (1f - parallax);
 		}
-		else if (layer == Layers.FG)
+		else if (layer == Layers.Fg)
 		{
 			zero += value * (parallax - 1f);
 		}
@@ -119,7 +113,7 @@ public class CustomParallaxBigWaterfall : Entity
 
 	public void RenderDisplacement()
 	{
-		Draw.Rect(RenderPosition.X, base.Y, width, height, new Color(0.5f, 0.5f, 1f, 1f));
+		Draw.Rect(RenderPosition.X, Y, width, height, new Color(0.5f, 0.5f, 1f, 1f));
 	}
 
 	public override void Update()
@@ -127,8 +121,8 @@ public class CustomParallaxBigWaterfall : Entity
 		sine += Engine.DeltaTime * fallSpeedMultiplier;
 		if (loopingSfx != null)
 		{
-			Vector2 position = (base.Scene as Level).Camera.Position;
-			loopingSfx.Position = new Vector2(RenderPosition.X - base.X, Calc.Clamp(position.Y + 90f, base.Y, height) - base.Y);
+			Vector2 position = (Scene as Level).Camera.Position;
+			loopingSfx.Position = new Vector2(RenderPosition.X - X, Calc.Clamp(position.Y + 90f, Y, height) - Y);
 		}
 		base.Update();
 	}
@@ -138,29 +132,29 @@ public class CustomParallaxBigWaterfall : Entity
 		float x = RenderPosition.X;
 		Color color = fillColor * fade;
 		Color color2 = surfaceColor * fade;
-		Draw.Rect(x, base.Y, width, height, color);
-		if (layer == Layers.FG)
+		Draw.Rect(x, Y, width, height, color);
+		if (layer == Layers.Fg)
 		{
-			Draw.Rect(x - 1f, base.Y, 3f, height, color2);
-			Draw.Rect(x + width - 2f, base.Y, 3f, height, color2);
+			Draw.Rect(x - 1f, Y, 3f, height, color2);
+			Draw.Rect(x + width - 2f, Y, 3f, height, color2);
 			foreach (float line in lines)
 			{
-				Draw.Rect(x + line, base.Y, 1f, height, color2);
+				Draw.Rect(x + line, Y, 1f, height, color2);
 			}
 			return;
 		}
-		Vector2 position = (base.Scene as Level).Camera.Position;
+		Vector2 position = (Scene as Level).Camera.Position;
 		int num = 3;
-		float num2 = Math.Max(base.Y, (float)Math.Floor(position.Y / (float)num) * (float)num);
-		float num3 = Math.Min(base.Y + height, position.Y + 180f);
-		for (float num4 = num2; num4 < num3; num4 += (float)num)
+		float num2 = Math.Max(Y, (float)Math.Floor(position.Y / num) * num);
+		float num3 = Math.Min(Y + height, position.Y + 180f);
+		for (float num4 = num2; num4 < num3; num4 += num)
 		{
 			int num5 = (int)(Math.Sin(num4 / 6f - sine * 8f) * 2.0);
 			Draw.Rect(x, num4, 4 + num5, num, color2);
-			Draw.Rect(x + width - 4f + (float)num5, num4, 4 - num5, num, color2);
+			Draw.Rect(x + width - 4f + num5, num4, 4 - num5, num, color2);
 			foreach (float line2 in lines)
 			{
-				Draw.Rect(x + (float)num5 + line2, num4, 1f, num, color2);
+				Draw.Rect(x + num5 + line2, num4, 1f, num, color2);
 			}
 		}
 	}

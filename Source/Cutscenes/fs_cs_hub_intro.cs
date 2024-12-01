@@ -6,7 +6,7 @@ using FMOD.Studio;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-public class FS_CS0_HubIntro : CutsceneEntity
+public class FsCs0HubIntro : CutsceneEntity
 {
 	private Celeste.Mod.FemtoHelper.CustomFakeHeart fakeass;
 
@@ -14,22 +14,22 @@ public class FS_CS0_HubIntro : CutsceneEntity
 
 	public const float BirdOffset = 190f;
 
-	private Player player;
+	private readonly Player player;
 
-	private List<LockBlock> locks;
+	private readonly List<LockBlock> locks;
 
-	private Booster booster;
+	private readonly Booster booster;
 
-	private Vector2 spawn;
+	private readonly Vector2 spawn;
 
-	private List<EventInstance> sfxs = new List<EventInstance>();
+	private readonly List<EventInstance> sfxs = new List<EventInstance>();
 
-	public FS_CS0_HubIntro(Scene scene, Player player)
+	public FsCs0HubIntro(Scene scene, Player player)
 	{
 		this.player = player;
 		spawn = (scene as Level).GetSpawnPoint(player.Position);
 		locks = scene.Entities.FindAll<LockBlock>();
-		locks.Sort((LockBlock a, LockBlock b) => (int)(a.X + b.X));
+		locks.Sort((a, b) => (int)(a.X + b.X));
 		foreach (LockBlock @lock in locks)
 		{
 			@lock.Visible = false;
@@ -63,18 +63,18 @@ public class FS_CS0_HubIntro : CutsceneEntity
 			}
 		}
 		player.ForceCameraUpdate = false;
-		CutsceneEntity.CameraTo(new Vector2(level.Camera.X, level.Bounds.Center.Y), 1f, Ease.CubeInOut);
+		CameraTo(new Vector2(level.Camera.X, level.Bounds.Center.Y), 1f, Ease.CubeInOut);
 		yield return 0.25f;
 		yield return player.DummyWalkToExact((int)player.X + 32, walkBackwards: false, 0.75f);
 		player.DummyAutoAnimate = false;
 		player.Sprite.Play("idleB");
 		yield return 0.25f;
-		level.Add(fakeass = new Celeste.Mod.FemtoHelper.CustomFakeHeart(new Vector2((float)level.Bounds.Right - 202f, level.Bounds.Center.Y)));
+		level.Add(fakeass = new Celeste.Mod.FemtoHelper.CustomFakeHeart(new Vector2(level.Bounds.Right - 202f, level.Bounds.Center.Y)));
 		Audio.Play("event:/FemtoHelper/CrystalHeart_PanUp", fakeass.Position);
-		yield return CutsceneEntity.CameraTo(new Vector2((float)level.Bounds.Right - 100f - 320f, level.Bounds.Center.Y - 90f), 2.5f, Ease.CubeInOut);
+		yield return CameraTo(new Vector2(level.Bounds.Right - 100f - 320f, level.Bounds.Center.Y - 90f), 2.5f, Ease.CubeInOut);
 		//yield return bird.IdleRoutine();
 		yield return 0.6f;
-		Add(new Coroutine(CutsceneEntity.CameraTo(new Vector2(level.Bounds.Right - 320f, level.Bounds.Center.Y - 90f), 0.8f, Ease.CubeInOut, 0.1f)));
+		Add(new Coroutine(CameraTo(new Vector2(level.Bounds.Right - 320f, level.Bounds.Center.Y - 90f), 0.8f, Ease.CubeInOut, 0.1f)));
 		Input.Rumble(RumbleStrength.Light, RumbleLength.Long);
 		//yield return bird.FlyAwayRoutine();
 		Audio.Play("event:/new_content/game/10_farewell/bird_fly_uptonext", fakeass.Position);
@@ -91,7 +91,7 @@ public class FS_CS0_HubIntro : CutsceneEntity
 		float duration = 7.2f;
 		string sfx = "event:/FemtoHelper/LockBlock_Close";
 		int doorIndex = 1;
-		Add(new Coroutine(CutsceneEntity.CameraTo(new Vector2(level.Bounds.Left + 180, level.Bounds.Center.Y - 90f), duration, Ease.SineInOut)));
+		Add(new Coroutine(CameraTo(new Vector2(level.Bounds.Left + 180, level.Bounds.Center.Y - 90f), duration, Ease.SineInOut)));
 		Add(new Coroutine(Level.ZoomTo(new Vector2(160f, 90f), 1.5f, duration)));
 		for (float t = 0f; t < duration; t += Engine.DeltaTime)
 		{
@@ -115,7 +115,7 @@ public class FS_CS0_HubIntro : CutsceneEntity
 		}
 		yield return 0.3f;
 		yield return Level.ZoomBack(0.7f);
-		Add(new Coroutine(CutsceneEntity.CameraTo(new Vector2(level.Bounds.Left, level.Bounds.Center.Y - 90f), 0.5f, Ease.SineInOut)));
+		Add(new Coroutine(CameraTo(new Vector2(level.Bounds.Left, level.Bounds.Center.Y - 90f), 0.5f, Ease.SineInOut)));
 		yield return 0.5f;
 		EndCutscene(level);
 	}

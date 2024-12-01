@@ -25,37 +25,37 @@ public class PolygonStars : Backdrop
 		public Color Color;
 	}
 
-	private Stars[] stars;
+	private readonly Stars[] stars;
 
-	private Vector2 angle;
+	private readonly Vector2 angle;
 
 	private Vector2 lastCamera = Vector2.Zero;
 
-	private int sideCount;
+	private readonly int sideCount;
 
-	private float pointinessMultiplier;
+	private readonly float pointinessMultiplier;
 
-	private float loopBorder;
+	private readonly float loopBorder;
 
-	private Color[] Colors;
+	private readonly Color[] colors;
 
-	private float Alpha;
+	private readonly float alpha;
 
-	private float scroll;
+	private readonly float scroll;
 
-	public PolygonStars(int sides, float pointiness, float minRotation, float maxRotation, float minSize, float maxSize, float border, string color, float angle_, float alpha, float minSpeed, float maxSpeed, int amount, float scroll)
+	public PolygonStars(int sides, float pointiness, float minRotation, float maxRotation, float minSize, float maxSize, float border, string color, float angle, float alpha, float minSpeed, float maxSpeed, int amount, float scroll)
 	{
 		sideCount = sides;
 		pointinessMultiplier = pointiness;
 		loopBorder = border;
-		Alpha = alpha;
+		this.alpha = alpha;
 		this.scroll = scroll;
 		stars = new Stars[amount];
-        Colors = color
+        colors = color
 				.Split(',')
 				.Select(str => Calc.HexToColor(str.Trim()) * alpha)
 				.ToArray();
-        angle = new Vector2((float)Math.Sin(angle_ / 180 * Math.PI), (float)Math.Cos(angle_ / 180 * Math.PI));
+        this.angle = new Vector2((float)Math.Sin(angle / 180 * Math.PI), (float)Math.Cos(angle / 180 * Math.PI));
 		for (int i = 0; i < stars.Length; i++)
 		{
 			stars[i].Position = new Vector2(Calc.Random.NextFloat(320f + loopBorder) - (loopBorder / 2), Calc.Random.NextFloat(180f + loopBorder) - (loopBorder / 2));
@@ -63,7 +63,7 @@ public class PolygonStars : Backdrop
 			stars[i].Size = Calc.Random.Range(minSize, maxSize);
 			stars[i].Rotation = Calc.Random.NextFloat((float)Math.PI * 2);
 			stars[i].RotationSpeed = Calc.Random.Range(minRotation, maxRotation);
-			stars[i].Color = Colors[Calc.Random.Next(Colors.Length)];
+			stars[i].Color = colors[Calc.Random.Next(colors.Length)];
 		}
 	}
 
@@ -89,12 +89,12 @@ public class PolygonStars : Backdrop
 			{
 				Vector2 size = j % 2 == 0 ? new Vector2(stars[i].Size, stars[i].Size) : new Vector2(stars[i].Size * pointinessMultiplier, stars[i].Size * pointinessMultiplier);
 				Vector2 size2 = j % 2 == 0 ? new Vector2(stars[i].Size * pointinessMultiplier, stars[i].Size * pointinessMultiplier) : new Vector2(stars[i].Size, stars[i].Size);
-				Draw.Line(new Vector2(mod(stars[i].Position.X, 320f + loopBorder) - (loopBorder / 2), mod(stars[i].Position.Y, 180f + loopBorder) - (loopBorder / 2)) + new Vector2((float)Math.Sin(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * j)), (float)Math.Cos(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * j))) * size, new Vector2(mod(stars[i].Position.X, 320f + loopBorder) - (loopBorder / 2), mod(stars[i].Position.Y, 180f + loopBorder) - (loopBorder / 2)) + new Vector2((float)Math.Sin(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * (j + 1))), (float)Math.Cos(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * (j + 1)))) * size2, stars[i].Color * Alpha);
+				Draw.Line(new Vector2(Mod(stars[i].Position.X, 320f + loopBorder) - (loopBorder / 2), Mod(stars[i].Position.Y, 180f + loopBorder) - (loopBorder / 2)) + new Vector2((float)Math.Sin(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * j)), (float)Math.Cos(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * j))) * size, new Vector2(Mod(stars[i].Position.X, 320f + loopBorder) - (loopBorder / 2), Mod(stars[i].Position.Y, 180f + loopBorder) - (loopBorder / 2)) + new Vector2((float)Math.Sin(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * (j + 1))), (float)Math.Cos(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * (j + 1)))) * size2, stars[i].Color * alpha);
 			}
 		}
 	}
 
-	private float mod(float x, float m)
+	private float Mod(float x, float m)
 	{
 		return (x % m + m) % m;
 	}

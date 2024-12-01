@@ -7,48 +7,48 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/DirectionalLine")]
 public class DirectionalLine : Entity
 {
-    public MTexture sprite;
-    public int count;
-    public Tween tween;
-    public Easer positionEaser;
-    public Easer alphaEaserIn;
-    public Easer alphaEaserOut;
-    public bool orientSprite;
-    public Vector2 endpoint;
-    public Color color;
-    public float activationAlpha;
-    public string activationFlag;
-    public string deactivationFlag;
-    public float activationTime;
-    public float deactivationTime;
-    public float alphaInPercent;
-    public float alphaOutPercent;
-    public float alphaMult;
+    public readonly MTexture Sprite;
+    public readonly int Count;
+    public readonly Tween Tween;
+    public readonly Easer PositionEaser;
+    public readonly Easer AlphaEaserIn;
+    public readonly Easer AlphaEaserOut;
+    public readonly bool OrientSprite;
+    public Vector2 Endpoint;
+    public Color Color;
+    public float ActivationAlpha;
+    public readonly string ActivationFlag;
+    public readonly string DeactivationFlag;
+    public readonly float ActivationTime;
+    public readonly float DeactivationTime;
+    public readonly float AlphaInPercent;
+    public readonly float AlphaOutPercent;
+    public readonly float AlphaMult;
     public DirectionalLine(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-        count = Math.Max(data.Int("spriteCount", 5), 1);
-        tween = Tween.Create(Tween.TweenMode.Looping, Linear, data.Float("duration", 1f), true);
-        Add(tween);
-        positionEaser = GetEaser(data.Attr("positionEase", "CubeInOut"));
-        alphaEaserIn = GetEaser(data.Attr("alphaInEase", "CubeInOut"));
-        alphaEaserOut = GetEaser(data.Attr("alphaOutEase", "CubeInOut"));
-        alphaInPercent = Calc.Clamp(data.Float("alphaInPercent", 0.3f), 0, 1);
-        alphaOutPercent = Calc.Clamp(data.Float("alphaOutPercent", 0.3f), 0, 1);
-        alphaInPercent = Calc.Clamp(alphaInPercent, 0, 1 - alphaOutPercent);
-        alphaOutPercent = Calc.Clamp(alphaOutPercent, 0, 1 - alphaInPercent);
-        if (alphaInPercent + alphaOutPercent > 1) alphaInPercent = alphaOutPercent = 0.5f;
-        sprite = GFX.Game[data.Attr("texture", "objects/FemtoHelper/directionalArrow/arrow")];
-        color = Calc.HexToColorWithAlpha(data.Attr("color", "ffffffff"));
-        endpoint = data.NodesOffset(offset)[0];
-        orientSprite = data.Bool("orientSprite", true);
-        activationFlag = data.Attr("activationFlag", "");
-        deactivationFlag = data.Attr("deactivationFlag", "");
-        activationTime = data.Float("activationTime", 1);
-        deactivationTime = data.Float("deactivationTime", 1);
+        Count = Math.Max(data.Int("spriteCount", 5), 1);
+        Tween = Tween.Create(Tween.TweenMode.Looping, Linear, data.Float("duration", 1f), true);
+        Add(Tween);
+        PositionEaser = GetEaser(data.Attr("positionEase", "CubeInOut"));
+        AlphaEaserIn = GetEaser(data.Attr("alphaInEase", "CubeInOut"));
+        AlphaEaserOut = GetEaser(data.Attr("alphaOutEase", "CubeInOut"));
+        AlphaInPercent = Calc.Clamp(data.Float("alphaInPercent", 0.3f), 0, 1);
+        AlphaOutPercent = Calc.Clamp(data.Float("alphaOutPercent", 0.3f), 0, 1);
+        AlphaInPercent = Calc.Clamp(AlphaInPercent, 0, 1 - AlphaOutPercent);
+        AlphaOutPercent = Calc.Clamp(AlphaOutPercent, 0, 1 - AlphaInPercent);
+        if (AlphaInPercent + AlphaOutPercent > 1) AlphaInPercent = AlphaOutPercent = 0.5f;
+        Sprite = GFX.Game[data.Attr("texture", "objects/FemtoHelper/directionalArrow/arrow")];
+        Color = Calc.HexToColorWithAlpha(data.Attr("color", "ffffffff"));
+        Endpoint = data.NodesOffset(offset)[0];
+        OrientSprite = data.Bool("orientSprite", true);
+        ActivationFlag = data.Attr("activationFlag", "");
+        DeactivationFlag = data.Attr("deactivationFlag", "");
+        ActivationTime = data.Float("activationTime", 1);
+        DeactivationTime = data.Float("deactivationTime", 1);
 
-        activationAlpha = string.IsNullOrEmpty(activationFlag) ? 1f : 0f;
+        ActivationAlpha = string.IsNullOrEmpty(ActivationFlag) ? 1f : 0f;
 
-        alphaMult = data.Float("alphaMultiplier", 1);
+        AlphaMult = data.Float("alphaMultiplier", 1);
 
         Depth = data.Int("depth", -250);
     }
@@ -57,13 +57,13 @@ public class DirectionalLine : Entity
     {
         base.Added(scene);
         Level level = scene as Level;
-        if (!string.IsNullOrEmpty(deactivationFlag) && level.Session.GetFlag(deactivationFlag))
+        if (!string.IsNullOrEmpty(DeactivationFlag) && level.Session.GetFlag(DeactivationFlag))
         {
-            activationAlpha = 0;
+            ActivationAlpha = 0;
         }
-        else if (activationAlpha < 1 && (string.IsNullOrEmpty(activationFlag) || level.Session.GetFlag(activationFlag)))
+        else if (ActivationAlpha < 1 && (string.IsNullOrEmpty(ActivationFlag) || level.Session.GetFlag(ActivationFlag)))
         {
-            activationAlpha = 1;
+            ActivationAlpha = 1;
         }
     }
 
@@ -71,50 +71,50 @@ public class DirectionalLine : Entity
     {
         base.Update();
         Level level = Scene as Level;
-        if (!string.IsNullOrEmpty(deactivationFlag) && level.Session.GetFlag(deactivationFlag))
+        if (!string.IsNullOrEmpty(DeactivationFlag) && level.Session.GetFlag(DeactivationFlag))
         {
-            activationAlpha = Math.Max(activationAlpha - Engine.DeltaTime / Math.Max(deactivationTime, float.Epsilon), 0);
+            ActivationAlpha = Math.Max(ActivationAlpha - Engine.DeltaTime / Math.Max(DeactivationTime, float.Epsilon), 0);
         } 
-        else if (activationAlpha < 1 && (string.IsNullOrEmpty(activationFlag) || level.Session.GetFlag(activationFlag)))
+        else if (ActivationAlpha < 1 && (string.IsNullOrEmpty(ActivationFlag) || level.Session.GetFlag(ActivationFlag)))
         {
-            activationAlpha = Math.Min(activationAlpha + Engine.DeltaTime / Math.Max(activationTime, float.Epsilon), 1);
+            ActivationAlpha = Math.Min(ActivationAlpha + Engine.DeltaTime / Math.Max(ActivationTime, float.Epsilon), 1);
         }
     }
 
     public override void Render()
     {
         base.Render();
-        if (activationAlpha == 0 || alphaMult == 0) return;
-        float x = (endpoint - Position).X;
-        float y = (endpoint - Position).Y;
-        for (float i = 0; i < 1; i += 1 / (float)count)
+        if (ActivationAlpha == 0 || AlphaMult == 0) return;
+        float x = (Endpoint - Position).X;
+        float y = (Endpoint - Position).Y;
+        for (float i = 0; i < 1; i += 1 / (float)Count)
         {
-            Vector2 pos = GetEasedPos(tween.Percent + i);
-            if (!CullHelper.IsRectangleVisible(pos.X, pos.Y, sprite.Width, sprite.Height)) continue;
-            sprite.DrawCentered(pos, color * getAlphaEase(tween.Percent + i) * activationAlpha * alphaMult, 1, orientSprite ? (float)Math.Atan2(y, x) : 0);
+            Vector2 pos = GetEasedPos(Tween.Percent + i);
+            if (!CullHelper.IsRectangleVisible(pos.X, pos.Y, Sprite.Width, Sprite.Height)) continue;
+            Sprite.DrawCentered(pos, Color * GetAlphaEase(Tween.Percent + i) * ActivationAlpha * AlphaMult, 1, OrientSprite ? (float)Math.Atan2(y, x) : 0);
         }
     }
 
-    public float getAlphaEase(float t)
+    public float GetAlphaEase(float t)
     {
         t = t % 1;
-        if(t < alphaInPercent)
+        if(t < AlphaInPercent)
         {
-            return alphaEaserIn(t * (1 / Math.Max(alphaInPercent, float.Epsilon)));
+            return AlphaEaserIn(t * (1 / Math.Max(AlphaInPercent, float.Epsilon)));
         }
-        else if (t > alphaInPercent && t < 1 - alphaOutPercent)
+        else if (t > AlphaInPercent && t < 1 - AlphaOutPercent)
         {
             return 1;
         }
         else
         {
-            return alphaEaserOut((1 - t) * (1 / Math.Max(alphaOutPercent, float.Epsilon)));
+            return AlphaEaserOut((1 - t) * (1 / Math.Max(AlphaOutPercent, float.Epsilon)));
         }
     }
 
     public Vector2 GetEasedPos(float t)
     {
-        return Vector2.Lerp(Position, endpoint, positionEaser(t%1));
+        return Vector2.Lerp(Position, Endpoint, PositionEaser(t%1));
     }
 
     public static Easer GetEaser(string ease)

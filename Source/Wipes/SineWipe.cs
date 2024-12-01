@@ -5,16 +5,16 @@ namespace Celeste.Mod.FemtoHelper.Wipes;
 
 public class SineWipe : ScreenWipe
 {
-    private static int bars = 32;
+    private static readonly int Bars = 32;
 
-    private VertexPositionColor[] vertex = new VertexPositionColor[bars * 12];
+    private readonly VertexPositionColor[] vertex = new VertexPositionColor[Bars * 12];
 
     public SineWipe(Scene scene, bool wipeIn, Action onComplete = null)
         : base(scene, wipeIn, onComplete)
     {
         for (int i = 0; i < vertex.Length; i++)
         {
-            vertex[i].Color = ScreenWipe.WipeColor;
+            vertex[i].Color = WipeColor;
         }
     }
 
@@ -22,7 +22,7 @@ public class SineWipe : ScreenWipe
     {
         float num = !WipeIn ? (float)Math.Pow(Percent, 2) : (1f - (float)Math.Pow(Percent, 2));
 
-        float num2 = !WipeIn ? (float)Math.Pow(Percent, 2) : (1f - (float)Math.Pow(Percent, 2));
+        float num2;
 
         if (num <= 0f)
         {
@@ -34,14 +34,14 @@ public class SineWipe : ScreenWipe
             Draw.SpriteBatch.End();
             return;
         }
-        for (float i = 0; i < bars; i++)
+        for (float i = 0; i < Bars; i++)
         {
-            num = !WipeIn ? (float)Math.Pow(Percent, 2 + Math.Sin(Math.PI * i / (bars / 2))) : (1f - (float)Math.Pow(Percent, 2 + Math.Sin(Math.PI * i / (bars / 2))));
+            num = !WipeIn ? (float)Math.Pow(Percent, 2 + Math.Sin(Math.PI * i / (Bars / 2))) : (1f - (float)Math.Pow(Percent, 2 + Math.Sin(Math.PI * i / (Bars / 2))));
 
-            num2 = !WipeIn ? (float)Math.Pow(Percent, 2 + Math.Cos(Math.PI * i / (bars / 2))) : (1f - (float)Math.Pow(Percent, 2 + Math.Cos(Math.PI * i / (bars / 2))));
+            num2 = !WipeIn ? (float)Math.Pow(Percent, 2 + Math.Cos(Math.PI * i / (Bars / 2))) : (1f - (float)Math.Pow(Percent, 2 + Math.Cos(Math.PI * i / (Bars / 2))));
 
-            float bottom = (i + 1) * Engine.Height / bars;
-            float top = i * Engine.Height / bars;
+            float bottom = (i + 1) * Engine.Height / Bars;
+            float top = i * Engine.Height / Bars;
             vertex[0 + (int)(12 * i)].Position = new Vector3(Engine.Width - (Engine.Width / 2 * num), top, 0f);
             vertex[1 + (int)(12 * i)].Position = new Vector3(Engine.Width - (Engine.Width / 2 * num), bottom, 0f);
             vertex[2 + (int)(12 * i)].Position = new Vector3(Engine.Width, bottom, 0f);
@@ -60,8 +60,6 @@ public class SineWipe : ScreenWipe
             vertex[11 + (int)(12 * i)].Position = new Vector3(0 + (Engine.Width / 2 * num2), top, 0f);
         }
 
-
-
-        ScreenWipe.DrawPrimitives(vertex);
+        DrawPrimitives(vertex);
     }
 }

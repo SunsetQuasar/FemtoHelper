@@ -7,26 +7,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Celeste.Mod.FemtoHelper.Entities
+namespace Celeste.Mod.FemtoHelper.Entities;
+
+[Tracked]
+[CustomEntity("FemtoHelper/AssistHazardController")]
+public class AssistHazardController : Entity
 {
-    [Tracked]
-    [CustomEntity("FemtoHelper/AssistHazardController")]
-    public class AssistHazardController : Entity
+    public AssistHazardController() : base(Vector2.Zero)
     {
-        public AssistHazardController() : base(Vector2.Zero)
+        Tag = Tags.Global | Tags.Persistent;
+    }
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+        Level level = SceneAs<Level>();
+        foreach (var entity1 in level.Tracker.GetEntities<AssistHazardController>())
         {
-            Tag = Tags.Global | Tags.Persistent;
-        }
-        public override void Added(Scene scene)
-        {
-            base.Added(scene);
-            Level level = SceneAs<Level>();
-            foreach (AssistHazardController entity in level.Tracker.GetEntities<AssistHazardController>())
+            var entity = (AssistHazardController)entity1;
+            if (entity != this)
             {
-                if (entity != this)
-                {
-                    entity.RemoveSelf();
-                }
+                entity.RemoveSelf();
             }
         }
     }

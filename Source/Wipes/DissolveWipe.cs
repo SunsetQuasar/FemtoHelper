@@ -7,22 +7,22 @@ public class DissolveWipe : ScreenWipe
 
     private bool hasDrawn;
 
-    public Effect effect;
+    public readonly Effect Effect;
 
-    public float RandomVal;
+    public readonly float RandomVal;
 
     public DissolveWipe(Scene scene, bool wipeIn, Action onComplete = null)
         : base(scene, wipeIn, onComplete)
     {
         if (Everest.Content.TryGet($"Effects/FemtoHelper/DissolveWipe.cso", out var effectAsset, true))
         {
-            effect = new Effect(Engine.Graphics.GraphicsDevice, effectAsset.Data);
+            Effect = new Effect(Engine.Graphics.GraphicsDevice, effectAsset.Data);
         }
         Calc.PushRandom((int)Engine.Scene.RawTimeActive);
         RandomVal = Calc.Random.NextFloat();
         Calc.PopRandom();
         
-        EffectParameterCollection parameters = effect.Parameters;
+        EffectParameterCollection parameters = Effect.Parameters;
         parameters["RandomValue"]?.SetValue(RandomVal);
 
     }
@@ -41,7 +41,7 @@ public class DissolveWipe : ScreenWipe
 
         Viewport viewport = Engine.Graphics.GraphicsDevice.Viewport;
         Matrix projection = Matrix.CreateOrthographicOffCenter(0f, viewport.Width, viewport.Height, 0f, 0f, 1f);
-        EffectParameterCollection parameters = effect.Parameters;
+        EffectParameterCollection parameters = Effect.Parameters;
         parameters["TransformMatrix"]?.SetValue(Matrix.Identity * projection);
         parameters["ViewMatrix"]?.SetValue(Matrix.Identity);
         parameters["Percent"]?.SetValue(Ease.SineInOut(WipeIn ? 1 - Percent : Percent));
@@ -49,7 +49,7 @@ public class DissolveWipe : ScreenWipe
 
     public override void Render(Scene scene)
     {
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, null, null, effect, Engine.ScreenMatrix);
+        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, null, null, Effect, Engine.ScreenMatrix);
         if (hasDrawn)
         {
             Draw.SpriteBatch.Draw((RenderTarget2D)Celeste.WipeTarget, new Vector2(-0f, -0f), Color.White);

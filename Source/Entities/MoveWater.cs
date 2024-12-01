@@ -6,23 +6,23 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 
 public class Droplet : Entity
 {
-    public Vector2 start;
-    public Vector2 end;
-    public Image image;
-    public Droplet Init(Vector2 From, Vector2 to, Color col)
+    public Vector2 Start;
+    public Vector2 End;
+    public Image Image;
+    public Droplet Init(Vector2 from, Vector2 to, Color col)
     {
-        Add(image = new Image(GFX.Game["objects/FemtoHelper/moveWater/droplet"]));
-        image.Scale = Vector2.Zero;
-        image.CenterOrigin();
-        image.Color = col;
-        Position = start = From;
-        end = to;
+        Add(Image = new Image(GFX.Game["objects/FemtoHelper/moveWater/droplet"]));
+        Image.Scale = Vector2.Zero;
+        Image.CenterOrigin();
+        Image.Color = col;
+        Position = Start = from;
+        End = to;
         Tween t = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeIn, 0.8f, true);
         t.OnUpdate += (t) =>
         {
-            X = Calc.LerpClamp(start.X, end.X, t.Eased * t.Eased);
-            Y = Calc.LerpClamp(start.Y, end.Y, t.Eased);
-            image.Scale = Vector2.One * t.Eased;
+            X = Calc.LerpClamp(Start.X, End.X, t.Eased * t.Eased);
+            Y = Calc.LerpClamp(Start.Y, End.Y, t.Eased);
+            Image.Scale = Vector2.One * t.Eased;
         };
         t.OnComplete += (t) => RemoveSelf();
         Add(t);
@@ -35,54 +35,56 @@ public class Droplet : Entity
 [CustomEntity("FemtoHelper/MovingWaterBlock")]
 public class MovingWaterBlock : GenericWaterBlock
 {
-    protected DynData<Water> waterData;
+    protected readonly DynData<Water> WaterData;
 
-    private SoundSource moveSfx;
+    private readonly SoundSource moveSfx;
 
-    public bool triggered;
+    public bool Triggered;
 
-    public float targetSpeed;
+    public readonly float TargetSpeed;
 
-    public float angle;
+    public readonly float Angle;
 
     public float Speed;
 
-    public MTexture arrow;
-    public MTexture deadsprite;
+    public readonly MTexture Arrow;
+    public readonly MTexture Deadsprite;
 
-    public ParticleType dissipate;
-    public ParticleType tinydrops;
-    public ParticleType tinydrops2;
+    public readonly ParticleType Dissipate;
+    public readonly ParticleType Tinydrops;
+    public readonly ParticleType Tinydrops2;
 
-    public float shaketimer;
-    public Vector2 shake;
+    public float Shaketimer;
+    public Vector2 Shake;
 
-    public bool dying;
+    public bool Dying;
 
-    public float wvtimer;
+    public float Wvtimer;
 
     public Vector2 Anchor;
 
-    public Wiggler iconWiggler;
-    public Vector2 iconScale;
+    public readonly Wiggler IconWiggler;
+    public Vector2 IconScale;
 
-    public WaterSprite sprite;
+    public readonly WaterSprite Sprite;
     public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height)
     {
         Anchor = data.Position + offset;
-        waterData = new DynData<Water>(this);
-        waterData["FillColor"] = Color.Transparent;
+        WaterData = new DynData<Water>(this);
+        WaterData["FillColor"] = Color.Transparent;
         Add(moveSfx = new SoundSource());
-        triggered = false;
-        targetSpeed = data.Float("maxSpeed", 60f);
-        angle = (data.Float("angle", 90f) / 180) * MathF.PI;
-        arrow = GFX.Game["objects/FemtoHelper/moveWater/arrow"];
-        deadsprite = GFX.Game["objects/FemtoHelper/moveWater/dead"];
-        dissipate = new ParticleType(Booster.P_Burst);
-        dissipate.Color = Calc.HexToColor("81F4F0") * 0.25f;
-        wvtimer = 0f;
+        Triggered = false;
+        TargetSpeed = data.Float("maxSpeed", 60f);
+        Angle = (data.Float("angle", 90f) / 180) * MathF.PI;
+        Arrow = GFX.Game["objects/FemtoHelper/moveWater/arrow"];
+        Deadsprite = GFX.Game["objects/FemtoHelper/moveWater/dead"];
+        Dissipate = new ParticleType(Booster.P_Burst)
+        {
+            Color = Calc.HexToColor("81F4F0") * 0.25f
+        };
+        Wvtimer = 0f;
         Depth = -51000;
-        tinydrops = new ParticleType
+        Tinydrops = new ParticleType
         {
             Size = 1f,
 
@@ -95,7 +97,7 @@ public class MovingWaterBlock : GenericWaterBlock
             SpeedMultiplier = 0.10f,
             FadeMode = ParticleType.FadeModes.Linear,
         };
-        tinydrops2 = new ParticleType
+        Tinydrops2 = new ParticleType
         {
             Size = 1f,
             Color = Color.LightSkyBlue,
@@ -108,13 +110,13 @@ public class MovingWaterBlock : GenericWaterBlock
             FadeMode = ParticleType.FadeModes.Late
         };
 
-        Add(sprite = new WaterSprite());
+        Add(Sprite = new WaterSprite());
 
-        iconScale = Vector2.One;
+        IconScale = Vector2.One;
 
-        Add(iconWiggler = Wiggler.Create(0.4f, 6f, (t) =>
+        Add(IconWiggler = Wiggler.Create(0.4f, 6f, (t) =>
         {
-            iconScale = Vector2.One + (new Vector2(t, -t) * 0.5f);
+            IconScale = Vector2.One + (new Vector2(t, -t) * 0.5f);
         }));
 
         int lig = (int)(MathF.Min(Width, Height) / 2);
@@ -124,71 +126,71 @@ public class MovingWaterBlock : GenericWaterBlock
     public override void Update()
     {
         base.Update();
-        if (!triggered)
+        if (!Triggered)
         {
             Player p = Scene.Tracker.GetNearestEntity<Player>(Position);
             if (p != null)
             {
                 if (p.CollideCheck(this))
                 {
-                    triggerBlock();
+                    TriggerBlock();
                 }
             }
         }
         else
         {
-            if (!dying)
+            if (!Dying)
             {
-                Speed = Calc.Approach(Speed, targetSpeed, 80f * Engine.DeltaTime);
+                Speed = Calc.Approach(Speed, TargetSpeed, 80f * Engine.DeltaTime);
                 if (Scene.OnInterval(0.04f))
                 {
                     Vector2 pos2 = Position + new Vector2(Calc.Random.NextFloat(Width), Calc.Random.NextFloat(Height));
-                    SceneAs<Level>().ParticlesFG.Emit(tinydrops, pos2, (pos2 - Center).Angle());
+                    SceneAs<Level>().ParticlesFG.Emit(Tinydrops, pos2, (pos2 - Center).Angle());
                 }
 
             }
         }
 
-        MoveTo(Position + Calc.AngleToVector(angle, Speed) * Engine.DeltaTime);
+        MoveTo(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime);
 
         if ((Left < (Scene as Level).Bounds.Left || Right > (Scene as Level).Bounds.Right || Top < (Scene as Level).Bounds.Top || Bottom > (Scene as Level).Bounds.Bottom
-          || MoveToCollideBarriers(Position + Calc.AngleToVector(angle, Speed) * Engine.DeltaTime))
-          && !dying)
+          || MoveToCollideBarriers(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime))
+          && !Dying)
         {
             Add(new Coroutine(Destroy()));
         }
 
         if (Scene.OnInterval(0.02f))
         {
-            shake = shaketimer > 0 ? new Vector2(Calc.Random.Range(-1f, 1f), Calc.Random.Range(-1f, 1f)) : Vector2.Zero;
+            Shake = Shaketimer > 0 ? new Vector2(Calc.Random.Range(-1f, 1f), Calc.Random.Range(-1f, 1f)) : Vector2.Zero;
         }
-        if (shaketimer > 0) shaketimer -= Engine.DeltaTime;
-        wvtimer += Engine.DeltaTime;
+        if (Shaketimer > 0) Shaketimer -= Engine.DeltaTime;
+        Wvtimer += Engine.DeltaTime;
     }
 
     public IEnumerator Destroy()
     {
-        iconWiggler.Start();
-        sprite.wiggle.Start();
+        IconWiggler.Start();
+        Sprite.Wiggle.Start();
 
         moveSfx.Param("arrow_stop", 1f);
-        dying = true;
+        Dying = true;
         Speed = 0f;
 
         yield return 0.1f;
 
         Audio.Play("event:/FemtoHelper/movewater_break", Position);
         moveSfx.Stop();
-        shaketimer = 0.2f;
+        Shaketimer = 0.2f;
 
         yield return 0.2f;
 
-        for (int i = 0; (float)i < Width; i += 4)
+        for (int i = 0; i < Width; i += 4)
         {
-            for (int j = 0; (float)j < Height; j += 4)
+            for (int j = 0; j < Height; j += 4)
             {
                 Vector2 vector = Position + new Vector2(2 + i, 2 + j);
-                if (Calc.Random.Chance(0.5f)) SceneAs<Level>().ParticlesFG.Emit(dissipate, vector + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, (vector - Center).Angle());
+                if (Calc.Random.Chance(0.5f)) SceneAs<Level>().ParticlesFG.Emit(Dissipate, vector + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, (vector - Center).Angle());
             }
         }
         Visible = Collidable = false;
@@ -198,11 +200,11 @@ public class MovingWaterBlock : GenericWaterBlock
 
         Position = Anchor;
 
-        for (int i = 0; (float)i < Width; i += 8)
+        for (int i = 0; i < Width; i += 8)
         {
-            for (int j = 0; (float)j < Height; j += 8)
+            for (int j = 0; j < Height; j += 8)
             {
-                Vector2 vector6 = new Vector2(X + (float)i + 4f, Y + (float)j + 4f);
+                Vector2 vector6 = new Vector2(X + i + 4f, Y + j + 4f);
                 Vector2 vec = (vector6 - Center).SafeNormalize();
                 Color col = Color.Lerp(Color.CadetBlue * 0.2f, Color.White * 0.3f, vec.LengthSquared());
                 Scene.Add(Engine.Pooler.Create<Droplet>().Init(vector6 + vec * 12f, vector6, col));
@@ -212,10 +214,10 @@ public class MovingWaterBlock : GenericWaterBlock
         yield return 0.8f;
         Audio.Play("event:/game/04_cliffside/greenbooster_reappear", Position).setPitch(0.8f);
 
-        iconWiggler.Start();
-        sprite.wiggle.Start();
+        IconWiggler.Start();
+        Sprite.Wiggle.Start();
         Collidable = Visible = true;
-        dying = triggered = false;
+        Dying = Triggered = false;
 
     }
 
@@ -224,22 +226,22 @@ public class MovingWaterBlock : GenericWaterBlock
 
     }
 
-    public void triggerBlock()
+    public void TriggerBlock()
     {
         for (float i = 0; i < Width; i += 8)
         {
-            SceneAs<Level>().ParticlesFG.Emit(tinydrops2, Position + new Vector2(i, 0) + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, (float)-Math.PI / 2f);
-            SceneAs<Level>().ParticlesFG.Emit(tinydrops2, new Vector2(X, Bottom) + new Vector2(i, 0) + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, (float)Math.PI / 2f);
+            SceneAs<Level>().ParticlesFG.Emit(Tinydrops2, Position + new Vector2(i, 0) + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, (float)-Math.PI / 2f);
+            SceneAs<Level>().ParticlesFG.Emit(Tinydrops2, new Vector2(X, Bottom) + new Vector2(i, 0) + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, (float)Math.PI / 2f);
         }
         for (float i = 0; i < Height; i += 8)
         {
-            SceneAs<Level>().ParticlesFG.Emit(tinydrops2, Position + new Vector2(0, i) + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, (float)Math.PI);
-            SceneAs<Level>().ParticlesFG.Emit(tinydrops2, new Vector2(Right, Y) + new Vector2(0, i) + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, 0);
+            SceneAs<Level>().ParticlesFG.Emit(Tinydrops2, Position + new Vector2(0, i) + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, (float)Math.PI);
+            SceneAs<Level>().ParticlesFG.Emit(Tinydrops2, new Vector2(Right, Y) + new Vector2(0, i) + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, 0);
         }
-        triggered = true;
-        shaketimer = 0.2f;
-        iconWiggler.Start();
-        sprite.wiggle.Start();
+        Triggered = true;
+        Shaketimer = 0.2f;
+        IconWiggler.Start();
+        Sprite.Wiggle.Start();
         Audio.Play("event:/game/04_cliffside/arrowblock_activate", Position);
         moveSfx.Play("event:/game/04_cliffside/arrowblock_move");
         moveSfx.Param("arrow_stop", 0f);
@@ -248,18 +250,18 @@ public class MovingWaterBlock : GenericWaterBlock
     public override void Render()
     {
         Vector2 num3 = Position;
-        Position += shake;
+        Position += Shake;
         base.Render();
-        MTexture tex = arrow;
+        MTexture tex = Arrow;
 
-        float ang = angle;
-        if (dying)
+        float ang = Angle;
+        if (Dying)
         {
-            tex = deadsprite;
+            tex = Deadsprite;
             ang = 0;
         }
-        tex.DrawOutlineCentered(Center, Color.Black, iconScale, ang);
-        tex.DrawCentered(Center, Color.White, iconScale, ang);
+        tex.DrawOutlineCentered(Center, Color.Black, IconScale, ang);
+        tex.DrawCentered(Center, Color.White, IconScale, ang);
         Position = num3;
 
     }

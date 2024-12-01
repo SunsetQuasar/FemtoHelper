@@ -44,7 +44,7 @@ public class FemtoModule : EverestModule
 
     // Only one alive module instance can exist at any given time.
     public static FemtoModule Instance;
-    public static SpriteBank femtoSpriteBank;
+    public static SpriteBank FemtoSpriteBank;
     public override Type SessionType => typeof(FemtoHelperSession);
     public static FemtoHelperSession Session => (FemtoHelperSession)Instance._Session;
 
@@ -58,17 +58,21 @@ public class FemtoModule : EverestModule
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            if (data.Hit is Generic_SMWBlock && !(data.Hit as Generic_SMWBlock).active)
+            if (data.Hit is GenericSmwBlock { Active: false } block)
             {
-                if (self.hitSpeed.X > 0)
+                switch (self.hitSpeed.X)
                 {
-                    if ((data.Hit as Generic_SMWBlock).canHitLeft) (data.Hit as Generic_SMWBlock).Hit(null, 1);
+                    case > 0:
+                    {
+                        if (block.CanHitLeft) block.Hit(null, 1);
+                        break;
+                    }
+                    case < 0:
+                    {
+                        if (block.CanHitRight) block.Hit(null, 2);
+                        break;
+                    }
                 }
-                if (self.hitSpeed.X < 0)
-                {
-                    if ((data.Hit as Generic_SMWBlock).canHitRight) (data.Hit as Generic_SMWBlock).Hit(null, 2);
-                }
-
             }
         }
         orig(self, data);
@@ -77,17 +81,21 @@ public class FemtoModule : EverestModule
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            if (data.Hit is Generic_SMWBlock && !(data.Hit as Generic_SMWBlock).active)
+            if (data.Hit is GenericSmwBlock { Active: false } block)
             {
-                if (self.hitSpeed.Y > 0)
+                switch (self.hitSpeed.Y)
                 {
-                    if ((data.Hit as Generic_SMWBlock).canHitTop) (data.Hit as Generic_SMWBlock).Hit(null, 3);
+                    case > 0:
+                    {
+                        if (block.CanHitTop) block.Hit(null, 3);
+                        break;
+                    }
+                    case < 0:
+                    {
+                        if (block.CanHitBottom) block.Hit(null, 0);
+                        break;
+                    }
                 }
-                if (self.hitSpeed.Y < 0)
-                {
-                    if ((data.Hit as Generic_SMWBlock).canHitBottom) (data.Hit as Generic_SMWBlock).Hit(null, 0);
-                }
-
             }
         }
         orig(self, data);
@@ -98,15 +106,9 @@ public class FemtoModule : EverestModule
         orig(self);
         Collider collider = self.Collider;
         self.Collider = new Circle(40f);
-        foreach (Generic_SMWBlock entity in self.Scene.Tracker.GetEntities<Generic_SMWBlock>())
+        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
         {
-            if (entity != null)
-            {
-                if (self.CollideCheck(entity) && !entity.active)
-                {
-                    entity.Hit(null, 0);
-                }
-            }
+            entity.Hit(null, 0);
         }
         self.Collider = collider;
     }
@@ -115,15 +117,9 @@ public class FemtoModule : EverestModule
         IEnumerator origEnum = orig(self);
         while (origEnum.MoveNext()) yield return origEnum.Current;
         self.Collider = new Circle(40f);
-        foreach (Generic_SMWBlock entity in self.Scene.Tracker.GetEntities<Generic_SMWBlock>())
+        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
         {
-            if (entity != null)
-            {
-                if (self.CollideCheck(entity) && !entity.active)
-                {
-                    entity.Hit(null, 0);
-                }
-            }
+            entity.Hit(null, 0);
         }
         self.Collider = new Hitbox(6f, 6f, -3f, -3f);
     }
@@ -187,30 +183,20 @@ public class FemtoModule : EverestModule
         orig(self);
         ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
 
-        if (controller != null && controller.InteractWithCoreSwitch)
+        if (controller is not { InteractWithCoreSwitch: true }) return;
+        if (!self.CollideCheckByComponent<Holdable>() || !self.Usable || !(self.cooldownTimer <= 0f)) return;
+        
+        self.playSounds = true;
+        Level level = self.SceneAs<Level>();
+        level.CoreMode = level.CoreMode == global::Celeste.Session.CoreModes.Cold ? global::Celeste.Session.CoreModes.Hot : global::Celeste.Session.CoreModes.Cold;
+        if (self.persistent)
         {
-            if (self.CollideCheckByComponent<Holdable>() && self.Usable && self.cooldownTimer <= 0f)
-            {
-                self.playSounds = true;
-                Level level = self.SceneAs<Level>();
-                if (level.CoreMode == global::Celeste.Session.CoreModes.Cold)
-                {
-                    level.CoreMode = global::Celeste.Session.CoreModes.Hot;
-                }
-                else
-                {
-                    level.CoreMode = global::Celeste.Session.CoreModes.Cold;
-                }
-                if (self.persistent)
-                {
-                    level.Session.CoreMode = level.CoreMode;
-                }
-                Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-                level.Flash(Color.White * 0.15f, drawPlayerOver: true);
-                Celeste.Freeze(0.05f);
-                self.cooldownTimer = 1f;
-            }
+            level.Session.CoreMode = level.CoreMode;
         }
+        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+        level.Flash(Color.White * 0.15f, drawPlayerOver: true);
+        Celeste.Freeze(0.05f);
+        self.cooldownTimer = 1f;
     }
 
 
@@ -236,104 +222,91 @@ public class FemtoModule : EverestModule
 
         if (controller != null)
         {
-            if (controller.InteractWithCrushBlocks && data.Hit is CrushBlock)
+            if (controller.InteractWithCrushBlocks && data.Hit is CrushBlock block)
             {
-                if ((data.Hit as CrushBlock).CanActivate(-data.Direction))
+                if (block.CanActivate(-data.Direction))
                 {
-                    if (Math.Abs(h.GetSpeed().X) >= controller.CrushBlockSpeedReq.X) (data.Hit as CrushBlock).Attack(-data.Direction);
+                    if (Math.Abs(h.GetSpeed().X) >= controller.CrushBlockSpeedReq.X) block.Attack(-data.Direction);
                 }
             }
 
-            if (controller.InteractWithDashBlocks && data.Hit is DashBlock)
+            if (controller.InteractWithDashBlocks && data.Hit is DashBlock dashBlock)
             {
-                if (Math.Abs(h.GetSpeed().X) >= controller.DashBlockSpeedReq.X) (data.Hit as DashBlock).Break(self.Center, data.Direction, true, true);
+                if (Math.Abs(h.GetSpeed().X) >= controller.DashBlockSpeedReq.X) dashBlock.Break(self.Center, data.Direction, true, true);
             }
 
-            if (controller.InteractWithBreakerBoxes && data.Hit is LightningBreakerBox)
+            if (controller.InteractWithBreakerBoxes && data.Hit is LightningBreakerBox box)
             {
-                LightningBreakerBox l = (data.Hit as LightningBreakerBox);
-                if (!(data.Direction == Vector2.UnitX && l.spikesLeft) && !(data.Direction == -Vector2.UnitX && l.spikesRight) && Math.Abs(h.GetSpeed().X) >= controller.BreakerBoxSpeedReq.X)
+                if (!(data.Direction == Vector2.UnitX && box.spikesLeft) && !(data.Direction == -Vector2.UnitX && box.spikesRight) && Math.Abs(h.GetSpeed().X) >= controller.BreakerBoxSpeedReq.X)
                 {
-                    (l.Scene as Level).DirectionalShake(data.Direction);
-                    l.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
-                    l.health--;
-                    if (l.health > 0)
+                    (box.Scene as Level).DirectionalShake(data.Direction);
+                    box.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
+                    box.health--;
+                    if (box.health > 0)
                     {
-                        l.Add(l.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
+                        box.Add(box.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
                         Celeste.Freeze(0.1f);
-                        l.shakeCounter = 0.2f;
-                        l.shaker.On = true;
-                        l.bounceDir = data.Direction;
-                        l.bounce.Start();
-                        l.smashParticles = true;
-                        l.Pulse();
+                        box.shakeCounter = 0.2f;
+                        box.shaker.On = true;
+                        box.bounceDir = data.Direction;
+                        box.bounce.Start();
+                        box.smashParticles = true;
+                        box.Pulse();
                         Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
                     }
                     else
                     {
-                        l.firstHitSfx?.Stop();
-                        Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", l.Position);
+                        box.firstHitSfx?.Stop();
+                        Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", box.Position);
                         Celeste.Freeze(0.2f);
-                        l.Break();
+                        box.Break();
                         Input.Rumble(RumbleStrength.Strong, RumbleLength.Long);
-                        l.SmashParticles(data.Direction.Perpendicular());
-                        l.SmashParticles(-data.Direction.Perpendicular());
+                        box.SmashParticles(data.Direction.Perpendicular());
+                        box.SmashParticles(-data.Direction.Perpendicular());
                     }
                 }
             }
-            if(controller.InteractWithSwapBlocks && data.Hit is SwapBlock)
+            if(controller.InteractWithSwapBlocks && data.Hit is SwapBlock hit)
             {
-                SwapBlock s = data.Hit as SwapBlock;
                 if (Math.Abs(h.GetSpeed().X) >= controller.SwapBlockSpeedReq.X)
                 {
-                    s.Swapping = s.lerp < 1f;
-                    s.target = 1;
-                    s.returnTimer = 0.8f;
-                    s.burst = (s.Scene as Level).Displacement.AddBurst(s.Center, 0.2f, 0f, 16f);
-                    if (s.lerp >= 0.2f)
+                    hit.Swapping = hit.lerp < 1f;
+                    hit.target = 1;
+                    hit.returnTimer = 0.8f;
+                    hit.burst = (hit.Scene as Level).Displacement.AddBurst(hit.Center, 0.2f, 0f, 16f);
+                    hit.speed = hit.lerp >= 0.2f ? hit.maxForwardSpeed : MathHelper.Lerp(hit.maxForwardSpeed * 0.333f, hit.maxForwardSpeed, hit.lerp / 0.2f);
+                    Audio.Stop(hit.returnSfx);
+                    Audio.Stop(hit.moveSfx);
+                    if (!hit.Swapping)
                     {
-                        s.speed = s.maxForwardSpeed;
+                        Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", hit.Center);
                     }
                     else
                     {
-                        s.speed = MathHelper.Lerp(s.maxForwardSpeed * 0.333f, s.maxForwardSpeed, s.lerp / 0.2f);
-                    }
-                    Audio.Stop(s.returnSfx);
-                    Audio.Stop(s.moveSfx);
-                    if (!s.Swapping)
-                    {
-                        Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", s.Center);
-                    }
-                    else
-                    {
-                        s.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", s.Center);
+                        hit.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", hit.Center);
                     }
                 }
             }
-            if (controller.InteractWithMoveBlocks && (data.Hit is MoveBlock) && (Math.Abs(h.GetSpeed().X) >= controller.MoveBlockSpeedReq.X))
+            if (controller.InteractWithMoveBlocks && (data.Hit is MoveBlock moveBlock) && (Math.Abs(h.GetSpeed().X) >= controller.MoveBlockSpeedReq.X))
             {
-                (data.Hit as MoveBlock).triggered = true;
+                moveBlock.triggered = true;
             }
-            if (controller.InteractWithFallingBlocksH && (data.Hit is FallingBlock) && (Math.Abs(h.GetSpeed().X) >= controller.FallingBlockSpeedReq.X))
+            if (controller.InteractWithFallingBlocksH && (data.Hit is FallingBlock fallingBlock) && (Math.Abs(h.GetSpeed().X) >= controller.FallingBlockSpeedReq.X))
             {
-                (data.Hit as FallingBlock).Triggered = true;
+                fallingBlock.Triggered = true;
             }
         }
 
-        if (data.Hit is Generic_SMWBlock)
+        if (data.Hit is not GenericSmwBlock smwblock) return data;
+        if (smwblock.Active) return data;
+        
+        if (h.GetSpeed().X > 20)
         {
-            Generic_SMWBlock smwblock = (data.Hit as Generic_SMWBlock);
-            if (!smwblock.active)
-            {
-                if (h.GetSpeed().X > 20)
-                {
-                    if (smwblock.canHitLeft) smwblock.Hit(null, 1);
-                }
-                if (h.GetSpeed().X < -20)
-                {
-                    if (smwblock.canHitRight) smwblock.Hit(null, 2);
-                }
-            }
+            if (smwblock.CanHitLeft) smwblock.Hit(null, 1);
+        }
+        if (h.GetSpeed().X < -20)
+        {
+            if (smwblock.CanHitRight) smwblock.Hit(null, 2);
         }
 
         return data;
@@ -361,107 +334,94 @@ public class FemtoModule : EverestModule
 
         if (controller != null)
         {
-            if (controller.InteractWithCrushBlocks && data.Hit is CrushBlock)
+            if (controller.InteractWithCrushBlocks && data.Hit is CrushBlock block)
             {
-                if ((data.Hit as CrushBlock).CanActivate(-data.Direction))
+                if (block.CanActivate(-data.Direction))
                 {
-                    if (Math.Abs(h.GetSpeed().Y) >= controller.CrushBlockSpeedReq.Y) (data.Hit as CrushBlock).Attack(-data.Direction);
+                    if (Math.Abs(h.GetSpeed().Y) >= controller.CrushBlockSpeedReq.Y) block.Attack(-data.Direction);
                 }
             }
 
-            if (controller.InteractWithDashBlocks && data.Hit is DashBlock)
+            if (controller.InteractWithDashBlocks && data.Hit is DashBlock dashBlock)
             {
-                if (Math.Abs(h.GetSpeed().Y) >= controller.DashBlockSpeedReq.Y) (data.Hit as DashBlock).Break(self.Center, data.Direction, true, true);
+                if (Math.Abs(h.GetSpeed().Y) >= controller.DashBlockSpeedReq.Y) dashBlock.Break(self.Center, data.Direction, true, true);
             }
 
-            if (controller.InteractWithBreakerBoxes && data.Hit is LightningBreakerBox)
+            if (controller.InteractWithBreakerBoxes && data.Hit is LightningBreakerBox box)
             {
-                LightningBreakerBox l = (data.Hit as LightningBreakerBox);
-                if (!(data.Direction == Vector2.UnitX && l.spikesLeft) && !(data.Direction == -Vector2.UnitX && l.spikesRight) && Math.Abs(h.GetSpeed().Y) >= controller.BreakerBoxSpeedReq.Y)
+                if (!(data.Direction == Vector2.UnitX && box.spikesLeft) && !(data.Direction == -Vector2.UnitX && box.spikesRight) && Math.Abs(h.GetSpeed().Y) >= controller.BreakerBoxSpeedReq.Y)
                 {
-                    (l.Scene as Level).DirectionalShake(data.Direction);
-                    l.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
-                    l.health--;
-                    if (l.health > 0)
+                    (box.Scene as Level).DirectionalShake(data.Direction);
+                    box.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
+                    box.health--;
+                    if (box.health > 0)
                     {
-                        l.Add(l.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
+                        box.Add(box.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
                         Celeste.Freeze(0.1f);
-                        l.shakeCounter = 0.2f;
-                        l.shaker.On = true;
-                        l.bounceDir = data.Direction;
-                        l.bounce.Start();
-                        l.smashParticles = true;
-                        l.Pulse();
+                        box.shakeCounter = 0.2f;
+                        box.shaker.On = true;
+                        box.bounceDir = data.Direction;
+                        box.bounce.Start();
+                        box.smashParticles = true;
+                        box.Pulse();
                         Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
                     }
                     else
                     {
-                        if (l.firstHitSfx != null)
+                        if (box.firstHitSfx != null)
                         {
-                            l.firstHitSfx.Stop();
+                            box.firstHitSfx.Stop();
                         }
-                        Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", l.Position);
+                        Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", box.Position);
                         Celeste.Freeze(0.2f);
-                        l.Break();
+                        box.Break();
                         Input.Rumble(RumbleStrength.Strong, RumbleLength.Long);
-                        l.SmashParticles(data.Direction.Perpendicular());
-                        l.SmashParticles(-data.Direction.Perpendicular());
+                        box.SmashParticles(data.Direction.Perpendicular());
+                        box.SmashParticles(-data.Direction.Perpendicular());
                     }
                 }
             }
-            if (controller.InteractWithSwapBlocks && data.Hit is SwapBlock)
+            if (controller.InteractWithSwapBlocks && data.Hit is SwapBlock hit)
             {
-                SwapBlock s = data.Hit as SwapBlock;
                 if (Math.Abs(h.GetSpeed().Y) >= controller.SwapBlockSpeedReq.Y)
                 {
-                    s.Swapping = s.lerp < 1f;
-                    s.target = 1;
-                    s.returnTimer = 0.8f;
-                    s.burst = (s.Scene as Level).Displacement.AddBurst(s.Center, 0.2f, 0f, 16f);
-                    if (s.lerp >= 0.2f)
+                    hit.Swapping = hit.lerp < 1f;
+                    hit.target = 1;
+                    hit.returnTimer = 0.8f;
+                    hit.burst = (hit.Scene as Level).Displacement.AddBurst(hit.Center, 0.2f, 0f, 16f);
+                    hit.speed = hit.lerp >= 0.2f ? hit.maxForwardSpeed : MathHelper.Lerp(hit.maxForwardSpeed * 0.333f, hit.maxForwardSpeed, hit.lerp / 0.2f);
+                    Audio.Stop(hit.returnSfx);
+                    Audio.Stop(hit.moveSfx);
+                    if (!hit.Swapping)
                     {
-                        s.speed = s.maxForwardSpeed;
+                        Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", hit.Center);
                     }
                     else
                     {
-                        s.speed = MathHelper.Lerp(s.maxForwardSpeed * 0.333f, s.maxForwardSpeed, s.lerp / 0.2f);
-                    }
-                    Audio.Stop(s.returnSfx);
-                    Audio.Stop(s.moveSfx);
-                    if (!s.Swapping)
-                    {
-                        Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", s.Center);
-                    }
-                    else
-                    {
-                        s.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", s.Center);
+                        hit.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", hit.Center);
                     }
                 }
             }
-            if (controller.InteractWithMoveBlocks && (data.Hit is MoveBlock) && (Math.Abs(h.GetSpeed().Y) >= controller.MoveBlockSpeedReq.Y))
+            if (controller.InteractWithMoveBlocks && (data.Hit is MoveBlock moveBlock) && (Math.Abs(h.GetSpeed().Y) >= controller.MoveBlockSpeedReq.Y))
             {
-                (data.Hit as MoveBlock).triggered = true;
+                moveBlock.triggered = true;
             }
-            if (controller.InteractWithFallingBlocksV && (data.Hit is FallingBlock) && (Math.Abs(h.GetSpeed().Y) >= controller.FallingBlockSpeedReq.Y))
+            if (controller.InteractWithFallingBlocksV && (data.Hit is FallingBlock fallingBlock) && (Math.Abs(h.GetSpeed().Y) >= controller.FallingBlockSpeedReq.Y))
             {
-                (data.Hit as FallingBlock).Triggered = true;
+                fallingBlock.Triggered = true;
             }
         }
 
-        if (data.Hit is Generic_SMWBlock)
+        if (data.Hit is not GenericSmwBlock smwblock) return data;
+        if (smwblock.Active) return data;
+        
+        if (h.GetSpeed().Y > 80)
         {
-            Generic_SMWBlock smwblock = (data.Hit as Generic_SMWBlock);
-            if (!smwblock.active)
-            {
-                if (h.GetSpeed().Y > 80)
-                {
-                    if (smwblock.canHitTop) smwblock.Hit(null, 3);
-                }
-                if (h.GetSpeed().Y < 0)
-                {
-                    if (smwblock.canHitBottom) smwblock.Hit(null, 0);
-                }
-            }
+            if (smwblock.CanHitTop) smwblock.Hit(null, 3);
+        }
+        if (h.GetSpeed().Y < 0)
+        {
+            if (smwblock.CanHitBottom) smwblock.Hit(null, 0);
         }
 
         return data;
@@ -487,7 +447,7 @@ public class FemtoModule : EverestModule
     public override void LoadContent(bool firstLoad)
     {
         base.LoadContent(firstLoad);
-        femtoSpriteBank = new SpriteBank(GFX.Game, "Graphics/FemtoHelper/Sprites.xml");
+        FemtoSpriteBank = new SpriteBank(GFX.Game, "Graphics/FemtoHelper/Sprites.xml");
     }
 
     // Unload the entirety of your mod's content. Free up any native resources.
@@ -578,13 +538,10 @@ public class FemtoModule : EverestModule
                 child.AttrBool("flipX", false),
                 child.AttrBool("flipY", false),
 
-                child.AttrInt("sliceMode", 0) == 0 ? DistortedParallax.sliceModes.TransLong : child.AttrInt("sliceMode", 0) == 1 ? DistortedParallax.sliceModes.LongTrans : child.AttrInt("sliceMode", 0) == 2 ? DistortedParallax.sliceModes.TransTrans : DistortedParallax.sliceModes.LongLong
+                child.AttrInt("sliceMode", 0) == 0 ? DistortedParallax.SliceModes.TransLong : child.AttrInt("sliceMode", 0) == 1 ? DistortedParallax.SliceModes.LongTrans : child.AttrInt("sliceMode", 0) == 2 ? DistortedParallax.SliceModes.TransTrans : DistortedParallax.SliceModes.LongLong
                 );
         }
         return null;
     }
-
-
-
 }
 

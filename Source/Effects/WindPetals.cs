@@ -8,33 +8,33 @@ using System.Linq;
 
 public class WindPetals : Backdrop
 {
-    public string petalColor = "66cc22";
+    public string PetalColor = "66cc22";
 
-    public Color[] Colors;
+    public readonly Color[] Colors;
 
-    public float fallSpeedMin = 6f;
+    public readonly float FallSpeedMin = 6f;
 
-    public float fallSpeedMax = 16f;
+    public readonly float FallSpeedMax = 16f;
 
-    public float xDriftSpeedMin = 0f;
+    public readonly float XDriftSpeedMin = 0f;
 
-    public float xDriftSpeedMax = 0f;
+    public readonly float XDriftSpeedMax = 0f;
 
-    public int blurCount = 15;
+    public readonly int BlurCount = 15;
 
-    public float blurDensity = 3;
+    public readonly float BlurDensity = 3;
 
-    public string sprite = "particles/petal";
+    public readonly string Sprite = "particles/petal";
 
-    public float parallax = 1f;
+    public readonly float Parallax = 1f;
 
-    public float spinSpeedMultiplier = 1f;
+    public readonly float SpinSpeedMultiplier = 1f;
 
-    public float spinAmount = 8f;
+    public readonly float SpinAmount = 8f;
 
-    public float alpha;
+    public readonly float Alpha;
 
-    public float scale;
+    public readonly float Scale;
 
     private struct Particle
     {
@@ -53,30 +53,30 @@ public class WindPetals : Backdrop
         public Color Color;
     }
 
-    private Particle[] particles = new Particle[40];
+    private readonly Particle[] particles = new Particle[40];
 
     private float fade;
 
-    public WindPetals(string colors, float fallingSpeedMin, float fallingSpeedMax, int blurCount_, float blurDensity_, string texture, int count, float scroll, float spinFrequency, float spinAmplitude, float transparency, float size, float xDriftingSpeedMin, float xDriftingSpeedMax)
+    public WindPetals(string colors, float fallingSpeedMin, float fallingSpeedMax, int blurCount, float blurDensity, string texture, int count, float scroll, float spinFrequency, float spinAmplitude, float transparency, float size, float xDriftingSpeedMin, float xDriftingSpeedMax)
     {
         // this is like communal helper!
         Colors = colors
                 .Split(',')
                 .Select(str => Calc.HexToColorWithAlpha(str.Trim()))
                 .ToArray();
-        fallSpeedMin = fallingSpeedMin;
-        fallSpeedMax = fallingSpeedMax;
-        xDriftSpeedMin = xDriftingSpeedMin;
-        xDriftSpeedMax = xDriftingSpeedMax;
-        blurCount = blurCount_;
-        blurDensity = blurDensity_;
-        sprite = texture;
+        FallSpeedMin = fallingSpeedMin;
+        FallSpeedMax = fallingSpeedMax;
+        XDriftSpeedMin = xDriftingSpeedMin;
+        XDriftSpeedMax = xDriftingSpeedMax;
+        BlurCount = blurCount;
+        BlurDensity = blurDensity;
+        Sprite = texture;
         particles = new Particle[count];
-        parallax = (float)Math.Max(scroll, 0.00001);
-        spinSpeedMultiplier = spinFrequency;
-        spinAmount = spinAmplitude;
-        alpha = transparency;
-        scale = size;
+        Parallax = (float)Math.Max(scroll, 0.00001);
+        SpinSpeedMultiplier = spinFrequency;
+        SpinAmount = spinAmplitude;
+        Alpha = transparency;
+        Scale = size;
         for (int i = 0; i < particles.Length; i++)
         {
             Reset(i);
@@ -85,9 +85,9 @@ public class WindPetals : Backdrop
 
     private void Reset(int i)
     {
-        particles[i].Position = new Vector2(Calc.Random.Range(0, 352) / parallax, Calc.Random.Range(0, 212) / parallax);
-        particles[i].Speed = Calc.Random.Range(fallSpeedMin, fallSpeedMax);
-        particles[i].SpeedX = Calc.Random.Range(xDriftSpeedMin, xDriftSpeedMax);
+        particles[i].Position = new Vector2(Calc.Random.Range(0, 352) / Parallax, Calc.Random.Range(0, 212) / Parallax);
+        particles[i].Speed = Calc.Random.Range(FallSpeedMin, FallSpeedMax);
+        particles[i].SpeedX = Calc.Random.Range(XDriftSpeedMin, XDriftSpeedMax);
         particles[i].Spin = Calc.Random.Range(8f, 12f) * 0.2f;
         particles[i].RotationCounter = Calc.Random.NextAngle();
         particles[i].MaxRotate = Calc.Random.Range(0.3f, 0.6f) * ((float)Math.PI / 2f);
@@ -115,27 +115,27 @@ public class WindPetals : Backdrop
         {
             float fade2 = Ease.SineInOut(fade);
             Camera camera = (level as Level).Camera;
-            MTexture mTexture = GFX.Game[sprite];
+            MTexture mTexture = GFX.Game[Sprite];
             for (int i = 0; i < particles.Length; i++)
             {
                 Vector2 position = Vector2.Zero;
-                position.X = -16f + Mod(particles[i].Position.X - camera.X, 352f / parallax);
-                position.Y = -16f + Mod(particles[i].Position.Y - camera.Y, 212f / parallax);
-                float num = (MathF.PI / 2) + MathF.Sin(particles[i].RotationCounter * spinSpeedMultiplier * particles[i].MaxRotate) * 1.0f;
+                position.X = -16f + Mod(particles[i].Position.X - camera.X, 352f / Parallax);
+                position.Y = -16f + Mod(particles[i].Position.Y - camera.Y, 212f / Parallax);
+                float num = (MathF.PI / 2) + MathF.Sin(particles[i].RotationCounter * SpinSpeedMultiplier * particles[i].MaxRotate) * 1.0f;
                 position += Calc.AngleToVector(num, 4f);
-                for (int n = 1; n < blurCount; n++)
+                for (int n = 1; n < BlurCount; n++)
                 {
                     mTexture.DrawCentered(
                         (
                         position -
                         new Vector2(
-                            ((level as Level).Wind.X / 300f) * (n / blurDensity),
-                            ((level as Level).Wind.Y / 300f) * (n / blurDensity)
+                            ((level as Level).Wind.X / 300f) * (n / BlurDensity),
+                            ((level as Level).Wind.Y / 300f) * (n / BlurDensity)
                             )
-                        ) * parallax,
-                        (particles[i].Color * Calc.Map(n, 1, blurCount - 1, 0.5f, 0) * fade) * Math.Max(Math.Min(Math.Abs((level as Level).Wind.X) / 300, 1), Math.Min(Math.Abs((level as Level).Wind.Y) / 300, 1)) * alpha, 1f * scale, (num - 0.8f) * spinAmount);
+                        ) * Parallax,
+                        (particles[i].Color * Calc.Map(n, 1, BlurCount - 1, 0.5f, 0) * fade) * Math.Max(Math.Min(Math.Abs((level as Level).Wind.X) / 300, 1), Math.Min(Math.Abs((level as Level).Wind.Y) / 300, 1)) * Alpha, 1f * Scale, (num - 0.8f) * SpinAmount);
                 }
-                mTexture.DrawCentered(position * parallax, (particles[i].Color * fade2) * alpha, 1f * scale, (num - 0.8f) * spinAmount);
+                mTexture.DrawCentered(position * Parallax, (particles[i].Color * fade2) * Alpha, 1f * Scale, (num - 0.8f) * SpinAmount);
             }
         }
     }

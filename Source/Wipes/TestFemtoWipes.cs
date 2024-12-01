@@ -1,73 +1,71 @@
 ﻿// Celeste.TestWipes
 using System.Collections;
 
-namespace Celeste.Mod.FemtoHelper.Wipes
+namespace Celeste.Mod.FemtoHelper.Wipes;
+
+public class TestFemtoWipes : Scene
 {
+	private readonly Coroutine coroutine;
 
-	public class TestFemtoWipes : Scene
+	private readonly Color lastColor = Color.White;
+
+	public TestFemtoWipes()
 	{
-		private Coroutine coroutine;
+		coroutine = new Coroutine(Routine());
+		ScreenWipe.WipeColor = Color.Black;
+	}
 
-		private Color lastColor = Color.White;
-
-		public TestFemtoWipes()
+	private IEnumerator Routine()
+	{
+		const float dur = 1f;
+		yield return 1f;
+		while (true)
 		{
-			coroutine = new Coroutine(routine());
-            ScreenWipe.WipeColor = Color.Black;
-        }
 
-        private IEnumerator routine()
-		{
-			float dur = 1f;
-			yield return 1f;
-			while (true)
-			{
+			new CirclerWipe(this, wipeIn: false).Duration = dur;
+			yield return dur;
+			new CirclerWipe(this, wipeIn: true).Duration = dur;
+			yield return dur;
 
-				new CirclerWipe(this, wipeIn: false).Duration = dur;
-				yield return dur;
-                new CirclerWipe(this, wipeIn: true).Duration = dur;
-                yield return dur;
+			new SquareWipe(this, wipeIn: false).Duration = dur;
+			yield return dur;
+			new SquareWipe(this, wipeIn: true).Duration = dur;
+			yield return dur;
 
-                new SquareWipe(this, wipeIn: false).Duration = dur;
-				yield return dur;
-                new SquareWipe(this, wipeIn: true).Duration = dur;
-                yield return dur;
+			new CliffhangerWipe(this, wipeIn: false).Duration = dur;
+			yield return dur;
+			new CliffhangerWipe(this, wipeIn: true).Duration = dur;
+			yield return dur;
 
-                new CliffhangerWipe(this, wipeIn: false).Duration = dur;
-                yield return dur;
-                new CliffhangerWipe(this, wipeIn: true).Duration = dur;
-                yield return dur;
+			new SineWipe(this, wipeIn: false).Duration = dur;
+			yield return dur;
+			new SineWipe(this, wipeIn: true).Duration = dur;
+			yield return dur;
 
-                new SineWipe(this, wipeIn: false).Duration = dur;
-                yield return dur;
-                new SineWipe(this, wipeIn: true).Duration = dur;
-                yield return dur;
+			new DiamondWipe(this, wipeIn: false).Duration = dur;
+			yield return dur;
+			new DiamondWipe(this, wipeIn: true).Duration = dur;
+			yield return dur;
 
-                new DiamondWipe(this, wipeIn: false).Duration = dur;
-                yield return dur;
-                new DiamondWipe(this, wipeIn: true).Duration = dur;
-                yield return dur;
+			new DissolveWipe(this, wipeIn: false).Duration = dur;
+			yield return dur;
+			new DissolveWipe(this, wipeIn: true).Duration = dur;
+			yield return dur;
 
-                new DissolveWipe(this, wipeIn: false).Duration = dur;
-                yield return dur;
-                new DissolveWipe(this, wipeIn: true).Duration = dur;
-                yield return dur;
-
-            }
 		}
+	}
 
-		public override void Update()
-		{
-			base.Update();
-			coroutine.Update();
-		}
+	public override void Update()
+	{
+		base.Update();
+		coroutine.Update();
+	}
 
-		public override void Render()
-		{
-			Draw.SpriteBatch.Begin();
-			Draw.Rect(-1f, -1f, 1920f, 1080f, lastColor);
-			Draw.SpriteBatch.End();
-			base.Render();
-		}
+	public override void Render()
+	{
+		Draw.SpriteBatch.Begin();
+		Draw.Rect(-1f, -1f, 1920f, 1080f, lastColor);
+		Draw.SpriteBatch.End();
+		base.Render();
 	}
 }

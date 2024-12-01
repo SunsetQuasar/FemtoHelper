@@ -8,9 +8,9 @@ using Celeste.Mod.FemtoHelper;
 
 public class OshiroCaller : Entity
 {
-	private bool flagSet = true;
+	private readonly bool flagSet = true;
 
-	private string customFlag = "custom_flag";
+	private readonly string customFlag = "custom_flag";
 
 	private Sprite sprite;
 
@@ -20,17 +20,17 @@ public class OshiroCaller : Entity
 
 	private Vector2 moveWiggleDir;
 
-	private HoldableCollider crystalCollider;
+	private readonly HoldableCollider crystalCollider;
 
 	private float timer;
 
 	private float bounceSfxDelay;
 
-	private bool repell;
+	private readonly bool repell;
 
-	private bool justMakeOshiroLeave;
+	private readonly bool justMakeOshiroLeave;
 
-	private ParticleType callerParticle = new ParticleType
+	private readonly ParticleType callerParticle = new ParticleType
 	{
 		Source = GFX.Game["particles/circle"],
 		Color = Calc.HexToColor("8484a5"),
@@ -50,7 +50,7 @@ public class OshiroCaller : Entity
 		SpinMin = 8f,
 		SpinMax = 16f
 	};
-	private ParticleType callerParticle2 = new ParticleType
+	private readonly ParticleType callerParticle2 = new ParticleType
 	{
 		Source = GFX.Game["particles/circle"],
 		Color = Calc.HexToColor("8484a5"),
@@ -84,14 +84,9 @@ public class OshiroCaller : Entity
 	public override void Awake(Scene scene)
 	{
 		base.Awake(scene);
-		Add(sprite = FemtoModule.femtoSpriteBank.Create("oshiroCaller"));
-		if (repell) {
-			sprite.Play("repeller");
-		} else
-		{
-			sprite.Play("caller");
-		}
-		base.Collider = new Hitbox(16f, 16f, -8f, -8f);
+		Add(sprite = FemtoModule.FemtoSpriteBank.Create("oshiroCaller"));
+		sprite.Play(repell ? "repeller" : "caller");
+		Collider = new Hitbox(16f, 16f, -8f, -8f);
 		Add(new PlayerCollider(OnPlayer));
 		Add(ScaleWiggler = Wiggler.Create(0.5f, 4f, delegate (float f)
 		{
@@ -110,108 +105,103 @@ public class OshiroCaller : Entity
 		timer += Engine.DeltaTime;
 		sprite.Position = Vector2.UnitY * (float)Math.Sin(timer * 2f) * 2f + moveWiggleDir * moveWiggler.Value * -8f;
 		base.Update();
-		if (Visible && base.Scene.OnInterval(0.1f))
+		if (Visible && Scene.OnInterval(0.1f))
 		{
-			SceneAs<Level>().Particles.Emit(callerParticle2, 1, base.Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+			SceneAs<Level>().Particles.Emit(callerParticle2, 1, Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
 		}
 	}
 
 	public void OnHoldable(Holdable h)
 	{
-		Player entity = base.Scene.Tracker.GetEntity<Player>();
-		if (Visible && h.Dangerous(crystalCollider))
+		Player entity = Scene.Tracker.GetEntity<Player>();
+		if (!Visible || !h.Dangerous(crystalCollider)) return;
+		if (repell)
 		{
-			if (repell)
-			{
-				if (base.Scene.Tracker.GetEntity<AngryOshiro>() != null)
-				{
-					Level level = SceneAs<Level>();
-					(base.Scene as Level).Session.SetFlag(customFlag, flagSet);
-					level.Displacement.AddBurst(Position, 1, 8, 48, 0.5f);
-					Celeste.Celeste.Freeze(0.1f);
-					level.Flash(Color.White * 0.25f, drawPlayerOver: true);
-					SceneAs<Level>().Shake();
-					if (justMakeOshiroLeave)
-					{
-						base.Scene.Tracker.GetEntity<AngryOshiro>()?.Leave();
-						SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
-						Audio.Play("event:/FemtoHelper/oshirorepeller_disappear", base.Scene.Tracker.GetEntity<AngryOshiro>().Position);
-					}
-					else
-					{
-						level.Displacement.AddBurst(base.Scene.Tracker.GetEntity<AngryOshiro>().Position, 0.75f, 8, 64, 1);
-						Audio.Play("event:/FemtoHelper/oshirorepeller_disappear", Position);
-						for (int i = 0; i < 20; i++)
-						{
-							SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
-							SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Scene.Tracker.GetEntity<AngryOshiro>().Position, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
-							SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Scene.Tracker.GetEntity<AngryOshiro>().Position, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
-						}
-						base.Scene.Tracker.GetEntity<AngryOshiro>()?.StopControllingTime();
-						base.Scene.Tracker.GetEntity<AngryOshiro>()?.RemoveSelf();
-						Distort.GameRate = 1f;
-						Engine.TimeRate = 1f;
-						Distort.anxiety = 0f;
-					}
-					RemoveSelf();
-				}
-			}
-			else
+			if (Scene.Tracker.GetEntity<AngryOshiro>() != null)
 			{
 				Level level = SceneAs<Level>();
-				(base.Scene as Level).Session.SetFlag(customFlag, flagSet);
+				(Scene as Level).Session.SetFlag(customFlag, flagSet);
 				level.Displacement.AddBurst(Position, 1, 8, 48, 0.5f);
-				Audio.Play("event:/FemtoHelper/oshirocaller_hit", Position);
-				for (int i = 0; i < 20; i++)
-				{
-					SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
-				}
 				Celeste.Celeste.Freeze(0.1f);
 				level.Flash(Color.White * 0.25f, drawPlayerOver: true);
-				Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
-				base.Scene.Add(new AngryOshiro(position, fromCutscene: false));
 				SceneAs<Level>().Shake();
+				if (justMakeOshiroLeave)
+				{
+					Scene.Tracker.GetEntity<AngryOshiro>()?.Leave();
+					SceneAs<Level>().Particles.Emit(callerParticle, 1, Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+					Audio.Play("event:/FemtoHelper/oshirorepeller_disappear", Scene.Tracker.GetEntity<AngryOshiro>().Position);
+				}
+				else
+				{
+					level.Displacement.AddBurst(Scene.Tracker.GetEntity<AngryOshiro>().Position, 0.75f, 8, 64, 1);
+					Audio.Play("event:/FemtoHelper/oshirorepeller_disappear", Position);
+					for (int i = 0; i < 20; i++)
+					{
+						SceneAs<Level>().Particles.Emit(callerParticle, 1, Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+						SceneAs<Level>().Particles.Emit(callerParticle, 1, Scene.Tracker.GetEntity<AngryOshiro>().Position, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+						SceneAs<Level>().Particles.Emit(callerParticle, 1, Scene.Tracker.GetEntity<AngryOshiro>().Position, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+					}
+					Scene.Tracker.GetEntity<AngryOshiro>()?.StopControllingTime();
+					Scene.Tracker.GetEntity<AngryOshiro>()?.RemoveSelf();
+					Distort.GameRate = 1f;
+					Engine.TimeRate = 1f;
+					Distort.anxiety = 0f;
+				}
 				RemoveSelf();
 			}
+		}
+		else
+		{
+			Level level = SceneAs<Level>();
+			(Scene as Level).Session.SetFlag(customFlag, flagSet);
+			level.Displacement.AddBurst(Position, 1, 8, 48, 0.5f);
+			Audio.Play("event:/FemtoHelper/oshirocaller_hit", Position);
+			for (int i = 0; i < 20; i++)
+			{
+				SceneAs<Level>().Particles.Emit(callerParticle, 1, Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+			}
+			Celeste.Celeste.Freeze(0.1f);
+			level.Flash(Color.White * 0.25f, drawPlayerOver: true);
+			Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
+			Scene.Add(new AngryOshiro(position, fromCutscene: false));
+			SceneAs<Level>().Shake();
+			RemoveSelf();
 		}
 	}
 
 	public void OnPlayer(Player player)
 	{
-		if (!Visible || (base.Scene as Level).Frozen)
-		{
-			return;
-		}
+		if (!Visible || (Scene as Level).Frozen) return;
 		if (player.DashAttacking)
 		{
 			if (repell)
 			{
-				if (base.Scene.Tracker.GetEntity<AngryOshiro>() != null)
+				if (Scene.Tracker.GetEntity<AngryOshiro>() != null)
 				{
 					Level level = SceneAs<Level>();
-					(base.Scene as Level).Session.SetFlag(customFlag, flagSet);
+					(Scene as Level).Session.SetFlag(customFlag, flagSet);
 					level.Displacement.AddBurst(Position, 1, 8, 48, 0.5f);
 					Celeste.Celeste.Freeze(0.1f);
 					level.Flash(Color.White * 0.25f, drawPlayerOver: true);
 					SceneAs<Level>().Shake();
 					if (justMakeOshiroLeave)
 					{
-						base.Scene.Tracker.GetEntity<AngryOshiro>()?.Leave();
-						SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
-						Audio.Play("event:/FemtoHelper/oshirorepeller_disappear", base.Scene.Tracker.GetEntity<AngryOshiro>().Position);
+						Scene.Tracker.GetEntity<AngryOshiro>()?.Leave();
+						SceneAs<Level>().Particles.Emit(callerParticle, 1, Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+						Audio.Play("event:/FemtoHelper/oshirorepeller_disappear", Scene.Tracker.GetEntity<AngryOshiro>().Position);
 					}
 					else
 					{
-						level.Displacement.AddBurst(base.Scene.Tracker.GetEntity<AngryOshiro>().Position, 0.75f, 8, 64, 1);
+						level.Displacement.AddBurst(Scene.Tracker.GetEntity<AngryOshiro>().Position, 0.75f, 8, 64, 1);
 						Audio.Play("event:/FemtoHelper/oshirorepeller_disappear", Position);
 						for (int i = 0; i < 20; i++)
 						{
-							SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
-							SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Scene.Tracker.GetEntity<AngryOshiro>().Position, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
-							SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Scene.Tracker.GetEntity<AngryOshiro>().Position, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+							SceneAs<Level>().Particles.Emit(callerParticle, 1, Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+							SceneAs<Level>().Particles.Emit(callerParticle, 1, Scene.Tracker.GetEntity<AngryOshiro>().Position, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+							SceneAs<Level>().Particles.Emit(callerParticle, 1, Scene.Tracker.GetEntity<AngryOshiro>().Position, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
 						}
-						base.Scene.Tracker.GetEntity<AngryOshiro>()?.StopControllingTime();
-						base.Scene.Tracker.GetEntity<AngryOshiro>()?.RemoveSelf();
+						Scene.Tracker.GetEntity<AngryOshiro>()?.StopControllingTime();
+						Scene.Tracker.GetEntity<AngryOshiro>()?.RemoveSelf();
 						Distort.GameRate = 1f;
 						Engine.TimeRate = 1f;
 						Distort.anxiety = 0f;
@@ -221,17 +211,17 @@ public class OshiroCaller : Entity
 			} else
 			{
 				Level level = SceneAs<Level>();
-				(base.Scene as Level).Session.SetFlag(customFlag, flagSet);
+				(Scene as Level).Session.SetFlag(customFlag, flagSet);
 				level.Displacement.AddBurst(Position, 1, 8, 48, 0.5f);
 				Audio.Play("event:/FemtoHelper/oshirocaller_hit", Position);
 				for (int i = 0; i < 20; i++)
 				{
-					SceneAs<Level>().Particles.Emit(callerParticle, 1, base.Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
+					SceneAs<Level>().Particles.Emit(callerParticle, 1, Center, Vector2.One * 8f, Calc.Random.NextFloat() * ((float)Math.PI * 2f));
 				}
 				Celeste.Celeste.Freeze(0.1f);
 				level.Flash(Color.White * 0.25f, drawPlayerOver: true);
 				Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
-				base.Scene.Add(new AngryOshiro(position, fromCutscene: false));
+				Scene.Add(new AngryOshiro(position, fromCutscene: false));
 				SceneAs<Level>().Shake();
 				RemoveSelf();
 			}
@@ -241,13 +231,13 @@ public class OshiroCaller : Entity
 			Audio.Play("event:/game/03_resort/forcefield_bump", Position);
 			bounceSfxDelay = 0.1f;
 		}
-		if (!player.DashAttacking || (repell && base.Scene.Tracker.GetEntity<AngryOshiro>() == null))
+		if (!player.DashAttacking || (repell && Scene.Tracker.GetEntity<AngryOshiro>() == null))
 		{
-			player.PointBounce(base.Center);
+			player.PointBounce(Center);
 		}
 		moveWiggler.Start();
 		ScaleWiggler.Start();
-		moveWiggleDir = (base.Center - player.Center).SafeNormalize(Vector2.UnitY);
+		moveWiggleDir = (Center - player.Center).SafeNormalize(Vector2.UnitY);
 		Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
 	}
 }

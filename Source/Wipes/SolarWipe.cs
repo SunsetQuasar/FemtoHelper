@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Celeste.Mod.FemtoHelper.Wipes;
 public class SolarWipe : ScreenWipe
 {
-    public static BlendState SubtractBlendmode = new BlendState
+    public static readonly BlendState SubtractBlendmode = new BlendState
     {
         ColorSourceBlend = Blend.One,
         ColorDestinationBlend = Blend.One,
@@ -14,13 +14,13 @@ public class SolarWipe : ScreenWipe
         AlphaBlendFunction = BlendFunction.Add
     };
 
-    private VertexPositionColor[] verts = new VertexPositionColor[num * 3];
+    private readonly VertexPositionColor[] verts = new VertexPositionColor[Num * 3];
 
     private bool hasDrawn;
 
-    public float spinspeed;
-    public float spin = MathF.PI / 4;
-    public const int num = 16;
+    public float SpinSpeed;
+    public float Spin = MathF.PI / 4;
+    public const int Num = 16;
     public SolarWipe(Scene scene, bool wipeIn, Action onComplete = null)
         : base(scene, wipeIn, onComplete)
     {
@@ -28,14 +28,14 @@ public class SolarWipe : ScreenWipe
         {
             verts[k].Color = (WipeIn ? Color.White : Color.Black);
         }
-        spinspeed = 0;
+        SpinSpeed = 0;
     }
 
     public override void Update(Scene scene)
     {
         base.Update(scene);
-        spin += Engine.DeltaTime * spinspeed;
-        spinspeed += WipeIn ? -0.2f : 0.2f;
+        Spin += Engine.DeltaTime * SpinSpeed;
+        SpinSpeed += WipeIn ? -0.2f : 0.2f;
     }
 
     public override void BeforeRender(Scene scene)
@@ -44,7 +44,7 @@ public class SolarWipe : ScreenWipe
         Engine.Graphics.GraphicsDevice.SetRenderTarget(Celeste.WipeTarget);
         Engine.Graphics.GraphicsDevice.Clear(WipeIn ? Color.Black : Color.White);
         int index = 0;
-        for (float i = 0; i < num; i++)
+        for (float i = 0; i < Num; i++)
         {
             float factor = i % 2 == 0 ? 1.4f : 1f;
             float antifactor = i % 2 == 0 ? 1f : 1.4f;
@@ -53,15 +53,15 @@ public class SolarWipe : ScreenWipe
                     Engine.Width / 2,
                     Engine.Height / 2) +
                 new Vector2(
-                    MathF.Sin(spin + i * MathF.PI * 2 / num) * factor * (1102 * Ease.QuadInOut(1 - Percent)),
-                    MathF.Cos(spin + i * MathF.PI * 2 / num) * factor * (1102 * Ease.QuadInOut(1 - Percent)))
+                    MathF.Sin(Spin + i * MathF.PI * 2 / Num) * factor * (1102 * Ease.QuadInOut(1 - Percent)),
+                    MathF.Cos(Spin + i * MathF.PI * 2 / Num) * factor * (1102 * Ease.QuadInOut(1 - Percent)))
                 , 0);
             verts[index++].Position = new Vector3(
                 new Vector2(
                     Engine.Width / 2,
                     Engine.Height / 2) +
-                new Vector2(MathF.Sin(spin + (i + 1) * MathF.PI * 2 / num) * antifactor * (1102 * Ease.QuadInOut(1 - Percent)),
-                MathF.Cos(spin + (i + 1) * MathF.PI * 2 / num) * antifactor * (1102 * Ease.QuadInOut(1 - Percent)))
+                new Vector2(MathF.Sin(Spin + (i + 1) * MathF.PI * 2 / Num) * antifactor * (1102 * Ease.QuadInOut(1 - Percent)),
+                MathF.Cos(Spin + (i + 1) * MathF.PI * 2 / Num) * antifactor * (1102 * Ease.QuadInOut(1 - Percent)))
                 , 0);
             verts[index++].Position = new Vector3(
                 new Vector2(

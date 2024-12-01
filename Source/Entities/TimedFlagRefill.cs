@@ -7,49 +7,49 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/TimedFlagRefill")]
 public class BooleanGem : Entity
 {
-    public static ParticleType P_Shatter;
+    public static ParticleType PShatter;
 
-    public static ParticleType P_Regen;
+    public static ParticleType PRegen;
 
-    public static ParticleType P_Glow;
+    public static ParticleType PGlow;
 
-    public static ParticleType P_ShatterTwo;
+    public static ParticleType PShatterTwo;
 
-    public static ParticleType P_RegenTwo;
+    public static ParticleType PRegenTwo;
 
-    public static ParticleType P_GlowTwo;
+    public static ParticleType PGlowTwo;
 
-    private Sprite sprite;
+    private readonly Sprite sprite;
 
-    private Sprite flash;
+    private readonly Sprite flash;
 
-    private Image outline;
+    private readonly Image outline;
 
-    private Wiggler wiggler;
+    private readonly Wiggler wiggler;
 
-    private BloomPoint bloom;
+    private readonly BloomPoint bloom;
 
-    private VertexLight light;
+    private readonly VertexLight light;
 
     private Level level;
 
-    private SineWave sine;
+    private readonly SineWave sine;
 
-    private bool twoDashes;
+    private readonly bool twoDashes;
 
-    private bool oneUse;
+    private readonly bool oneUse;
 
-    private ParticleType p_shatter;
+    private readonly ParticleType pShatter;
 
-    private ParticleType p_regen;
+    private readonly ParticleType pRegen;
 
-    private ParticleType p_glow;
+    private readonly ParticleType pGlow;
 
     private float respawnTimer;
 
-    public string flag;
+    public readonly string Flag;
 
-    public bool stopMomentum;
+    public readonly bool StopMomentum;
 
     public enum FlagModes
     {
@@ -58,15 +58,15 @@ public class BooleanGem : Entity
         ToggleTwice = 2
     }
 
-    public FlagModes flagmode;
+    public readonly FlagModes Flagmode;
 
-    public bool alwaysUse;
+    public readonly bool AlwaysUse;
 
-    public int duration;
+    public readonly int Duration;
 
-    public bool refillDash;
+    public readonly bool RefillDash;
 
-    public bool refillStamina;
+    public readonly bool RefillStamina;
 
     public BooleanGem(Vector2 position, bool twoDashes, bool oneUse, string path, string pcolors)
         : base(position)
@@ -80,17 +80,16 @@ public class BooleanGem : Entity
         Add(new PlayerCollider(OnPlayer));
         this.twoDashes = twoDashes;
         this.oneUse = oneUse;
-        string text;
-        text = path;
-        p_shatter = new ParticleType(Refill.P_Shatter);
-        p_regen = new ParticleType(Refill.P_Regen);
-        p_glow = new ParticleType(Refill.P_Glow);
-        p_shatter.Color = cols[0];
-        p_shatter.Color2 = cols[1];
-        p_regen.Color = cols[2];
-        p_regen.Color2 = cols[3];
-        p_glow.Color = cols[2];
-        p_glow.Color2 = cols[3];
+        var text = path;
+        pShatter = new ParticleType(Refill.P_Shatter);
+        pRegen = new ParticleType(Refill.P_Regen);
+        pGlow = new ParticleType(Refill.P_Glow);
+        pShatter.Color = cols[0];
+        pShatter.Color2 = cols[1];
+        pRegen.Color = cols[2];
+        pRegen.Color2 = cols[3];
+        pGlow.Color = cols[2];
+        pGlow.Color2 = cols[3];
         Add(outline = new Image(GFX.Game[text + "outline"]));
         outline.CenterOrigin();
         outline.Visible = false;
@@ -122,19 +121,19 @@ public class BooleanGem : Entity
     public BooleanGem(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"), data.Attr("path", "objects/refill/"), data.Attr("particleColors", "d3edff,94a5ef,a5c3ff,6c74dd"))
     {
-        P_Shatter = new ParticleType(Refill.P_Shatter);
-        P_Regen = new ParticleType(Refill.P_Regen);
-        P_Glow = new ParticleType(Refill.P_Glow);
-        P_ShatterTwo = new ParticleType(Refill.P_ShatterTwo);
-        P_RegenTwo = new ParticleType(Refill.P_RegenTwo);
-        P_GlowTwo = new ParticleType(Refill.P_GlowTwo);
-        flag = data.Attr("flag", "refill_fLag");
-        stopMomentum = data.Bool("stopMomentum", true);
-        alwaysUse = data.Bool("alwaysUse", false);
-        flagmode = (FlagModes)data.Int("flagMode", 0);
-        duration = data.Int("duration", 1);
-        refillDash = data.Bool("refillDash", true);
-        refillStamina = data.Bool("refillStamina", true);
+        PShatter = new ParticleType(Refill.P_Shatter);
+        PRegen = new ParticleType(Refill.P_Regen);
+        PGlow = new ParticleType(Refill.P_Glow);
+        PShatterTwo = new ParticleType(Refill.P_ShatterTwo);
+        PRegenTwo = new ParticleType(Refill.P_RegenTwo);
+        PGlowTwo = new ParticleType(Refill.P_GlowTwo);
+        Flag = data.Attr("flag", "refill_fLag");
+        StopMomentum = data.Bool("stopMomentum", true);
+        AlwaysUse = data.Bool("alwaysUse", false);
+        Flagmode = (FlagModes)data.Int("flagMode", 0);
+        Duration = data.Int("duration", 1);
+        RefillDash = data.Bool("refillDash", true);
+        RefillStamina = data.Bool("refillStamina", true);
     }
 
     public override void Added(Scene scene)
@@ -162,38 +161,34 @@ public class BooleanGem : Entity
         }
         else if (Scene.OnInterval(0.1f))
         {
-            level.ParticlesFG.Emit(p_glow, 1, Position, Vector2.One * 5f);
+            level.ParticlesFG.Emit(pGlow, 1, Position, Vector2.One * 5f);
         }
         UpdateY();
         light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
         bloom.Alpha = light.Alpha * 0.8f;
-        if (Scene.OnInterval(2f) && sprite.Visible)
-        {
-            flash.Play("flash", restart: true);
-            flash.Visible = true;
-        }
+        if (!Scene.OnInterval(2f) || !sprite.Visible) return;
+        
+        flash.Play("flash", restart: true);
+        flash.Visible = true;
     }
 
     private void Respawn()
     {
-        if (!Collidable)
-        {
-            Collidable = true;
-            sprite.Visible = true;
-            outline.Visible = false;
-            Depth = -100;
-            wiggler.Start();
-            Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_return" : "event:/game/general/diamond_return", Position);
-            level.ParticlesFG.Emit(p_regen, 16, Position, Vector2.One * 2f);
-        }
+        if (Collidable) return;
+        
+        Collidable = true;
+        sprite.Visible = true;
+        outline.Visible = false;
+        Depth = -100;
+        wiggler.Start();
+        Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_return" : "event:/game/general/diamond_return", Position);
+        level.ParticlesFG.Emit(pRegen, 16, Position, Vector2.One * 2f);
     }
 
     private void UpdateY()
     {
-        Sprite obj = flash;
-        Sprite obj2 = sprite;
         float num2 = bloom.Y = sine.Value * 2f;
-        float num5 = obj.Y = obj2.Y = num2;
+        float num5 = flash.Y = sprite.Y = num2;
     }
 
     public override void Render()
@@ -207,16 +202,15 @@ public class BooleanGem : Entity
 
     private void OnPlayer(Player player)
     {
-        if (UseRefill2(player, twoDashes))
-        {
-            if (stopMomentum) player.Speed = Vector2.Zero;
-            Add(new Coroutine(FlagRoutine(flag)));
-            Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_touch" : "event:/game/general/diamond_touch", Position);
-            Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-            Collidable = false;
-            Add(new Coroutine(RefillRoutine(player)));
-            respawnTimer = 2.5f;
-        }
+        if (!UseRefill2(player, twoDashes)) return;
+        
+        if (StopMomentum) player.Speed = Vector2.Zero;
+        Add(new Coroutine(FlagRoutine(Flag)));
+        Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_touch" : "event:/game/general/diamond_touch", Position);
+        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+        Collidable = false;
+        Add(new Coroutine(RefillRoutine(player)));
+        respawnTimer = 2.5f;
     }
 
     private IEnumerator RefillRoutine(Player player)
@@ -232,8 +226,8 @@ public class BooleanGem : Entity
         Depth = 8999;
         yield return 0.05f;
         float num = player.Speed.Angle();
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num - (float)Math.PI / 2f);
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num + (float)Math.PI / 2f);
+        level.ParticlesFG.Emit(pShatter, 5, Position, Vector2.One * 4f, num - (float)Math.PI / 2f);
+        level.ParticlesFG.Emit(pShatter, 5, Position, Vector2.One * 4f, num + (float)Math.PI / 2f);
         SlashFx.Burst(Position, num);
         if (oneUse)
         {
@@ -250,38 +244,35 @@ public class BooleanGem : Entity
         }
         if (player.Dashes < num || player.Stamina < 20f)
         {
-            if (refillDash) player.Dashes = num;
-            if (refillStamina) player.RefillStamina();
+            if (RefillDash) player.Dashes = num;
+            if (RefillStamina) player.RefillStamina();
             flag = true;
         }
 
-        if (flag || alwaysUse)
-        {
-            return true;
-        }
-        return false;
+        return flag || AlwaysUse;
     }
     public IEnumerator FlagRoutine(string flag)
     {
-        Level level = (Scene as Level);
-        float pause = duration / 60f;
-        switch (flagmode)
+        Level level = Scene as Level;
+        float pause = Duration / 60f;
+        switch (Flagmode)
         {
+            default:
             case FlagModes.OnThenOff:
                 level.Session.SetFlag(flag, true);
-                if (duration <= -1) yield break;
+                if (Duration <= -1) yield break;
                 yield return pause;
                 level.Session.SetFlag(flag, false);
                 break;
             case FlagModes.OffThenOn:
                 level.Session.SetFlag(flag, false);
-                if (duration <= -1) yield break;
+                if (Duration <= -1) yield break;
                 yield return pause;
                 level.Session.SetFlag(flag, true);
                 break;
             case FlagModes.ToggleTwice:
                 level.Session.SetFlag(flag, !level.Session.GetFlag(flag));
-                if (duration <= -1) yield break;
+                if (Duration <= -1) yield break;
                 yield return pause;
                 level.Session.SetFlag(flag, !level.Session.GetFlag(flag));
                 break;

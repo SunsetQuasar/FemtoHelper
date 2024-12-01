@@ -26,17 +26,15 @@ public class FoolSpaceCustomCheckpoint : Entity
 			public float Approach;
 		}
 
-		private static Color[] confettiColors;
 
-
-	private Particle[] particles = new Particle[30];
+		private readonly Particle[] particles = new Particle[30];
 
 		public ConfettiRenderer(String color, Vector2 position)
 			: base(position)
 		{
-			base.Depth = -10010;
+			Depth = -10010;
 			string[] array = color.Split(',');
-			confettiColors = (Color[])(object)new Color[array.Length];
+			var confettiColors = new Color[array.Length];
 			for (int i = 0; i < confettiColors.Length; i++)
 			{
 				confettiColors[i] = Calc.HexToColor(array[i]);
@@ -98,50 +96,50 @@ public class FoolSpaceCustomCheckpoint : Entity
 
 	public readonly string Number;
 
-	public readonly string Number_b;
+	public readonly string NumberB;
 
-	public string spriteRoot;
+	public readonly string SpriteRoot;
 
 	private Vector2 respawn;
 
-	private MTexture baseEmpty;
+	private readonly MTexture baseEmpty;
 
-	private MTexture baseToggle;
+	private readonly MTexture baseToggle;
 
-	private MTexture baseActive;
+	private readonly MTexture baseActive;
 
-	private MTexture numbersEmpty;
+	private readonly MTexture numbersEmpty;
 
-	private MTexture numbersEmpty_b;
+	private readonly MTexture numbersEmptyB;
 
-	private MTexture numbersActive;
+	private readonly MTexture numbersActive;
 
-	private MTexture numbersActive_b;
+	private readonly MTexture numbersActiveB;
 
-	public string Colors;
+	public readonly string Colors;
 
 	public FoolSpaceCustomCheckpoint(EntityData data, Vector2 offset)
 		: base(data.Position + offset)
 	{
 		Colors = data.Attr("colors", "fe2074,205efe,cefe20");
 		Number = data.Attr("digitA");
-		Number_b = data.Attr("digitB");
-		spriteRoot = data.Attr("spriteRoot", "scenery/foolspace_checkpoint/");
-		baseEmpty = GFX.Game[spriteRoot + "base00"];
-		baseToggle = GFX.Game[spriteRoot + "base01"];
-		baseActive = GFX.Game[spriteRoot + "base02"];
-		numbersEmpty = GFX.Game[spriteRoot + "numberbg0" + Number];
-		numbersEmpty_b = GFX.Game[spriteRoot + "numberbg0" + Number_b];
-		numbersActive = GFX.Game[spriteRoot + "number0" + Number];
-		numbersActive_b = GFX.Game[spriteRoot + "number0" + Number_b];
-		base.Collider = new Hitbox(32f, 32f, -16f, -8f);
-		base.Depth = 8999;
+		NumberB = data.Attr("digitB");
+		SpriteRoot = data.Attr("spriteRoot", "scenery/foolspace_checkpoint/");
+		baseEmpty = GFX.Game[SpriteRoot + "base00"];
+		baseToggle = GFX.Game[SpriteRoot + "base01"];
+		baseActive = GFX.Game[SpriteRoot + "base02"];
+		numbersEmpty = GFX.Game[SpriteRoot + "numberbg0" + Number];
+		numbersEmptyB = GFX.Game[SpriteRoot + "numberbg0" + NumberB];
+		numbersActive = GFX.Game[SpriteRoot + "number0" + Number];
+		numbersActiveB = GFX.Game[SpriteRoot + "number0" + NumberB];
+		Collider = new Hitbox(32f, 32f, -16f, -8f);
+		Depth = 8999;
 	}
 
 	public override void Added(Scene scene)
 	{
 		base.Added(scene);
-		if ((scene as Level).Session.GetFlag("summit_checkpoint_" + Number + Number_b))
+		if ((scene as Level).Session.GetFlag("summit_checkpoint_" + Number + NumberB))
 		{
 			Activated = true;
 		}
@@ -151,13 +149,11 @@ public class FoolSpaceCustomCheckpoint : Entity
 	public override void Awake(Scene scene)
 	{
 		base.Awake(scene);
-		if (!Activated && CollideCheck<Player>())
-		{
-			Activated = true;
-			Level obj = base.Scene as Level;
-			obj.Session.SetFlag("summit_checkpoint_" + Number + Number_b);
-			obj.Session.RespawnPoint = respawn;
-		}
+		if (Activated || !CollideCheck<Player>()) return;
+		Activated = true;
+		Level obj = Scene as Level;
+		obj.Session.SetFlag("summit_checkpoint_" + Number + NumberB);
+		obj.Session.RespawnPoint = respawn;
 	}
 
 	public override void Update()
@@ -167,9 +163,9 @@ public class FoolSpaceCustomCheckpoint : Entity
 			Player player = CollideFirst<Player>();
 			if (player != null && player.OnGround() && player.Speed.Y >= 0f)
 			{
-				Level obj = base.Scene as Level;
+				Level obj = Scene as Level;
 				Activated = true;
-				obj.Session.SetFlag("summit_checkpoint_" + Number + Number_b);
+				obj.Session.SetFlag("summit_checkpoint_" + Number + NumberB);
 				obj.Session.RespawnPoint = respawn;
 				obj.Session.UpdateLevelStartDashes();
 				obj.Session.HitCheckpoint = true;
@@ -183,14 +179,14 @@ public class FoolSpaceCustomCheckpoint : Entity
 	public override void Render()
 	{
 		MTexture obj = (Activated ? numbersActive : numbersEmpty);
-		MTexture obj_b = (Activated ? numbersActive_b : numbersEmpty_b);
+		MTexture objB = (Activated ? numbersActiveB : numbersEmptyB);
 		MTexture mTexture = baseActive;
 		if (!Activated)
 		{
-			mTexture = (base.Scene.BetweenInterval(0.25f) ? baseEmpty : baseToggle);
+			mTexture = (Scene.BetweenInterval(0.25f) ? baseEmpty : baseToggle);
 		}
 		mTexture.Draw(Position - new Vector2(mTexture.Width / 2 + 1, mTexture.Height / 2));
 		obj.DrawJustified(Position + new Vector2(-1f, 1f), new Vector2(1f, 0f));
-		obj_b.DrawJustified(Position + new Vector2(0f, 1f), new Vector2(0f, 0f));
+		objB.DrawJustified(Position + new Vector2(0f, 1f), new Vector2(0f, 0f));
 	}
 }

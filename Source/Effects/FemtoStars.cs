@@ -20,44 +20,44 @@ public class FemtoStars : Backdrop
 
 		public float Rate;
 
-		public Color[] colors;
+		public Color[] Colors;
 
-		public Color mainColor;
+		public Color MainColor;
 
-		public Vector2 speed;
+		public Vector2 Speed;
 	}
 
 	private const int StarCount = 100;
 
-	private Star[] stars;
+	private readonly Star[] stars;
 
-	private Color[] colors2;
+	private readonly Color[] colors2;
 
-	private List<List<MTexture>> textures;
+	private readonly List<List<MTexture>> textures;
 
 	//private float falling;
 
-	private Vector2 center;
+	private readonly Vector2 center;
 
-	private int trailCount;
+	private readonly int trailCount;
 
-	private float extraLoopBorderX;
+	private readonly float extraLoopBorderX;
 
-	private float extraLoopBorderY;
+	private readonly float extraLoopBorderY;
 
-	private Color backdropColor;
+	private readonly Color backdropColor;
 
-	private float backdropAlpha;
+	private readonly float backdropAlpha;
 
-	private float parallaxX;
+	private readonly float parallaxX;
 
-	private float parallaxY;
+	private readonly float parallaxY;
 
-	public float alphaLegacy;
+	public float AlphaLegacy;
 
-	public string alpha;
+	public readonly string Alpha;
 
-	private float separation;
+	private readonly float separation;
 	public FemtoStars(int blurCount, string colors3, float minXSpeed, float maxXSpeed, float minYSpeed, float maxYSpeed, float loopBorderX, float loopBorderY, int count, string backgroundColor, float backgroundAlpha, string sprite, float scrollX, float scrollY, float transparency, float trailSeparation, float animationRate, string transp2)
 	{
 		trailCount = blurCount;
@@ -67,11 +67,11 @@ public class FemtoStars : Backdrop
 		backdropAlpha = backgroundAlpha;
 		parallaxX = scrollX;
 		parallaxY = scrollY;
-		alphaLegacy = transparency;
-		alpha = transp2;
+		AlphaLegacy = transparency;
+		Alpha = transp2;
 		separation = trailSeparation;
 		var alphas3 = Array.ConvertAll(
-		alpha.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries), double.Parse);
+		Alpha.Split([','], StringSplitOptions.RemoveEmptyEntries), double.Parse);
 		colors2 = colors3.Split(',').Select(str => Calc.HexToColorWithAlpha(str.Trim())).ToArray();
 		textures =
         [
@@ -89,17 +89,17 @@ public class FemtoStars : Backdrop
 				Timer = Calc.Random.NextFloat((float)Math.PI * 2f),
 				Rate = animationRate + Calc.Random.NextFloat(2f),
 				TextureSet = Calc.Random.Next(textures.Count),
-				colors = new Color[trailCount],
+				Colors = new Color[trailCount],
 			};
 			int randomIndex = Calc.Random.Next(colors2.Length);
 			int randomAlphas = Calc.Random.Next(alphas3.Length);
-			for (int j = 0; j < stars[i].colors.Length; j++)
+			for (int j = 0; j < stars[i].Colors.Length; j++)
 			{
-				stars[i].colors[j] = colors2[randomIndex] * (float)(alphas3[randomAlphas]) * (1f - (float)j / (float)stars[i].colors.Length);
+				stars[i].Colors[j] = colors2[randomIndex] * (float)(alphas3[randomAlphas]) * (1f - j / (float)stars[i].Colors.Length);
 			}
 			//Logger.Log("hi oomfie", alphas3[0].ToString()); //ffs lmao
-			stars[i].mainColor = colors2[randomIndex] * (float)(alphas3[randomAlphas]);
-			stars[i].speed = new Vector2(Calc.Random.Range(minXSpeed, maxXSpeed), Calc.Random.Range(minYSpeed, maxYSpeed));
+			stars[i].MainColor = colors2[randomIndex] * (float)(alphas3[randomAlphas]);
+			stars[i].Speed = new Vector2(Calc.Random.Range(minXSpeed, maxXSpeed), Calc.Random.Range(minYSpeed, maxYSpeed));
 			//Logger.Log("fun", stars[i].speed.Y.ToString());
 		}
 	}
@@ -113,7 +113,7 @@ public class FemtoStars : Backdrop
 			for (int i = 0; i < stars.Length; i++)
 			{
 				stars[i].Timer += Engine.DeltaTime * stars[i].Rate;
-				stars[i].Position += stars[i].speed * Engine.DeltaTime / 60 * 100;
+				stars[i].Position += stars[i].Speed * Engine.DeltaTime / 60 * 100;
 			}
 		}
 	}
@@ -126,7 +126,7 @@ public class FemtoStars : Backdrop
 		for (int i = 0; i < num; i++)
 		{
 			List<MTexture> list = textures[stars[i].TextureSet];
-			int num2 = (int)((Math.Sin(stars[i].Timer) + 1.0) / 2.0 * (double)list.Count);
+			int num2 = (int)((Math.Sin(stars[i].Timer) + 1.0) / 2.0 * list.Count);
 			num2 %= list.Count;
 			Vector2 position = stars[i].Position;
 			MTexture mTexture = list[num2];
@@ -143,12 +143,12 @@ public class FemtoStars : Backdrop
 				position.X += 320f + extraLoopBorderX;
 			}
 			Vector2 epic = new Vector2();
-			epic = Vector2.Normalize(stars[i].speed);
-			for (int j = 0; j < stars[i].colors.Length; j++)
+			epic = Vector2.Normalize(stars[i].Speed);
+			for (int j = 0; j < stars[i].Colors.Length; j++)
 			{
-				mTexture.Draw(position - new Vector2(extraLoopBorderX / 2, extraLoopBorderY / 2) - epic * (j * separation), center, stars[i].colors[j] * FadeAlphaMultiplier);
+				mTexture.Draw(position - new Vector2(extraLoopBorderX / 2, extraLoopBorderY / 2) - epic * (j * separation), center, stars[i].Colors[j] * FadeAlphaMultiplier);
 			}
-			mTexture.Draw(position - new Vector2(extraLoopBorderX / 2, extraLoopBorderY / 2), center, stars[i].mainColor * FadeAlphaMultiplier);
+			mTexture.Draw(position - new Vector2(extraLoopBorderX / 2, extraLoopBorderY / 2), center, stars[i].MainColor * FadeAlphaMultiplier);
 		}
 	}
 }

@@ -3,15 +3,8 @@ using System.Collections;
 using Celeste;
 using Monocle;
 
-public class _100ridgs_walkie : CutsceneEntity
+public class _100ridgs_walkie(Player player) : CutsceneEntity
 {
-	private Player player;
-
-	public _100ridgs_walkie(Player player)
-	{
-		this.player = player;
-	}
-
 	public override void OnBegin(Level level)
 	{
 		Add(new Coroutine(Cutscene()));

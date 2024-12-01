@@ -6,14 +6,14 @@
 		using Microsoft.Xna.Framework;
 		using Monocle;
 
-public class CS_FunnyAsHell : CutsceneEntity
+public class CsFunnyAsHell : CutsceneEntity
 	{
-		private Player player;
+		private readonly Player player;
 
 		private NPC granny;
 
 		private float fade;
-		private Coroutine grannyWalk4head;
+		private Coroutine grannyWalk4Head;
 		private Coroutine grannyWalk;
 
 		private EventInstance snapshot;
@@ -22,15 +22,15 @@ public class CS_FunnyAsHell : CutsceneEntity
 
 		private float width = 0;
 
-		private float darkness = 0;
+		private readonly float darkness = 0;
 
 		private bool spawned = false;
 
-		public CS_FunnyAsHell(Player player)
+		public CsFunnyAsHell(Player player)
 			: base(fadeInOnSkip: false)
 		{
 			this.player = player;
-			base.Depth = -1000000;
+			Depth = -1000000;
 		}
 
 		public override void Awake(Scene scene)
@@ -86,7 +86,7 @@ public class CS_FunnyAsHell : CutsceneEntity
 			Input.Rumble(RumbleStrength.Light, RumbleLength.Short);
 			Audio.Play("event:/new_content/char/madeline/screenentry_gran_landing", player.Position);
 			yield return 0.5;
-			Add(new Coroutine(CutsceneEntity.CameraTo(new Vector2(level.Camera.X + 32, level.Camera.Y), 2f, Ease.CubeInOut, 0.1f)));
+			Add(new Coroutine(CameraTo(new Vector2(level.Camera.X + 32, level.Camera.Y), 2f, Ease.CubeInOut, 0.1f)));
 			yield return 2.1f;
 			SceneAs<Level>().Shake(0.5f);
 			player.DummyWalkToExact((int)player.Position.X - 8, walkBackwards: true, 0.4f);
@@ -114,8 +114,8 @@ public class CS_FunnyAsHell : CutsceneEntity
 						}
 					};
 					Scene.Add(granny);
-					grannyWalk4head = new Coroutine(granny.MoveTo(granny.Position + new Vector2(-1, 0)));
-					Add(grannyWalk4head);
+					grannyWalk4Head = new Coroutine(granny.MoveTo(granny.Position + new Vector2(-1, 0)));
+					Add(grannyWalk4Head);
 					grannyWalk = new Coroutine(granny.MoveTo(player.Position + new Vector2(16f, 0f)));
 				}
 				yield return null;
@@ -226,8 +226,8 @@ public class CS_FunnyAsHell : CutsceneEntity
 				Draw.Rect(Level.Camera.X - 1f, Level.Camera.Y - 1f, 322f, 182f, Color.White * fade);
 			}
 			Draw.Rect(Level.Camera.X - 1f, Level.Camera.Y - 1f, 322f, 182f, Color.Black * darkness);
-			Draw.Rect(player.X + 80 - (width / 2), Level.Camera.Y - 3f, (float)Math.Max(width, 0), 185f, Color.White * 0.5f);
-			Draw.Rect(player.X + 80 - ((width - 4) / 2), Level.Camera.Y - 3f, (float)Math.Max(width-4, 0), 185f, Color.White * 0.5f);
-			Draw.Rect(player.X + 80 - ((width - 8) / 2), Level.Camera.Y - 3f, (float)Math.Max(width-8, 0), 185f, Color.White * 0.5f);
+			Draw.Rect(player.X + 80 - (width / 2), Level.Camera.Y - 3f, Math.Max(width, 0), 185f, Color.White * 0.5f);
+			Draw.Rect(player.X + 80 - ((width - 4) / 2), Level.Camera.Y - 3f, Math.Max(width-4, 0), 185f, Color.White * 0.5f);
+			Draw.Rect(player.X + 80 - ((width - 8) / 2), Level.Camera.Y - 3f, Math.Max(width-8, 0), 185f, Color.White * 0.5f);
 		}
 	}

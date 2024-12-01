@@ -9,14 +9,14 @@ using Monocle;
 
 public class BackdropWindController : Entity
 {
-	public string affectedTag;
-	public float strengthMultiplier = 1f;
+	public readonly string AffectedTag;
+	public readonly float StrengthMultiplier;
 	private Level level;
 
 	public BackdropWindController(EntityData data, Vector2 offset) : base(data.Position + offset)
 	{
-        affectedTag = data.Attr("tag", "windbackdrop");
-		strengthMultiplier = data.Float("strengthMultiplier", 1f);
+        AffectedTag = data.Attr("tag", "windbackdrop");
+		StrengthMultiplier = data.Float("strengthMultiplier", 1f);
 	}
 	public override void Awake(Scene scene)
 	{
@@ -25,9 +25,9 @@ public class BackdropWindController : Entity
 	}
 	public override void Update()
 	{
-		foreach (Backdrop item in level.Background.GetEach<Backdrop>(affectedTag))
+		foreach (Backdrop item in level.Background.GetEach<Backdrop>(AffectedTag))
 		{
-			item.Position += level.Wind * strengthMultiplier * Engine.DeltaTime / 10;
+			item.Position += level.Wind * StrengthMultiplier * Engine.DeltaTime / 10;
 		}
 	}
 }

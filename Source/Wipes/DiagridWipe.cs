@@ -18,17 +18,17 @@ public class DiagridWipe : ScreenWipe
 
     private readonly int circleRows = 8;
 
-    private const int circleSegments = 4;
+    private const int CircleSegments = 4;
 
-    private const float circleFillSpeed = 800f;
+    private const float CircleFillSpeed = 800f;
 
-    private static Circle[] circles;
+    private static Circle[] _circles;
 
-    private static VertexPositionColor[] vertexBuffer;
+    private static VertexPositionColor[] _vertexBuffer;
 
     private bool hasDrawn;
 
-    public static BlendState SubtractBlendmode = new BlendState
+    public static readonly BlendState SubtractBlendmode = new BlendState
     {
         ColorSourceBlend = Blend.One,
         ColorDestinationBlend = Blend.One,
@@ -41,17 +41,11 @@ public class DiagridWipe : ScreenWipe
     public DiagridWipe(Scene scene, bool wipeIn, Action onComplete = null)
         : base(scene, wipeIn, onComplete)
     {
-        if (vertexBuffer == null)
+        _vertexBuffer ??= new VertexPositionColor[(circleColumns + 2) * (circleRows + 2) * CircleSegments * 3];
+        _circles ??= new Circle[(circleColumns + 2) * (circleRows + 2)];
+        for (int i = 0; i < _vertexBuffer.Length; i++)
         {
-            vertexBuffer = new VertexPositionColor[(circleColumns + 2) * (circleRows + 2) * circleSegments * 3];
-        }
-        if (circles == null)
-        {
-            circles = new Circle[(circleColumns + 2) * (circleRows + 2)];
-        }
-        for (int i = 0; i < vertexBuffer.Length; i++)
-        {
-            vertexBuffer[i].Color = (WipeIn ? Color.Black : Color.White);
+            _vertexBuffer[i].Color = (WipeIn ? Color.Black : Color.White);
         }
         int num = 1920 / circleColumns;
         int num2 = 1080 / circleRows;
@@ -60,9 +54,9 @@ public class DiagridWipe : ScreenWipe
         {
             for (int k = 0; k < circleRows + 2; k++)
             {
-                circles[num3].Position = new Vector2(((float)(j - 1) + 0.2f) * (float)num, ((float)(k - 1) + 0.2f) * (float)num2);
-                circles[num3].Delay = (float)(j + (circleRows - k)) * 0.012f;
-                circles[num3].Radius = 0f;
+                _circles[num3].Position = new Vector2((j - 1 + 0.2f) * num, (k - 1 + 0.2f) * num2);
+                _circles[num3].Delay = (j + (circleRows - k)) * 0.012f;
+                _circles[num3].Radius = 0f;
                 num3++;
             }
         }
@@ -74,31 +68,30 @@ public class DiagridWipe : ScreenWipe
         Engine.Graphics.GraphicsDevice.Clear(WipeIn ? Color.White : Color.Black);
 
         int num = 0;
-        for (int i = 0; i < circles.Length; i++)
+        foreach (var circle in _circles)
         {
-            Circle circle = circles[i];
             Vector2 vector = new Vector2(1f, 0f);
-            for (float num2 = 0f; num2 < circleSegments; num2 += 1f)
+            for (float num2 = 0f; num2 < CircleSegments; num2 += 1f)
             {
-                Vector2 vector2 = Calc.AngleToVector((num2 + 1f) / circleSegments * ((float)Math.PI * 2f), 1f);
-                vertexBuffer[num++].Position = new Vector3(circle.Position, 0f);
-                vertexBuffer[num++].Position = new Vector3(circle.Position + vector * circle.Radius, 0f);
-                vertexBuffer[num++].Position = new Vector3(circle.Position + vector2 * circle.Radius, 0f);
+                Vector2 vector2 = Calc.AngleToVector((num2 + 1f) / CircleSegments * ((float)Math.PI * 2f), 1f);
+                _vertexBuffer[num++].Position = new Vector3(circle.Position, 0f);
+                _vertexBuffer[num++].Position = new Vector3(circle.Position + vector * circle.Radius, 0f);
+                _vertexBuffer[num++].Position = new Vector3(circle.Position + vector2 * circle.Radius, 0f);
                 vector = vector2;
             }
         }
-        GFX.DrawVertices(Matrix.Identity, vertexBuffer, vertexBuffer.Length);
+        GFX.DrawVertices(Matrix.Identity, _vertexBuffer, _vertexBuffer.Length);
     }
 
     public override void Update(Scene scene)
     {
         base.Update(scene);
-        for (int i = 0; i < circles.Length; i++)
+        for (int i = 0; i < _circles.Length; i++)
         {
-            circles[i].Delay -= Engine.DeltaTime;
-            if (circles[i].Delay <= 0f)
+            _circles[i].Delay -= Engine.DeltaTime;
+            if (_circles[i].Delay <= 0f)
             {
-                circles[i].Radius += Engine.DeltaTime * (circleFillSpeed);
+                _circles[i].Radius += Engine.DeltaTime * (CircleFillSpeed);
             }
         }
     }

@@ -7,7 +7,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 
-public class HotelBreakout_Memo : CutsceneEntity
+public class HotelBreakoutMemo(Player player, int totind, float txtoffset, float txtsize)
+	: CutsceneEntity
 {
 	private class MemoPage : Entity
 	{
@@ -17,21 +18,21 @@ public class HotelBreakout_Memo : CutsceneEntity
 
 		public float TextOffsetOnPaper = 0;
 
-		private Atlas atlas;
+		private readonly Atlas atlas;
 
-		private MTexture paper;
+		private readonly MTexture paper;
 
-		private MTexture title;
+		private readonly MTexture title;
 
 		private VirtualRenderTarget target;
 
-		private FancyText.Text text;
+		private readonly FancyText.Text text;
 
-		private float textDownscale = 1f;
+		private readonly float textDownscale = 1f;
 
 		private float alpha = 1f;
 
-		private float scale = 1f;
+		private readonly float scale = 1f;
 
 		private float rotation;
 
@@ -39,11 +40,11 @@ public class HotelBreakout_Memo : CutsceneEntity
 
 		private bool easingOut;
 
-		public int totalIDS;
+		public int TotalIds;
 
 		public MemoPage()
 		{
-			base.Tag = Tags.HUD;
+			Tag = Tags.HUD;
 			atlas = Atlas.FromAtlas(Path.Combine("Graphics", "Atlases", "Memo"), Atlas.AtlasDataFormat.Packer);
 			paper = GFX.Gui["alicequasar/nyansword/memo"];
 			if (atlas.Has("title_" + Settings.Instance.Language))
@@ -54,7 +55,7 @@ public class HotelBreakout_Memo : CutsceneEntity
 			{
 				title = GFX.Gui["alicequasar/nyansword/title_english"];
 			}
-			float num = (float)paper.Width * 1.5f - 120f;
+			float num = paper.Width * 1.5f - 120f;
 			text = FancyText.Parse(Dialog.Get("alicequasar_nyansword_memo"), (int)(num / TextScale), -1, 1f, Color.Black * 0.6f);
 			float num2 = text.WidestLine() * TextScale;
 			if (num2 > num)
@@ -86,13 +87,13 @@ public class HotelBreakout_Memo : CutsceneEntity
 			int index = 0;
 			while (!Input.MenuCancel.Pressed)
 			{
-				float num = start - (float)(index * (1200 / totalIDS));
+				float num = start - index * (1200 / TotalIds);
 				Position.Y += (num - Position.Y) * (1f - (float)Math.Pow(0.0099999997764825821, Engine.DeltaTime));
 				if (Input.MenuUp.Pressed && index > 0)
 				{
 					index--;
 				}
-				else if (index < totalIDS - 1)
+				else if (index < TotalIds - 1)
 				{
 					if ((Input.MenuDown.Pressed && !Input.MenuDown.Repeating) || Input.MenuConfirm.Pressed)
 					{
@@ -130,14 +131,14 @@ public class HotelBreakout_Memo : CutsceneEntity
 		{
 			if (target == null)
 			{
-				target = VirtualContent.CreateRenderTarget("oshiro-memo", (int)((float)paper.Width * 1.5f), (int)((float)paper.Height * 1.5f));
+				target = VirtualContent.CreateRenderTarget("oshiro-memo", (int)(paper.Width * 1.5f), (int)(paper.Height * 1.5f));
 			}
 			Engine.Graphics.GraphicsDevice.SetRenderTarget(target);
 			Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
 			Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 			paper.Draw(Vector2.Zero, Vector2.Zero, Color.White, 1.5f);
 			title.Draw(Vector2.Zero, Vector2.Zero, Color.White, 1.5f);
-			text.Draw(new Vector2((float)paper.Width * 1.5f / 2f, 210f + TextOffsetOnPaper), new Vector2(0.5f, 0f), Vector2.One * TextScale * textDownscale, 1f);
+			text.Draw(new Vector2(paper.Width * 1.5f / 2f, 210f + TextOffsetOnPaper), new Vector2(0.5f, 0f), Vector2.One * TextScale * textDownscale, 1f);
 			Draw.SpriteBatch.End();
 		}
 
@@ -171,7 +172,7 @@ public class HotelBreakout_Memo : CutsceneEntity
 
 		public override void Render()
 		{
-			Level level = base.Scene as Level;
+			Level level = Scene as Level;
 			if ((level == null || (!level.FrozenOrPaused && level.RetryPlayerCorpse == null && !level.SkippingCutscene)) && target != null)
 			{
 				Draw.SpriteBatch.Draw((RenderTarget2D)target, Position, target.Bounds, Color.White * alpha, rotation, new Vector2(target.Width, 0f) / 2f, scale, SpriteEffects.None, 0f);
@@ -185,22 +186,7 @@ public class HotelBreakout_Memo : CutsceneEntity
 
 	private const string ReadOnceFlag = "memo_read";
 
-	private Player player;
-
 	private MemoPage memo;
-
-	private int totalIndexes;
-
-	private float TextOffsetOnPaper_;
-	private float TextScale_;
-
-	public HotelBreakout_Memo(Player player, int totind, float txtoffset, float txtsize)
-	{
-		this.player = player;
-		totalIndexes = totind;
-		TextOffsetOnPaper_ = txtoffset;
-		TextScale_ = txtsize;
-	}
 
 	public override void OnBegin(Level level)
 	{
@@ -217,12 +203,12 @@ public class HotelBreakout_Memo : CutsceneEntity
 			yield return 0.1f;
 		}
 		memo = new MemoPage();
-		memo.totalIDS = totalIndexes;
-		memo.TextScale = TextScale_;
-		memo.TextOffsetOnPaper = TextOffsetOnPaper_;
-		if (totalIndexes == 0)
+		memo.TotalIds = totind;
+		memo.TextScale = txtsize;
+		memo.TextOffsetOnPaper = txtoffset;
+		if (totind == 0)
         {
-			base.Scene.Add(new MiniTextbox("FEMTOHELPER_ERRORHANDLER_INDEX_ZERO"));
+			Scene.Add(new MiniTextbox("FEMTOHELPER_ERRORHANDLER_INDEX_ZERO"));
 		} 
 		else
 		{

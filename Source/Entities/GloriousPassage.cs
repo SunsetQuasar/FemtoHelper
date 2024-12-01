@@ -9,89 +9,87 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/GloriousPassage")]
 public class GloriousPassage : Entity
 {
-    public string flag;
-    public int lastinput;
-    public string roomName;
-    public bool yeahforsure;
-    public Player player;
-    public string audio;
-    public MTexture closed;
-    public MTexture open;
-    public bool simple;
-    public bool done;
-    public bool faceLeft;
-    public int spawnIndex;
-    public bool interactToOpen;
-    public bool keepDashes;
-    public bool SameRoom;
+    public readonly string Flag;
+    public int Lastinput;
+    public readonly string RoomName;
+    public bool Yeahforsure;
+    public Player Player;
+    public readonly string Audio;
+    public readonly MTexture Closed;
+    public readonly MTexture Open;
+    public readonly bool Simple;
+    public bool Done;
+    public readonly bool FaceLeft;
+    public readonly int SpawnIndex;
+    public readonly bool InteractToOpen;
+    public readonly bool KeepDashes;
+    public readonly bool SameRoom;
     public bool CarryHoldablesOver;
-    public TalkComponent talk;
+    public readonly TalkComponent Talk;
     public GloriousPassage(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Collider = new Hitbox(data.Width, data.Height);
-        Add(new PlayerCollider(onPlayer, Collider));
+        Add(new PlayerCollider(OnPlayer, Collider));
 
         Depth = data.Int("depth", 120);
-        flag = data.Attr("flag", "door_check");
-        roomName = data.Attr("roomName", "").Trim();
-        audio = data.Attr("audio", "event:/FemtoHelper/smw_door_opens");
-        closed = GFX.Game[data.Attr("closedPath", "objects/FemtoHelper/SMWDoor/closed")];
-        open = GFX.Game[data.Attr("openPath", "objects/FemtoHelper/SMWDoor/open")];
-        simple = data.Bool("simpleTrigger", false);
-        faceLeft = data.Bool("faceLeft", false);
-        spawnIndex = data.Int("spawnpointIndex");
-        interactToOpen = !data.Bool("pressUpToOpen", false);
-        keepDashes = data.Bool("keepDashes", false);
+        Flag = data.Attr("flag", "door_check");
+        RoomName = data.Attr("roomName", "").Trim();
+        Audio = data.Attr("audio", "event:/FemtoHelper/smw_door_opens");
+        Closed = GFX.Game[data.Attr("closedPath", "objects/FemtoHelper/SMWDoor/closed")];
+        Open = GFX.Game[data.Attr("openPath", "objects/FemtoHelper/SMWDoor/open")];
+        Simple = data.Bool("simpleTrigger", false);
+        FaceLeft = data.Bool("faceLeft", false);
+        SpawnIndex = data.Int("spawnpointIndex");
+        InteractToOpen = !data.Bool("pressUpToOpen", false);
+        KeepDashes = data.Bool("keepDashes", false);
         SameRoom = data.Bool("sameRoom", false);
         CarryHoldablesOver = data.Bool("carryHoldablesOver", false);
-        if (interactToOpen)
-        {
-            Add(talk = new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width / 2, -8), onTalk));
-            talk.PlayerMustBeFacing = false;
-        }
+        if (!InteractToOpen) return;
+        Add(Talk = new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width / 2, -8), OnTalk));
+        Talk.PlayerMustBeFacing = false;
     }
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        (Scene as Level).Session.SetFlag(flag, false);
+        (Scene as Level).Session.SetFlag(Flag, false);
     }
 
-    public void onTalk(Player player)
+    public void OnTalk(Player player)
     {
-        if (!done)
+        if (!Done)
         {
             Add(new Coroutine(Routine(player)));
         }
     }
 
-    public void onPlayer(Player player)
+    public void OnPlayer(Player player)
     {
-        if (simple && !done)
+        if (Simple && !Done)
         {
             Add(new Coroutine(Routine(player)));
             return;
         }
-        yeahforsure = true;
-        this.player = player;
+        Yeahforsure = true;
+        Player = player;
     }
 
     public override void Update()
     {
         base.Update();
-        if (yeahforsure && !done && !interactToOpen && player != null && player.OnGround() && Input.MoveY.Value == -1 && lastinput != -1)
+        if (Yeahforsure && !Done && !InteractToOpen && Player != null && Player.OnGround() && Input.MoveY.Value == -1 && Lastinput != -1)
         {
-            Add(new Coroutine(Routine(player)));
+            Add(new Coroutine(Routine(Player)));
         }
-        lastinput = Input.MoveY.Value;
-        yeahforsure = false;
+        Lastinput = Input.MoveY.Value;
+        Yeahforsure = false;
     }
 
     public IEnumerator Routine(Player player)
     {
-        if(!string.IsNullOrEmpty(flag))(Scene as Level).Session.SetFlag(flag, true);
-        if (!string.IsNullOrEmpty(audio)) Audio.Play(audio);
-        done = true;
+        if(!string.IsNullOrEmpty(Flag))(Scene as Level).Session.SetFlag(Flag, true);
+        if (!string.IsNullOrEmpty(Audio)) global::Celeste.Audio.Play(Audio);
+        Done = true;
         Level level = Scene as Level;
         player.StateMachine.state = Player.StDummy;
 
@@ -100,171 +98,165 @@ public class GloriousPassage : Entity
             Engine.TimeRate = Calc.Approach(Engine.TimeRate, 0, Engine.RawDeltaTime * 4);
             yield return null;
         }
-        level.DoScreenWipe(wipeIn: false, new Action(tp));
+        level.DoScreenWipe(wipeIn: false, new Action(Tp));
 
         yield return null;
     }
 
-    public void tp()
+    public void Tp()
     {
-        if (player != null && Scene != null)
+        if (Player == null || Scene == null) return;
+        Engine.TimeRate = 1;
+        Level level = Scene as Level;
+        level.Session.SetFlag("transition_assist", false);
+        Player player = Scene.Tracker.GetEntity<Player>();
+        level.OnEndOfFrame += () =>
         {
-            Engine.TimeRate = 1;
-            Level level = Scene as Level;
-            level.Session.SetFlag("transition_assist", false);
-            Player player = Scene.Tracker.GetEntity<Player>();
-            level.OnEndOfFrame += () =>
+            Vector2 pos, playerDelta;
+            Leader leader;
+
+            if(level.Session.Level == RoomName && SameRoom)
             {
-                Vector2 pos, playerDelta;
-                Leader leader;
+                level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(SpawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
 
-                if(level.Session.Level == roomName && SameRoom)
-                {
-                    level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(spawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
-
-                    pos = player.Position;
-
-                    player.Position = level.Session.RespawnPoint.Value;
-
-                    playerDelta = player.Position - pos;
-
-                    player.Hair.MoveHairBy(playerDelta);
-
-                    if (!keepDashes) player.Dashes = player.MaxDashes;
-
-                    leader = player.Get<Leader>();
-
-                    foreach (Follower item2 in leader.Followers.Where((Follower f) => f.Entity != null))
-                    {
-                        item2.Entity.Position += playerDelta;
-                    }
-
-                    for (int i = 0; i < leader.PastPoints.Count; i++)
-                    {
-                        leader.PastPoints[i] += playerDelta;
-                    }
-
-                    if(player.Holding != null)
-                    {
-                        player.Holding.Entity.Position += playerDelta;
-                    }
-
-                    level.Session.SetFlag("transition_assist", true);
-                    player.Speed = Vector2.Zero;
-                    level.DoScreenWipe(wipeIn: true);
-                    level.Add(new DelayedCameraRequest(player, false));
-
-                    done = false;
-                    return;
-                }
-
-                new Vector2(level.LevelOffset.X + (float)level.Bounds.Width - player.X, player.Y - level.LevelOffset.Y);
-                Vector2 levelOffset = level.LevelOffset;
-                Vector2 vector2 = level.Camera.Position - level.LevelOffset;
-                Facings facing = faceLeft ? Facings.Left : Facings.Right;
                 pos = player.Position;
-
-                leader = player.Get<Leader>();
-                foreach (Follower item in leader.Followers.Where((Follower f) => f.Entity != null))
-                {
-                    item.Entity.AddTag(Tags.Global);
-                    level.Session.DoNotLoad.Add(item.ParentEntityID);
-                }
-
-                Holdable hold = player.Holding;
-
-                if (hold != null)
-                {
-                    hold.Entity.AddTag(Tags.Global);
-                }
-
-                Vector2 cameraDelta = level.Camera.Position - pos;
-                int dashes = player.Dashes;
-                level.Remove(player);
-                level.UnloadLevel();
-                bool error = true;
-                LevelData newLevelData = level.Session.MapData.Get(roomName);
-                if (newLevelData != null)
-                {
-                    level.Session.Level = roomName;
-                    error = false;
-                }
-                else
-                {
-                    foreach (LevelData d in level.Session.MapData.Levels)
-                    {
-                        if (d.Name.Trim() == roomName) {
-                            level.Session.Level = d.Name;
-                            error = false;
-                        }
-                    }
-                }
-
-
-                level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(spawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
-
-                level.Session.FirstLevel = false;
-                level.Add(player);
-                level.LoadLevel(Player.IntroTypes.Transition);
-
 
                 player.Position = level.Session.RespawnPoint.Value;
 
                 playerDelta = player.Position - pos;
-                level.Camera.Position = player.Position + cameraDelta;
-                if (level.Camera.Position.X < level.Bounds.Left) level.Camera.Position = new Vector2(level.Bounds.Left, level.Camera.Position.Y);
-                if (level.Camera.Position.Y < level.Bounds.Top) level.Camera.Position = new Vector2(level.Camera.Position.X, level.Bounds.Top);
-                if (level.Camera.Position.X + 320 > level.Bounds.Right) level.Camera.Position = new Vector2(level.Bounds.Right, level.Camera.Position.Y);
-                if (level.Camera.Position.Y + 180 > level.Bounds.Bottom) level.Camera.Position = new Vector2(level.Camera.Position.X, level.Bounds.Bottom);
 
-                player.Facing = facing;
-                player.Hair.MoveHairBy(level.LevelOffset - levelOffset);
-                /*
+                player.Hair.MoveHairBy(playerDelta);
+
+                if (!KeepDashes) player.Dashes = player.MaxDashes;
+
+                leader = player.Get<Leader>();
+
+                foreach (Follower item2 in leader.Followers.Where(f => f.Entity != null))
+                {
+                    item2.Entity.Position += playerDelta;
+                }
+
+                for (int i = 0; i < leader.PastPoints.Count; i++)
+                {
+                    leader.PastPoints[i] += playerDelta;
+                }
+
+                if(player.Holding != null)
+                {
+                    player.Holding.Entity.Position += playerDelta;
+                }
+
+                level.Session.SetFlag("transition_assist", true);
+                player.Speed = Vector2.Zero;
+                level.DoScreenWipe(wipeIn: true);
+                level.Add(new DelayedCameraRequest(player, false));
+
+                Done = false;
+                return;
+            }
+
+            //what is this?
+            //new Vector2(level.LevelOffset.X + level.Bounds.Width - player.X, player.Y - level.LevelOffset.Y);
+            Vector2 levelOffset = level.LevelOffset;
+            Vector2 vector2 = level.Camera.Position - level.LevelOffset;
+            Facings facing = FaceLeft ? Facings.Left : Facings.Right;
+            pos = player.Position;
+
+            leader = player.Get<Leader>();
+            foreach (Follower item in leader.Followers.Where(f => f.Entity != null))
+            {
+                item.Entity.AddTag(Tags.Global);
+                level.Session.DoNotLoad.Add(item.ParentEntityID);
+            }
+
+            Holdable hold = player.Holding;
+
+            hold?.Entity.AddTag(Tags.Global);
+
+            Vector2 cameraDelta = level.Camera.Position - pos;
+            int dashes = player.Dashes;
+            level.Remove(player);
+            level.UnloadLevel();
+            bool error = true;
+            LevelData newLevelData = level.Session.MapData.Get(RoomName);
+            if (newLevelData != null)
+            {
+                level.Session.Level = RoomName;
+                error = false;
+            }
+            else
+            {
+                foreach (var d in level.Session.MapData.Levels.Where(d => d.Name.Trim() == RoomName))
+                {
+                    level.Session.Level = d.Name;
+                    error = false;
+                }
+            }
+
+
+            level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(SpawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
+
+            level.Session.FirstLevel = false;
+            level.Add(player);
+            level.LoadLevel(Player.IntroTypes.Transition);
+
+
+            player.Position = level.Session.RespawnPoint.Value;
+
+            playerDelta = player.Position - pos;
+            level.Camera.Position = player.Position + cameraDelta;
+            if (level.Camera.Position.X < level.Bounds.Left) level.Camera.Position = new Vector2(level.Bounds.Left, level.Camera.Position.Y);
+            if (level.Camera.Position.Y < level.Bounds.Top) level.Camera.Position = new Vector2(level.Camera.Position.X, level.Bounds.Top);
+            if (level.Camera.Position.X + 320 > level.Bounds.Right) level.Camera.Position = new Vector2(level.Bounds.Right, level.Camera.Position.Y);
+            if (level.Camera.Position.Y + 180 > level.Bounds.Bottom) level.Camera.Position = new Vector2(level.Camera.Position.X, level.Bounds.Bottom);
+
+            player.Facing = facing;
+            player.Hair.MoveHairBy(level.LevelOffset - levelOffset);
+            /*
                 if (level.Wipe != null)
                 {
                     level.Wipe.Cancel();
                 }
                 */
-                player.Visible = true;
-                player.Sprite.Visible = true;
-                if(keepDashes) player.Dashes = dashes;
+            player.Visible = true;
+            player.Sprite.Visible = true;
+            if(KeepDashes) player.Dashes = dashes;
 
-                if(hold != null)
-                {
-                    hold.Entity.Position += playerDelta;
-                    hold.Entity.RemoveTag(Tags.Global);
-                }
+            if(hold != null)
+            {
+                hold.Entity.Position += playerDelta;
+                hold.Entity.RemoveTag(Tags.Global);
+            }
 
-                foreach (Follower item2 in leader.Followers.Where((Follower f) => f.Entity != null))
-                {
-                    item2.Entity.Position += playerDelta;
-                    item2.Entity.RemoveTag(Tags.Global);
-                    level.Session.DoNotLoad.Remove(item2.ParentEntityID);
-                }
-                for (int i = 0; i < leader.PastPoints.Count; i++)
-                {
-                    leader.PastPoints[i] += playerDelta;
-                }
-                leader.TransferFollowers();
-                level.Session.SetFlag("transition_assist", true);
-                player.Speed = Vector2.Zero;
-                level.DoScreenWipe(wipeIn: true);
-                level.Add(new DelayedCameraRequest(player, error));
-            };
-        }
+            foreach (Follower item2 in leader.Followers.Where(f => f.Entity != null))
+            {
+                item2.Entity.Position += playerDelta;
+                item2.Entity.RemoveTag(Tags.Global);
+                level.Session.DoNotLoad.Remove(item2.ParentEntityID);
+            }
+            for (int i = 0; i < leader.PastPoints.Count; i++)
+            {
+                leader.PastPoints[i] += playerDelta;
+            }
+            leader.TransferFollowers();
+            level.Session.SetFlag("transition_assist", true);
+            player.Speed = Vector2.Zero;
+            level.DoScreenWipe(wipeIn: true);
+            level.Add(new DelayedCameraRequest(player, error));
+        };
     }
 
     public override void Render()
     {
         base.Render();
-        if (simple) return;
-        if (done)
+        if (Simple) return;
+        if (Done)
         {
-            open.DrawCentered(Center);
+            Open.DrawCentered(Center);
         }
         else
         {
-            closed.DrawCentered(Center);
+            Closed.DrawCentered(Center);
         }
     }
 }

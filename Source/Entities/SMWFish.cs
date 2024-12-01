@@ -8,77 +8,75 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 public class TrollFish : Entity
 {
     public Vector2 Speed;
-    public float gravity;
-    public string flag;
+    public float Gravity;
+    public readonly string Flag;
 
-    public Collider bonkbox;
+    public readonly Collider Bonkbox;
 
-    public bool blurp;
+    public readonly bool Blurp;
 
-    public bool big;
+    public readonly bool Big;
 
-    public bool neededflagplus => (Scene as Level).FancyCheckFlag(flag);
+    public bool Neededflagplus => (Scene as Level).FancyCheckFlag(Flag);
 
-    public bool dead;
+    public bool Dead;
 
-    public float deadspin;
+    public float Deadspin;
 
-    public MTexture texture;
-    public MTexture textureslice;
-    public float texturetimer;
-    public int textureframes;
+    public readonly MTexture Texture;
+    public MTexture Textureslice;
+    public float Texturetimer;
+    public readonly int Textureframes;
 
-    public string audioPath;
+    public readonly string AudioPath;
 
-    public bool faceRight;
+    public readonly bool FaceRight;
 
     public TrollFish(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Depth = data.Int("depth", -120000);
         Speed = new Vector2(data.Float("initialSpeedX", 0), data.Float("initialSpeedY", 0));
-        gravity = data.Float("gravity", 260);
-        flag = data.Attr("activationFlag", "fish_flag");
-        blurp = data.Bool("blurp", false);
-        big = data.Bool("big", false);
-        faceRight = data.Bool("faceRight", false);
+        Gravity = data.Float("gravity", 260);
+        Flag = data.Attr("activationFlag", "fish_flag");
+        Blurp = data.Bool("blurp", false);
+        Big = data.Bool("big", false);
+        FaceRight = data.Bool("faceRight", false);
 
-        texture = blurp ? GFX.Game[data.Attr("path", "objects/FemtoHelper/SMWFish/normal/") + "blurp"] : GFX.Game[data.Attr("path", "objects/FemtoHelper/SMWFish/normal/") + "cheep"];
+        Texture = Blurp ? GFX.Game[data.Attr("path", "objects/FemtoHelper/SMWFish/normal/") + "blurp"] : GFX.Game[data.Attr("path", "objects/FemtoHelper/SMWFish/normal/") + "cheep"];
 
-        textureslice = texture.GetSubtexture(0, 0, texture.Height, texture.Height);
+        Textureslice = Texture.GetSubtexture(0, 0, Texture.Height, Texture.Height);
 
-        textureframes = texture.Width / texture.Height;
+        Textureframes = Texture.Width / Texture.Height;
 
-        Collider = new Circle(big ? 16 : 8, 0, 0);
-        if (!blurp) bonkbox = new Hitbox(big ? 32 : 16, (big ? 8 : 4), (big ? -16 : -8), (big ? -16 : -8));
+        Collider = new Circle(Big ? 16 : 8, 0, 0);
+        if (!Blurp) Bonkbox = new Hitbox(Big ? 32 : 16, (Big ? 8 : 4), (Big ? -16 : -8), (Big ? -16 : -8));
 
-        audioPath = data.Attr("audioPath", "event:/FemtoHelper/");
+        AudioPath = data.Attr("audioPath", "event:/FemtoHelper/");
 
-        if (!blurp) Add(new PlayerCollider(bonk, bonkbox));
-        if (!data.Bool("harmless", false)) Add(new PlayerCollider(someoneGotTrolled, Collider));
+        if (!Blurp) Add(new PlayerCollider(Bonk, Bonkbox));
+        if (!data.Bool("harmless", false)) Add(new PlayerCollider(SomeoneGotTrolled, Collider));
     }
 
-    private void someoneGotTrolled(Player player)
+    private void SomeoneGotTrolled(Player player)
     {
         player.Die(Vector2.Normalize(player.Position - Position), false, true);
-        if (SaveData.Instance.Assists.Invincible)
-        {
-            dead = true;
-            Speed = (Vector2.Normalize(Position - player.Position) * 63.24f);
-            gravity = 100;
-            Collidable = false;
-            Audio.Play(audioPath + "enemykill");
-        }
+        if (!SaveData.Instance.Assists.Invincible) return;
+        Dead = true;
+        Speed = (Vector2.Normalize(Position - player.Position) * 63.24f);
+        Gravity = 100;
+        Collidable = false;
+        Audio.Play(AudioPath + "enemykill");
 
     }
 
-    private void bonk(Player player)
+    private void Bonk(Player player)
     {
-        Audio.Play(audioPath + "enemykill");
+        Audio.Play(AudioPath + "enemykill");
         Celeste.Freeze(0.1f);
-        player.Bounce(base.Top + 2f);
-        dead = true;
+        player.Bounce(Top + 2f);
+        Dead = true;
         Speed = (Vector2.Normalize(Position - player.Position) * 63.24f);
-        gravity = 180;
+        Gravity = 180;
         Collidable = false;
     }
 
@@ -91,25 +89,25 @@ public class TrollFish : Entity
             RemoveSelf();
         }
 
-        if (!neededflagplus)
+        if (!Neededflagplus)
         {
             Collidable = Visible = false;
         }
         else
         {
 
-            if (!Collidable && !dead) Collidable = true;
+            if (!Collidable && !Dead) Collidable = true;
             if (!Visible) Visible = true;
             Position += Speed * Engine.DeltaTime;
-            Speed.Y += gravity * Engine.DeltaTime;
+            Speed.Y += Gravity * Engine.DeltaTime;
 
-            if (dead)
+            if (Dead)
             {
-                deadspin += Engine.DeltaTime * 16;
+                Deadspin += Engine.DeltaTime * 16;
             }
             else
             {
-                texturetimer += Engine.DeltaTime * 7;
+                Texturetimer += Engine.DeltaTime * 7;
             }
         }
     }
@@ -117,11 +115,11 @@ public class TrollFish : Entity
     public override void Render()
     {
         base.Render();
-        textureslice = texture.GetSubtexture(((int)Math.Floor(texturetimer) % textureframes) * texture.Height, 0, texture.Height, texture.Height);
+        Textureslice = Texture.GetSubtexture(((int)Math.Floor(Texturetimer) % Textureframes) * Texture.Height, 0, Texture.Height, Texture.Height);
 
-        Vector2 size = faceRight ? new Vector2(-1, 1) : Vector2.One;
-        if (big) size *= 2;
+        Vector2 size = FaceRight ? new Vector2(-1, 1) : Vector2.One;
+        if (Big) size *= 2;
 
-        textureslice.DrawCentered(Position, dead ? Calc.HexToColor("CCCCCC") : Color.White, size, deadspin);
+        Textureslice.DrawCentered(Position, Dead ? Calc.HexToColor("CCCCCC") : Color.White, size, Deadspin);
     }
 }
