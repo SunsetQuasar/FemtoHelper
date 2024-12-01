@@ -3,14 +3,11 @@ using Celeste.Mod;
 
 [CustomEntity("FemtoHelper/RemixMakerFinishCondition")]
 
-public class RemixMakerFinishCondition : Entity
+public class RemixMakerFinishCondition(EntityData data, Vector2 offset) : Entity(data.Position + offset)
 {
 	private Level level;
 	private int amount;
 
-	public RemixMakerFinishCondition(EntityData data, Vector2 offset) : base(data.Position + offset)
-	{
-	}
 	public override void Awake(Scene scene)
 	{
 		base.Awake(scene);
@@ -139,12 +136,7 @@ public class RemixMakerFinishCondition : Entity
 		{
 			level.Session.SetFlag("remixcompletefull");
 		}
-	}
-	public override void Update()
-	{
-		if (Calc.Random.NextFloat() > 0.99f)
-		{
-			Logger.Log("balls", "this is the balls entity transmitting signals through all celeste consoles");
-		}
+
+		RemoveSelf();
 	}
 }

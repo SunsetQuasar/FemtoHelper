@@ -13,23 +13,23 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/EvilTheoCrystal")]
 public class EvilTheoCrystal : Actor
 {
-    public static ParticleType P_Impact = new ParticleType(TheoCrystal.P_Impact);
+    public static readonly ParticleType PImpact = new ParticleType(TheoCrystal.P_Impact);
 
     public Vector2 Speed;
 
     public bool OnPedestal;
 
-    public Holdable Hold;
+    public readonly Holdable Hold;
 
-    private Sprite sprite;
+    private readonly Sprite sprite;
 
     private bool dead;
 
-    private Level Level;
+    private Level level;
 
-    private Collision onCollideH;
+    private readonly Collision onCollideH;
 
-    private Collision onCollideV;
+    private readonly Collision onCollideV;
 
     private float noGravityTimer;
 
@@ -49,15 +49,15 @@ public class EvilTheoCrystal : Actor
 
     private float tutorialTimer;
 
-    public VertexLight light;
+    public readonly VertexLight Light;
 
     public EvilTheoCrystal(Vector2 position)
         : base(position)
     {
         previousPosition = position;
-        base.Depth = 100;
-        base.Collider = new Hitbox(8f, 10f, -4f, -10f);
-        Add(sprite = FemtoModule.femtoSpriteBank.Create("theo_crystal_evil"));
+        Depth = 100;
+        Collider = new Hitbox(8f, 10f, -4f, -10f);
+        Add(sprite = FemtoModule.FemtoSpriteBank.Create("theo_crystal_evil"));
         sprite.Scale.X = -1f;
         Add(Hold = new Holdable());
         Hold.PickupCollider = new Hitbox(16f, 22f, -8f, -16f);
@@ -74,7 +74,7 @@ public class EvilTheoCrystal : Actor
         onCollideH = OnCollideH;
         onCollideV = OnCollideV;
         LiftSpeedGraceTime = 0.1f;
-        Add(light = new VertexLight(base.Collider.Center, Color.Red, 1f, 32, 64));
+        Add(Light = new VertexLight(Collider.Center, Color.Red, 1f, 32, 64));
         Add(new MirrorReflection());
     }
 
@@ -86,12 +86,12 @@ public class EvilTheoCrystal : Actor
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        Level = SceneAs<Level>();
-        if (Level.Session.Level == "e-00")
+        level = SceneAs<Level>();
+        if (level.Session.Level == "e-00")
         {
             tutorialGui = new BirdTutorialGui(this, new Vector2(0f, -24f), Dialog.Clean("tutorial_carry"), Dialog.Clean("tutorial_hold"), BirdTutorialGui.ButtonPrompt.Grab);
             tutorialGui.Open = false;
-            base.Scene.Add(tutorialGui);
+            Scene.Add(tutorialGui);
         }
     }
 
@@ -110,10 +110,10 @@ public class EvilTheoCrystal : Actor
         hardVerticalHitSoundCooldown -= Engine.DeltaTime;
         if (OnPedestal)
         {
-            base.Depth = 8999;
+            Depth = 8999;
             return;
         }
-        base.Depth = 100;
+        Depth = 100;
         if (Hold.IsHeld)
         {
             prevLiftSpeed = Vector2.Zero;
@@ -124,7 +124,7 @@ public class EvilTheoCrystal : Actor
             {
                 float target = ((!OnGround(Position + Vector2.UnitX * 3f)) ? 20f : (OnGround(Position - Vector2.UnitX * 3f) ? 0f : (-20f)));
                 Speed.X = Calc.Approach(Speed.X, target, 800f * Engine.DeltaTime);
-                Vector2 liftSpeed = base.LiftSpeed;
+                Vector2 liftSpeed = LiftSpeed;
                 if (liftSpeed == Vector2.Zero && prevLiftSpeed != Vector2.Zero)
                 {
                     Speed = prevLiftSpeed;
@@ -170,44 +170,44 @@ public class EvilTheoCrystal : Actor
                     Speed.Y = Calc.Approach(Speed.Y, 200f, num * Engine.DeltaTime);
                 }
             }
-            previousPosition = base.ExactPosition;
+            previousPosition = ExactPosition;
             MoveH(Speed.X * Engine.DeltaTime, onCollideH);
             MoveV(Speed.Y * Engine.DeltaTime, onCollideV);
-            if (base.Right > (float)Level.Bounds.Right)
+            if (Right > level.Bounds.Right)
             {
-                base.Right = (float)Level.Bounds.Right;
+                Right = level.Bounds.Right;
                 Speed.X *= -0.4f;
             }
-            else if (base.Left < (float)Level.Bounds.Left)
+            else if (Left < level.Bounds.Left)
             {
-                base.Left = Level.Bounds.Left;
+                Left = level.Bounds.Left;
                 Speed.X *= -0.4f;
             }
-            else if (base.Top < (float)(Level.Bounds.Top - 4))
+            else if (Top < level.Bounds.Top - 4)
             {
-                base.Top = Level.Bounds.Top + 4;
+                Top = level.Bounds.Top + 4;
                 Speed.Y = 0f;
             }
-            else if (base.Bottom > (float)Level.Bounds.Bottom && SaveData.Instance.Assists.Invincible)
+            else if (Bottom > level.Bounds.Bottom && SaveData.Instance.Assists.Invincible)
             {
-                base.Bottom = Level.Bounds.Bottom;
+                Bottom = level.Bounds.Bottom;
                 Speed.Y = -300f;
                 Audio.Play("event:/game/general/assist_screenbottom", Position);
             }
-            else if (base.Top > (float)Level.Bounds.Bottom)
+            else if (Top > level.Bounds.Bottom)
             {
                 Die();
             }
-            if (base.X < (float)(Level.Bounds.Left + 10))
+            if (X < level.Bounds.Left + 10)
             {
                 MoveH(32f * Engine.DeltaTime);
             }
-            Player entity = base.Scene.Tracker.GetEntity<Player>();
+            Player entity = Scene.Tracker.GetEntity<Player>();
             TempleGate templeGate = CollideFirst<TempleGate>();
             if (templeGate != null && entity != null)
             {
                 templeGate.Collidable = false;
-                MoveH((float)(Math.Sign(entity.X - base.X) * 32) * Engine.DeltaTime);
+                MoveH(Math.Sign(entity.X - X) * 32 * Engine.DeltaTime);
                 templeGate.Collidable = true;
             }
         }
@@ -221,7 +221,7 @@ public class EvilTheoCrystal : Actor
         }
         if (tutorialGui != null)
         {
-            if (!OnPedestal && !Hold.IsHeld && OnGround() && Level.Session.GetFlag("foundTheoInCrystal"))
+            if (!OnPedestal && !Hold.IsHeld && OnGround() && level.Session.GetFlag("foundTheoInCrystal"))
             {
                 tutorialTimer += Engine.DeltaTime;
             }
@@ -243,35 +243,31 @@ public class EvilTheoCrystal : Actor
         for (float p = 0f; p < 1f; p += Engine.DeltaTime)
         {
             Position += Speed * (1f - p) * Engine.DeltaTime;
-            Level.ZoomFocusPoint = base.TopCenter - Level.Camera.Position;
+            level.ZoomFocusPoint = TopCenter - level.Camera.Position;
             light.Alpha = p;
             bloom.Alpha = p;
             yield return null;
         }
         yield return 0.5f;
-        Level.Shake();
+        level.Shake();
         sprite.Play("shatter");
         yield return 1f;
-        Level.Shake();
+        level.Shake();
     }
 
     public void ExplodeLaunch(Vector2 from)
     {
-        if (!Hold.IsHeld)
-        {
-            Speed = (base.Center - from).SafeNormalize(120f);
-            SlashFx.Burst(base.Center, Speed.Angle());
-        }
+        if (Hold.IsHeld) return;
+        Speed = (Center - from).SafeNormalize(120f);
+        SlashFx.Burst(Center, Speed.Angle());
     }
 
     public void Swat(HoldableCollider hc, int dir)
     {
-        if (Hold.IsHeld && hitSeeker == null)
-        {
-            swatTimer = 0.1f;
-            hitSeeker = hc;
-            Hold.Holder.Swat(dir);
-        }
+        if (!Hold.IsHeld || hitSeeker != null) return;
+        swatTimer = 0.1f;
+        hitSeeker = hc;
+        Hold.Holder.Swat(dir);
     }
 
     public bool Dangerous(HoldableCollider holdableCollider)
@@ -287,61 +283,56 @@ public class EvilTheoCrystal : Actor
     {
         if (!Hold.IsHeld)
         {
-            Speed = (base.Center - seeker.Center).SafeNormalize(120f);
+            Speed = (Center - seeker.Center).SafeNormalize(120f);
         }
         Audio.Play("event:/game/05_mirror_temple/crystaltheo_hit_side", Position);
     }
 
     public void HitSpinner(Entity spinner)
     {
-        if (!Hold.IsHeld && Speed.Length() < 0.01f && base.LiftSpeed.Length() < 0.01f && (previousPosition - base.ExactPosition).Length() < 0.01f && OnGround())
+        if (Hold.IsHeld || !(Speed.Length() < 0.01f) || !(LiftSpeed.Length() < 0.01f) ||
+            !((previousPosition - ExactPosition).Length() < 0.01f) || !OnGround()) return;
+        int num = Math.Sign(X - spinner.X);
+        if (num == 0)
         {
-            int num = Math.Sign(base.X - spinner.X);
-            if (num == 0)
-            {
-                num = 1;
-            }
-            Speed.X = (float)num * 120f;
-            Speed.Y = -30f;
+            num = 1;
         }
+        Speed.X = num * 120f;
+        Speed.Y = -30f;
     }
 
     public bool HitSpring(Spring spring)
     {
-        if (!Hold.IsHeld)
+        if (Hold.IsHeld) return false;
+        switch (spring.Orientation)
         {
-            if (spring.Orientation == Spring.Orientations.Floor && Speed.Y >= 0f)
-            {
+            case Spring.Orientations.Floor when Speed.Y >= 0f:
                 Speed.X *= 0.5f;
                 Speed.Y = -160f;
                 noGravityTimer = 0.15f;
                 return true;
-            }
-            if (spring.Orientation == Spring.Orientations.WallLeft && Speed.X <= 0f)
-            {
+            case Spring.Orientations.WallLeft when Speed.X <= 0f:
                 MoveTowardsY(spring.CenterY + 5f, 4f);
                 Speed.X = 220f;
                 Speed.Y = -80f;
                 noGravityTimer = 0.1f;
                 return true;
-            }
-            if (spring.Orientation == Spring.Orientations.WallRight && Speed.X >= 0f)
-            {
+            case Spring.Orientations.WallRight when Speed.X >= 0f:
                 MoveTowardsY(spring.CenterY + 5f, 4f);
                 Speed.X = -220f;
                 Speed.Y = -80f;
                 noGravityTimer = 0.1f;
                 return true;
-            }
+            default:
+                return false;
         }
-        return false;
     }
 
     private void OnCollideH(CollisionData data)
     {
-        if (data.Hit is DashSwitch)
+        if (data.Hit is DashSwitch @switch)
         {
-            (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitX * Math.Sign(Speed.X));
+            @switch.OnDashCollide(null, Vector2.UnitX * Math.Sign(Speed.X));
         }
         Audio.Play("event:/game/05_mirror_temple/crystaltheo_hit_side", Position);
         if (Math.Abs(Speed.X) > 100f)
@@ -353,9 +344,9 @@ public class EvilTheoCrystal : Actor
 
     private void OnCollideV(CollisionData data)
     {
-        if (data.Hit is DashSwitch)
+        if (data.Hit is DashSwitch @switch)
         {
-            (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitY * Math.Sign(Speed.Y));
+            @switch.OnDashCollide(null, Vector2.UnitY * Math.Sign(Speed.Y));
         }
         if (Speed.Y > 0f)
         {
@@ -373,7 +364,7 @@ public class EvilTheoCrystal : Actor
         {
             ImpactParticles(data.Direction);
         }
-        if (Speed.Y > 140f && !(data.Hit is SwapBlock) && !(data.Hit is DashSwitch))
+        if (Speed.Y > 140f && data.Hit is not SwapBlock && data.Hit is not DashSwitch)
         {
             Speed.Y *= -0.6f;
         }
@@ -388,40 +379,42 @@ public class EvilTheoCrystal : Actor
         float direction;
         Vector2 position;
         Vector2 positionRange;
-        if (dir.X > 0f)
+        switch (dir.X)
         {
-            direction = (float)Math.PI;
-            position = new Vector2(base.Right, base.Y - 4f);
-            positionRange = Vector2.UnitY * 6f;
+            case > 0f:
+                direction = (float)Math.PI;
+                position = new Vector2(Right, Y - 4f);
+                positionRange = Vector2.UnitY * 6f;
+                break;
+            case < 0f:
+                direction = 0f;
+                position = new Vector2(Left, Y - 4f);
+                positionRange = Vector2.UnitY * 6f;
+                break;
+            default:
+            {
+                if (dir.Y > 0f)
+                {
+                    direction = -(float)Math.PI / 2f;
+                    position = new Vector2(X, Bottom);
+                    positionRange = Vector2.UnitX * 6f;
+                }
+                else
+                {
+                    direction = (float)Math.PI / 2f;
+                    position = new Vector2(X, Top);
+                    positionRange = Vector2.UnitX * 6f;
+                }
+
+                break;
+            }
         }
-        else if (dir.X < 0f)
-        {
-            direction = 0f;
-            position = new Vector2(base.Left, base.Y - 4f);
-            positionRange = Vector2.UnitY * 6f;
-        }
-        else if (dir.Y > 0f)
-        {
-            direction = -(float)Math.PI / 2f;
-            position = new Vector2(base.X, base.Bottom);
-            positionRange = Vector2.UnitX * 6f;
-        }
-        else
-        {
-            direction = (float)Math.PI / 2f;
-            position = new Vector2(base.X, base.Top);
-            positionRange = Vector2.UnitX * 6f;
-        }
-        Level.Particles.Emit(P_Impact, 12, position, positionRange, direction);
+        level.Particles.Emit(PImpact, 12, position, positionRange, direction);
     }
 
     public override bool IsRiding(Solid solid)
     {
-        if (Speed.Y == 0f)
-        {
-            return base.IsRiding(solid);
-        }
-        return false;
+        return Speed.Y == 0f && base.IsRiding(solid);
     }
 
     public override void OnSquish(CollisionData data)
@@ -478,41 +471,39 @@ public class EvilTheoCrystal : Actor
 
     public void Die()
     {
-        if (!dead)
-        {
-            Add(new Coroutine(DimLights()));
-            if (Hold.IsHeld) Hold.Release(Vector2.Zero);
-            Hold.cannotHoldTimer = 9999f;
-            dead = true;
-            Audio.Play("event:/char/madeline/death", Position);
-            Add(new DeathEffect(Calc.HexToColor("FF7063"), base.Center - Position));
-            sprite.Visible = false;
-            base.Depth = -1000000;
-            AllowPushing = false;
-        }
+        if (dead) return;
+        Add(new Coroutine(DimLights()));
+        if (Hold.IsHeld) Hold.Release(Vector2.Zero);
+        Hold.cannotHoldTimer = 9999f;
+        dead = true;
+        Audio.Play("event:/char/madeline/death", Position);
+        Add(new DeathEffect(Calc.HexToColor("FF7063"), Center - Position));
+        sprite.Visible = false;
+        Depth = -1000000;
+        AllowPushing = false;
     }
 
     public IEnumerator DimLights()
     {
         for(float p = 0; p < 1; p += Engine.DeltaTime)
         {
-            light.Alpha = Ease.SineInOut(1 - p);
-            light.HandleGraphicsReset();
+            Light.Alpha = Ease.SineInOut(1 - p);
+            Light.HandleGraphicsReset();
             yield return null;
         }
     }
 
     public static void Load()
     {
-        IL.Celeste.Player.Throw += PlayerThrowNoKB;
+        IL.Celeste.Player.Throw += PlayerThrowNoKb;
     }
 
     public static void Unload()
     {
-        IL.Celeste.Player.Throw -= PlayerThrowNoKB;
+        IL.Celeste.Player.Throw -= PlayerThrowNoKb;
     }
 
-    private static void PlayerThrowNoKB(ILContext il)
+    private static void PlayerThrowNoKb(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
 
@@ -524,15 +515,15 @@ public class EvilTheoCrystal : Actor
 
                 cursor.Emit(OpCodes.Ldarg_0);
 
-                cursor.EmitDelegate(upthrowcheck);
+                cursor.EmitDelegate(Upthrowcheck);
                 cursor.Emit(OpCodes.Mul);
             }
 
         }
     }
-    private static float upthrowcheck(Player player)
+    private static float Upthrowcheck(Player player)
     {
-        if (player != null && player.Holding != null && player.Holding.Entity is EvilTheoCrystal && Input.Aim.Value.Y < 0f)
+        if (player is { Holding.Entity: EvilTheoCrystal } && Input.Aim.Value.Y < 0f)
         {
             return 0f;
         }

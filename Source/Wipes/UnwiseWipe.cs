@@ -2,14 +2,9 @@
 using System;
 
 namespace Celeste.Mod.FemtoHelper.Wipes;
-public class UnwiseWipe : ScreenWipe
+public class UnwiseWipe(Scene scene, bool wipeIn, Action onComplete = null) : ScreenWipe(scene, wipeIn, onComplete)
 {
-    MTexture texture;
-
-    public UnwiseWipe(Scene scene, bool wipeIn, Action onComplete = null) : base(scene, wipeIn, onComplete)
-    {
-        texture = GFX.Gui["FemtoHelper/wipes/unwise"];
-    }
+    private readonly MTexture texture = GFX.Gui["FemtoHelper/wipes/unwise"];
 
     public override void Render(Scene scene)
     {

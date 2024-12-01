@@ -5,14 +5,14 @@ namespace Celeste.Mod.FemtoHelper.Code.Entities;
 [CustomEntity("FemtoHelper/EHIController")]
 public class ExtraHoldableInteractionsController : Entity
 {
-    public bool InteractWithDashBlocks;
-    public bool InteractWithCrushBlocks;
-    public bool InteractWithBreakerBoxes;
-    public bool InteractWithCoreSwitch;
-    public bool InteractWithMoveBlocks;
-    public bool InteractWithSwapBlocks;
-    public bool InteractWithFallingBlocksH;
-    public bool InteractWithFallingBlocksV;
+    public readonly bool InteractWithDashBlocks;
+    public readonly bool InteractWithCrushBlocks;
+    public readonly bool InteractWithBreakerBoxes;
+    public readonly bool InteractWithCoreSwitch;
+    public readonly bool InteractWithMoveBlocks;
+    public readonly bool InteractWithSwapBlocks;
+    public readonly bool InteractWithFallingBlocksH;
+    public readonly bool InteractWithFallingBlocksV;
 
     public Vector2 DashBlockSpeedReq;
     public Vector2 CrushBlockSpeedReq;

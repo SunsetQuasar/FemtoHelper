@@ -4,16 +4,10 @@ using Celeste;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-public class sebsCutscene : CutsceneEntity
+public class SebsCutscene(Player player) : CutsceneEntity
 {
-	private Player player;
 	private float fade = 1f;
 
-
-	public sebsCutscene(Player player)
-	{
-		this.player = player;
-	}
 
 	public override void OnBegin(Level level)
 	{
@@ -36,7 +30,7 @@ public class sebsCutscene : CutsceneEntity
 		player.Visible = false;
 		Add(new Coroutine(FadeIn(3f)));
 		yield return 3.4f;
-		yield return Textbox.Say("sebsdialogue", enterTunnel);
+		yield return Textbox.Say("sebsdialogue", EnterTunnel);
 		Add(new Coroutine(FadeOut(2f)));
 		yield return 2f;
 		EndCutscene(Level);
@@ -53,7 +47,7 @@ public class sebsCutscene : CutsceneEntity
 		player.Dashes = 1;
 
 		level.ResetZoom();
-		endTele();
+		EndTele();
 		player.StateMachine.State = 0;
 	}
 	private IEnumerator FadeIn(float duration)
@@ -74,14 +68,14 @@ public class sebsCutscene : CutsceneEntity
 			yield return null;
 		}
 	}
-	private IEnumerator visibilityHack()
+	private IEnumerator VisibilityHack()
 	{
 		Player player2 = player;
 		player2.Visible = false;
 		yield return 1f;
 		player2.Visible = true;
 	}
-	private IEnumerator enterTunnel()
+	private IEnumerator EnterTunnel()
 	{
 		Level level = Scene as Level;
 			foreach (Backdrop item in level.Background.GetEach<Backdrop>("sebtunnel_start"))
@@ -99,24 +93,24 @@ public class sebsCutscene : CutsceneEntity
 			yield return 3.3f;
 			level.Session.SetFlag("sebscutscene_tunnel");
 	}
-	private static System.Reflection.FieldInfo level_flash = typeof(Level).GetField("flash", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-	private static System.Reflection.FieldInfo level_flashColor = typeof(Level).GetField("flashColor", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+	private static readonly System.Reflection.FieldInfo LevelFlash = typeof(Level).GetField("flash", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+	private static readonly System.Reflection.FieldInfo LevelFlashColor = typeof(Level).GetField("flashColor", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 	public override void Render()
 	{
 		Level level = Scene as Level;
 		
-		level_flashColor.SetValue(level, Color.Black);
-		level_flash.SetValue(level, fade);
+		LevelFlashColor.SetValue(level, Color.Black);
+		LevelFlash.SetValue(level, fade);
 		//level.Render();
 	}
 
-	public void endTele()
+	public void EndTele()
     {
 		Level level = Scene as Level;
 		Player player2 = player;
 		level.OnEndOfFrame += delegate
 		{
-			new Vector2(level.LevelOffset.X + (float)level.Bounds.Width - player2.X, player2.Y - level.LevelOffset.Y);
+			new Vector2(level.LevelOffset.X + level.Bounds.Width - player2.X, player2.Y - level.LevelOffset.Y);
 			Vector2 levelOffset = level.LevelOffset;
 			Facings facing = player2.Facing;
 			level.Remove(player2);
@@ -133,7 +127,7 @@ public class sebsCutscene : CutsceneEntity
 			player2.Hair.MoveHairBy(level.LevelOffset - levelOffset);
 			level.Wipe = new SpotlightWipe(level, wipeIn: true);
 			level.LoadLevel(Player.IntroTypes.WalkInRight);
-			Add(new Coroutine(visibilityHack()));
+			Add(new Coroutine(VisibilityHack()));
 		};
 	}
 }

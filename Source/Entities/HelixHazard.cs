@@ -6,29 +6,29 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/HelixHazard")]
 public class HelixHazard : Entity
 {
-    public float aWidth;
-    public float aHeight;
+    public readonly float AWidth;
+    public readonly float AHeight;
 
-    public float phase;
+    public float Phase;
     public HelixHazard(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
-        aWidth = data.Width;
-        aHeight = data.Height;
+        AWidth = data.Width;
+        AHeight = data.Height;
 
-        Collider[] cols = new Collider[(int)(aWidth / 4)];
+        Collider[] cols = new Collider[(int)(AWidth / 4)];
 
         for(int i = 0; i < cols.Length; i++)
         {
             cols[i] = new Hitbox(4, 4, i * 4, 0);
         }
 
-        base.Collider = new ColliderList(cols);
+        Collider = new ColliderList(cols);
 
-        Add(new PlayerCollider(onPlayer, Collider));
+        Add(new PlayerCollider(OnPlayer, Collider));
 
-        phase = Calc.Random.Range(0, (float)Math.PI * 2);
+        Phase = Calc.Random.Range(0, (float)Math.PI * 2);
     }
-    public void onPlayer(Player player)
+    public void OnPlayer(Player player)
     {
         player.Die(Vector2.Normalize(player.Position - Position));
     }
@@ -36,17 +36,17 @@ public class HelixHazard : Entity
     public override void Update()
     {
         base.Update();
-        for(int i = 0; i < (int)(aWidth / 4); i++)
+        for(int i = 0; i < (int)(AWidth / 4); i++)
         {
-            (Collider as ColliderList).colliders[i].Position.Y = -2 + ((float)Math.Sin(phase + ((float)i)) * (aHeight / 2)) + (aHeight / 2);
+            (Collider as ColliderList).colliders[i].Position.Y = -2 + ((float)Math.Sin(Phase + i) * (AHeight / 2)) + (AHeight / 2);
         }
     }
     public override void Render()
     {
-        phase += Engine.DeltaTime;
+        Phase += Engine.DeltaTime;
 
         base.Render();
-        for (int i = 0; i < (int)(aWidth / 4); i++)
+        for (int i = 0; i < (int)(AWidth / 4); i++)
         {
             Draw.Rect(Position + (Collider as ColliderList).colliders[i].Position, 4, 4, Color.White);
         }

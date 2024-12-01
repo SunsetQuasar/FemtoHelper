@@ -18,10 +18,7 @@ public static class LevelExtensions
         {
             return !level.Session.GetFlag(flag.Substring(1));
         }
-        else
-        {
-            return string.IsNullOrEmpty(flag) || level.Session.GetFlag(flag);
-        }
+        return string.IsNullOrEmpty(flag) || level.Session.GetFlag(flag);
     }
 }
 

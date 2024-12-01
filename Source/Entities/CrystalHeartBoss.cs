@@ -15,7 +15,7 @@ public class CrystalHeartBoss : FinalBoss
 		this.dialog = dialog;
 		this.startHit = startHit;
 		Add(light = new VertexLight(Color.White, 1f, 32, 64));
-		base.Collider = (circle = new Circle(8f, 0f, -4f));
+		Collider = (circle = new Circle(8f, 0f, -4f));
 		Add(new PlayerCollider(OnPlayer));
 		this.nodes = new Vector2[nodes.Length + 1];
 		this.nodes[0] = Position;
@@ -37,7 +37,7 @@ public class CrystalHeartBoss : FinalBoss
 	public CrystalHeartBoss(EntityData e, Vector2 offset) : base (e, offset)
 	{
 		orig_ctor(e, offset);
-        GetType().GetField("canChangeMusic", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(this, e.Bool("canChangeMusic", defaultValue: true));
+        GetType().GetField("canChangeMusic", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(this, e.Bool("canChangeMusic", defaultValue: true));
 	}
 
     public static void Load()
@@ -60,34 +60,34 @@ public class CrystalHeartBoss : FinalBoss
         if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdstr("badeline_boss")))
         {
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate(ChangeFBSpriteRef);
+            cursor.EmitDelegate(ChangeFbSpriteRef);
         }
     }
 
-    private static string ChangeFBSpriteRef(string orig, FinalBoss b)
+    private static string ChangeFbSpriteRef(string orig, FinalBoss b)
     {
         if (b is CrystalHeartBoss) return "badeline_boss_femtohelper"; //Change this value as needed
         return orig;
     }
 
-    private static void CrystalHeartBossExtraEffects(On.Celeste.FinalBoss.orig_OnPlayer orig, FinalBoss CustomFinalBoss, Player player)
+    private static void CrystalHeartBossExtraEffects(On.Celeste.FinalBoss.orig_OnPlayer orig, FinalBoss customFinalBoss, Player player)
     {
-        orig(CustomFinalBoss, player);
-        if (CustomFinalBoss is CrystalHeartBoss)
+        orig(customFinalBoss, player);
+        if (customFinalBoss is CrystalHeartBoss)
         {
             for (int i = 0; i < 4; i++)
             {
-                (player.Scene as Level).Add(new AbsorbOrb(CustomFinalBoss.Position, CustomFinalBoss));
-                Audio.Play("event:/FemtoHelper/boss_spikes_burst_quiet", CustomFinalBoss.Position);
+                (player.Scene as Level)?.Add(new AbsorbOrb(customFinalBoss.Position, customFinalBoss));
+                Audio.Play("event:/FemtoHelper/boss_spikes_burst_quiet", customFinalBoss.Position);
             }
         }
     }
-    private static void CrystalHeartBossShrinkHitbox(On.Celeste.FinalBoss.orig_Added orig, FinalBoss CustomFinalBoss, Scene scene)
+    private static void CrystalHeartBossShrinkHitbox(On.Celeste.FinalBoss.orig_Added orig, FinalBoss customFinalBoss, Scene scene)
     {
-        orig(CustomFinalBoss, scene);
-        if (CustomFinalBoss is CrystalHeartBoss)
+        orig(customFinalBoss, scene);
+        if (customFinalBoss is CrystalHeartBoss)
         {
-            CustomFinalBoss.Collider.Width /= 1.5f;
+            customFinalBoss.Collider.Width /= 1.5f;
         }
     }
 }

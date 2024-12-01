@@ -3,47 +3,47 @@
 namespace Celeste.Mod.FemtoHelper.Entities; 
 
 [CustomEntity("FemtoHelper/GDDashOrb")]
-public class GDDashOrb : Entity
+public class GdDashOrb : Entity
 {
     public const float Tau = (float)Math.PI * 2f;
 
-    public float angle;
-    public float speed;
-    public bool lastJump;
-    public bool yeahforsure;
-    public bool lastforsure;
+    public readonly float Angle;
+    public readonly float Speed;
+    public bool LastJump;
+    public bool Yeahforsure;
+    public bool Lastforsure;
 
-    public Player player;
+    public Player Player;
 
-    public float cooldown;
+    public float Cooldown;
 
-    public MTexture orb;
-    public MTexture ring;
+    public readonly MTexture OrbTexture;
+    public readonly MTexture RingTexture;
 
-    public float pulsepercent;
+    public float PulsePercent;
 
-    public float timer;
+    public float Timer;
 
-    public bool pink;
+    public readonly bool Pink;
 
-    public bool additive;
-    public Color baseColor => pink ? Calc.HexToColor("FF30F0") : Calc.HexToColor("20EE30");
+    public readonly bool Additive;
+    public Color BaseColor => Pink ? Calc.HexToColor("FF30F0") : Calc.HexToColor("20EE30");
 
-    public ParticleType DashParticles;
-    public ParticleType IdleParticles;
+    public readonly ParticleType DashParticles;
+    public readonly ParticleType IdleParticles;
     public class Ring : Entity
     {
-        public float life;
+        public float Life;
         public Ring(Vector2 pos) : base(pos)
         {
-            life = 1f;
+            Life = 1f;
             Depth = 2000;
         }
         public override void Update()
         {
             base.Update();
-            life = Math.Max(life - Engine.DeltaTime * 5, 0);
-            if (life <= 0)
+            Life = Math.Max(Life - Engine.DeltaTime * 5, 0);
+            if (Life <= 0)
             {
                 RemoveSelf();
             }
@@ -52,32 +52,32 @@ public class GDDashOrb : Entity
         public override void Render()
         {
             base.Render();
-            Color col = Color.White * Ease.SineIn(life);
+            Color col = Color.White * Ease.SineIn(Life);
             col.A = 0;
-            Draw.Circle(Position, Ease.SineOut(1 - life) * 20, col, 4);
+            Draw.Circle(Position, Ease.SineOut(1 - Life) * 20, col, 4);
         }
     }
 
-    public GDDashOrb(EntityData data, Vector2 offset) : base(data.Position + offset)
+    public GdDashOrb(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Collider = new Hitbox(20, 20, -10, -10);
         Add(new PlayerCollider(OnPlayer));
 
-        angle = data.Float("angle", 0f) * Calc.DegToRad;
-        speed = data.Float("speed", 240f);
-        pink = data.Bool("pink", false);
-        additive = data.Bool("additive", false);
+        Angle = data.Float("angle", 0f) * Calc.DegToRad;
+        Speed = data.Float("speed", 240f);
+        Pink = data.Bool("pink", false);
+        Additive = data.Bool("additive", false);
 
-        orb = GFX.Game["objects/FemtoHelper/gddashorb/dashorb"];
-        ring = GFX.Game["objects/FemtoHelper/gddashorb/dashring"];
-        Add(new VertexLight(baseColor, 0.9f, 20, 40));
+        OrbTexture = GFX.Game["objects/FemtoHelper/gddashorb/dashorb"];
+        RingTexture = GFX.Game["objects/FemtoHelper/gddashorb/dashring"];
+        Add(new VertexLight(BaseColor, 0.9f, 20, 40));
         Add(new BloomPoint(0.4f, 18));
-        timer = Calc.Random.NextFloat(Tau);
+        Timer = Calc.Random.NextFloat(Tau);
 
         DashParticles = new ParticleType
         {
             Size = 1f,
-            Color = baseColor,
+            Color = BaseColor,
             Color2 = Color.White,
             ColorMode = ParticleType.ColorModes.Blink,
             DirectionRange = (float)Math.PI / 50f,
@@ -103,75 +103,75 @@ public class GDDashOrb : Entity
 
         if (Scene.OnInterval(0.2f))
         {
-            (Scene as Level).Particles.Emit(IdleParticles, Position + new Vector2(Calc.Random.Range(-12, 12), Calc.Random.Range(-12, 12)), Calc.Random.NextFloat(Tau));
+            (Scene as Level)?.Particles.Emit(IdleParticles, Position + new Vector2(Calc.Random.Range(-12, 12), Calc.Random.Range(-12, 12)), Calc.Random.NextFloat(Tau));
         }
 
-        pulsepercent = Math.Max(pulsepercent - Engine.DeltaTime * 1f, 0);
+        PulsePercent = Math.Max(PulsePercent - Engine.DeltaTime * 1f, 0);
 
-        timer += Engine.DeltaTime;
+        Timer += Engine.DeltaTime;
 
-        if (yeahforsure && !lastforsure)
+        if (Yeahforsure && !Lastforsure)
         {
-            Scene.Add(new Ring(Position + (Vector2.UnitY * (float)Math.Sin(timer * 2) * 2)));
+            Scene.Add(new Ring(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2)));
         }
-        cooldown = Math.Max(cooldown - Engine.DeltaTime, 0);
-        if (yeahforsure && (cooldown <= 0))
+        Cooldown = Math.Max(Cooldown - Engine.DeltaTime, 0);
+        if (Yeahforsure && (Cooldown <= 0))
         {
-            if (Input.Jump.Pressed && !lastJump)
+            if (Input.Jump.Pressed && !LastJump)
             {
                 Input.Jump.ConsumeBuffer();
-                if (player != null)
+                if (Player != null)
                 {
-                    if (player.StateMachine.state == Player.StDash) player.StateMachine.ForceState(Player.StNormal);
-                    player.launched = true;
-                    Vector2 spd = Calc.AngleToVector(angle, speed);
+                    if (Player.StateMachine.state == Player.StDash) Player.StateMachine.ForceState(Player.StNormal);
+                    Player.launched = true;
+                    Vector2 spd = Calc.AngleToVector(Angle, Speed);
                     if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1) spd.Y *= -1;
-                    if (additive)
+                    if (Additive)
                     {
-                        player.Speed += spd;
-                    } else player.Speed = spd;
-                    if (pink) FemtoModule.GravityHelperSupport.SetPlayerGravity?.Invoke(2, 1);
-                    ExtraTrailManager t = player.Get<ExtraTrailManager>();
+                        Player.Speed += spd;
+                    } else Player.Speed = spd;
+                    if (Pink) FemtoModule.GravityHelperSupport.SetPlayerGravity?.Invoke(2, 1);
+                    ExtraTrailManager t = Player.Get<ExtraTrailManager>();
                     if(t != null)
                     {
-                        t.dashTrailTimer = 0.07f;
-                        t.dashTrailCounter = 4;
+                        t.DashTrailTimer = 0.07f;
+                        t.DashTrailCounter = 4;
                     }
-                    player.CreateTrail();
+                    Player.CreateTrail();
                 }
-                (Scene as Level).DirectionalShake(Calc.AngleToVector(angle, 1));
+                (Scene as Level)?.DirectionalShake(Calc.AngleToVector(Angle, 1));
                 Audio.Play("event:/char/madeline/jump_superslide", Position).setPitch(0.85f + Calc.Random.Range(-0.1f, 0.1f));
                 Audio.Play("event:/char/madeline/dash_pink_right", Position).setPitch(1.2f + Calc.Random.Range(-0.1f, 0.1f));
-                pulsepercent = 1f;
-                cooldown = 0.1f;
+                PulsePercent = 1f;
+                Cooldown = 0.1f;
                 for (float i = Tau / 12f; i < Tau; i += Tau / 12f)
                 {
-                    (Scene as Level).Particles.Emit(DashParticles, Position, i);
+                    (Scene as Level)?.Particles.Emit(DashParticles, Position, i);
                 }
             }
         }
-        lastJump = Input.Jump.Pressed;
-        lastforsure = yeahforsure;
-        yeahforsure = false;
+        LastJump = Input.Jump.Pressed;
+        Lastforsure = Yeahforsure;
+        Yeahforsure = false;
     }
 
     public void OnPlayer(Player player)
     {
-        if (!player.OnGround()) yeahforsure = true;
-        this.player = player;
+        if (!player.OnGround()) Yeahforsure = true;
+        Player = player;
     }
 
     public override void Render()
     {
         base.Render();
 
-        Color col = Color.Lerp(baseColor, Color.White, Ease.QuintIn(pulsepercent));
+        Color col = Color.Lerp(BaseColor, Color.White, Ease.QuintIn(PulsePercent));
 
-        ring.DrawOutlineCentered(Position + (Vector2.UnitY * (float)Math.Sin(timer * 2) * 2), Color.Black, 1 + (Ease.QuintIn(pulsepercent) * 0.6f));
-        orb.DrawOutlineCentered(Position + (Vector2.UnitY * (float)Math.Sin(timer * 2) * 2), Color.Black, 1 + (Ease.QuintIn(pulsepercent) * 0.6f), angle);
+        RingTexture.DrawOutlineCentered(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2), Color.Black, 1 + (Ease.QuintIn(PulsePercent) * 0.6f));
+        OrbTexture.DrawOutlineCentered(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2), Color.Black, 1 + (Ease.QuintIn(PulsePercent) * 0.6f), Angle);
 
-        ring.DrawCentered(Position + (Vector2.UnitY * (float)Math.Sin(timer * 2) * 2), Color.White, 1 + (Ease.QuintIn(pulsepercent) * 0.6f));
-        orb.DrawCentered(Position + (Vector2.UnitY * (float)Math.Sin(timer * 2) * 2), col, 1 + (Ease.QuintIn(pulsepercent) * 0.6f), angle);
+        RingTexture.DrawCentered(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2), Color.White, 1 + (Ease.QuintIn(PulsePercent) * 0.6f));
+        OrbTexture.DrawCentered(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2), col, 1 + (Ease.QuintIn(PulsePercent) * 0.6f), Angle);
 
 
     }
@@ -180,6 +180,6 @@ public class GDDashOrb : Entity
     {
         base.DebugRender(camera);
         Draw.HollowRect(Position - new Vector2(Width / 2f, Height / 2f), Width, Height, Color.LimeGreen);
-        Draw.LineAngle(Position, angle, 24f, Color.White);
+        Draw.LineAngle(Position, Angle, 24f, Color.White);
     }
 }

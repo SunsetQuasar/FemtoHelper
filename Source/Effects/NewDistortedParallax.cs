@@ -11,47 +11,47 @@ namespace Celeste.Mod.FemtoHelper.Code.Effects;
 public class NewDistortedParallax : Backdrop
 {
 
-    private static BlendState Multiply = new BlendState
+    private static readonly BlendState Multiply = new BlendState
     {
         ColorBlendFunction = BlendFunction.Add,
-        ColorSourceBlend = Blend.DestinationColor,
-        ColorDestinationBlend = Blend.Zero
+        ColorSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.DestinationColor,
+        ColorDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.Zero
     };
 
-    private static BlendState ReverseSubtract = new BlendState
+    private static readonly BlendState ReverseSubtract = new BlendState
     {
-        ColorSourceBlend = Blend.One,
-        ColorDestinationBlend = Blend.One,
+        ColorSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
+        ColorDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
         ColorBlendFunction = BlendFunction.Subtract,
-        AlphaSourceBlend = Blend.One,
-        AlphaDestinationBlend = Blend.One,
+        AlphaSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
+        AlphaDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
         AlphaBlendFunction = BlendFunction.Add
     };
 
     public static readonly BlendState Subtract = new BlendState
     {
-        ColorSourceBlend = Blend.One,
-        ColorDestinationBlend = Blend.One,
+        ColorSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
+        ColorDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
         ColorBlendFunction = BlendFunction.ReverseSubtract,
-        AlphaSourceBlend = Blend.One,
-        AlphaDestinationBlend = Blend.One,
+        AlphaSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
+        AlphaDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
         AlphaBlendFunction = BlendFunction.Add
     };
 
-    public VirtualRenderTarget buffer;
+    public VirtualRenderTarget Buffer;
 
-    public string effectID;
+    public readonly string EffectId;
 
-    public Effect effect;
+    public Effect Effect;
 
-    public bool initialized;
+    public bool Initialized;
 
-    public Texture2D texture;
+    public readonly Texture2D Texture;
 
     public float Time;
 
-    public bool DoFadeIn;
-    public float fadeIn = 1f;
+    public readonly bool DoFadeIn;
+    public float FadeIn = 1f;
 
     public Vector4 Amplitudes;
     public Vector4 Periods;
@@ -61,17 +61,17 @@ public class NewDistortedParallax : Backdrop
     public Vector4 ScaleInfo;
     public Vector2 RotationInfo;
 
-    public BlendState blend;
-    public SamplerState filter;
+    public readonly BlendState Blend;
+    public readonly SamplerState Filter;
 
-    public bool waveFix;
+    public readonly bool WaveFix;
 
     public NewDistortedParallax(BinaryPacker.Element data) : base()
     {
         Position = new Vector2(data.AttrFloat("offsetX", 0f), data.AttrFloat("offsetY", 0f));
 
-        buffer = VirtualContent.CreateRenderTarget("distortedParallax", 320, 180);
-        texture = GFX.Game[data.Attr("texture", "bgs/disperse_clouds")].GetPaddedSubtextureCopy(); //TODO: rewrite the base shader to support textures from atlases rather than doing this
+        Buffer = VirtualContent.CreateRenderTarget("distortedParallax", 320, 180);
+        Texture = GFX.Game[data.Attr("texture", "bgs/disperse_clouds")].GetPaddedSubtextureCopy(); //DODO: rewrite the base shader to support textures from atlases rather than doing this
         LoopX = data.AttrBool("loopX", true);
         LoopY = data.AttrBool("loopY", true);
         Scroll = new Vector2(data.AttrFloat("scrollX", 1), data.AttrFloat("scrollY", 1));
@@ -89,67 +89,67 @@ public class NewDistortedParallax : Backdrop
         ScaleInfo = new Vector4(data.AttrFloat("scale", 1), data.AttrFloat("scaleAmplitude", 0), data.AttrFloat("scaleSpeed", 0), data.AttrFloat("scaleOffset", 0));
         RotationInfo = new Vector2(data.AttrFloat("rotationSpeed", 0), data.AttrFloat("rotationOffset", 0));
 
-        waveFix = data.AttrBool("waveRotationFix", true);
-        effectID = data.Attr("shaderPath", "FemtoHelper/DistortedParallax");
+        WaveFix = data.AttrBool("waveRotationFix", true);
+        EffectId = data.Attr("shaderPath", "FemtoHelper/DistortedParallax");
 
         switch (data.Attr("filterMode", "point"))
         {
             default:
-                filter = SamplerState.PointWrap;
+                Filter = SamplerState.PointWrap;
                 break;
             case "linear":
-                filter = SamplerState.LinearWrap;
+                Filter = SamplerState.LinearWrap;
                 break;
             case "anisotropic":
-                filter = SamplerState.AnisotropicWrap;
+                Filter = SamplerState.AnisotropicWrap;
                 break;
         }
 
         switch (data.Attr("blendState"))
         {
             default:
-                blend = BlendState.AlphaBlend;
+                Blend = BlendState.AlphaBlend;
                 break;
             case "additive":
-                blend = BlendState.Additive;
+                Blend = BlendState.Additive;
                 break;
             case "subtract":
-                blend = Subtract;
+                Blend = Subtract;
                 break;
             case "reversesubtract":
-                blend = ReverseSubtract;
+                Blend = ReverseSubtract;
                 break;
             case "multiply":
-                blend = Multiply;
+                Blend = Multiply;
                 break;
         }
 
-        effect = null;
-        initialized = false;
+        Effect = null;
+        Initialized = false;
         Time = 0;
         Reset();
     }
 
     public void Reset()
     {
-        if (Everest.Content.TryGet($"Effects/{effectID}.cso", out var effectAsset, true))
+        if (Everest.Content.TryGet($"Effects/{EffectId}.cso", out var effectAsset, true))
         {
-            effect = new Effect(Engine.Graphics.GraphicsDevice, effectAsset.Data);
+            Effect = new Effect(Engine.Graphics.GraphicsDevice, effectAsset.Data);
         }
         else
         {
-            Logger.Log(LogLevel.Error, "FemtoHelper/NewDistortedParallax", $"Failed getting effect: \"Effects/{effectID}.cso\"! Using default shader instead.");
+            Logger.Log(LogLevel.Error, "FemtoHelper/NewDistortedParallax", $"Failed getting effect: \"Effects/{EffectId}.cso\"! Using default shader instead.");
             if(Everest.Content.TryGet($"Effects/FemtoHelper/DistortedParallax.cso", out var effectAsset2, true))
             {
-                effect = new Effect(Engine.Graphics.GraphicsDevice, effectAsset2.Data);
+                Effect = new Effect(Engine.Graphics.GraphicsDevice, effectAsset2.Data);
             }
             else
             {
                 Logger.Log(LogLevel.Error, "FemtoHelper/NewDistortedParallax", "Failed getting the default shader?? How??");
             }
         }
-        EffectParameterCollection parameters = effect.Parameters;
-        parameters["textureSize"]?.SetValue(new Vector2(texture.Width, texture.Height));
+        EffectParameterCollection parameters = Effect.Parameters;
+        parameters["textureSize"]?.SetValue(new Vector2(Texture.Width, Texture.Height));
         parameters["Dimensions"]?.SetValue(new Vector2(320f, 180f));
         parameters["offset"]?.SetValue(Position);
         parameters["loopMul"]?.SetValue(new Vector2(LoopX ? 1 : 0, LoopY ? 1 : 0));
@@ -162,7 +162,7 @@ public class NewDistortedParallax : Backdrop
         parameters["WaveSpeeds"]?.SetValue(Speeds * Calc.DegToRad);
         parameters["ScaleInfo"]?.SetValue(ScaleInfo * new Vector4(1, 1, Calc.DegToRad, Calc.DegToRad));
         parameters["RotInfo"]?.SetValue(RotationInfo * Calc.DegToRad);
-        parameters["waveFix"]?.SetValue(waveFix);
+        parameters["waveFix"]?.SetValue(WaveFix);
     }
 
     public override void Update(Scene scene)
@@ -173,11 +173,11 @@ public class NewDistortedParallax : Backdrop
 
         if (DoFadeIn)
         {
-            fadeIn = Calc.Approach(fadeIn, Visible ? 1 : 0, Engine.DeltaTime);
+            FadeIn = Calc.Approach(FadeIn, Visible ? 1 : 0, Engine.DeltaTime);
         }
         else
         {
-            fadeIn = (Visible ? 1 : 0);
+            FadeIn = (Visible ? 1 : 0);
         }
 
     }
@@ -190,7 +190,7 @@ public class NewDistortedParallax : Backdrop
 
         BlendState blend = graphicsDevice.BlendState;
 
-        if(buffer == null) buffer = VirtualContent.CreateRenderTarget("distortedParallax", 320, 180);
+        if(Buffer == null) Buffer = VirtualContent.CreateRenderTarget("distortedParallax", 320, 180);
 
         Level level = (scene as Level);
 
@@ -198,7 +198,7 @@ public class NewDistortedParallax : Backdrop
         Matrix projection = Matrix.CreateOrthographicOffCenter(0f, viewport.Width, viewport.Height, 0f, 0f, 1f);
         Matrix halfPixelOffset = (typeof(Game).Assembly.FullName.Contains("FNA")) ? Matrix.Identity : Matrix.CreateTranslation(-0.5f, -0.5f, 0f);
 
-        Color col = Color * FadeAlphaMultiplier * fadeIn;
+        Color col = Color * FadeAlphaMultiplier * FadeIn;
 
         if (FadeX != null)
         {
@@ -209,7 +209,7 @@ public class NewDistortedParallax : Backdrop
             col *= FadeY.Value(level.Camera.Position.Y + 90f);
         }
 
-        EffectParameterCollection parameters = effect.Parameters;
+        EffectParameterCollection parameters = Effect.Parameters;
         parameters["tint"]?.SetValue(col.ToVector4());
         parameters["DeltaTime"]?.SetValue(Engine.DeltaTime);
         parameters["Time"]?.SetValue(Time);
@@ -217,7 +217,7 @@ public class NewDistortedParallax : Backdrop
         parameters["TransformMatrix"]?.SetValue(halfPixelOffset * projection);
         parameters["ViewMatrix"]?.SetValue(Matrix.Identity);
 
-        graphicsDevice.SetRenderTarget(buffer);
+        graphicsDevice.SetRenderTarget(Buffer);
         graphicsDevice.Clear(Color.Transparent);
 
     }
@@ -233,13 +233,13 @@ public class NewDistortedParallax : Backdrop
         Texture t = graphicsDevice.Textures[2];
         SamplerState s = graphicsDevice.SamplerStates[2];
 
-        graphicsDevice.Textures[2] = texture; // skin mod helper: your greed is ruining the economy
-        graphicsDevice.SamplerStates[2] = filter;
+        graphicsDevice.Textures[2] = Texture; // skin mod helper: your greed is ruining the economy
+        graphicsDevice.SamplerStates[2] = Filter;
 
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, blend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, effect, Matrix.Identity);
+        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, Blend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, Effect, Matrix.Identity);
 
         base.Render(scene);
-        Draw.SpriteBatch.Draw((RenderTarget2D)buffer, Vector2.Zero, Color.White);
+        Draw.SpriteBatch.Draw((RenderTarget2D)Buffer, Vector2.Zero, Color.White);
 
         Draw.SpriteBatch.End();
         Renderer.StartSpritebatch(prevBlendState);

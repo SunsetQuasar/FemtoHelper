@@ -5,56 +5,42 @@ using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper;
 
-public class PlutoniumTextNodes
+public static class PlutoniumTextNodes
 {
     public class Node
     {
 
     }
-    public class Text : Node
+    public class Text(string str) : Node
     {
-        public string text;
-        public Text(string str)
-        {
-            text = str;
-        }
+        public readonly string StringText = str;
     }
-    public class Counter : Node
+    public class Counter(string k) : Node
     {
-        public string key;
-        public Counter(string k)
-        {
-            key = k;
-        }
+        public readonly string Key = k;
     }
-    public class Flag : Node
+    public class Flag(string k, string on, string off) : Node
     {
-        public string key;
-        public string strIfOn;
-        public string strIfOff;
-        public Flag(string k, string on, string off)
-        {
-            key = k;
-            strIfOn = on;
-            strIfOff = off;
-        }
+        public readonly string Key = k;
+        public readonly string StrIfOn = on;
+        public readonly string StrIfOff = off;
     }
     public static string ConstructString(List<Node> nodes, Level level)
     {
-        string result = "";
-        foreach (Node n in nodes)
+        var result = "";
+        foreach (var n in nodes)
         {
-            if (n is Text t)
+            switch (n)
             {
-                result += t.text;
-            }
-            else if (n is Counter c)
-            {
-                result += level.Session.GetCounter(c.key).ToString();
-            }
-            else if (n is Flag f)
-            {
-                result += level.Session.GetFlag(f.key) ? f.strIfOn : f.strIfOff;
+                case Text t:
+                    result += t.StringText;
+                    break;
+                case Counter c:
+                    result += level.Session.GetCounter(c.Key).ToString();
+                    break;
+                case Flag f:
+                    result += level.Session.GetFlag(f.Key) ? f.StrIfOn : f.StrIfOff;
+                    break;
             }
         }
         return result;
@@ -62,66 +48,66 @@ public class PlutoniumTextNodes
 }
 public class TextEffectData
 {
-    public bool wavey;
-    public Vector2 waveAmp;
-    public float phaseOffset;
-    public float phaseIncrement;
-    public float waveSpeed;
+    public readonly bool Wavey;
+    public Vector2 WaveAmp;
+    public readonly float PhaseOffset;
+    public readonly float PhaseIncrement;
+    public readonly float WaveSpeed;
 
-    public bool shakey;
-    public float shakeAmount;
+    public readonly bool Shakey;
+    public readonly float ShakeAmount;
 
-    public bool obfuscated;
+    public readonly bool Obfuscated;
 
-    public bool twitchy;
-    public float twitchChance;
+    public readonly bool Twitchy;
+    public readonly float TwitchChance;
 
-    public bool empty;
-    public TextEffectData(bool wavey, Vector2 amp, float offset, bool shakey, float amount, bool obfs, bool twitchy, float twitchChance, float phase_increment, float wave_speed)
+    public readonly bool Empty;
+    public TextEffectData(bool wavey, Vector2 amp, float offset, bool shakey, float amount, bool obfs, bool twitchy, float twitchChance, float phaseIncrement, float waveSpeed)
     {
-        this.wavey = wavey;
+        Wavey = wavey;
         if (wavey)
         {
-            waveAmp = amp;
-            phaseOffset = offset;
-            phaseIncrement = phase_increment;
-            waveSpeed = wave_speed;
+            WaveAmp = amp;
+            PhaseOffset = offset;
+            PhaseIncrement = phaseIncrement;
+            WaveSpeed = waveSpeed;
         }
 
-        this.shakey = shakey;
-        shakeAmount = amount;
+        Shakey = shakey;
+        ShakeAmount = amount;
 
-        obfuscated = obfs;
-        this.twitchy = twitchy;
-        this.twitchChance = twitchChance;
+        Obfuscated = obfs;
+        Twitchy = twitchy;
+        TwitchChance = twitchChance;
     }
 
     public TextEffectData()
     {
-        empty = true;
+        Empty = true;
     }
 }
 
 public class PlutoniumText : Component
 {
-    public Dictionary<char, int> charset;
-    public List<MTexture> charTextures;
-    public Vector2 fontSize;
-    public float seed;
-    public string charList;
-    public PlutoniumText(string font_path, string char_list, Vector2 font_size) : base(true, true)
+    public readonly Dictionary<char, int> Charset;
+    public readonly List<MTexture> CharTextures;
+    public Vector2 FontSize;
+    public float Seed;
+    public readonly string CharList;
+    public PlutoniumText(string fontPath, string charList, Vector2 fontSize) : base(true, true)
     {
-        fontSize = font_size;
-        charset = new Dictionary<char, int>();
-        charTextures = new List<MTexture>();
-        string characters = charList = char_list;
+        FontSize = fontSize;
+        Charset = new Dictionary<char, int>();
+        CharTextures = new List<MTexture>();
+        string characters = CharList = charList;
         // " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'".,ç"
         // " !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 
         for (int i = 0; i < characters.Length; i++)
         {
-            charset.Add(characters[i], i);
-            charTextures.Add(GFX.Game[font_path].GetSubtexture(i * (int)font_size.X, 0, (int)font_size.X, (int)font_size.Y)); // "PlutoniumHelper/PlutoniumText/font"
+            Charset.Add(characters[i], i);
+            CharTextures.Add(GFX.Game[fontPath].GetSubtexture(i * (int)fontSize.X, 0, (int)fontSize.X, (int)fontSize.Y)); // "PlutoniumHelper/PlutoniumText/font"
         }
     }
 
@@ -130,19 +116,19 @@ public class PlutoniumText : Component
         base.Update();
         if (Scene.OnInterval(0.04f))
         {
-            seed = Calc.Random.NextFloat() * 12801;
+            Seed = Calc.Random.NextFloat() * 12801;
         }
     }
     public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
     {
         float stringlen = spacing * str.Length * scale;
-        Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(fontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, new TextEffectData(), scale, id);
+        Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(FontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, new TextEffectData(), scale, id);
     }
 
     public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, TextEffectData data, float scale = 1, int id = 0)
     {
         float stringlen = spacing * str.Length * scale;
-        Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(fontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, data, scale, id);
+        Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(FontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, data, scale, id);
     }
 
     public void Print(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
@@ -161,7 +147,7 @@ public class PlutoniumText : Component
 
         pos = pos.Floor();
 
-        if (!data.empty)
+        if (!data.Empty)
         {
             for (float i = 0; i < str.Length; i++)
             {
@@ -170,29 +156,28 @@ public class PlutoniumText : Component
 
                 float i2 = i + id;
 
-                Calc.PushRandom((int)(seed + (82 * i2 * i)));
-                if (data.shakey || (data.twitchy && Calc.Random.Chance(data.twitchChance)))
+                Calc.PushRandom((int)(Seed + (82 * i2 * i)));
+                if (data.Shakey || (data.Twitchy && Calc.Random.Chance(data.TwitchChance)))
                 {
-                    Vector2 num = new Vector2(Calc.Random.NextFloat(2f * data.shakeAmount) - data.shakeAmount, Calc.Random.NextFloat(2f * data.shakeAmount) - data.shakeAmount) * scale;
+                    Vector2 num = new Vector2(Calc.Random.NextFloat(2f * data.ShakeAmount) - data.ShakeAmount, Calc.Random.NextFloat(2f * data.ShakeAmount) - data.ShakeAmount) * scale;
                     effectOffsets[(int)i] += num;
                 }
                 Calc.PopRandom();
-                if (data.wavey)
+                if (data.Wavey)
                 {
                     Vector2 num = new Vector2
                         (
-                        (float)Math.Sin((Scene.TimeActive * data.waveSpeed) + data.phaseOffset + (i2 * data.phaseIncrement)) * data.waveAmp.X,
-                        (float)Math.Sin((Scene.TimeActive * data.waveSpeed) + (i2 * data.phaseIncrement)) * data.waveAmp.Y
+                        (float)Math.Sin((Scene.TimeActive * data.WaveSpeed) + data.PhaseOffset + (i2 * data.PhaseIncrement)) * data.WaveAmp.X,
+                        (float)Math.Sin((Scene.TimeActive * data.WaveSpeed) + (i2 * data.PhaseIncrement)) * data.WaveAmp.Y
                         ) * scale;
                     effectOffsets[(int)i] += num;
                 }
 
-                if (data.obfuscated)
-                {
-                    Calc.PushRandom((int)(seed + (47 * i2)));
-                    theseChars[(int)i] = charList[Calc.Random.Next(charList.Length)];
-                    Calc.PopRandom();
-                }
+                if (!data.Obfuscated) continue;
+                
+                Calc.PushRandom((int)(Seed + (47 * i2)));
+                theseChars[(int)i] = CharList[Calc.Random.Next(CharList.Length)];
+                Calc.PopRandom();
             }
         }
 
@@ -205,33 +190,33 @@ public class PlutoniumText : Component
                 float offset = index * spacing * scale;
                 Vector2 charpos = pos + (Vector2.UnitX * offset);
                 charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
-                if (!data.empty && index < effectOffsets.Count) charpos += effectOffsets[index];
+                if (!data.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
 
                 int chr;
-                if (!charset.ContainsKey(c))
+                if (!Charset.ContainsKey(c))
                 {
                     chr = 0;
                 }
                 else
                 {
-                    if (!data.empty && index < theseChars.Count)
+                    if (!data.Empty && index < theseChars.Count)
                     {
                         if (theseChars[index] != ' ' && c != ' ')
                         {
-                            chr = charset[theseChars[index]];
+                            chr = Charset[theseChars[index]];
                         }
-                        else chr = charset[c];
+                        else chr = Charset[c];
                     }
-                    else chr = charset[c];
+                    else chr = Charset[c];
                 }
                 //Logger.Log(nameof(PlutoniumHelperModule), "outline color: " + outlineColor.ToString());
                 if (shadow)
                 {
-                    charTextures[chr].Draw(charpos + (Vector2.One * scale), Vector2.Zero, outlineColor, scale, 0, flip);
+                    CharTextures[chr].Draw(charpos + (Vector2.One * scale), Vector2.Zero, outlineColor, scale, 0, flip);
                 }
                 else
                 {
-                    DrawOutlineExceptGood(charTextures[chr], charpos, Vector2.Zero, outlineColor, flip, scale);
+                    DrawOutlineExceptGood(CharTextures[chr], charpos, Vector2.Zero, outlineColor, flip, scale);
                 }
                 index++;
             }
@@ -246,26 +231,26 @@ public class PlutoniumText : Component
             float offset = index * spacing * scale;
             Vector2 charpos = pos + (Vector2.UnitX * offset);
             charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
-            if (!data.empty && index < effectOffsets.Count) charpos += effectOffsets[index];
+            if (!data.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
             int chr;
-            if (!charset.ContainsKey(c))
+            if (!Charset.TryGetValue(c, out int value))
             {
                 chr = 0;
             }
             else
             {
-                if (!data.empty && index < theseChars.Count)
+                if (!data.Empty && index < theseChars.Count)
                 {
                     if (theseChars[index] != ' ' && c != ' ')
                     {
-                        chr = charset[theseChars[index]];
+                        chr = Charset[theseChars[index]];
                     }
-                    else chr = charset[c];
+                    else chr = value;
                 }
-                else chr = charset[c];
+                else chr = value;
             }
 
-            charTextures[chr].Draw(charpos, Vector2.Zero, mainColor, scale, 0, flip);
+            CharTextures[chr].Draw(charpos, Vector2.Zero, mainColor, scale, 0, flip);
             index++;
         }
 

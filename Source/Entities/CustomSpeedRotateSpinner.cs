@@ -9,11 +9,11 @@ using Celeste.Mod.Entities;
 
 public class CustomSpeedRotateSpinner : Entity
 {
-	public Sprite Sprite;
+	public readonly Sprite Sprite;
 
-	private DustGraphic dusty;
+	private readonly DustGraphic dusty;
 
-	private int colorID;
+	private int colorId;
 
 	public bool Moving;
 
@@ -27,30 +27,26 @@ public class CustomSpeedRotateSpinner : Entity
 
 	private bool fixAngle;
 
-	private Vector2 startCenter;
+	private readonly Vector2 startCenter;
 
-	private Vector2 startPosition;
+	private readonly Vector2 startPosition;
 
-	private bool noParticles;
+	private readonly bool noParticles;
 	public float Angle
 	{
 		get
 		{
-			if (!fixAngle)
-			{
-				return MathHelper.Lerp(4.712389f, -(float)Math.PI / 2f, Easer(rotationPercent));
-			}
-			return MathHelper.Lerp((float)Math.PI, -(float)Math.PI, Easer(rotationPercent));
+			return !fixAngle ? MathHelper.Lerp(4.712389f, -(float)Math.PI / 2f, Easer(rotationPercent)) : MathHelper.Lerp((float)Math.PI, -(float)Math.PI, Easer(rotationPercent));
 		}
 	}
 
 	public bool Clockwise;
 
-	public bool isDust;
+	public bool IsDust;
 
-	public bool isBlade;
+	public bool IsBlade;
 
-	public float rotateTime;
+	public float RotateTime;
 
 	public CustomSpeedRotateSpinner(EntityData data, Vector2 offset) : base(data.Position + offset)
 	{
@@ -59,23 +55,23 @@ public class CustomSpeedRotateSpinner : Entity
 		startPosition = data.Position + offset;
 		noParticles = data.Bool("noParticles", false);
 
-		if (isBlade)
+		if (IsBlade)
 		{
 			Add(Sprite = GFX.SpriteBank.Create("templeBlade"));
 			Sprite.Play("idle");
-			base.Depth = -50;
+			Depth = -50;
 			Add(new MirrorReflection());
 		} 
-		else if (isDust)
+		else if (IsDust)
 		{
 			Add(dusty = new DustGraphic(ignoreSolids: true));
 		}
 		else
 		{
 			Add(Sprite = GFX.SpriteBank.Create("moonBlade"));
-			colorID = Calc.Random.Choose(0, 1, 2);
-			Sprite.Play("idle" + colorID);
-			base.Depth = -50;
+			colorId = Calc.Random.Choose(0, 1, 2);
+			Sprite.Play("idle" + colorId);
+			Depth = -50;
 			Add(new MirrorReflection());
 		}
 	}
@@ -93,23 +89,23 @@ public class CustomSpeedRotateSpinner : Entity
 	public override void Update()
 	{
 		base.Update();
-		if (isBlade)
+		if (IsBlade)
 		{
-			if (base.Scene.OnInterval(0.04f) && !noParticles)
+			if (Scene.OnInterval(0.04f) && !noParticles)
 			{
 				SceneAs<Level>().ParticlesBG.Emit(BladeTrackSpinner.P_Trail, 2, Position, Vector2.One * 3f);
 			}
-			if (base.Scene.OnInterval(1f))
+			if (Scene.OnInterval(1f))
 			{
 				Sprite.Play("spin");
 			}
 		}
-		else if (isDust)
+		else if (IsDust)
 		{
 			if (Moving)
 			{
-				dusty.EyeDirection = dusty.EyeTargetDirection = Calc.AngleToVector(Angle + ((float)Math.PI / 2f * (float)(Clockwise ? 1 : (-1))), 1f);
-				if (base.Scene.OnInterval(0.02f) && !noParticles)
+				dusty.EyeDirection = dusty.EyeTargetDirection = Calc.AngleToVector(Angle + ((float)Math.PI / 2f * (Clockwise ? 1 : (-1))), 1f);
+				if (Scene.OnInterval(0.02f) && !noParticles)
 				{
 					SceneAs<Level>().ParticlesBG.Emit(DustStaticSpinner.P_Move, 1, Position, Vector2.One * 4f);
 				}
@@ -117,15 +113,15 @@ public class CustomSpeedRotateSpinner : Entity
 		}
 		else
 		{
-			if (Moving && base.Scene.OnInterval(0.03f) && !noParticles)
+			if (Moving && Scene.OnInterval(0.03f) && !noParticles)
 			{
-				SceneAs<Level>().ParticlesBG.Emit(StarTrackSpinner.P_Trail[colorID], 1, Position, Vector2.One * 3f);
+				SceneAs<Level>().ParticlesBG.Emit(StarTrackSpinner.P_Trail[colorId], 1, Position, Vector2.One * 3f);
 			}
-			if (base.Scene.OnInterval(0.8f))
+			if (Scene.OnInterval(0.8f))
 			{
-				colorID++;
-				colorID %= 3;
-				Sprite.Play("spin" + colorID);
+				colorId++;
+				colorId %= 3;
+				Sprite.Play("spin" + colorId);
 			}
 		}
 
@@ -134,23 +130,22 @@ public class CustomSpeedRotateSpinner : Entity
 		{
 			if (Clockwise)
 			{
-				rotationPercent -= Engine.DeltaTime / rotateTime;
+				rotationPercent -= Engine.DeltaTime / RotateTime;
 				rotationPercent += 1f;
 			}
 			else
 			{
-				rotationPercent += Engine.DeltaTime / rotateTime;
+				rotationPercent += Engine.DeltaTime / RotateTime;
 			}
 			rotationPercent %= 1f;
 			Position = center + Calc.AngleToVector(Angle, length);
 		}
-		if (fallOutOfScreen)
+
+		if (!fallOutOfScreen) return;
+		center.Y += 160f * Engine.DeltaTime;
+		if (Y > ((Scene as Level).Bounds.Bottom + 32))
 		{
-			center.Y += 160f * Engine.DeltaTime;
-			if (base.Y > (float)((base.Scene as Level).Bounds.Bottom + 32))
-			{
-				RemoveSelf();
-			}
+			RemoveSelf();
 		}
 	}
 
@@ -174,25 +169,27 @@ public class CustomSpeedRotateSpinner : Entity
 	public void orig_ctor(EntityData data, Vector2 offset)
 	{
 		Moving = true;
-		base.Depth = -50;
+		Depth = -50;
 		center = data.Nodes[0] + offset;
 		Clockwise = data.Bool("clockwise");
-		rotateTime = data.Float("rotateTime");
-		isBlade = data.Bool("isBlade");
-		isDust = data.Bool("isDust");
-		base.Collider = new Circle(6f);
+		RotateTime = data.Float("rotateTime");
+		IsBlade = data.Bool("isBlade");
+		IsDust = data.Bool("isDust");
+		Collider = new Circle(6f);
 		Add(new PlayerCollider(OnPlayer));
-		StaticMover staticMover = new StaticMover();
-		staticMover.SolidChecker = (Solid s) => s.CollidePoint(center);
-		staticMover.JumpThruChecker = (JumpThru jt) => jt.CollidePoint(center);
-		staticMover.OnMove = delegate (Vector2 v)
+		StaticMover staticMover = new StaticMover
 		{
-			center += v;
-			Position += v;
-		};
-		staticMover.OnDestroy = delegate
-		{
-			fallOutOfScreen = true;
+			SolidChecker = s => s.CollidePoint(center),
+			JumpThruChecker = jt => jt.CollidePoint(center),
+			OnMove = v =>
+			{
+				center += v;
+				Position += v;
+			},
+			OnDestroy = () =>
+			{
+				fallOutOfScreen = true;
+			}
 		};
 		Add(staticMover);
 		float angleRadians = Calc.Angle(center, Position);
@@ -205,13 +202,11 @@ public class CustomSpeedRotateSpinner : Entity
 	public override void Awake(Scene scene)
 	{
 		base.Awake(scene);
-		fixAngle = (base.Scene as Level).Session.Area.GetLevelSet() != "Celeste";
-		if (fixAngle)
-		{
-			float angleRadians = Calc.Angle(startCenter, startPosition);
-			angleRadians = Calc.WrapAngle(angleRadians);
-			rotationPercent = EaserInverse(Calc.Percent(angleRadians, (float)Math.PI, -(float)Math.PI));
-			Position = center + Calc.AngleToVector(Angle, length);
-		}
+		fixAngle = (Scene as Level).Session.Area.GetLevelSet() != "Celeste";
+		if (!fixAngle) return;
+		float angleRadians = Calc.Angle(startCenter, startPosition);
+		angleRadians = Calc.WrapAngle(angleRadians);
+		rotationPercent = EaserInverse(Calc.Percent(angleRadians, (float)Math.PI, -(float)Math.PI));
+		Position = center + Calc.AngleToVector(Angle, length);
 	}
 }

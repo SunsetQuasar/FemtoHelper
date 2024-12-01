@@ -14,23 +14,23 @@ public class CustomCliffsideWindFlag : Entity
 		public Vector2 Offset;
 	}
 
-	private Segment[] segments;
+	private readonly Segment[] segments;
 
 	private float sine;
 
-	private float random;
+	private readonly float random;
 
 	private int sign;
 
-	private float sineFrequency;
+	private readonly float sineFrequency;
 
-	private float sineAmplitude;
+	private readonly float sineAmplitude;
 
-	private float naturalDraft;
+	private readonly float naturalDraft;
 
-	private float levelWind => Calc.ClampedMap(Math.Abs((base.Scene as Level).Wind.X), 0f, 800f);
+	private float LevelWind => Calc.ClampedMap(Math.Abs((Scene as Level).Wind.X), 0f, 800f);
 
-	private float naturalWind => Calc.ClampedMap(Math.Abs(naturalDraft), 0f, 800f);
+	private float NaturalWind => Calc.ClampedMap(Math.Abs(naturalDraft), 0f, 800f);
 
 	public CustomCliffsideWindFlag(EntityData data, Vector2 offset) : base(data.Position + offset)
 	{
@@ -50,8 +50,8 @@ public class CustomCliffsideWindFlag : Entity
 		}
 		sine = Calc.Random.NextFloat((float)Math.PI * 2f);
 		random = Calc.Random.NextFloat();
-		base.Depth = 8999;
-		base.Tag = Tags.TransitionUpdate;
+		Depth = 8999;
+		Tag = Tags.TransitionUpdate;
 	}
 
 	public override void Added(Scene scene)
@@ -59,14 +59,14 @@ public class CustomCliffsideWindFlag : Entity
 		base.Added(scene);
 		sign = 1;
 		float windValue = 0f;
-		if (levelWind != 0f)
+		if (LevelWind != 0f)
 		{
-			windValue = levelWind;
+			windValue = LevelWind;
 			sign = Math.Sign(SceneAs<Level>().Wind.X);
 		}
 		else if (naturalDraft != 0f)
 		{
-			windValue = naturalWind;
+			windValue = NaturalWind;
 			sign = Math.Sign(naturalDraft);
 		}
 		for (int i = 0; i < segments.Length; i++)
@@ -79,14 +79,14 @@ public class CustomCliffsideWindFlag : Entity
 	{
 		base.Update();
 		float windValue = 0f;
-		if (levelWind != 0f)
+		if (LevelWind != 0f)
 		{
-			windValue = levelWind;
+			windValue = LevelWind;
 			sign = Math.Sign(SceneAs<Level>().Wind.X);
 		}
 		else if (naturalDraft != 0f)
 		{
-			windValue = naturalWind;
+			windValue = NaturalWind;
 			sign = Math.Sign(naturalDraft);
 		}
 		sine += Engine.DeltaTime * (4f + windValue * 4f) * (0.8f + random * 0.2f);
@@ -104,9 +104,9 @@ public class CustomCliffsideWindFlag : Entity
 	private void SetFlagSegmentPosition(int i, float windValue, bool snap)
 	{
 		Segment segment = segments[i];
-		float value = (float)(i * sign) * (0.2f + windValue * 0.8f * (0.8f + random * 0.2f)) * (0.9f + Sin(sine) * 0.1f);
-		float num = Calc.LerpClamp(Sin(sine * 0.5f - (float)i * 0.1f) * ((float)i / (float)segments.Length) * (float)i * 0.2f, value, (float)Math.Ceiling(windValue));
-		float num2 = (float)i / (float)segments.Length * Math.Max(0.1f, 1f - windValue) * 16f;
+		float value = i * sign * (0.2f + windValue * 0.8f * (0.8f + random * 0.2f)) * (0.9f + Sin(sine) * 0.1f);
+		float num = Calc.LerpClamp(Sin(sine * 0.5f - i * 0.1f) * (i / (float)segments.Length) * i * 0.2f, value, (float)Math.Ceiling(windValue));
+		float num2 = i / (float)segments.Length * Math.Max(0.1f, 1f - windValue) * 16f;
 		if (!snap)
 		{
 			segment.Offset.X = Calc.Approach(segment.Offset.X, num, Engine.DeltaTime * 40f);
@@ -125,7 +125,7 @@ public class CustomCliffsideWindFlag : Entity
 		for (int i = 0; i < segments.Length; i++)
 		{
 			Segment segment = segments[i];
-			float scaleFactor = (float)i / (float)segments.Length * Sin((float)(-i) * 0.1f + sine) * 2f;
+			float scaleFactor = i / (float)segments.Length * Sin(-i * 0.1f + sine) * 2f;
 			segment.Texture.Draw(Position + segment.Offset + Vector2.UnitY * scaleFactor);
 		}
 	}

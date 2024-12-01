@@ -9,9 +9,9 @@ using Monocle;
 
 public class VaporWave : Backdrop
 {
-	private float lines = 32;
+	private readonly float lines = 32;
 	private float timer = 0;
-	private float height = 64;
+	private readonly float height = 64;
 
 	public VaporWave(float lineCount, float horizon)
 	{
@@ -48,7 +48,7 @@ public class VaporWave : Backdrop
         }
 	}
 
-	private float mod(float x, float m)
+	private float Mod(float x, float m)
 	{
 		return (x % m + m) % m;
 	}

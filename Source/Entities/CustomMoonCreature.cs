@@ -14,11 +14,11 @@ public class CustomMoonCreature : Entity
 		public Color Color;
 	}
 
-	public TrailNode[] trail;
+	public readonly TrailNode[] Trail;
 
-	public Vector2 start;
+	public Vector2 Start;
 
-	public Vector2 target;
+	public Vector2 Target;
 
 	private float targetTimer;
 
@@ -32,25 +32,23 @@ public class CustomMoonCreature : Entity
 
 	private float followingTime;
 
-	private Color OrbColor;
+	private Color orbColor;
 
-	private Color CenterColor;
+	private readonly Color centerColor;
 
-	private Sprite Sprite;
+	private readonly float acceleration = 90f;
 
-	private float Acceleration = 90f;
+	private readonly float followAcceleration = 120f;
 
-	private float FollowAcceleration = 120f;
+	private readonly float maxSpeed = 40f;
 
-	private float MaxSpeed = 40f;
+	private readonly float maxFollowSpeed = 70f;
 
-	private float MaxFollowSpeed = 70f;
+	private readonly float maxFollowDistance = 200f;
 
-	private float MaxFollowDistance = 200f;
+	private readonly float minFollowTime = 6f;
 
-	private float MinFollowTime = 6f;
-
-	private float MaxFollowTime = 12f;
+	private readonly float maxFollowTime = 12f;
 
 	private readonly int spawn;
 
@@ -58,29 +56,27 @@ public class CustomMoonCreature : Entity
 
 	private readonly Color[] colors;
 
-	private string sprite;
+	private readonly bool tintSprite;
 
-	private bool tintSprite;
+	private readonly int trailCount;
 
-	private int trailCount;
+	private readonly float trailBaseSize;
 
-	private float trailBaseSize;
+	private readonly float trailCatchupSpeed;
 
-	private float trailCatchupSpeed;
+	private readonly float trailSpacing;
 
-	private float trailSpacing;
+	private readonly float targetRangeRadius;
 
-	private float targetRangeRadius;
+	private readonly float minTargetTime;
 
-	private float minTargetTime;
+	private readonly float maxTargetTime;
 
-	private float maxTargetTime;
+	private readonly float trailBaseAlpha;
 
-	private float trailBaseAlpha;
+	private readonly float trailTipAlpha;
 
-	private float trailTipAlpha;
-
-	private float trailGravity;
+	private readonly float trailGravity;
 
 	private BloomPoint bloom;
 
@@ -88,18 +84,19 @@ public class CustomMoonCreature : Entity
 
 	public CustomMoonCreature(EntityData data, Vector2 offset) : this(data.Position + offset)
 	{
+		Sprite sprite;
 		spawn = data.Int("number", 1) - 1;
-		sprite = data.Attr("sprite", "moonCreatureTiny");
+		string spritePath = data.Attr("sprite", "moonCreatureTiny");
 		tintSprite = data.Bool("tintSprite", false);
 		trailCount = data.Int("trailCount", 10);
 		trailBaseSize = data.Float("trailBaseSize", 3f);
-		Acceleration = data.Float("acceleration", 90f);
-		FollowAcceleration = data.Float("followAcceleration", 120f);
-		MaxSpeed = data.Float("maxSpeed", 40f);
-		MaxFollowSpeed = data.Float("maxFollowSpeed", 70f);
-		MaxFollowDistance = data.Float("maxFollowDistance", 200f);
-		MinFollowTime = data.Float("minFollowTime", 6f);
-		MaxFollowTime = data.Float("maxFollowTime", 12f);
+		acceleration = data.Float("acceleration", 90f);
+		followAcceleration = data.Float("followAcceleration", 120f);
+		maxSpeed = data.Float("maxSpeed", 40f);
+		maxFollowSpeed = data.Float("maxFollowSpeed", 70f);
+		maxFollowDistance = data.Float("maxFollowDistance", 200f);
+		minFollowTime = data.Float("minFollowTime", 6f);
+		maxFollowTime = data.Float("maxFollowTime", 12f);
 		trailCatchupSpeed = data.Float("trailCatchupSpeed", 128f);
 		trailSpacing = data.Float("trailSpacing", 2f);
 		targetRangeRadius = data.Float("targetRangeRadius", 32f);
@@ -109,42 +106,42 @@ public class CustomMoonCreature : Entity
 		trailTipAlpha = data.Float("trailTipAlpha", 1f);
 		trailGravity = data.Float("trailGravity", 0.05f);
 		string[] array = data.Attr("colors", "c34fc7,4f95c7,53c74f").Split(',');
-		colors = (Color[])(object)new Color[array.Length];
+		var colors = new Color[array.Length];
 		for (int i = 0; i < colors.Length; i++)
 		{
 			colors[i] = Calc.HexToColor(array[i]);
 		}
-		CenterColor = Color.Lerp(this.colors[Calc.Random.Next(this.colors.Length)], Color.White, 0);
-		OrbColor = Calc.HexToColor("b0e6ff");
+		centerColor = Color.Lerp(this.colors[Calc.Random.Next(this.colors.Length)], Color.White, 0);
+		orbColor = Calc.HexToColor("b0e6ff");
 		//Logger.Log("a", mainColors[0].ToString());
-		Color value = Color.Lerp(CenterColor, Calc.HexToColor(data.Attr("trailSubcolor1", "bde4ee")), data.Float("trailSubcolor1LerpAmount", 0.5f));
-		Color value2 = Color.Lerp(CenterColor, Calc.HexToColor(data.Attr("trailSubcolor2", "2f2941")), data.Float("trailSubcolor2LerpAmount", 0.5f));
-		trail = new TrailNode[trailCount];
+		Color value = Color.Lerp(centerColor, Calc.HexToColor(data.Attr("trailSubcolor1", "bde4ee")), data.Float("trailSubcolor1LerpAmount", 0.5f));
+		Color value2 = Color.Lerp(centerColor, Calc.HexToColor(data.Attr("trailSubcolor2", "2f2941")), data.Float("trailSubcolor2LerpAmount", 0.5f));
+		Trail = new TrailNode[trailCount];
 		for (int i = 0; i < trailCount; i++)
 		{
-			trail[i] = new TrailNode
+			Trail[i] = new TrailNode
 			{
 				Position = Position,
 				Color = Color.Lerp(value, value2, (float)i / (trailCount - 1)) * (trailBaseAlpha - ((trailBaseAlpha - trailTipAlpha) * i / trailCount))
 			};
 		}
-		Add(Sprite = GFX.SpriteBank.Create(sprite));
+		Add(sprite = GFX.SpriteBank.Create(spritePath));
 		if (tintSprite)
 		{
-			Sprite.Color = CenterColor;
+			sprite.Color = centerColor;
 		}
 		Add(bloom = new BloomPoint(data.Float("bloomAlpha", 0f), data.Float("bloomRadius", 0)));
-		Add(light = new VertexLight(!data.Bool("lightColorIsMainColor") ? Calc.HexToColor(data.Attr("lightColor")) : CenterColor, data.Float("lightAlpha", 0f), data.Int("lightStartFade", 12), data.Int("lightEndFade", 24)));
+		Add(light = new VertexLight(!data.Bool("lightColorIsMainColor") ? Calc.HexToColor(data.Attr("lightColor")) : centerColor, data.Float("lightAlpha", 0f), data.Int("lightStartFade", 12), data.Int("lightEndFade", 24)));
 	}
 	public CustomMoonCreature(Vector2 position)
 	{
-		base.Tag = Tags.TransitionUpdate;
-		base.Depth = -13010;
-		base.Collider = new Hitbox(20f, 20f, -10f, -10f);
-		start = position;
+		Tag = Tags.TransitionUpdate;
+		Depth = -13010;
+		Collider = new Hitbox(20f, 20f, -10f, -10f);
+		Start = position;
 		targetTimer = 0f;
 		GetRandomTarget();
-		Position = target;
+		Position = Target;
 		Add(new PlayerCollider(OnPlayer));
 	}
 
@@ -160,16 +157,12 @@ public class CustomMoonCreature : Entity
 	private void OnPlayer(Player player)
 	{
 		Vector2 vector = (Position - player.Center).SafeNormalize(player.Speed.Length() * 0.3f);
-		if (vector.LengthSquared() > bump.LengthSquared())
-		{
-			bump = vector;
-			if ((player.Center - start).Length() < MaxFollowDistance)
-			{
-				following = player;
-				followingTime = Calc.Random.Range(MinFollowTime, MaxFollowTime);
-				GetFollowOffset();
-			}
-		}
+		if (!(vector.LengthSquared() > bump.LengthSquared())) return;
+		bump = vector;
+		if (!((player.Center - Start).Length() < maxFollowDistance)) return;
+		following = player;
+		followingTime = Calc.Random.Range(minFollowTime, maxFollowTime);
+		GetFollowOffset();
 	}
 	private void GetFollowOffset()
 	{
@@ -178,14 +171,14 @@ public class CustomMoonCreature : Entity
 
 	private void GetRandomTarget()
 	{
-		Vector2 value = target;
+		Vector2 value = Target;
 		do
 		{
 			float length = Calc.Random.NextFloat(targetRangeRadius);
 			float angleRadians = Calc.Random.NextFloat((float)Math.PI * 2f);
-			target = start + Calc.AngleToVector(angleRadians, length);
+			Target = Start + Calc.AngleToVector(angleRadians, length);
 		}
-		while ((value - target).Length() < targetRangeRadius / 4f);
+		while ((value - Target).Length() < targetRangeRadius / 4f);
 	}
 
 	public override void Update()
@@ -209,44 +202,44 @@ public class CustomMoonCreature : Entity
 				targetTimer = Calc.Random.Range(minTargetTime, Math.Max(maxTargetTime / 2, minTargetTime));
 				GetFollowOffset();
 			}
-			target = following.Center + followingOffset;
-			if ((Position - start).Length() > MaxFollowDistance || followingTime <= 0f)
+			Target = following.Center + followingOffset;
+			if ((Position - Start).Length() > maxFollowDistance || followingTime <= 0f)
 			{
 				following = null;
 				targetTimer = 0f;
 			}
 		}
-		Vector2 value = (target - Position).SafeNormalize();
-		speed += value * ((following == null) ? Acceleration : FollowAcceleration) * Engine.DeltaTime;
-		speed = speed.SafeNormalize() * Math.Min(speed.Length(), (following == null) ? MaxSpeed : MaxFollowSpeed);
+		Vector2 value = (Target - Position).SafeNormalize();
+		speed += value * ((following == null) ? acceleration : followAcceleration) * Engine.DeltaTime;
+		speed = speed.SafeNormalize() * Math.Min(speed.Length(), (following == null) ? maxSpeed : maxFollowSpeed);
 		bump = bump.SafeNormalize() * Calc.Approach(bump.Length(), 0f, Engine.DeltaTime * 80f);
 		Position += (speed + bump) * Engine.DeltaTime;
 		Vector2 position = Position;
-		for (int i = 0; i < trail.Length; i++)
+		for (int i = 0; i < Trail.Length; i++)
 		{
-			Vector2 vector = (trail[i].Position - position).SafeNormalize();
+			Vector2 vector = (Trail[i].Position - position).SafeNormalize();
 			if (vector == Vector2.Zero)
 			{
 				vector = new Vector2(0f, 1f);
 			}
 			vector.Y += trailGravity;
 			Vector2 vector2 = position + vector * trailSpacing;
-			trail[i].Position = Calc.Approach(trail[i].Position, vector2, trailCatchupSpeed * Engine.DeltaTime);
-			position = trail[i].Position;
+			Trail[i].Position = Calc.Approach(Trail[i].Position, vector2, trailCatchupSpeed * Engine.DeltaTime);
+			position = Trail[i].Position;
 		}
-		base.X = Calc.Clamp(base.X, originLevelBounds.Left + 4, originLevelBounds.Right - 4);
-		base.Y = Calc.Clamp(base.Y, originLevelBounds.Top + 4, originLevelBounds.Bottom - 4);
+		X = Calc.Clamp(X, originLevelBounds.Left + 4, originLevelBounds.Right - 4);
+		Y = Calc.Clamp(Y, originLevelBounds.Top + 4, originLevelBounds.Bottom - 4);
 	}
 
 	public override void Render()
 	{
 		Vector2 position = Position;
 		Position = Position.Floor();
-		for (int num = trail.Length - 1; num >= 0; num--)
+		for (int num = Trail.Length - 1; num >= 0; num--)
 		{
-			Vector2 position2 = trail[num].Position;
-			float num2 = Calc.ClampedMap(num, 0f, trail.Length - 1, trailBaseSize);
-			Draw.Rect(position2.X - num2 / 2f, position2.Y - num2 / 2f, num2, num2, trail[num].Color);
+			Vector2 position2 = Trail[num].Position;
+			float num2 = Calc.ClampedMap(num, 0f, Trail.Length - 1, trailBaseSize);
+			Draw.Rect(position2.X - num2 / 2f, position2.Y - num2 / 2f, num2, num2, Trail[num].Color);
 		}
 		base.Render();
 		Position = position;
@@ -254,9 +247,9 @@ public class CustomMoonCreature : Entity
 	public override void DebugRender(Camera camera)
 	{
 		base.DebugRender(camera);
-		Draw.Line(Position, target, Color.White * 0.5f);
-		Draw.Rect(target - new Vector2(2, 2), 4, 4, CenterColor * 0.5f);
-		Draw.Circle(start, targetRangeRadius, CenterColor * 0.5f, 16);
+		Draw.Line(Position, Target, Color.White * 0.5f);
+		Draw.Rect(Target - new Vector2(2, 2), 4, 4, centerColor * 0.5f);
+		Draw.Circle(Start, targetRangeRadius, centerColor * 0.5f, 16);
 	}
 }
 

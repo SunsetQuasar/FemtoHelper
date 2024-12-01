@@ -10,7 +10,7 @@ public class FadingNorthernLights : Backdrop
 {
 	private class Strand
 	{
-		public List<Node> Nodes = new List<Node>();
+		public readonly List<Node> Nodes = [];
 
 		public float Duration;
 
@@ -31,7 +31,7 @@ public class FadingNorthernLights : Backdrop
 			Nodes.Clear();
 			Vector2 position = new Vector2(Calc.Random.Range(-40, 40), Calc.Random.Range(0, 180));
 			float num = Calc.Random.NextFloat();
-			Color value = Calc.Random.Choose(colors);
+			Color value = Calc.Random.Choose(Colors);
 			for (int i = 0; i < 40; i++)
 			{
 				Node item = new Node
@@ -42,7 +42,7 @@ public class FadingNorthernLights : Backdrop
 					TopAlpha = Calc.Random.Range(0.1f, 0.8f),
 					BottomAlpha = Calc.Random.Range(0.3f, 1f),
 					SineOffset = Calc.Random.NextFloat() * ((float)Math.PI * 2f),
-					Color = Color.Lerp(value, Calc.Random.Choose(colors), Calc.Random.Range(0f, 0.4f))
+					Color = Color.Lerp(value, Calc.Random.Choose(Colors), Calc.Random.Range(0f, 0.4f))
 				};
 				num += Calc.Random.Range(0.02f, 0.2f);
 				position += new Vector2(Calc.Random.Range(4, 20), Calc.Random.Range(-15, 15));
@@ -77,21 +77,21 @@ public class FadingNorthernLights : Backdrop
 		public Color Color;
 	}
 
-	private static readonly Color[] colors = new Color[4]
-	{
+	private static readonly Color[] Colors =
+	[
 		Calc.HexToColor("4abd89"),
 		Calc.HexToColor("5abdab"),
 		Calc.HexToColor("43b3c8"),
 		Calc.HexToColor("9259c8")
-	};
+	];
 
-	private List<Strand> strands = new List<Strand>();
+	private readonly List<Strand> strands = [];
 
-	private Particle[] particles = new Particle[50];
+	private readonly Particle[] particles = new Particle[50];
 
-	private VertexPositionColorTexture[] verts = new VertexPositionColorTexture[1024];
+	private readonly VertexPositionColorTexture[] verts = new VertexPositionColorTexture[1024];
 
-	private VertexPositionColor[] gradient = new VertexPositionColor[6];
+	private readonly VertexPositionColor[] gradient = new VertexPositionColor[6];
 
 	private VirtualRenderTarget buffer;
 
@@ -99,7 +99,7 @@ public class FadingNorthernLights : Backdrop
 
 	public float OffsetY;
 
-	public float NorthernLightsAlpha = 1f;
+	public readonly float NorthernLightsAlpha = 1f;
 
 	public FadingNorthernLights()
 	{
@@ -111,7 +111,7 @@ public class FadingNorthernLights : Backdrop
 		{
 			particles[j].Position = new Vector2(Calc.Random.Range(0, 320), Calc.Random.Range(0, 180));
 			particles[j].Speed = Calc.Random.Range(1, 22);
-			particles[j].Color = Calc.Random.Choose(colors);
+			particles[j].Color = Calc.Random.Choose(Colors);
 		}
 		Color color = Calc.HexToColor("0c2f2a");
 		Color color2 = Calc.HexToColor("070e12");
@@ -151,10 +151,7 @@ public class FadingNorthernLights : Backdrop
 
 	public override void BeforeRender(Scene scene)
 	{
-		if (buffer == null)
-		{
-			buffer = VirtualContent.CreateRenderTarget("northern-lights", 320, 180);
-		}
+		buffer ??= VirtualContent.CreateRenderTarget("northern-lights", 320, 180);
 		int vert = 0;
 		foreach (Strand strand in strands)
 		{
@@ -162,8 +159,8 @@ public class FadingNorthernLights : Backdrop
 			for (int i = 1; i < strand.Nodes.Count; i++)
 			{
 				Node node2 = strand.Nodes[i];
-				float num = Math.Min(1f, (float)i / 4f) * NorthernLightsAlpha;
-				float num2 = Math.Min(1f, (float)(strand.Nodes.Count - i) / 4f) * NorthernLightsAlpha;
+				float num = Math.Min(1f, i / 4f) * NorthernLightsAlpha;
+				float num2 = Math.Min(1f, (strand.Nodes.Count - i) / 4f) * NorthernLightsAlpha;
 				float num3 = OffsetY + (float)Math.Sin(node.SineOffset) * 3f;
 				float num4 = OffsetY + (float)Math.Sin(node2.SineOffset) * 3f;
 				Set(ref vert, node.Position.X, node.Position.Y + num3, node.TextureOffset, 1f, node.Color * (node.BottomAlpha * strand.Alpha * num));
@@ -187,8 +184,8 @@ public class FadingNorthernLights : Backdrop
 		for (int j = 0; j < particles.Length; j++)
 		{
 			Vector2 position = default(Vector2);
-			position.X = mod(particles[j].Position.X - camera.X * 0.2f, 320f);
-			position.Y = mod(particles[j].Position.Y - camera.Y * 0.2f, 180f);
+			position.X = Mod(particles[j].Position.X - camera.X * 0.2f, 320f);
+			position.Y = Mod(particles[j].Position.Y - camera.Y * 0.2f, 180f);
 			Draw.Rect(position, 1f, 1f, particles[j].Color);
 		}
 		Draw.SpriteBatch.End();
@@ -196,10 +193,7 @@ public class FadingNorthernLights : Backdrop
 
 	public override void Ended(Scene scene)
 	{
-		if (buffer != null)
-		{
-			buffer.Dispose();
-		}
+		buffer?.Dispose();
 		buffer = null;
 		base.Ended(scene);
 	}
@@ -219,7 +213,7 @@ public class FadingNorthernLights : Backdrop
 		Draw.SpriteBatch.Draw(buffer, Vector2.Zero, Color.White * FadeAlphaMultiplier);
 	}
 
-	private float mod(float x, float m)
+	private static float Mod(float x, float m)
 	{
 		return (x % m + m) % m;
 	}

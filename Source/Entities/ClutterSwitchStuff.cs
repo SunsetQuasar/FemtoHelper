@@ -8,9 +8,7 @@ public class NoLightClutterSwitch : Solid
 {
     public const float LightingAlphaAdd = 0.05f;
 
-    public static ParticleType P_Pressed = new ParticleType(ClutterSwitch.P_Pressed);
-
-    public static ParticleType P_ClutterFly = new ParticleType(ClutterSwitch.P_ClutterFly);
+    public static readonly ParticleType PPressed = new ParticleType(ClutterSwitch.P_Pressed);
 
     private const int PressedAdd = 10;
 
@@ -22,7 +20,7 @@ public class NoLightClutterSwitch : Solid
 
     private const int BrightLightRadius = 64;
 
-    private ClutterBlock.Colors color;
+    private readonly ClutterBlock.Colors color;
 
     private float startY;
 
@@ -32,13 +30,13 @@ public class NoLightClutterSwitch : Solid
 
     private bool pressed;
 
-    private Sprite sprite;
+    private readonly Sprite sprite;
 
-    private Image icon;
+    private readonly Image icon;
 
     private float targetXScale = 1f;
 
-    private VertexLight vertexLight;
+    private readonly VertexLight vertexLight;
 
     private bool playerWasOnTop;
 
@@ -49,7 +47,7 @@ public class NoLightClutterSwitch : Solid
         : base(position, 32f, 16f, safe: true)
     {
         this.color = color;
-        startY = (atY = base.Y);
+        startY = (atY = Y);
         OnDashCollide = OnDashed;
         SurfaceSoundIndex = 21;
         Add(sprite = GFX.SpriteBank.Create("clutterSwitch"));
@@ -58,7 +56,7 @@ public class NoLightClutterSwitch : Solid
         Add(icon = new Image(GFX.Game["objects/resortclutter/icon_" + color]));
         icon.CenterOrigin();
         icon.Position = new Vector2(16f, 8f);
-        Add(vertexLight = new VertexLight(new Vector2(base.CenterX - base.X, -1f), Color.Aqua, 1f, 32, 64));
+        Add(vertexLight = new VertexLight(new Vector2(CenterX - X, -1f), Color.Aqua, 1f, 32, 64));
     }
 
     public NoLightClutterSwitch(EntityData data, Vector2 offset)
@@ -83,7 +81,7 @@ public class NoLightClutterSwitch : Solid
     {
         pressed = true;
         atY += 10f;
-        base.Y += 10f;
+        Y += 10f;
         sprite.Y += 2f;
         sprite.Play("active");
         Remove(icon);
@@ -101,7 +99,7 @@ public class NoLightClutterSwitch : Solid
                 speedY = 0f;
             }
             speedY = Calc.Approach(speedY, 70f, 200f * Engine.DeltaTime);
-            MoveTowardsY(atY + (float)(pressed ? 2 : 4), speedY * Engine.DeltaTime);
+            MoveTowardsY(atY + (pressed ? 2 : 4), speedY * Engine.DeltaTime);
             targetXScale = 1.2f;
             if (!playerWasOnTop)
             {
@@ -131,25 +129,20 @@ public class NoLightClutterSwitch : Solid
     {
         if (!pressed && direction == Vector2.UnitY)
         {
-            global::Celeste.Celeste.Freeze(0.2f);
+            Celeste.Freeze(0.2f);
             Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
-            Level obj = base.Scene as Level;
+            Level obj = Scene as Level;
             obj.Session.SetFlag("oshiro_clutter_cleared_" + (int)color);
             obj.Session.SetFlag("oshiro_clutter_door_open", setTo: false);
             vertexLight.StartRadius = 64f;
             vertexLight.EndRadius = 128f;
             obj.DirectionalShake(Vector2.UnitY, 0.6f);
-            obj.Particles.Emit(P_Pressed, 20, base.TopCenter - Vector2.UnitY * 10f, new Vector2(16f, 8f));
+            obj.Particles.Emit(PPressed, 20, TopCenter - Vector2.UnitY * 10f, new Vector2(16f, 8f));
             BePressed();
             sprite.Scale.X = 1.5f;
-            if (color == ClutterBlock.Colors.Lightning)
-            {
-                Add(new Coroutine(LightningRoutine(player)));
-            }
-            else
-            {
-                Add(new Coroutine(AbsorbRoutine(player)));
-            }
+            Add(color == ClutterBlock.Colors.Lightning
+                ? new Coroutine(LightningRoutine(player))
+                : new Coroutine(AbsorbRoutine(player)));
         }
         return DashCollisionResults.NormalCollision;
     }
@@ -187,9 +180,9 @@ public class NoLightClutterSwitch : Solid
             Audio.Play("event:/game/03_resort/clutterswitch_finish", Position);
         }, duration, start: true));
         player.StateMachine.State = 11;
-        Vector2 target = Position + new Vector2(base.Width / 2f, 0f);
+        Vector2 target = Position + new Vector2(Width / 2f, 0f);
         ClutterAbsorbEffect effect = new ClutterAbsorbEffect();
-        base.Scene.Add(effect);
+        Scene.Add(effect);
         sprite.Play("break");
         Level level = SceneAs<Level>();
         level.Session.Audio.Music.Progress++;
@@ -207,14 +200,14 @@ public class NoLightClutterSwitch : Solid
             Add(tween2);
         });
         Input.Rumble(RumbleStrength.Light, RumbleLength.Medium);
-        foreach (ClutterBlock item in base.Scene.Entities.FindAll<ClutterBlock>())
+        foreach (ClutterBlock item in Scene.Entities.FindAll<ClutterBlock>())
         {
             if (item.BlockColor == color)
             {
                 item.Absorb(effect);
             }
         }
-        foreach (ClutterBlockBase item2 in base.Scene.Entities.FindAll<ClutterBlockBase>())
+        foreach (ClutterBlockBase item2 in Scene.Entities.FindAll<ClutterBlockBase>())
         {
             if (item2.BlockColor == color)
             {
@@ -253,17 +246,17 @@ public class NoLightClutterSwitch : Solid
 [Tracked]
 public class ClutterShadowController : Entity
 {
-    public float enabledAlpha = 0.7f;
-    public float disabledAlpha = 0.3f;
-    public Color enabledColor;
-    public Color disabledColor;
+    public readonly float EnabledAlpha;
+    public readonly float DisabledAlpha;
+    public Color EnabledColor;
+    public Color DisabledColor;
 
     public ClutterShadowController(EntityData data, Vector2 offset) : base()
     {
-        enabledAlpha = data.Float("enabledAlpha", 0.7f);
-        disabledAlpha = data.Float("disabledAlpha", 0.3f);
-        enabledColor = Calc.HexToColor(data.Attr("enabledColor", "000000"));
-        disabledColor = Calc.HexToColor(data.Attr("disabledColor", "000000"));
+        EnabledAlpha = data.Float("enabledAlpha", 0.7f);
+        DisabledAlpha = data.Float("disabledAlpha", 0.3f);
+        EnabledColor = Calc.HexToColor(data.Attr("enabledColor", "000000"));
+        DisabledColor = Calc.HexToColor(data.Attr("disabledColor", "000000"));
     }
 
     public static void Load()
@@ -282,7 +275,7 @@ public class ClutterShadowController : Entity
         ClutterShadowController c = self.Scene.Tracker.GetEntity<ClutterShadowController>();
         if (c != null)
         {
-            self.color = (self.enabled ? c.enabledColor : c.disabledColor) * (self.enabled ? c.enabledAlpha : c.disabledAlpha);
+            self.color = (self.enabled ? c.EnabledColor : c.DisabledColor) * (self.enabled ? c.EnabledAlpha : c.DisabledAlpha);
         }
         orig(self);
         self.color = cl;

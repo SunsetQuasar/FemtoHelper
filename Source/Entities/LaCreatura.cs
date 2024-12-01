@@ -14,9 +14,9 @@ public class LaCreatura : Entity
 		public Color Color;
 	}
 
-	private TrailNode[] trail;
+	private readonly TrailNode[] trail;
 
-	private Vector2 start;
+	private readonly Vector2 start;
 
 	private Vector2 target;
 
@@ -32,22 +32,16 @@ public class LaCreatura : Entity
 
 	private float followingTime;
 
-	private Color OrbColor;
+	private Color orbColor;
 
-	private Color CenterColor;
+	private readonly Color centerColor;
 
-	private Sprite Sprite;
+	private readonly Sprite sprite;
 
-	private float Acceleration = 90f;
+	private readonly float acceleration;
 
-	private const float FollowAcceleration = 120f;
-
-	private float MaxSpeed = 40f;
+	private readonly float maxSpeed;
 	
-	private const float MaxFollowSpeed = 70f;
-
-	private const float MaxFollowDistance = 200f;
-
 	//private readonly int spawn;
 
 	private Rectangle originLevelBounds;
@@ -58,31 +52,34 @@ public class LaCreatura : Entity
 
 	private bool facingRight;
 
-	public float bloomSize, bloomAlpha;
-	public int lightStartFade, lightEndFade;
-	public float lightAlpha;
-	public float targetRangeRadius;
-	public float minFollowTime, maxFollowTime;
+	public readonly float BloomSize;
+	public readonly float BloomAlpha;
+	public readonly int LightStartFade;
+	public readonly int LightEndFade;
+	public readonly float LightAlpha;
+	public readonly float TargetRangeRadius;
+	public readonly float MinFollowTime;
+	public readonly float MaxFollowTime;
 
-    public LaCreatura(EntityData data, Vector2 offset) : base(data.Position + offset)
+	public LaCreatura(EntityData data, Vector2 offset) : base(data.Position + offset)
 	{
-		Acceleration = data.Float("acceleration", 90f);
-		MaxSpeed = data.Float("maxSpeed", 40f);
+		acceleration = data.Float("acceleration", 90f);
+		maxSpeed = data.Float("maxSpeed", 40f);
 
 		if (data.Has("colors"))
 		{
-            CenterColor = Calc.Random.Choose(data.Attr("colors", "74db93,dbc874,74a1db,e0779f,9677e0")
+            centerColor = Calc.Random.Choose(data.Attr("colors", "74db93,dbc874,74a1db,e0779f,9677e0")
 				.Split(',')
 				.Select(str => Calc.HexToColor(str.Trim()))
 				.ToArray());
 		} 
 		else
 		{
-            CenterColor = Calc.Random.Choose(Calc.HexToColor("74db93"), Calc.HexToColor("dbc874"), Calc.HexToColor("74a1db"), Calc.HexToColor("e0779f"), Calc.HexToColor("9677e0"));
+            centerColor = Calc.Random.Choose(Calc.HexToColor("74db93"), Calc.HexToColor("dbc874"), Calc.HexToColor("74a1db"), Calc.HexToColor("e0779f"), Calc.HexToColor("9677e0"));
         }
-        base.Tag = Tags.TransitionUpdate;
-        base.Depth = -13010;
-        base.Collider = new Hitbox(20f, 20f, -10f, -10f);
+        Tag = Tags.TransitionUpdate;
+        Depth = -13010;
+        Collider = new Hitbox(20f, 20f, -10f, -10f);
         start = data.Position + offset;
         targetTimer = 0f;
 		if (data.Bool("randomStartPos", true))
@@ -91,52 +88,48 @@ public class LaCreatura : Entity
             Position = target;
         }
         Add(new PlayerCollider(OnPlayer));
-        OrbColor = Calc.HexToColor("b0e6ff");
-        Color value = Color.Lerp(CenterColor, Calc.HexToColor("bde4ee"), 0.5f);
-        Color value2 = Color.Lerp(CenterColor, Calc.HexToColor("2f2941"), 0.5f);
+        orbColor = Calc.HexToColor("b0e6ff");
+        Color value = Color.Lerp(centerColor, Calc.HexToColor("bde4ee"), 0.5f);
+        Color value2 = Color.Lerp(centerColor, Calc.HexToColor("2f2941"), 0.5f);
         trail = new TrailNode[6];
         for (int i = 0; i < 6; i++)
         {
             trail[i] = new TrailNode
             {
                 Position = Position,
-                Color = Color.Lerp(value, value2, (float)i / 4f) * (0.2f - (0.1f * i / 6))
+                Color = Color.Lerp(value, value2, i / 4f) * (0.2f - (0.1f * i / 6))
             };
         }
-        Add(Sprite = FemtoModule.femtoSpriteBank.Create("butterfly"));
-		bloomSize = data.Float("bloomRadius", 16f);
-		bloomAlpha = data.Float("bloomAlpha", 0.75f);
-		lightStartFade = data.Int("lightStartFade", 12);
-		lightEndFade = data.Int("lightEndFade", 24);
-		lightAlpha = data.Float("lightAlpha", 1f);
-		targetRangeRadius = data.Float("targetRangeRadius", 32f);
-		minFollowTime = data.Float("minFollowTime", 6f);
-        maxFollowTime = data.Float("maxFollowTime", 12f);
+        Add(sprite = FemtoModule.FemtoSpriteBank.Create("butterfly"));
+		BloomSize = data.Float("bloomRadius", 16f);
+		BloomAlpha = data.Float("bloomAlpha", 0.75f);
+		LightStartFade = data.Int("lightStartFade", 12);
+		LightEndFade = data.Int("lightEndFade", 24);
+		LightAlpha = data.Float("lightAlpha", 1f);
+		TargetRangeRadius = data.Float("targetRangeRadius", 32f);
+		MinFollowTime = data.Float("minFollowTime", 6f);
+        MaxFollowTime = data.Float("maxFollowTime", 12f);
     }
 
 	public override void Added(Scene scene)
 	{
 		base.Added(scene);
-		Sprite.Play("right");
-		Sprite.Color = CenterColor;
-		if (bloomAlpha > 0) Add(bloom = new BloomPoint(bloomAlpha, bloomSize));
-        if (lightAlpha > 0) Add(light = new VertexLight(CenterColor, lightAlpha, lightStartFade, lightEndFade));
+		sprite.Play("right");
+		sprite.Color = centerColor;
+		if (BloomAlpha > 0) Add(bloom = new BloomPoint(BloomAlpha, BloomSize));
+        if (LightAlpha > 0) Add(light = new VertexLight(centerColor, LightAlpha, LightStartFade, LightEndFade));
 
 		originLevelBounds = (scene as Level).Bounds;
 	}
 	private void OnPlayer(Player player)
 	{
 		Vector2 vector = (Position - player.Center).SafeNormalize(player.Speed.Length() * 0.3f);
-		if (vector.LengthSquared() > bump.LengthSquared())
-		{
-			bump = vector;
-			if ((player.Center - start).Length() < 200f && (minFollowTime + maxFollowTime) > 0)
-			{
-				following = player;
-				followingTime = Calc.Random.Range(minFollowTime, maxFollowTime);
-				GetFollowOffset();
-			}
-		}
+		if (!(vector.LengthSquared() > bump.LengthSquared())) return;
+		bump = vector;
+		if (!((player.Center - start).Length() < 200f) || !((MinFollowTime + MaxFollowTime) > 0)) return;
+		following = player;
+		followingTime = Calc.Random.Range(MinFollowTime, MaxFollowTime);
+		GetFollowOffset();
 	}
 	private void GetFollowOffset()
 	{
@@ -148,25 +141,26 @@ public class LaCreatura : Entity
 		Vector2 value = target;
 		do
 		{
-			float length = Calc.Random.NextFloat(targetRangeRadius);
+			float length = Calc.Random.NextFloat(TargetRangeRadius);
 			float angleRadians = Calc.Random.NextFloat((float)Math.PI * 2f);
 			target = start + Calc.AngleToVector(angleRadians, length);
 		}
-		while ((value - target).Length() < targetRangeRadius / 4f);
+		while ((value - target).Length() < TargetRangeRadius / 4f);
 	}
 
 	public override void Update()
 	{
 		base.Update();
-		if (speed.X >= 0 && facingRight == false)
+		switch (speed.X)
 		{
-			Sprite.Play("turn_right");
-			facingRight = true;
-		}
-		else if (speed.X < 0 && facingRight == true)
-		{
-			Sprite.Play("turn_left");
-			facingRight = false;
+			case >= 0 when facingRight == false:
+				sprite.Play("turn_right");
+				facingRight = true;
+				break;
+			case < 0 when facingRight == true:
+				sprite.Play("turn_left");
+				facingRight = false;
+				break;
 		}
 		if (following == null)
 		{
@@ -194,8 +188,8 @@ public class LaCreatura : Entity
 			}
 		}
 		Vector2 value = (target - Position).SafeNormalize();
-		speed += value * ((following == null) ? Acceleration : Acceleration * (1 + (1/3))) * Engine.DeltaTime;
-		speed = speed.SafeNormalize() * Math.Min(speed.Length(), (following == null) ? MaxSpeed : MaxSpeed + 30f);
+		speed += value * ((following == null) ? acceleration : acceleration * (1 + (1/3))) * Engine.DeltaTime;
+		speed = speed.SafeNormalize() * Math.Min(speed.Length(), (following == null) ? maxSpeed : maxSpeed + 30f);
 		bump = bump.SafeNormalize() * Calc.Approach(bump.Length(), 0f, Engine.DeltaTime * 80f);
 		Position += (speed + bump) * Engine.DeltaTime;
 		Vector2 position = Position;
@@ -211,8 +205,8 @@ public class LaCreatura : Entity
 			trail[i].Position = Calc.Approach(trail[i].Position, vector2, 128f * Engine.DeltaTime);
 			position = trail[i].Position;
 		}
-		base.X = Calc.Clamp(base.X, originLevelBounds.Left + 4, originLevelBounds.Right - 4);
-		base.Y = Calc.Clamp(base.Y, originLevelBounds.Top + 4, originLevelBounds.Bottom - 4);
+		X = Calc.Clamp(X, originLevelBounds.Left + 4, originLevelBounds.Right - 4);
+		Y = Calc.Clamp(Y, originLevelBounds.Top + 4, originLevelBounds.Bottom - 4);
 	}
 
 	public override void Render()
@@ -232,8 +226,8 @@ public class LaCreatura : Entity
 	{
 		base.DebugRender(camera);
 		Draw.Line(Position, target, Color.White * 0.5f);
-		Draw.Rect(target - new Vector2(2, 2), 4, 4, CenterColor * 0.5f);
-        Draw.Circle(start, targetRangeRadius, CenterColor * 0.5f, 16);
+		Draw.Rect(target - new Vector2(2, 2), 4, 4, centerColor * 0.5f);
+        Draw.Circle(start, TargetRangeRadius, centerColor * 0.5f, 16);
     }
 }
 

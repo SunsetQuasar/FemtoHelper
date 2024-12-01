@@ -13,138 +13,138 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [Tracked]
 public class CinematicText : Entity
 {
-    public string str;
-    public Color color1;
-    public Color color2;
-    public bool shadow;
-    public int spacing;
-    public PlutoniumText text;
-    public float parallax;
-    public int finalStringLen = 0;
-    public char movingChar = ' ';
-    public float movingCharPercent;
-    public bool active = false;
-    public Vector2 movingCharOffset;
-    public float delay;
-    public float speedMultiplier;
-    public string audio;
-    public bool entered;
-    public float timer;
+    public string Str;
+    public Color Color1;
+    public Color Color2;
+    public readonly bool Shadow;
+    public readonly int Spacing;
+    public readonly PlutoniumText Text;
+    public readonly float Parallax;
+    public int FinalStringLen = 0;
+    public char MovingChar = ' ';
+    public float MovingCharPercent;
+    public bool Active = false;
+    public Vector2 MovingCharOffset;
+    public readonly float Delay;
+    public readonly float SpeedMultiplier;
+    public readonly string Audio;
+    public bool Entered;
+    public float Timer;
 
-    public float disappearDelay;
-    public float disappearPercent = 1f;
+    public float DisappearDelay;
+    public float DisappearPercent = 1f;
 
-    public int cur = 0;
+    public int Cur = 0;
 
-    public TextEffectData effectData;
+    public readonly TextEffectData EffectData;
 
-    public SoundSource soundSource;
+    public readonly SoundSource SoundSource;
 
-    public string activationTag;
-    public string nextTextTag;
+    public readonly string ActivationTag;
+    public readonly string NextTextTag;
 
-    public Regex noSound = new Regex(@"\.|!|,| |\?|\/|'|\*");
+    public readonly Regex NoSound = new Regex(@"\.|!|,| |\?|\/|'|\*");
 
-    public float scale;
-    public bool hud;
-    public bool ignoreRegex;
+    public readonly float Scale;
+    public readonly bool Hud;
+    public readonly bool IgnoreRegex;
 
-    public bool onlyOnce;
-    public EntityID id;
+    public readonly bool OnlyOnce;
+    public EntityID Id;
 
-    public bool instantReload;
+    public readonly bool InstantReload;
     public bool HasInstantReloaded;
 
-    public bool instantLoad;
-    public bool retriggerable;
+    public readonly bool InstantLoad;
+    public readonly bool Retriggerable;
 
-    public List<PlutoniumTextNodes.Node> nodes;
+    public readonly List<PlutoniumTextNodes.Node> Nodes;
 
-    public VirtualRenderTarget buffer;
+    public readonly VirtualRenderTarget Buffer;
 
-    public bool finished;
+    public bool Finished;
 
-    public bool stopText;
+    public bool StopText;
 
-    public string visibilityFlag;
+    public readonly string VisibilityFlag;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
 
         if (data.NodesOffset(offset).Length > 0) Position = data.NodesOffset(offset)[0];
 
-        nodes = new List<PlutoniumTextNodes.Node>();
+        Nodes = [];
 
-        str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
+        Str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
 
-        string[] split_str = Regex.Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")), "(\\s|\\{|\\})");
-        string[] split_str2 = new string[split_str.Length];
+        string[] splitStr = Regex.Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")), "(\\s|\\{|\\})");
+        string[] splitStr2 = new string[splitStr.Length];
         int num = 0;
-        for (int i = 0; i < split_str.Length; i++)
+        foreach (var t in splitStr)
         {
-            if (!string.IsNullOrEmpty(split_str[i]))
+            if (!string.IsNullOrEmpty(t))
             {
-                split_str2[num++] = split_str[i];
+                splitStr2[num++] = t;
             }
         }
 
-        for (int i = 0; i < split_str2.Length; i++)
+        for (int i = 0; i < splitStr2.Length; i++)
         {
-            if (split_str2[i] == "{")
+            if (splitStr2[i] == "{")
             {
                 i++;
 
-                for (; i < split_str2.Length && split_str2[i] != "}"; i++)
+                for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
                 {
-                    if (!string.IsNullOrWhiteSpace(split_str2[i]))
+                    if (!string.IsNullOrWhiteSpace(splitStr2[i]))
                     {
-                        string[] splitOnceAgain = split_str2[i].Split(';');
+                        string[] splitOnceAgain = splitStr2[i].Split(';');
                         if (splitOnceAgain.Length == 3)
                         {
-                            nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
+                            Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
                         }
                         else
                         {
-                            nodes.Add(new PlutoniumTextNodes.Counter(split_str2[i]));
+                            Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
                         }
                     }
                 }
             }
             else
             {
-                nodes.Add(new PlutoniumTextNodes.Text(split_str2[i]));
+                Nodes.Add(new PlutoniumTextNodes.Text(splitStr2[i]));
             }
         }
 
-        color1 = Calc.HexToColorWithAlpha(data.Attr("mainColor", "ffffffff"));
-        color2 = Calc.HexToColorWithAlpha(data.Attr("outlineColor", "000000ff"));
+        Color1 = Calc.HexToColorWithAlpha(data.Attr("mainColor", "ffffffff"));
+        Color2 = Calc.HexToColorWithAlpha(data.Attr("outlineColor", "000000ff"));
 
         Depth = data.Int("depth", -100);
 
-        shadow = data.Bool("shadow", false);
-        spacing = data.Int("spacing", 7);
+        Shadow = data.Bool("shadow", false);
+        Spacing = data.Int("spacing", 7);
 
         string path = data.Attr("fontPath", "objects/FemtoHelper/PlutoniumText/example");
         string list = data.Attr("charList", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\".,ç");
 
         Vector2 size = new Vector2(data.Int("fontWidth", 7), data.Int("fontHeight", 7));
 
-        Add(text = new PlutoniumText(path, list, size));
+        Add(Text = new PlutoniumText(path, list, size));
 
         Add(new BeforeRenderHook(BeforeRender));
 
-        parallax = data.Float("parallax", 1);
+        Parallax = data.Float("parallax", 1);
 
-        movingCharOffset = new Vector2(data.Float("charOriginX", 0), data.Float("charOriginY", -8));
+        MovingCharOffset = new Vector2(data.Float("charOriginX", 0), data.Float("charOriginY", -8));
 
-        delay = data.Float("delay", 0f);
+        Delay = data.Float("delay", 0f);
 
-        speedMultiplier = data.Float("speed", 5f);
+        SpeedMultiplier = data.Float("speed", 5f);
 
-        audio = data.Attr("textSound", "event:/FemtoHelper/example_text_sound");
+        Audio = data.Attr("textSound", "event:/FemtoHelper/example_text_sound");
 
-        disappearDelay = data.Float("disappearTime", 3f);
+        DisappearDelay = data.Float("disappearTime", 3f);
 
-        if (data.Bool("effects", false)) effectData = new TextEffectData(
+        if (data.Bool("effects", false)) EffectData = new TextEffectData(
             data.Bool("wave", false),
             new Vector2(data.Float("waveX", 0), data.Float("waveY", 2)),
             data.Float("wavePhaseOffset", 90) * Calc.DegToRad,
@@ -156,67 +156,67 @@ public class CinematicText : Entity
             data.Float("phaseIncrement", 25f) * Calc.DegToRad,
             data.Float("waveSpeed", 5f)
             );
-        else effectData = new TextEffectData();
+        else EffectData = new TextEffectData();
 
-        soundSource = new SoundSource()
+        SoundSource = new SoundSource()
         {
             Position = Position
         };
 
-        activationTag = data.Attr("activationTag", "tag1");
-        nextTextTag = data.Attr("nextTextTag", "");
+        ActivationTag = data.Attr("activationTag", "tag1");
+        NextTextTag = data.Attr("nextTextTag", "");
 
-        scale = data.Float("scale", 1);
-        hud = data.Bool("hud", false);
-        if (hud)
+        Scale = data.Float("scale", 1);
+        Hud = data.Bool("hud", false);
+        if (Hud)
         {
             Tag |= TagsExt.SubHUD;
-            buffer = VirtualContent.CreateRenderTarget("plutoniumText_" + id.ToString(), 1920, 1080);
+            Buffer = VirtualContent.CreateRenderTarget("plutoniumText_" + id.ToString(), 1920, 1080);
         }
         else
         {
-            buffer = VirtualContent.CreateRenderTarget("plutoniumText_" + id.ToString(), 320, 180);
+            Buffer = VirtualContent.CreateRenderTarget("plutoniumText_" + id.ToString(), 320, 180);
         }
 
-        ignoreRegex = data.Bool("ignoreAudioRegex", false);
-        onlyOnce = data.Bool("onlyOnce", false);
-        instantReload = data.Bool("instantReload", false);
-        instantLoad = data.Bool("instantLoad", false);
+        IgnoreRegex = data.Bool("ignoreAudioRegex", false);
+        OnlyOnce = data.Bool("onlyOnce", false);
+        InstantReload = data.Bool("instantReload", false);
+        InstantLoad = data.Bool("instantLoad", false);
 
-        retriggerable = data.Bool("retriggerable", false);
+        Retriggerable = data.Bool("retriggerable", false);
 
-        visibilityFlag = data.Attr("visibilityFlag", "");
+        VisibilityFlag = data.Attr("visibilityFlag", "");
 
-        this.id = id;
+        Id = id;
     }
 
     public override void Awake(Scene scene)
     {
-        str = PlutoniumTextNodes.ConstructString(nodes, scene as Level);
+        Str = PlutoniumTextNodes.ConstructString(Nodes, scene as Level);
 
         base.Awake(scene);
 
-        if (string.IsNullOrEmpty(activationTag)) Enter();
+        if (string.IsNullOrEmpty(ActivationTag)) Enter();
 
-        if (instantLoad || (instantReload && (scene as Level).Session.GetFlag("PlutoniumInstaReload_" + id.ToString())))
+        if (InstantLoad || (InstantReload && ((scene as Level)?.Session.GetFlag("PlutoniumInstaReload_" + Id) ?? false)))
         {
-            InstantReload(0f);
+            DoInstantReload(0f);
         }
     }
 
-    public void InstantReload(float extra)
+    public void DoInstantReload(float extra)
     {
         if (HasInstantReloaded) return;
-        active = entered = HasInstantReloaded = true;
-        finalStringLen = str.Length;
+        Active = Entered = HasInstantReloaded = true;
+        FinalStringLen = Str.Length;
         Add(new Coroutine(InstaSequence()));
         foreach (CinematicText t in Scene.Tracker.GetEntities<CinematicText>())
         {
-            if (t.activationTag == nextTextTag)
+            if (t.ActivationTag == NextTextTag)
             {
-                float extraTime = extra + ((1 / (t.speedMultiplier == 0 ? t.speedMultiplier : float.Epsilon)) * (t.str.Length - t.str.Count(f => f == ' ')));
-                t.disappearDelay += extraTime;
-                t.InstantReload(extraTime);
+                float extraTime = extra + ((1 / (t.SpeedMultiplier == 0 ? t.SpeedMultiplier : float.Epsilon)) * (t.Str.Length - t.Str.Count(f => f == ' ')));
+                t.DisappearDelay += extraTime;
+                t.DoInstantReload(extraTime);
                 // simulate the next text string being formed later by literally calculating how much time it takes to form and pretending it takes that much longer to disappear. fucking lol.
             }
         }
@@ -224,95 +224,95 @@ public class CinematicText : Entity
 
     public void Enter()
     {
-        if (entered) return;
-        timer = delay;
-        entered = true;
+        if (Entered) return;
+        Timer = Delay;
+        Entered = true;
     }
 
     public override void Update()
     {
         base.Update();
-        if (!entered || active) return;
-        if (timer > 0)
+        if (!Entered || Active) return;
+        if (Timer > 0)
         {
-            timer = Math.Max(timer - Engine.DeltaTime, 0);
+            Timer = Math.Max(Timer - Engine.DeltaTime, 0);
             return;
         }
-        active = true;
+        Active = true;
         Add(new Coroutine(Sequence()));
-        if(instantReload) (Scene as Level).Session.SetFlag("PlutoniumInstaReload_" + id.ToString());
+        if(InstantReload) (Scene as Level)?.Session.SetFlag("PlutoniumInstaReload_" + Id);
     }
 
     public IEnumerator Sequence()
     {
-        for (cur = 0; cur < str.Length; cur++)
+        for (Cur = 0; Cur < Str.Length; Cur++)
         {
-            movingChar = str[cur];
-            movingCharPercent = 0f;
-            while (movingCharPercent < 1f && movingChar != ' ')
+            MovingChar = Str[Cur];
+            MovingCharPercent = 0f;
+            while (MovingCharPercent < 1f && MovingChar != ' ')
             {
-                movingCharPercent = Math.Min(movingCharPercent + Engine.DeltaTime * speedMultiplier, 1);
+                MovingCharPercent = Math.Min(MovingCharPercent + Engine.DeltaTime * SpeedMultiplier, 1);
                 yield return null;
             }
-            if ((!noSound.IsMatch(movingChar.ToString()) || (ignoreRegex && movingChar != ' ')) && !string.IsNullOrEmpty(audio)) soundSource.Play(audio);
-            finalStringLen++;
+            if ((!NoSound.IsMatch(MovingChar.ToString()) || (IgnoreRegex && MovingChar != ' ')) && !string.IsNullOrEmpty(Audio)) SoundSource.Play(Audio);
+            FinalStringLen++;
         }
-        movingChar = ' ';
-        if (!string.IsNullOrEmpty(nextTextTag))
+        MovingChar = ' ';
+        if (!string.IsNullOrEmpty(NextTextTag))
         {
             foreach (CinematicText t in Scene.Tracker.GetEntities<CinematicText>())
             {
-                if (t.activationTag == nextTextTag)
+                if (t.ActivationTag == NextTextTag)
                 {
                     t.Enter();
                 }
             }
         }
-        finished = true;
+        Finished = true;
         float count = 0f;
-        while(count < disappearDelay || disappearDelay == -1)
+        while(count < DisappearDelay || (int)DisappearDelay == -1)
         {
-            if (stopText) break;
+            if (StopText) break;
             count += Engine.DeltaTime;
             yield return null;
         }
-        for (disappearPercent = 1f; disappearPercent >= 0; disappearPercent -= Engine.DeltaTime)
+        for (DisappearPercent = 1f; DisappearPercent >= 0; DisappearPercent -= Engine.DeltaTime)
         {
             yield return null;
         }
-        if (onlyOnce) (Scene as Level).Session.DoNotLoad.Add(id);
-        if (retriggerable)
+        if (OnlyOnce) (Scene as Level)?.Session.DoNotLoad.Add(Id);
+        if (Retriggerable)
         {
-            stopText = false;
-            active = entered = false;
-            disappearPercent = 1f;
-            finalStringLen = 0;
-            finished = false;
+            StopText = false;
+            Active = Entered = false;
+            DisappearPercent = 1f;
+            FinalStringLen = 0;
+            Finished = false;
         }
         else RemoveSelf();
     }
 
     public IEnumerator InstaSequence()
     {
-        finished = true;
+        Finished = true;
         float count = 0f;
-        while (count < disappearDelay || disappearDelay == -1)
+        while (count < DisappearDelay || (int)DisappearDelay == -1)
         {
-            if (stopText) break;
+            if (StopText) break;
             count += Engine.DeltaTime;
             yield return null;
         }
-        for (disappearPercent = 1f; disappearPercent >= 0; disappearPercent -= Engine.DeltaTime)
+        for (DisappearPercent = 1f; DisappearPercent >= 0; DisappearPercent -= Engine.DeltaTime)
         {
             yield return null;
         }
-        if (retriggerable)
+        if (Retriggerable)
         {
-            stopText = false;
-            active = entered = false;
-            disappearPercent = 1f;
-            finalStringLen = 0;
-            finished = false;
+            StopText = false;
+            Active = Entered = false;
+            DisappearPercent = 1f;
+            FinalStringLen = 0;
+            Finished = false;
         }
         else RemoveSelf();
     }
@@ -320,27 +320,27 @@ public class CinematicText : Entity
     public void BeforeRender()
     {
 
-        string finalString2 = str[0..finalStringLen];
-        if (finished) finalString2 = PlutoniumTextNodes.ConstructString(nodes, SceneAs<Level>());
+        string finalString2 = Str[0..FinalStringLen];
+        if (Finished) finalString2 = PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>());
 
-        if (!active) return;
+        if (!Active) return;
 
-        Engine.Graphics.GraphicsDevice.SetRenderTarget(buffer);
+        Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
         Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
 
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
 
         Vector2 position = (Scene as Level).Camera.Position;
         Vector2 vector = position + new Vector2(160f, 90f);
-        Vector2 position2 = (Position - position + (Position - vector) * (parallax - 1)) + position;
+        Vector2 position2 = (Position - position + (Position - vector) * (Parallax - 1)) + position;
 
-        int offset = finalStringLen * spacing;
+        int offset = FinalStringLen * Spacing;
 
-        float scale2 = scale;
+        float scale2 = Scale;
 
         position2 -= position;
 
-        if (hud)
+        if (Hud)
         {
             position2 *= 6;
             scale2 *= 6;
@@ -348,13 +348,13 @@ public class CinematicText : Entity
 
         //outlines
 
-        text.Print(position2, finalString2, shadow, spacing, Color.Transparent, color2, effectData, scale2);
-        text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, Color.Transparent, color2 * movingCharPercent, effectData, scale2, cur);
+        Text.Print(position2, finalString2, Shadow, Spacing, Color.Transparent, Color2, EffectData, scale2);
+        Text.Print(position2 + (MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * MovingCharPercent, EffectData, scale2, Cur);
 
         //main text
 
-        text.Print(position2, finalString2, shadow, spacing, color1, Color.Transparent, effectData, scale2);
-        text.Print(position2 + (movingCharOffset * Ease.SineInOut(1 - movingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), movingChar.ToString(), shadow, spacing, color1 * movingCharPercent, Color.Transparent, effectData, scale2, cur);
+        Text.Print(position2, finalString2, Shadow, Spacing, Color1, Color.Transparent, EffectData, scale2);
+        Text.Print(position2 + (MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), MovingChar.ToString(), Shadow, Spacing, Color1 * MovingCharPercent, Color.Transparent, EffectData, scale2, Cur);
 
         Draw.SpriteBatch.End();
     }
@@ -363,20 +363,20 @@ public class CinematicText : Entity
     {
         base.Render();
 
-        if (!active || !(Scene as Level).FancyCheckFlag(visibilityFlag)) return;
+        if (!Active || !(Scene as Level).FancyCheckFlag(VisibilityFlag)) return;
 
-        float alpha = Ease.SineInOut(disappearPercent);
+        float alpha = Ease.SineInOut(DisappearPercent);
 
-        if (hud)
+        if (Hud)
         {
             SubHudRenderer.EndRender();
 
             Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, (Engine.ScreenMatrix.M11 * 6) < 6 ? Matrix.Identity : Engine.ScreenMatrix);
         }
 
-        Draw.SpriteBatch.Draw(buffer, hud ? Vector2.Zero : (Scene as Level).Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, (SaveData.Instance.Assists.MirrorMode && hud) ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+        Draw.SpriteBatch.Draw(Buffer, Hud ? Vector2.Zero : (Scene as Level).Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, (SaveData.Instance.Assists.MirrorMode && Hud) ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
 
-        if (hud)
+        if (Hud)
         {
             SubHudRenderer.EndRender();
 
@@ -389,7 +389,7 @@ public class CinematicText : Entity
         base.DebugRender(camera);
         Vector2 position = (Scene as Level).Camera.Position;
         Vector2 vector = position + new Vector2(160f, 90f);
-        Vector2 position2 = (Position - position + (Position - vector) * (parallax - 1)) + position;
+        Vector2 position2 = (Position - position + (Position - vector) * (Parallax - 1)) + position;
         Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
     }
 }

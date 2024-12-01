@@ -7,7 +7,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 public abstract class GenericWaterBlock : Water
 {
 
-    public Vector2 movementCounter;
+    public Vector2 MovementCounter;
 
     public Vector2 LiftSpeed;
 
@@ -63,25 +63,21 @@ public abstract class GenericWaterBlock : Water
         {
             LiftSpeed.X = moveH / Engine.DeltaTime;
         }
-        movementCounter.X += moveH;
-        int num = (int)Math.Round(movementCounter.X);
-        if (num != 0)
-        {
-            movementCounter.X -= num;
-            MoveHExact(num);
-        }
+        MovementCounter.X += moveH;
+        int num = (int)Math.Round(MovementCounter.X);
+        if (num == 0) return;
+        MovementCounter.X -= num;
+        MoveHExact(num);
     }
 
     public void MoveH(float moveH, float liftSpeedH)
     {
         LiftSpeed.X = liftSpeedH;
-        movementCounter.X += moveH;
-        int num = (int)Math.Round(movementCounter.X);
-        if (num != 0)
-        {
-            movementCounter.X -= num;
-            MoveHExact(num);
-        }
+        MovementCounter.X += moveH;
+        int num = (int)Math.Round(MovementCounter.X);
+        if (num == 0) return;
+        MovementCounter.X -= num;
+        MoveHExact(num);
     }
 
     public void MoveV(float moveV)
@@ -94,24 +90,20 @@ public abstract class GenericWaterBlock : Water
         {
             LiftSpeed.Y = moveV / Engine.DeltaTime;
         }
-        movementCounter.Y += moveV;
-        int num = (int)Math.Round(movementCounter.Y);
-        if (num != 0)
-        {
-            movementCounter.Y -= num;
-            MoveVExact(num);
-        }
+        MovementCounter.Y += moveV;
+        int num = (int)Math.Round(MovementCounter.Y);
+        if (num == 0) return;
+        MovementCounter.Y -= num;
+        MoveVExact(num);
     }
     public void MoveV(float moveV, float liftSpeedV)
     {
         LiftSpeed.Y = liftSpeedV;
-        movementCounter.Y += moveV;
-        int num = (int)Math.Round(movementCounter.Y);
-        if (num != 0)
-        {
-            movementCounter.Y -= num;
-            MoveVExact(num);
-        }
+        MovementCounter.Y += moveV;
+        int num = (int)Math.Round(MovementCounter.Y);
+        if (num == 0) return;
+        MovementCounter.Y -= num;
+        MoveVExact(num);
     }
 
     public void MoveHExact(int moveH)
@@ -120,10 +112,10 @@ public abstract class GenericWaterBlock : Water
         Position.X += moveH;
         foreach (Entity entity in contains.Select((w) => w.Entity))
         {
-            if (entity is Actor)
+            if (entity is Actor actor)
             {
-                (entity as Actor).MoveH(moveH);
-                (entity as Actor).LiftSpeed = LiftSpeed;
+                actor.MoveH(moveH);
+                actor.LiftSpeed = LiftSpeed;
             }
             else
             {
@@ -139,10 +131,10 @@ public abstract class GenericWaterBlock : Water
         Position.Y += moveV;
         foreach (Entity entity in contains.Select((w) => w.Entity))
         {
-            if (entity is Actor)
+            if (entity is Actor actor)
             {
-                (entity as Actor).MoveV(moveV);
-                (entity as Actor).LiftSpeed = LiftSpeed;
+                actor.MoveV(moveV);
+                actor.LiftSpeed = LiftSpeed;
             }
             else
             {
@@ -162,11 +154,11 @@ public abstract class GenericWaterBlock : Water
         {
             LiftSpeed.Y = moveV / Engine.DeltaTime;
         }
-        movementCounter.Y += moveV;
-        int num = (int)Math.Round(movementCounter.Y);
+        MovementCounter.Y += moveV;
+        int num = (int)Math.Round(MovementCounter.Y);
         if (num != 0)
         {
-            movementCounter.Y -= num;
+            MovementCounter.Y -= num;
             return MoveVExactCollideBarriers(num, onCollide);
         }
         return false;
@@ -174,7 +166,7 @@ public abstract class GenericWaterBlock : Water
 
     public bool MoveVExactCollideBarriers(int moveV, Action<Vector2, Vector2, SeekerBarrier> onCollide = null)
     {
-        float y = base.Y;
+        float y = Y;
         int num = Math.Sign(moveV);
         int num2 = 0;
         SeekerBarrier platform = null;
@@ -197,9 +189,9 @@ public abstract class GenericWaterBlock : Water
             */
             num2 += num;
             moveV -= num;
-            base.Y += num;
+            Y += num;
         }
-        base.Y = y;
+        Y = y;
         MoveVExact(num2);
         if (platform != null)
         {
@@ -219,21 +211,18 @@ public abstract class GenericWaterBlock : Water
         {
             LiftSpeed.X = moveH / Engine.DeltaTime;
         }
-        movementCounter.X += moveH;
-        int num = (int)Math.Round(movementCounter.X);
-        if (num != 0)
-        {
-            movementCounter.X -= num;
-            return MoveHExactCollideBarriers(num, onCollide);
-        }
-        return false;
+        MovementCounter.X += moveH;
+        int num = (int)Math.Round(MovementCounter.X);
+        if (num == 0) return false;
+        MovementCounter.X -= num;
+        return MoveHExactCollideBarriers(num, onCollide);
     }
 
 
     public bool MoveHExactCollideBarriers(int moveH, Action<Vector2, Vector2, SeekerBarrier> onCollide = null)
     {
 
-        float x = base.X;
+        float x = X;
         int num = Math.Sign(moveH);
         int num2 = 0;
         SeekerBarrier barrier = null;
@@ -246,9 +235,9 @@ public abstract class GenericWaterBlock : Water
             }
             num2 += num;
             moveH -= num;
-            base.X += num;
+            X += num;
         }
-        base.X = x;
+        X = x;
         MoveHExact(num2);
         if (barrier != null)
         {

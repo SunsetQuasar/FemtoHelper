@@ -3,16 +3,8 @@ using Celeste;
 
 [CustomEntity("FemtoHelper/PlaySoundEntity")]
 
-public class PlaySoundEntity : Entity
+public class PlaySoundEntity(Vector2 position, EntityID id) : Entity(position)
 {
-    private EntityID id;
-
-	public PlaySoundEntity(Vector2 position, EntityID id)
-		: base(position)
-	{
-		this.id = id;
-	}
-
 	public PlaySoundEntity(EntityData data, Vector2 offset, EntityID id)
 		: this(data.Position + offset, id)
 	{

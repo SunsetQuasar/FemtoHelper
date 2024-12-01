@@ -5,72 +5,60 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/LineTrigger")]
 public class LineTrigger : Entity
 {
-    public Vector2 node;
-    public bool leftIsTrue;
-    public string flag;
-    public bool lastLeft;
-    public Player player;
-    public Hitbox hitbox;
+    public Vector2 Node;
+    public readonly bool LeftIsTrue;
+    public readonly string Flag;
+    public bool LastLeft;
+    public Player Player;
+    public Hitbox Hitbox;
     public LineTrigger(EntityData data, Vector2 offset) : base(data.Position + offset) 
     {
-        node = data.NodesOffset(offset)[0];
-        if (node.X < Position.X)
+        Node = data.NodesOffset(offset)[0];
+        if (Node.X < Position.X)
         {
-            Vector2 num = node;
-            node = Position;
-            Position = num;
+            (Node, Position) = (Position, Node);
         }
 
-        if (node.Y < Position.Y)
+        if (Node.Y < Position.Y)
         {
-            Vector2 num = node;
-            node = Position;
-            Position = num;
+            (Node, Position) = (Position, Node);
         }
 
-        flag = data.Attr("flag", "line_trigger_flag");
-        leftIsTrue = data.Bool("leftIsTrue", true);
-        hitbox = new Hitbox(16, 16);
+        Flag = data.Attr("flag", "line_trigger_flag");
+        LeftIsTrue = data.Bool("leftIsTrue", true);
+        Hitbox = new Hitbox(16, 16);
     }
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        player = Scene.Tracker.GetEntity<Player>();
+        Player = Scene.Tracker.GetEntity<Player>();
     }
 
     public override void Update()
     {
         base.Update();
 
-        if (player != null)
+        if (Player != null)
         {
-            float percent = Calc.ClampedMap(player.Y, Position.Y, node.Y, Position.X, node.X);
-            bool left = (player.X < percent);
-            if (left != lastLeft)
+            float percent = Calc.ClampedMap(Player.Y, Position.Y, Node.Y, Position.X, Node.X);
+            bool left = (Player.X < percent);
+            if (left != LastLeft)
             {
-                if((player.Y >= Position.Y) && (player.Y <= node.Y)) (Scene as Level).Session.SetFlag(flag, leftIsTrue ? left : !left);
+                if((Player.Y >= Position.Y) && (Player.Y <= Node.Y)) (Scene as Level).Session.SetFlag(Flag, LeftIsTrue ? left : !left);
             }
-            lastLeft = left;
+            LastLeft = left;
         }
-    }
-
-    public override void Render()
-    {
-        base.Render();
-
     }
 
     public override void DebugRender(Camera camera)
     {
         base.DebugRender(camera);
-        if (player != null)
-        {
-            float percent = Calc.ClampedMap(player.Y, Position.Y, node.Y, Position.X, node.X);
-            Draw.Line(Position, node, Color.MistyRose);
-            Color col = Color.OrangeRed;
-            col.A = 0;
-            Draw.Rect(new Vector2(percent, Calc.Clamp(player.Y, Position.Y, node.Y)), 5, 5, col);
-        }
+        if (Player == null) return;
+        float percent = Calc.ClampedMap(Player.Y, Position.Y, Node.Y, Position.X, Node.X);
+        Draw.Line(Position, Node, Color.MistyRose);
+        Color col = Color.OrangeRed;
+        col.A = 0;
+        Draw.Rect(new Vector2(percent, Calc.Clamp(Player.Y, Position.Y, Node.Y)), 5, 5, col);
     }
 }

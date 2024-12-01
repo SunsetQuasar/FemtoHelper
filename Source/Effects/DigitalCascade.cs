@@ -16,81 +16,74 @@ public class DigitalCascade : Backdrop
             Size = size;
             Color = color;
 			Speed = speed;
-			Lifetime = initLifetime = life;
-			this.spriteIndex = spriteIndex;
+			Lifetime = InitLifetime = life;
+			SpriteIndex = spriteIndex;
         }
 		public Vector2 Position;
 
-		public Vector2 Speed;
+		public readonly Vector2 Speed;
 
 		public float Size;
 
-		public Color Color;
+		public readonly Color Color;
 
 		public MTexture Texture;
 
 		public float Lifetime;
 
-		public float initLifetime;
+		public float InitLifetime;
 
-		public int spriteIndex;
+		public int SpriteIndex;
 
 		public float AItimer;
     }
-    private class Afterimage
+    private class Afterimage(Vector2 position, MTexture texture, float size, Color color)
     {
-		public Afterimage(Vector2 position, MTexture texture, float size, Color color)
-		{
-			Position = position;
-			Texture = texture;
-			Size = size;
-			Color = color;
-        }
-        public Vector2 Position;
+	    public Vector2 Position = position;
 
-        public float Size;
+        public readonly float Size = size;
 
-        public Color Color;
+        public readonly Color Color = color;
 
-        public MTexture Texture;
+        public readonly MTexture Texture = texture;
 
         public float Age;
     }
-	private List<Cascatee> cascatees;
+	private readonly List<Cascatee> cascatees;
 
-	private List<Afterimage> afterimages;
+	private readonly List<Afterimage> afterimages;
 
 	private Vector2 lastCamera = Vector2.Zero;
 
-	private Color[] possibleColors;
+	private readonly Color[] possibleColors;
 
-	private float halfloopborderX;
-	private float halfloopborderY;
+	private readonly float halfloopborderX;
+	private readonly float halfloopborderY;
 
-	private List<MTexture> textures;
+	private readonly List<MTexture> textures;
 
-	private float minLife;
-	private float maxLife;
+	private readonly float minLife;
+	private readonly float maxLife;
 
-	private float fadeTime;
-	private int fadeScaleMode;
+	private readonly float fadeTime;
+	private readonly int fadeScaleMode;
 
-	private bool randomSymbol;
+	private readonly bool randomSymbol;
 
-	private float AIfadeTime;
+	private readonly float aIfadeTime;
 
-	private float AIemitTime;
+	private readonly float aIemitTime;
 
-	private float scrolling;
+	private readonly float scrolling;
 
-	private bool infiniteLifetime;
+	private readonly bool infiniteLifetime;
 
-	private float alpha_AI;
+	private readonly float alphaAi;
 
-	public DigitalCascade(int symbolAmount, int afterimagesCap, string colors, float alpha, float minspeed, float maxspeed, float angle, float extraLoopBorderX, float extraLoopBorderY, string spritePath, float minlife, float maxlife, float fadetime, int doScale, bool randomsym, float aifade, float aiemit, float scroll, bool inflife, float AIalpha)
+	public DigitalCascade(int symbolAmount, int afterimagesCap, string colors, float alpha, float minspeed, float maxspeed, float angle, float extraLoopBorderX, float extraLoopBorderY, string spritePath, float minlife, float maxlife, float fadetime, int doScale, bool randomsym, float aifade, float aiemit, float scroll, bool inflife, float aIalpha)
 	{
 		string[] colorArray = colors.Split(',');
-		possibleColors = (Color[])(object)new Color[colorArray.Length];
+		possibleColors = new Color[colorArray.Length];
 		for (int i = 0; i < possibleColors.Length; i++)
 		{
 			possibleColors[i] = Calc.HexToColor(colorArray[i]) * alpha;
@@ -117,9 +110,9 @@ public class DigitalCascade : Backdrop
 		fadeScaleMode = doScale;
 		randomSymbol = randomsym;
 
-		AIfadeTime = aifade;
-		AIemitTime = aiemit;
-		alpha_AI = AIalpha;
+		aIfadeTime = aifade;
+		aIemitTime = aiemit;
+		alphaAi = aIalpha;
 
 		infiniteLifetime = inflife;
 
@@ -150,7 +143,7 @@ public class DigitalCascade : Backdrop
 		{
 			afterimages[ai].Age += Engine.DeltaTime;
 			afterimages[ai].Position += Vector2.Zero * Engine.DeltaTime - vector * scrolling;
-			if (afterimages[ai].Age >= AIfadeTime)
+			if (afterimages[ai].Age >= aIfadeTime)
 			{
 				afterimages.RemoveAt(ai);
 				ai--;
@@ -178,20 +171,20 @@ public class DigitalCascade : Backdrop
 				if (cascatees[i].Lifetime <= 0)
 				{
 					cascatees[i].Lifetime = Calc.Random.Range(minLife, maxLife);
-					cascatees[i].initLifetime = cascatees[i].Lifetime;
+					cascatees[i].InitLifetime = cascatees[i].Lifetime;
 					if (randomSymbol)
 					{
 						cascatees[i].Texture = textures[Calc.Random.Next(textures.Count)];
 					}
 					else
 					{
-						int nextIndex = cascatees[i].spriteIndex + 1;
+						int nextIndex = cascatees[i].SpriteIndex + 1;
 						if (nextIndex >= textures.Count)
 						{
 							nextIndex = 0;
 						}
-						cascatees[i].spriteIndex = nextIndex;
-						cascatees[i].Texture = textures[cascatees[i].spriteIndex];
+						cascatees[i].SpriteIndex = nextIndex;
+						cascatees[i].Texture = textures[cascatees[i].SpriteIndex];
 					}
 
 				}
@@ -204,9 +197,9 @@ public class DigitalCascade : Backdrop
 						cascatees[i].Size = cascatees[i].Lifetime / fadeTime;
 
 					}
-					else if (cascatees[i].initLifetime - cascatees[i].Lifetime <= fadeTime)
+					else if (cascatees[i].InitLifetime - cascatees[i].Lifetime <= fadeTime)
 					{
-						cascatees[i].Size = (cascatees[i].initLifetime - cascatees[i].Lifetime) / fadeTime;
+						cascatees[i].Size = (cascatees[i].InitLifetime - cascatees[i].Lifetime) / fadeTime;
 
 					}
 					else
@@ -218,7 +211,7 @@ public class DigitalCascade : Backdrop
                 cascatees[i].AItimer -= Engine.DeltaTime;
 			if (cascatees[i].AItimer <= 0)
             {
-				cascatees[i].AItimer = AIemitTime;
+				cascatees[i].AItimer = aIemitTime;
                 {
 					afterimages.Add(new Afterimage(cascatees[i].Position, cascatees[i].Texture, cascatees[i].Size, cascatees[i].Color));
 						
@@ -235,8 +228,8 @@ public class DigitalCascade : Backdrop
 		{
 			cascatees[i].Texture.Draw(
 				new Vector2(
-					mod(cascatees[i].Position.X, 320 + (halfloopborderX * 2)) - halfloopborderX,
-					mod(cascatees[i].Position.Y, 180 + (halfloopborderY * 2)) - halfloopborderY
+					Mod(cascatees[i].Position.X, 320 + (halfloopborderX * 2)) - halfloopborderX,
+					Mod(cascatees[i].Position.Y, 180 + (halfloopborderY * 2)) - halfloopborderY
 					),
 				new Vector2(
 					cascatees[i].Texture.Width, 
@@ -261,14 +254,14 @@ public class DigitalCascade : Backdrop
         {
 						afterimages[ai].Texture.Draw(
 				new Vector2(
-					mod(afterimages[ai].Position.X, 320 + (halfloopborderX * 2)) - halfloopborderX,
-					mod(afterimages[ai].Position.Y, 180 + (halfloopborderY * 2)) - halfloopborderY
+					Mod(afterimages[ai].Position.X, 320 + (halfloopborderX * 2)) - halfloopborderX,
+					Mod(afterimages[ai].Position.Y, 180 + (halfloopborderY * 2)) - halfloopborderY
 					),
 				new Vector2(
 					afterimages[ai].Texture.Width,
 					afterimages[ai].Texture.Height
 				) / 2f,
-				afterimages[ai].Color * (1 - (afterimages[ai].Age / AIfadeTime)) * alpha_AI,
+				afterimages[ai].Color * (1 - (afterimages[ai].Age / aIfadeTime)) * alphaAi,
 				fadeScaleMode == 0 ? Vector2.One : // no scaling
 				fadeScaleMode == 1 ? new Vector2( // X and Y scaling
 					afterimages[ai].Size,
@@ -285,7 +278,7 @@ public class DigitalCascade : Backdrop
         }
 	}
 
-	private float mod(float x, float m)
+	private float Mod(float x, float m)
 	{
 		return (x % m + m) % m;
 	}
