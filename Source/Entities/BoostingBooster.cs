@@ -208,7 +208,7 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
     protected virtual IEnumerator BoostRoutine(Player player)
     {
         yield return 0.25f;
-        player.StateMachine.State = (RedBoost ? 5 : 2);
+        player.StateMachine.State = RedBoost ? 5 : 2;
     }
 
     public static void Load()
@@ -262,7 +262,7 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
         yield return 0.4f;
         if (player.Dead) yield break;
         Audio.Play("event:/new_content/game/10_farewell/puffer_splode", player.Position);
-        Vector2 vector2 = player.ExplodeLaunch(player.Center - (new Vector2(Input.MoveX, Input.MoveY) * 4), snapUp: false);
+        Vector2 vector2 = player.ExplodeLaunch(player.Center - new Vector2(Input.MoveX, Input.MoveY) * 4, snapUp: false);
         (customBooster.Scene as Level)?.DirectionalShake(vector2, 0.15f);
         (customBooster.Scene as Level)?.Displacement.AddBurst(player.Center, 0.3f, 8f, 32f, 0.8f);
         (customBooster.Scene as Level)?.Particles.Emit(customBooster.PCustomBurst2, 12, player.Center, Vector2.One * 3f, vector2.Angle());
@@ -372,7 +372,7 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
         {
             if (!booster.Patient)
             {
-                routine = (booster.BoostRoutine(self));
+                routine = booster.BoostRoutine(self);
                 while (routine.MoveNext())
                 {
                     yield return routine.Current;
@@ -381,7 +381,7 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
         }
         else
         {
-            routine = (orig(self));
+            routine = orig(self);
             while (routine.MoveNext())
             {
                 yield return routine.Current;

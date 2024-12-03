@@ -114,12 +114,12 @@ public class VitalDrainController : Entity
     {
         base.Update();
         Player player = Scene.Tracker.GetEntity<Player>();
-        Level level = (Scene as Level);
+        Level level = Scene as Level;
         bool flg = (Scene as Level).Session.GetFlag(RequireFlag);
         if (InvertFlag) flg = !flg;
         if (player == null) return;
         
-        if (UsingFlag ? (!player.CollideCheck<VitalSafetyTrigger>()) : (!flg))
+        if (UsingFlag ? !player.CollideCheck<VitalSafetyTrigger>() : !flg)
         {
             level.Session.SetFlag(DrainingFlag, true);
             Oxygen = Math.Max(Oxygen - DrainRate * Engine.DeltaTime, 0f);

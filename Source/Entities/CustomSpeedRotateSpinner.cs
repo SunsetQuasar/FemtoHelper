@@ -104,7 +104,7 @@ public class CustomSpeedRotateSpinner : Entity
 		{
 			if (Moving)
 			{
-				dusty.EyeDirection = dusty.EyeTargetDirection = Calc.AngleToVector(Angle + ((float)Math.PI / 2f * (Clockwise ? 1 : (-1))), 1f);
+				dusty.EyeDirection = dusty.EyeTargetDirection = Calc.AngleToVector(Angle + (float)Math.PI / 2f * (Clockwise ? 1 : -1), 1f);
 				if (Scene.OnInterval(0.02f) && !noParticles)
 				{
 					SceneAs<Level>().ParticlesBG.Emit(DustStaticSpinner.P_Move, 1, Position, Vector2.One * 4f);
@@ -143,7 +143,7 @@ public class CustomSpeedRotateSpinner : Entity
 
 		if (!fallOutOfScreen) return;
 		center.Y += 160f * Engine.DeltaTime;
-		if (Y > ((Scene as Level).Bounds.Bottom + 32))
+		if (Y > (Scene as Level).Bounds.Bottom + 32)
 		{
 			RemoveSelf();
 		}

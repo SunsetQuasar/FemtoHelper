@@ -64,7 +64,7 @@ public class WaterSprite : GraphicsComponent
         Vector2 size = new Vector2(Entity.Width, Entity.Height);
 
         Color color = Color.White;
-        Vector2 pos = (Vector2.One * Padding);
+        Vector2 pos = Vector2.One * Padding;
         int num = (int)(size.X / 8f);
         int num2 = (int)(size.Y / 8f);
         NinSlice[0, 0].Draw(pos + new Vector2(0f, 0f), Vector2.Zero, color);
@@ -121,7 +121,7 @@ public class WaterSprite : GraphicsComponent
 
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, Effect, GameplayRenderer.instance.Camera.Matrix);
 
-        Draw.SpriteBatch.Draw(Buffer, RenderPosition - (ExtraSize * new Vector2(Buffer.Width, Buffer.Height)) - (Vector2.One * Padding), null, color, 0f, Vector2.Zero, Vector2.One + (ExtraSize * 2), SpriteEffects.None, 0f);
+        Draw.SpriteBatch.Draw(Buffer, RenderPosition - ExtraSize * new Vector2(Buffer.Width, Buffer.Height) - Vector2.One * Padding, null, color, 0f, Vector2.Zero, Vector2.One + ExtraSize * 2, SpriteEffects.None, 0f);
 
         Draw.SpriteBatch.End();
 

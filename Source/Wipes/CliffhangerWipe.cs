@@ -47,9 +47,9 @@ public class CliffhangerWipe : ScreenWipe
 		{
 			for (int k = 0; k < circleRows + 2; k++)
 			{
-				_circles[num3].Position = new Vector2((j - 1) * (float)num, (k - 1) * (float)num2 + (j % 2 == 1 ? (num2/2) : 0));
+				_circles[num3].Position = new Vector2((j - 1) * (float)num, (k - 1) * (float)num2 + (j % 2 == 1 ? num2/2 : 0));
 				_circles[num3].Delay = 0;
-				_circles[num3].Radius = (WipeIn ? (CircleFillSpeed * (Duration - _circles[num3].Delay)) : 0f);
+				_circles[num3].Radius = WipeIn ? CircleFillSpeed * (Duration - _circles[num3].Delay) : 0f;
 				_circles[num3].IsFlipped = k % 2 == 1 ? 1 : -1;
 				num3++;
 			}
@@ -66,13 +66,13 @@ public class CliffhangerWipe : ScreenWipe
 				_circles[i].Delay -= Engine.DeltaTime;
 				if (_circles[i].Delay <= 0f)
 				{
-					_circles[i].Radius += Engine.DeltaTime * (CircleFillSpeed / 8) + (_circles[i].Radius / 7);
+					_circles[i].Radius += Engine.DeltaTime * (CircleFillSpeed / 8) + _circles[i].Radius / 7;
 					//circles[i].Angle += Engine.DeltaTime * circleSpinSpeed;
 				}
 			}
 			else if (_circles[i].Radius > 0f)
 			{
-				_circles[i].Radius -= Engine.DeltaTime * (CircleFillSpeed / 8) + (_circles[i].Radius / 7);
+				_circles[i].Radius -= Engine.DeltaTime * (CircleFillSpeed / 8) + _circles[i].Radius / 7;
 				//circles[i].Angle -= Engine.DeltaTime * circleSpinSpeed;
 			}
 			else

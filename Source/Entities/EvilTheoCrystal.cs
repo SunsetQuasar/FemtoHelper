@@ -122,7 +122,7 @@ public class EvilTheoCrystal : Actor
         {
             if (OnGround())
             {
-                float target = ((!OnGround(Position + Vector2.UnitX * 3f)) ? 20f : (OnGround(Position - Vector2.UnitX * 3f) ? 0f : (-20f)));
+                float target = !OnGround(Position + Vector2.UnitX * 3f) ? 20f : OnGround(Position - Vector2.UnitX * 3f) ? 0f : -20f;
                 Speed.X = Calc.Approach(Speed.X, target, 800f * Engine.DeltaTime);
                 Vector2 liftSpeed = LiftSpeed;
                 if (liftSpeed == Vector2.Zero && prevLiftSpeed != Vector2.Zero)

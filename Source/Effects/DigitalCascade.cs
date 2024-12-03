@@ -228,8 +228,8 @@ public class DigitalCascade : Backdrop
 		{
 			cascatees[i].Texture.Draw(
 				new Vector2(
-					Mod(cascatees[i].Position.X, 320 + (halfloopborderX * 2)) - halfloopborderX,
-					Mod(cascatees[i].Position.Y, 180 + (halfloopborderY * 2)) - halfloopborderY
+					Mod(cascatees[i].Position.X, 320 + halfloopborderX * 2) - halfloopborderX,
+					Mod(cascatees[i].Position.Y, 180 + halfloopborderY * 2) - halfloopborderY
 					),
 				new Vector2(
 					cascatees[i].Texture.Width, 
@@ -254,14 +254,14 @@ public class DigitalCascade : Backdrop
         {
 						afterimages[ai].Texture.Draw(
 				new Vector2(
-					Mod(afterimages[ai].Position.X, 320 + (halfloopborderX * 2)) - halfloopborderX,
-					Mod(afterimages[ai].Position.Y, 180 + (halfloopborderY * 2)) - halfloopborderY
+					Mod(afterimages[ai].Position.X, 320 + halfloopborderX * 2) - halfloopborderX,
+					Mod(afterimages[ai].Position.Y, 180 + halfloopborderY * 2) - halfloopborderY
 					),
 				new Vector2(
 					afterimages[ai].Texture.Width,
 					afterimages[ai].Texture.Height
 				) / 2f,
-				afterimages[ai].Color * (1 - (afterimages[ai].Age / aIfadeTime)) * alphaAi,
+				afterimages[ai].Color * (1 - afterimages[ai].Age / aIfadeTime) * alphaAi,
 				fadeScaleMode == 0 ? Vector2.One : // no scaling
 				fadeScaleMode == 1 ? new Vector2( // X and Y scaling
 					afterimages[ai].Size,

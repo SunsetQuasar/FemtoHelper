@@ -13,7 +13,7 @@ public class UnwiseWipe(Scene scene, bool wipeIn, Action onComplete = null) : Sc
 
         Vector2 pos;
         pos.X = 0;
-        pos.Y = WipeIn ? -1 + ((Engine.Height+2) * Ease.CubeInOut(Percent)) : -Engine.Height - 1 + ((Engine.Height + 2) * Ease.CubeInOut(Percent));
+        pos.Y = WipeIn ? -1 + (Engine.Height+2) * Ease.CubeInOut(Percent) : -Engine.Height - 1 + (Engine.Height + 2) * Ease.CubeInOut(Percent);
 
         texture.Draw(pos);
         Draw.SpriteBatch.End();

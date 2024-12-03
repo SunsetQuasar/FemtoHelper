@@ -178,7 +178,7 @@ public class HotelBreakoutMemo(Player player, int totind, float txtoffset, float
 				Draw.SpriteBatch.Draw((RenderTarget2D)target, Position, target.Bounds, Color.White * alpha, rotation, new Vector2(target.Width, 0f) / 2f, scale, SpriteEffects.None, 0f);
 				if (!easingOut)
 				{
-					GFX.Gui["textboxbutton"].DrawCentered(Position + new Vector2(target.Width / 2 + 40, target.Height + ((timer % 1f < 0.25f) ? 6 : 0)));
+					GFX.Gui["textboxbutton"].DrawCentered(Position + new Vector2(target.Width / 2 + 40, target.Height + (timer % 1f < 0.25f ? 6 : 0)));
 				}
 			}
 		}

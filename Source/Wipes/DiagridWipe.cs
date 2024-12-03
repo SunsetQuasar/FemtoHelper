@@ -45,7 +45,7 @@ public class DiagridWipe : ScreenWipe
         _circles ??= new Circle[(circleColumns + 2) * (circleRows + 2)];
         for (int i = 0; i < _vertexBuffer.Length; i++)
         {
-            _vertexBuffer[i].Color = (WipeIn ? Color.Black : Color.White);
+            _vertexBuffer[i].Color = WipeIn ? Color.Black : Color.White;
         }
         int num = 1920 / circleColumns;
         int num2 = 1080 / circleRows;
@@ -91,7 +91,7 @@ public class DiagridWipe : ScreenWipe
             _circles[i].Delay -= Engine.DeltaTime;
             if (_circles[i].Delay <= 0f)
             {
-                _circles[i].Radius += Engine.DeltaTime * (CircleFillSpeed);
+                _circles[i].Radius += Engine.DeltaTime * CircleFillSpeed;
             }
         }
     }

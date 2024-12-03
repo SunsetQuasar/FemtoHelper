@@ -57,7 +57,7 @@ public class PseudoPolyhedron : Entity
 			m += (float)Math.PI * 2 / Samples / BaseSides;
 			for (float n = 0; n < BaseSides; n++)
 			{
-				Positions[ind, (int)n] = new Vector2((float)Math.Sin(m + (Math.PI / ((float)BaseSides / 2) * n)) * BaseWidth, (float)Math.Cos(m + (Math.PI / ((float)BaseSides / 2) * n)) * BaseHeight);
+				Positions[ind, (int)n] = new Vector2((float)Math.Sin(m + Math.PI / ((float)BaseSides / 2) * n) * BaseWidth, (float)Math.Cos(m + Math.PI / ((float)BaseSides / 2) * n) * BaseHeight);
 
 			}
 		}
@@ -96,9 +96,9 @@ public class PseudoPolyhedron : Entity
 			{
 				Draw.Line(Position + Positions[arrayTimer, i], Position + Positions[arrayTimer, (i + 1) % BaseSides], Color * Alpha);
 
-				Draw.Line(Position + TipBaseOffset + (Positions[arrayTimer, i] * new Vector2(xScale, yScale)), Position + TipBaseOffset + (Positions[arrayTimer, (i + 1) % BaseSides] * new Vector2(xScale, yScale)), Color * Alpha);
+				Draw.Line(Position + TipBaseOffset + Positions[arrayTimer, i] * new Vector2(xScale, yScale), Position + TipBaseOffset + Positions[arrayTimer, (i + 1) % BaseSides] * new Vector2(xScale, yScale), Color * Alpha);
 
-				Draw.Line(Position + Positions[arrayTimer, i], Position + TipBaseOffset + (Positions[arrayTimer, i] * new Vector2(xScale, yScale)), Color * Alpha);
+				Draw.Line(Position + Positions[arrayTimer, i], Position + TipBaseOffset + Positions[arrayTimer, i] * new Vector2(xScale, yScale), Color * Alpha);
 			}
 		} else
 		{

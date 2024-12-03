@@ -58,7 +58,7 @@ public class PolygonStars : Backdrop
         this.angle = new Vector2((float)Math.Sin(angle / 180 * Math.PI), (float)Math.Cos(angle / 180 * Math.PI));
 		for (int i = 0; i < stars.Length; i++)
 		{
-			stars[i].Position = new Vector2(Calc.Random.NextFloat(320f + loopBorder) - (loopBorder / 2), Calc.Random.NextFloat(180f + loopBorder) - (loopBorder / 2));
+			stars[i].Position = new Vector2(Calc.Random.NextFloat(320f + loopBorder) - loopBorder / 2, Calc.Random.NextFloat(180f + loopBorder) - loopBorder / 2);
 			stars[i].Speed = Calc.Random.Range(minSpeed, maxSpeed);
 			stars[i].Size = Calc.Random.Range(minSize, maxSize);
 			stars[i].Rotation = Calc.Random.NextFloat((float)Math.PI * 2);
@@ -89,7 +89,7 @@ public class PolygonStars : Backdrop
 			{
 				Vector2 size = j % 2 == 0 ? new Vector2(stars[i].Size, stars[i].Size) : new Vector2(stars[i].Size * pointinessMultiplier, stars[i].Size * pointinessMultiplier);
 				Vector2 size2 = j % 2 == 0 ? new Vector2(stars[i].Size * pointinessMultiplier, stars[i].Size * pointinessMultiplier) : new Vector2(stars[i].Size, stars[i].Size);
-				Draw.Line(new Vector2(Mod(stars[i].Position.X, 320f + loopBorder) - (loopBorder / 2), Mod(stars[i].Position.Y, 180f + loopBorder) - (loopBorder / 2)) + new Vector2((float)Math.Sin(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * j)), (float)Math.Cos(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * j))) * size, new Vector2(Mod(stars[i].Position.X, 320f + loopBorder) - (loopBorder / 2), Mod(stars[i].Position.Y, 180f + loopBorder) - (loopBorder / 2)) + new Vector2((float)Math.Sin(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * (j + 1))), (float)Math.Cos(stars[i].Rotation + (Math.PI / ((float)sideCount / 2) * (j + 1)))) * size2, stars[i].Color * alpha);
+				Draw.Line(new Vector2(Mod(stars[i].Position.X, 320f + loopBorder) - loopBorder / 2, Mod(stars[i].Position.Y, 180f + loopBorder) - loopBorder / 2) + new Vector2((float)Math.Sin(stars[i].Rotation + Math.PI / ((float)sideCount / 2) * j), (float)Math.Cos(stars[i].Rotation + Math.PI / ((float)sideCount / 2) * j)) * size, new Vector2(Mod(stars[i].Position.X, 320f + loopBorder) - loopBorder / 2, Mod(stars[i].Position.Y, 180f + loopBorder) - loopBorder / 2) + new Vector2((float)Math.Sin(stars[i].Rotation + Math.PI / ((float)sideCount / 2) * (j + 1)), (float)Math.Cos(stars[i].Rotation + Math.PI / ((float)sideCount / 2) * (j + 1))) * size2, stars[i].Color * alpha);
 			}
 		}
 	}

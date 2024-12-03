@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/SimpleText")]
-public class SimpleText : Entity
+public partial class SimpleText : Entity
 {
     public readonly List<PlutoniumTextNodes.Node> Nodes;
     public Color Color1;
@@ -19,11 +19,13 @@ public class SimpleText : Entity
     public readonly bool Hud;
     public readonly float Scale;
     public readonly string VisibilityFlag;
+
+    public readonly Vector2 RenderOffset;
     public SimpleText(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-        Nodes = new List<PlutoniumTextNodes.Node>();
+        Nodes = [];
 
-        string[] splitStr = Regex.Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")), "(\\s|\\{|\\})");
+        string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
         string[] splitStr2 = new string[splitStr.Length];
         int num = 0;
         foreach (var t in splitStr)
@@ -42,17 +44,15 @@ public class SimpleText : Entity
 
                 for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
                 {
-                    if (!string.IsNullOrWhiteSpace(splitStr2[i]))
+                    if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
+                    string[] splitOnceAgain = splitStr2[i].Split(';');
+                    if (splitOnceAgain.Length == 3)
                     {
-                        string[] splitOnceAgain = splitStr2[i].Split(';');
-                        if (splitOnceAgain.Length == 3)
-                        {
-                            Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
-                        } 
-                        else
-                        {
-                            Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
-                        }
+                        Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
+                    } 
+                    else
+                    {
+                        Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
                     }
                 }
             } 
@@ -75,6 +75,9 @@ public class SimpleText : Entity
         Hud = data.Bool("hud", false);
         Scale = data.Float("scale", 1);
         VisibilityFlag = data.Attr("visibilityFlag", "");
+        
+        RenderOffset = (data.FirstNodeNullable(offset) ?? Position) - Position;
+        
         if (Hud) Tag |= TagsExt.SubHUD;
     }
 
@@ -94,25 +97,27 @@ public class SimpleText : Entity
 
         Vector2 position = (Scene as Level).Camera.Position;
         Vector2 vector = position + new Vector2(160f, 90f);
-        Vector2 position2 = (Position - position + (Position - vector) * (Parallax - 1)) + position;
+        Vector2 position2 = Position - position + (Position - vector) * (Parallax - 1) + position;
 
         float scale2 = Scale;
 
         if (Hud)
         {
             position2 -= position;
-            position2 *= (Engine.ScreenMatrix.M11 * 6) < 6 ? 6 : (Engine.ScreenMatrix.M11 * 6);
-            scale2 *= (Engine.ScreenMatrix.M11 * 6) < 6 ? 6 : (Engine.ScreenMatrix.M11 * 6);
+            position2 *= Engine.ScreenMatrix.M11 * 6 < 6 ? 6 : Engine.ScreenMatrix.M11 * 6;
+            scale2 *= Engine.ScreenMatrix.M11 * 6 < 6 ? 6 : Engine.ScreenMatrix.M11 * 6;
         }
 
-        Text.PrintCentered(position2, str2, Shadow, Spacing, Color1, Color2, scale2);
+        Text.PrintCentered(position2 + RenderOffset * (Hud ? 6 : 1), str2, Shadow, Spacing, Color1, Color2, scale2);
 
         if (Hud)
         {
-
             SubHudRenderer.EndRender();
 
             SubHudRenderer.BeginRender();
         }
     }
+
+    [GeneratedRegex(@"(\s|\{|\})")]
+    private static partial Regex MyRegex();
 }

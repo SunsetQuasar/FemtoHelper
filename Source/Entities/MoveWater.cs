@@ -75,7 +75,7 @@ public class MovingWaterBlock : GenericWaterBlock
         Add(moveSfx = new SoundSource());
         Triggered = false;
         TargetSpeed = data.Float("maxSpeed", 60f);
-        Angle = (data.Float("angle", 90f) / 180) * MathF.PI;
+        Angle = data.Float("angle", 90f) / 180 * MathF.PI;
         Arrow = GFX.Game["objects/FemtoHelper/moveWater/arrow"];
         Deadsprite = GFX.Game["objects/FemtoHelper/moveWater/dead"];
         Dissipate = new ParticleType(Booster.P_Burst)
@@ -116,7 +116,7 @@ public class MovingWaterBlock : GenericWaterBlock
 
         Add(IconWiggler = Wiggler.Create(0.4f, 6f, (t) =>
         {
-            IconScale = Vector2.One + (new Vector2(t, -t) * 0.5f);
+            IconScale = Vector2.One + new Vector2(t, -t) * 0.5f;
         }));
 
         int lig = (int)(MathF.Min(Width, Height) / 2);

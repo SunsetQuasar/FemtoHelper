@@ -177,7 +177,7 @@ public class NewDistortedParallax : Backdrop
         }
         else
         {
-            FadeIn = (Visible ? 1 : 0);
+            FadeIn = Visible ? 1 : 0;
         }
 
     }
@@ -192,11 +192,11 @@ public class NewDistortedParallax : Backdrop
 
         if(Buffer == null) Buffer = VirtualContent.CreateRenderTarget("distortedParallax", 320, 180);
 
-        Level level = (scene as Level);
+        Level level = scene as Level;
 
         Viewport viewport = Engine.Graphics.GraphicsDevice.Viewport;
         Matrix projection = Matrix.CreateOrthographicOffCenter(0f, viewport.Width, viewport.Height, 0f, 0f, 1f);
-        Matrix halfPixelOffset = (typeof(Game).Assembly.FullName.Contains("FNA")) ? Matrix.Identity : Matrix.CreateTranslation(-0.5f, -0.5f, 0f);
+        Matrix halfPixelOffset = typeof(Game).Assembly.FullName.Contains("FNA") ? Matrix.Identity : Matrix.CreateTranslation(-0.5f, -0.5f, 0f);
 
         Color col = Color * FadeAlphaMultiplier * FadeIn;
 

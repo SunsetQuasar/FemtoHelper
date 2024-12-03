@@ -49,7 +49,7 @@ public class TrollFish : Entity
         Textureframes = Texture.Width / Texture.Height;
 
         Collider = new Circle(Big ? 16 : 8, 0, 0);
-        if (!Blurp) Bonkbox = new Hitbox(Big ? 32 : 16, (Big ? 8 : 4), (Big ? -16 : -8), (Big ? -16 : -8));
+        if (!Blurp) Bonkbox = new Hitbox(Big ? 32 : 16, Big ? 8 : 4, Big ? -16 : -8, Big ? -16 : -8);
 
         AudioPath = data.Attr("audioPath", "event:/FemtoHelper/");
 
@@ -62,7 +62,7 @@ public class TrollFish : Entity
         player.Die(Vector2.Normalize(player.Position - Position), false, true);
         if (!SaveData.Instance.Assists.Invincible) return;
         Dead = true;
-        Speed = (Vector2.Normalize(Position - player.Position) * 63.24f);
+        Speed = Vector2.Normalize(Position - player.Position) * 63.24f;
         Gravity = 100;
         Collidable = false;
         Audio.Play(AudioPath + "enemykill");
@@ -75,7 +75,7 @@ public class TrollFish : Entity
         Celeste.Freeze(0.1f);
         player.Bounce(Top + 2f);
         Dead = true;
-        Speed = (Vector2.Normalize(Position - player.Position) * 63.24f);
+        Speed = Vector2.Normalize(Position - player.Position) * 63.24f;
         Gravity = 180;
         Collidable = false;
     }
@@ -115,7 +115,7 @@ public class TrollFish : Entity
     public override void Render()
     {
         base.Render();
-        Textureslice = Texture.GetSubtexture(((int)Math.Floor(Texturetimer) % Textureframes) * Texture.Height, 0, Texture.Height, Texture.Height);
+        Textureslice = Texture.GetSubtexture((int)Math.Floor(Texturetimer) % Textureframes * Texture.Height, 0, Texture.Height, Texture.Height);
 
         Vector2 size = FaceRight ? new Vector2(-1, 1) : Vector2.One;
         if (Big) size *= 2;

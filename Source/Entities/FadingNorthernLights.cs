@@ -131,7 +131,7 @@ public class FadingNorthernLights : Backdrop
 			foreach (Strand strand in strands)
 			{
 				strand.Percent += Engine.DeltaTime / strand.Duration;
-				strand.Alpha = Calc.Approach(strand.Alpha, (strand.Percent < 1f) ? 1 : 0, Engine.DeltaTime);
+				strand.Alpha = Calc.Approach(strand.Alpha, strand.Percent < 1f ? 1 : 0, Engine.DeltaTime);
 				if (strand.Alpha <= 0f && strand.Percent >= 1f)
 				{
 					strand.Reset(0f);

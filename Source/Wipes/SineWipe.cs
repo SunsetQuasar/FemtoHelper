@@ -20,7 +20,7 @@ public class SineWipe : ScreenWipe
 
     public override void Render(Scene scene)
     {
-        float num = !WipeIn ? (float)Math.Pow(Percent, 2) : (1f - (float)Math.Pow(Percent, 2));
+        float num = !WipeIn ? (float)Math.Pow(Percent, 2) : 1f - (float)Math.Pow(Percent, 2);
 
         float num2;
 
@@ -36,28 +36,28 @@ public class SineWipe : ScreenWipe
         }
         for (float i = 0; i < Bars; i++)
         {
-            num = !WipeIn ? (float)Math.Pow(Percent, 2 + Math.Sin(Math.PI * i / (Bars / 2))) : (1f - (float)Math.Pow(Percent, 2 + Math.Sin(Math.PI * i / (Bars / 2))));
+            num = !WipeIn ? (float)Math.Pow(Percent, 2 + Math.Sin(Math.PI * i / (Bars / 2))) : 1f - (float)Math.Pow(Percent, 2 + Math.Sin(Math.PI * i / (Bars / 2)));
 
-            num2 = !WipeIn ? (float)Math.Pow(Percent, 2 + Math.Cos(Math.PI * i / (Bars / 2))) : (1f - (float)Math.Pow(Percent, 2 + Math.Cos(Math.PI * i / (Bars / 2))));
+            num2 = !WipeIn ? (float)Math.Pow(Percent, 2 + Math.Cos(Math.PI * i / (Bars / 2))) : 1f - (float)Math.Pow(Percent, 2 + Math.Cos(Math.PI * i / (Bars / 2)));
 
             float bottom = (i + 1) * Engine.Height / Bars;
             float top = i * Engine.Height / Bars;
-            vertex[0 + (int)(12 * i)].Position = new Vector3(Engine.Width - (Engine.Width / 2 * num), top, 0f);
-            vertex[1 + (int)(12 * i)].Position = new Vector3(Engine.Width - (Engine.Width / 2 * num), bottom, 0f);
+            vertex[0 + (int)(12 * i)].Position = new Vector3(Engine.Width - Engine.Width / 2 * num, top, 0f);
+            vertex[1 + (int)(12 * i)].Position = new Vector3(Engine.Width - Engine.Width / 2 * num, bottom, 0f);
             vertex[2 + (int)(12 * i)].Position = new Vector3(Engine.Width, bottom, 0f);
 
             vertex[3 + (int)(12 * i)].Position = new Vector3(Engine.Width, bottom, 0f);
             vertex[4 + (int)(12 * i)].Position = new Vector3(Engine.Width, top, 0f);
-            vertex[5 + (int)(12 * i)].Position = new Vector3(Engine.Width - (Engine.Width / 2 * num), top, 0f);
+            vertex[5 + (int)(12 * i)].Position = new Vector3(Engine.Width - Engine.Width / 2 * num, top, 0f);
 
 
-            vertex[6 + (int)(12 * i)].Position = new Vector3(0 + (Engine.Width / 2 * num2), top, 0f);
-            vertex[7 + (int)(12 * i)].Position = new Vector3(0 + (Engine.Width / 2 * num2), bottom, 0f);
+            vertex[6 + (int)(12 * i)].Position = new Vector3(0 + Engine.Width / 2 * num2, top, 0f);
+            vertex[7 + (int)(12 * i)].Position = new Vector3(0 + Engine.Width / 2 * num2, bottom, 0f);
             vertex[8 + (int)(12 * i)].Position = new Vector3(0, bottom, 0f);
 
             vertex[9 + (int)(12 * i)].Position = new Vector3(0, bottom, 0f);
             vertex[10 + (int)(12 * i)].Position = new Vector3(0, top, 0f);
-            vertex[11 + (int)(12 * i)].Position = new Vector3(0 + (Engine.Width / 2 * num2), top, 0f);
+            vertex[11 + (int)(12 * i)].Position = new Vector3(0 + Engine.Width / 2 * num2, top, 0f);
         }
 
         DrawPrimitives(vertex);

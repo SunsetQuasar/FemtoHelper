@@ -48,7 +48,7 @@ public class GenericSmwBlock : Solid
         public override void Render()
         {
             base.Render();
-            CoinSlice = CoinSheet.GetSubtexture(((int)Math.Floor(CoinTimer) % CoinFrames) * CoinSheet.Height, 0, CoinSheet.Height, CoinSheet.Height);
+            CoinSlice = CoinSheet.GetSubtexture((int)Math.Floor(CoinTimer) % CoinFrames * CoinSheet.Height, 0, CoinSheet.Height, CoinSheet.Height);
 
             CoinSlice.DrawCentered(Position);
         }
@@ -274,8 +274,8 @@ public class GenericSmwBlock : Solid
 
         color = Neededflagplus ? Color.White : Calc.HexToColor("808080");
 
-        Used2 = Used.GetSubtexture(((int)Math.Floor(Usedtimer) % Usedframes) * Used.Height, 0, Used.Height, Used.Height);
-        Indicator2 = Indicator.GetSubtexture(((int)Math.Floor(Inditimer) % Indiframes) * Indicator.Height, 0, Indicator.Height, Indicator.Height);
+        Used2 = Used.GetSubtexture((int)Math.Floor(Usedtimer) % Usedframes * Used.Height, 0, Used.Height, Used.Height);
+        Indicator2 = Indicator.GetSubtexture((int)Math.Floor(Inditimer) % Indiframes * Indicator.Height, 0, Indicator.Height, Indicator.Height);
 
         if (Active || SwitchMode)
         {
@@ -289,7 +289,7 @@ public class GenericSmwBlock : Solid
                 {
                     if(HasIndicator || HasBeenHitOnce)
                     {
-                        if ((string.IsNullOrEmpty(SwitchModeRenderFlag) ? (Scene as Level).Session.GetFlag(HitFlag) : (Scene as Level).Session.GetFlag(SwitchModeRenderFlag)))
+                        if (string.IsNullOrEmpty(SwitchModeRenderFlag) ? (Scene as Level).Session.GetFlag(HitFlag) : (Scene as Level).Session.GetFlag(SwitchModeRenderFlag))
                         {
                             Used2.Draw(Position + SpriteOffset, Vector2.Zero, color);
                         }
@@ -306,16 +306,16 @@ public class GenericSmwBlock : Solid
                 switch (Bumpdir)
                 {
                     case 0:
-                        Kaizo.Draw(Position + SpriteOffset - (Vector2.UnitY * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6), Vector2.Zero, color);
+                        Kaizo.Draw(Position + SpriteOffset - Vector2.UnitY * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
                         break;
                     case 1:
-                        Kaizo.Draw(Position + SpriteOffset + (Vector2.UnitX * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6), Vector2.Zero, color);
+                        Kaizo.Draw(Position + SpriteOffset + Vector2.UnitX * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
                         break;
                     case 2:
-                        Kaizo.Draw(Position + SpriteOffset - (Vector2.UnitX * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6), Vector2.Zero, color);
+                        Kaizo.Draw(Position + SpriteOffset - Vector2.UnitX * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
                         break;
                     case 3:
-                        Kaizo.Draw(Position + SpriteOffset + (Vector2.UnitY * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6), Vector2.Zero, color);
+                        Kaizo.Draw(Position + SpriteOffset + Vector2.UnitY * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
                         break;
                 }
                 
@@ -419,11 +419,11 @@ public class GenericSmwBlock : Solid
         if (!Solidbeforehit) return;
         if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
         {
-            if (!(player.Bottom - 2 <= Top) || (Active || Bouncetimer > 0)) return;
+            if (!(player.Bottom - 2 <= Top) || Active || Bouncetimer > 0) return;
             if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || FemtoModule.CommunalHelperSupport.HasDreamTunnelDash.Invoke())) Hit(player, 3);
         } else
         {
-            if (!(player.Top + 2 >= Bottom) || (Active || Bouncetimer > 0)) return;
+            if (!(player.Top + 2 >= Bottom) || Active || Bouncetimer > 0) return;
             if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || FemtoModule.CommunalHelperSupport.HasDreamTunnelDash.Invoke())) Hit(player, 0);
         }      
     }
@@ -532,7 +532,7 @@ public class GenericSmwBlock : Solid
                         };
                         break;
                     case "Celeste.CrystalStaticSpinner":
-                        CrystalStaticSpinner spinner = (entity as CrystalStaticSpinner);
+                        CrystalStaticSpinner spinner = entity as CrystalStaticSpinner;
                         entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
                         entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
                         if (spinner.filler != null)

@@ -11,7 +11,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/CinematicText")]
 [Tracked]
-public class CinematicText : Entity
+public partial class CinematicText : Entity
 {
     public string Str;
     public Color Color1;
@@ -67,16 +67,22 @@ public class CinematicText : Entity
     public bool StopText;
 
     public readonly string VisibilityFlag;
+
+    public readonly Vector2 RenderOffset;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
 
         if (data.NodesOffset(offset).Length > 0) Position = data.NodesOffset(offset)[0];
+        if (data.NodesOffset(offset).Length > 1)
+        {
+            RenderOffset = data.NodesOffset(offset)[1] - Position;
+        }
 
         Nodes = [];
 
         Str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
 
-        string[] splitStr = Regex.Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")), "(\\s|\\{|\\})");
+        string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
         string[] splitStr2 = new string[splitStr.Length];
         int num = 0;
         foreach (var t in splitStr)
@@ -95,17 +101,16 @@ public class CinematicText : Entity
 
                 for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
                 {
-                    if (!string.IsNullOrWhiteSpace(splitStr2[i]))
+                    if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
+                    
+                    string[] splitOnceAgain = splitStr2[i].Split(';');
+                    if (splitOnceAgain.Length == 3)
                     {
-                        string[] splitOnceAgain = splitStr2[i].Split(';');
-                        if (splitOnceAgain.Length == 3)
-                        {
-                            Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
-                        }
-                        else
-                        {
-                            Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
-                        }
+                        Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
+                    }
+                    else
+                    {
+                        Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
                     }
                 }
             }
@@ -198,7 +203,7 @@ public class CinematicText : Entity
 
         if (string.IsNullOrEmpty(ActivationTag)) Enter();
 
-        if (InstantLoad || (InstantReload && ((scene as Level)?.Session.GetFlag("PlutoniumInstaReload_" + Id) ?? false)))
+        if (InstantLoad || InstantReload && ((scene as Level)?.Session.GetFlag("PlutoniumInstaReload_" + Id) ?? false))
         {
             DoInstantReload(0f);
         }
@@ -212,13 +217,12 @@ public class CinematicText : Entity
         Add(new Coroutine(InstaSequence()));
         foreach (CinematicText t in Scene.Tracker.GetEntities<CinematicText>())
         {
-            if (t.ActivationTag == NextTextTag)
-            {
-                float extraTime = extra + ((1 / (t.SpeedMultiplier == 0 ? t.SpeedMultiplier : float.Epsilon)) * (t.Str.Length - t.Str.Count(f => f == ' ')));
-                t.DisappearDelay += extraTime;
-                t.DoInstantReload(extraTime);
-                // simulate the next text string being formed later by literally calculating how much time it takes to form and pretending it takes that much longer to disappear. fucking lol.
-            }
+            if (t.ActivationTag != NextTextTag) continue;
+            
+            float extraTime = extra + 1 / (t.SpeedMultiplier == 0 ? t.SpeedMultiplier : float.Epsilon) * (t.Str.Length - t.Str.Count(f => f == ' '));
+            t.DisappearDelay += extraTime;
+            t.DoInstantReload(extraTime);
+            // simulate the next text string being formed later by literally calculating how much time it takes to form and pretending it takes that much longer to disappear. fucking lol.
         }
     }
 
@@ -254,7 +258,7 @@ public class CinematicText : Entity
                 MovingCharPercent = Math.Min(MovingCharPercent + Engine.DeltaTime * SpeedMultiplier, 1);
                 yield return null;
             }
-            if ((!NoSound.IsMatch(MovingChar.ToString()) || (IgnoreRegex && MovingChar != ' ')) && !string.IsNullOrEmpty(Audio)) SoundSource.Play(Audio);
+            if ((!NoSound.IsMatch(MovingChar.ToString()) || IgnoreRegex && MovingChar != ' ') && !string.IsNullOrEmpty(Audio)) SoundSource.Play(Audio);
             FinalStringLen++;
         }
         MovingChar = ' ';
@@ -332,7 +336,7 @@ public class CinematicText : Entity
 
         Vector2 position = (Scene as Level).Camera.Position;
         Vector2 vector = position + new Vector2(160f, 90f);
-        Vector2 position2 = (Position - position + (Position - vector) * (Parallax - 1)) + position;
+        Vector2 position2 = Position - position + (Position - vector) * (Parallax - 1) + position;
 
         int offset = FinalStringLen * Spacing;
 
@@ -348,13 +352,13 @@ public class CinematicText : Entity
 
         //outlines
 
-        Text.Print(position2, finalString2, Shadow, Spacing, Color.Transparent, Color2, EffectData, scale2);
-        Text.Print(position2 + (MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * MovingCharPercent, EffectData, scale2, Cur);
+        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1), finalString2, Shadow, Spacing, Color.Transparent, Color2, EffectData, scale2);
+        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1) + MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2 + Vector2.UnitX * offset * scale2, MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * MovingCharPercent, EffectData, scale2, Cur);
 
         //main text
 
-        Text.Print(position2, finalString2, Shadow, Spacing, Color1, Color.Transparent, EffectData, scale2);
-        Text.Print(position2 + (MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2) + (Vector2.UnitX * offset * scale2), MovingChar.ToString(), Shadow, Spacing, Color1 * MovingCharPercent, Color.Transparent, EffectData, scale2, Cur);
+        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1), finalString2, Shadow, Spacing, Color1, Color.Transparent, EffectData, scale2);
+        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1) + MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2 + Vector2.UnitX * offset * scale2, MovingChar.ToString(), Shadow, Spacing, Color1 * MovingCharPercent, Color.Transparent, EffectData, scale2, Cur);
 
         Draw.SpriteBatch.End();
     }
@@ -371,10 +375,10 @@ public class CinematicText : Entity
         {
             SubHudRenderer.EndRender();
 
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, (Engine.ScreenMatrix.M11 * 6) < 6 ? Matrix.Identity : Engine.ScreenMatrix);
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Engine.ScreenMatrix.M11 * 6 < 6 ? Matrix.Identity : Engine.ScreenMatrix);
         }
 
-        Draw.SpriteBatch.Draw(Buffer, Hud ? Vector2.Zero : (Scene as Level).Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, (SaveData.Instance.Assists.MirrorMode && Hud) ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+        Draw.SpriteBatch.Draw(Buffer, Hud ? Vector2.Zero : (Scene as Level).Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, SaveData.Instance.Assists.MirrorMode && Hud ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
 
         if (Hud)
         {
@@ -389,7 +393,10 @@ public class CinematicText : Entity
         base.DebugRender(camera);
         Vector2 position = (Scene as Level).Camera.Position;
         Vector2 vector = position + new Vector2(160f, 90f);
-        Vector2 position2 = (Position - position + (Position - vector) * (Parallax - 1)) + position;
+        Vector2 position2 = Position - position + (Position - vector) * (Parallax - 1) + position;
         Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
     }
+
+    [GeneratedRegex("(\\s|\\{|\\})")]
+    private static partial Regex MyRegex();
 }

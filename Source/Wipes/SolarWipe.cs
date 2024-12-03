@@ -26,7 +26,7 @@ public class SolarWipe : ScreenWipe
     {
         for (int k = 0; k < verts.Length; k++)
         {
-            verts[k].Color = (WipeIn ? Color.White : Color.Black);
+            verts[k].Color = WipeIn ? Color.White : Color.Black;
         }
         SpinSpeed = 0;
     }

@@ -121,7 +121,7 @@ public class WindPetals : Backdrop
                 Vector2 position = Vector2.Zero;
                 position.X = -16f + Mod(particles[i].Position.X - camera.X, 352f / Parallax);
                 position.Y = -16f + Mod(particles[i].Position.Y - camera.Y, 212f / Parallax);
-                float num = (MathF.PI / 2) + MathF.Sin(particles[i].RotationCounter * SpinSpeedMultiplier * particles[i].MaxRotate) * 1.0f;
+                float num = MathF.PI / 2 + MathF.Sin(particles[i].RotationCounter * SpinSpeedMultiplier * particles[i].MaxRotate) * 1.0f;
                 position += Calc.AngleToVector(num, 4f);
                 for (int n = 1; n < BlurCount; n++)
                 {
@@ -129,13 +129,13 @@ public class WindPetals : Backdrop
                         (
                         position -
                         new Vector2(
-                            ((level as Level).Wind.X / 300f) * (n / BlurDensity),
-                            ((level as Level).Wind.Y / 300f) * (n / BlurDensity)
+                            (level as Level).Wind.X / 300f * (n / BlurDensity),
+                            (level as Level).Wind.Y / 300f * (n / BlurDensity)
                             )
                         ) * Parallax,
-                        (particles[i].Color * Calc.Map(n, 1, BlurCount - 1, 0.5f, 0) * fade) * Math.Max(Math.Min(Math.Abs((level as Level).Wind.X) / 300, 1), Math.Min(Math.Abs((level as Level).Wind.Y) / 300, 1)) * Alpha, 1f * Scale, (num - 0.8f) * SpinAmount);
+                        particles[i].Color * Calc.Map(n, 1, BlurCount - 1, 0.5f, 0) * fade * Math.Max(Math.Min(Math.Abs((level as Level).Wind.X) / 300, 1), Math.Min(Math.Abs((level as Level).Wind.Y) / 300, 1)) * Alpha, 1f * Scale, (num - 0.8f) * SpinAmount);
                 }
-                mTexture.DrawCentered(position * Parallax, (particles[i].Color * fade2) * Alpha, 1f * Scale, (num - 0.8f) * SpinAmount);
+                mTexture.DrawCentered(position * Parallax, particles[i].Color * fade2 * Alpha, 1f * Scale, (num - 0.8f) * SpinAmount);
             }
         }
     }

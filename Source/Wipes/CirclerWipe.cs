@@ -35,13 +35,13 @@ public class CirclerWipe : ScreenWipe
 
 			float bottom = (i2 + 1) * Engine.Height / Bars;
 			float top = i2 * Engine.Height / Bars;
-			vertex[0 + (int)(6 * i)].Position = new Vector3(Engine.Width + 1, top + (Engine.Height / Bars / 2 * num) + (Engine.Width * 0.1f), 0f);
-			vertex[1 + (int)(6 * i)].Position = new Vector3(Engine.Width + 1, bottom - (Engine.Height / Bars / 2 * num) + (Engine.Width * 0.1f), 0f);
-			vertex[2 + (int)(6 * i)].Position = new Vector3(0f, bottom - (Engine.Height / Bars / 2 * num) - (Engine.Width * 0.1f), 0f);
+			vertex[0 + (int)(6 * i)].Position = new Vector3(Engine.Width + 1, top + Engine.Height / Bars / 2 * num + Engine.Width * 0.1f, 0f);
+			vertex[1 + (int)(6 * i)].Position = new Vector3(Engine.Width + 1, bottom - Engine.Height / Bars / 2 * num + Engine.Width * 0.1f, 0f);
+			vertex[2 + (int)(6 * i)].Position = new Vector3(0f, bottom - Engine.Height / Bars / 2 * num - Engine.Width * 0.1f, 0f);
 
-			vertex[3 + (int)(6 * i)].Position = new Vector3(0f, bottom - (Engine.Height / Bars / 2 * num) - (Engine.Width * 0.1f), 0f);
-			vertex[4 + (int)(6 * i)].Position = new Vector3(0f, top + (Engine.Height / Bars / 2 * num) - (Engine.Width * 0.1f), 0f);
-			vertex[5 + (int)(6 * i)].Position = new Vector3(Engine.Width + 1, top + (Engine.Height / Bars / 2 * num) + (Engine.Width * 0.1f), 0f);
+			vertex[3 + (int)(6 * i)].Position = new Vector3(0f, bottom - Engine.Height / Bars / 2 * num - Engine.Width * 0.1f, 0f);
+			vertex[4 + (int)(6 * i)].Position = new Vector3(0f, top + Engine.Height / Bars / 2 * num - Engine.Width * 0.1f, 0f);
+			vertex[5 + (int)(6 * i)].Position = new Vector3(Engine.Width + 1, top + Engine.Height / Bars / 2 * num + Engine.Width * 0.1f, 0f);
 		}
 		GFX.DrawVertices(Matrix.Identity, vertex, vertex.Length);
 

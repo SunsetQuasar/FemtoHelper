@@ -32,20 +32,20 @@ public class Sisyphus : Entity
     }
     public IEnumerator Routine()
     {
-        Tween tween = Tween.Create(Tween.TweenMode.Oneshot, null, (2 * Rand), start: true);
+        Tween tween = Tween.Create(Tween.TweenMode.Oneshot, null, 2 * Rand, start: true);
         tween.OnUpdate = delegate (Tween t)
         {
             Alpha = t.Eased;
         };
         Add(tween);
-        yield return (2 * Rand) + 0.7f;
-        Tween tween2 = Tween.Create(Tween.TweenMode.Oneshot, null, (2 * Rand), start: true);
+        yield return 2 * Rand + 0.7f;
+        Tween tween2 = Tween.Create(Tween.TweenMode.Oneshot, null, 2 * Rand, start: true);
         tween2.OnUpdate = delegate (Tween t)
         {
             Alpha = 1 - t.Eased;
         };
         Add(tween2);
-        yield return (2 * Rand);
+        yield return 2 * Rand;
         RemoveSelf();
     }
 

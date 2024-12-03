@@ -156,7 +156,7 @@ public class PlutoniumText : Component
 
                 float i2 = i + id;
 
-                Calc.PushRandom((int)(Seed + (82 * i2 * i)));
+                Calc.PushRandom((int)(Seed + 82 * i2 * i));
                 if (data.Shakey || (data.Twitchy && Calc.Random.Chance(data.TwitchChance)))
                 {
                     Vector2 num = new Vector2(Calc.Random.NextFloat(2f * data.ShakeAmount) - data.ShakeAmount, Calc.Random.NextFloat(2f * data.ShakeAmount) - data.ShakeAmount) * scale;
@@ -167,15 +167,15 @@ public class PlutoniumText : Component
                 {
                     Vector2 num = new Vector2
                         (
-                        (float)Math.Sin((Scene.TimeActive * data.WaveSpeed) + data.PhaseOffset + (i2 * data.PhaseIncrement)) * data.WaveAmp.X,
-                        (float)Math.Sin((Scene.TimeActive * data.WaveSpeed) + (i2 * data.PhaseIncrement)) * data.WaveAmp.Y
+                        (float)Math.Sin(Scene.TimeActive * data.WaveSpeed + data.PhaseOffset + i2 * data.PhaseIncrement) * data.WaveAmp.X,
+                        (float)Math.Sin(Scene.TimeActive * data.WaveSpeed + i2 * data.PhaseIncrement) * data.WaveAmp.Y
                         ) * scale;
                     effectOffsets[(int)i] += num;
                 }
 
                 if (!data.Obfuscated) continue;
                 
-                Calc.PushRandom((int)(Seed + (47 * i2)));
+                Calc.PushRandom((int)(Seed + 47 * i2));
                 theseChars[(int)i] = CharList[Calc.Random.Next(CharList.Length)];
                 Calc.PopRandom();
             }
@@ -188,7 +188,7 @@ public class PlutoniumText : Component
             foreach (char c in str) //draw all outlines/shadows
             {
                 float offset = index * spacing * scale;
-                Vector2 charpos = pos + (Vector2.UnitX * offset);
+                Vector2 charpos = pos + Vector2.UnitX * offset;
                 charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
                 if (!data.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
 
@@ -212,7 +212,7 @@ public class PlutoniumText : Component
                 //Logger.Log(nameof(PlutoniumHelperModule), "outline color: " + outlineColor.ToString());
                 if (shadow)
                 {
-                    CharTextures[chr].Draw(charpos + (Vector2.One * scale), Vector2.Zero, outlineColor, scale, 0, flip);
+                    CharTextures[chr].Draw(charpos + Vector2.One * scale, Vector2.Zero, outlineColor, scale, 0, flip);
                 }
                 else
                 {
@@ -229,7 +229,7 @@ public class PlutoniumText : Component
         foreach (char c in str) //draw all characters
         {
             float offset = index * spacing * scale;
-            Vector2 charpos = pos + (Vector2.UnitX * offset);
+            Vector2 charpos = pos + Vector2.UnitX * offset;
             charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
             if (!data.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
             int chr;
@@ -284,7 +284,7 @@ public class PlutoniumText : Component
             {
                 if (i != 0 || j != 0)
                 {
-                    Draw.SpriteBatch.Draw(t.Texture.Texture_Safe, position + (new Vector2(i, j) * scale), clipRect, color, 0f, origin2, scaleFix, flip, 0f);
+                    Draw.SpriteBatch.Draw(t.Texture.Texture_Safe, position + new Vector2(i, j) * scale, clipRect, color, 0f, origin2, scaleFix, flip, 0f);
                 }
             }
         }

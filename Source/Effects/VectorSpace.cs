@@ -68,7 +68,7 @@ public class VectorSpace : Backdrop
 		scaleTip = tscale;
 		renderTip = trender;
 
-		vecs = new Vectand[(howmanyx * howmanyy)];
+		vecs = new Vectand[howmanyx * howmanyy];
 		//Alpha = alpha;
 		colors = color
 				.Split(',')
@@ -80,32 +80,32 @@ public class VectorSpace : Backdrop
 		{
 			vecs[i].Position = new Vector2(
 				Mod(i , howmanyx) * spacingX, 
-				(i / howmanyx) * spacingY
+				i / howmanyx * spacingY
 				);
 			vecs[i].Speed = new Vector2(speedX, speedY);
 			vecs[i].IndColor = colors[Calc.Random.Next(colors.Length)];
 
-			vecs[i].XFreq = (Calc.Random.Range(xFreqMin, xFreqMax) / 180) * (float)Math.PI;
+			vecs[i].XFreq = Calc.Random.Range(xFreqMin, xFreqMax) / 180 * (float)Math.PI;
 
             if (yFrelX) 
             {
-				vecs[i].YFreq = vecs[i].XFreq + (Calc.Random.Range(yFreqMin, yFreqMax) / 180) * (float)Math.PI;
+				vecs[i].YFreq = vecs[i].XFreq + Calc.Random.Range(yFreqMin, yFreqMax) / 180 * (float)Math.PI;
 			}
             else
             {
-				vecs[i].YFreq = (Calc.Random.Range(yFreqMin, yFreqMax) / 180) * (float)Math.PI;
+				vecs[i].YFreq = Calc.Random.Range(yFreqMin, yFreqMax) / 180 * (float)Math.PI;
 			}
 			
 
-			vecs[i].XTimer = (Calc.Random.Range(xOffsetMin, xOffsetMax) / 180) * (float)Math.PI;
+			vecs[i].XTimer = Calc.Random.Range(xOffsetMin, xOffsetMax) / 180 * (float)Math.PI;
 
 			if(yOrelX)
             {
-				vecs[i].YTimer = vecs[i].XTimer + (Calc.Random.Range(yOffsetMin, yOffsetMax) / 180) * (float)Math.PI;
+				vecs[i].YTimer = vecs[i].XTimer + Calc.Random.Range(yOffsetMin, yOffsetMax) / 180 * (float)Math.PI;
 			} 
 			else
             {
-				vecs[i].YTimer = (Calc.Random.Range(yOffsetMin, yOffsetMax) / 180) * (float)Math.PI;
+				vecs[i].YTimer = Calc.Random.Range(yOffsetMin, yOffsetMax) / 180 * (float)Math.PI;
 			}
 		}
 	}
@@ -144,12 +144,12 @@ public class VectorSpace : Backdrop
 		for (int i = 0; i < vecs.Length; i++)
 		{
 			Draw.Line(new Vector2(
-				vecs[i].Position.X - ((howmanyx * spacingX - 320) / 2),
-				vecs[i].Position.Y - ((howmanyy * spacingY - 180) / 2)
+				vecs[i].Position.X - (howmanyx * spacingX - 320) / 2,
+				vecs[i].Position.Y - (howmanyy * spacingY - 180) / 2
 				),
 				new Vector2(
-				vecs[i].Position.X + vecs[i].XComp - ((howmanyx * spacingX - 320) / 2),
-				vecs[i].Position.Y + vecs[i].YComp - ((howmanyy * spacingY - 180) / 2)
+				vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2,
+				vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2
 				),
 				vecs[i].IndColor);
 			if (renderTip)
@@ -161,32 +161,32 @@ public class VectorSpace : Backdrop
 				float tipscale;
                 if (scaleTip)
                 {
-					tipscale = (gAmplitude / 2) * amp;
+					tipscale = gAmplitude / 2 * amp;
 				} 
 				else
                 {
-					tipscale = (gAmplitude / 2);
+					tipscale = gAmplitude / 2;
 				}
 				
 
 				Draw.Line(new Vector2(
-					vecs[i].Position.X + vecs[i].XComp - ((howmanyx * spacingX - 320) / 2),
-					vecs[i].Position.Y + vecs[i].YComp - ((howmanyy * spacingY - 180) / 2)
+					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2,
+					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2
 					),
 					new Vector2(
-					vecs[i].Position.X + vecs[i].XComp - ((howmanyx * spacingX - 320) / 2) + (float)Math.Sin(dir - (9 * Math.PI / 8)) * tipscale,
-					vecs[i].Position.Y + vecs[i].YComp - ((howmanyy * spacingY - 180) / 2) + (float)Math.Cos(dir - (9 * Math.PI / 8)) * tipscale
+					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2 + (float)Math.Sin(dir - 9 * Math.PI / 8) * tipscale,
+					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2 + (float)Math.Cos(dir - 9 * Math.PI / 8) * tipscale
 					),
 					vecs[i].IndColor);
 
 				Draw.Line(new Vector2(
-					vecs[i].Position.X + vecs[i].XComp - ((howmanyx * spacingX - 320) / 2) + (float)Math.Sin(dir + (9 * Math.PI / 8)) * tipscale,
-					vecs[i].Position.Y + vecs[i].YComp - ((howmanyy * spacingY - 180) / 2) + (float)Math.Cos(dir + (9 * Math.PI / 8)) * tipscale
+					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2 + (float)Math.Sin(dir + 9 * Math.PI / 8) * tipscale,
+					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2 + (float)Math.Cos(dir + 9 * Math.PI / 8) * tipscale
 
 					),
 					new Vector2(
-					vecs[i].Position.X + vecs[i].XComp - ((howmanyx * spacingX - 320) / 2),
-					vecs[i].Position.Y + vecs[i].YComp - ((howmanyy * spacingY - 180) / 2)
+					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2,
+					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2
 					),
 					vecs[i].IndColor);
 			}

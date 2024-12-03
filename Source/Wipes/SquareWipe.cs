@@ -24,7 +24,7 @@ public class SquareWipe : ScreenWipe
     {
         for (int i = 0; i < vertex.Length; i++)
         {
-            vertex[i].Color = (WipeIn ? Color.Black : Color.White);
+            vertex[i].Color = WipeIn ? Color.Black : Color.White;
         }
     }
 
@@ -42,13 +42,13 @@ public class SquareWipe : ScreenWipe
         //}
         float num2 = (float)Math.Pow(Percent, 3.5) * 1.4f;
         float num3 = WipeIn ? num2 : - num2;
-        vertex[0].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2), Engine.Width / 2 * num2), 0f);
-        vertex[1].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2) + (float)(1 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
-        vertex[2].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2) + (float)(2 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
+        vertex[0].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector(num3 * 2, Engine.Width / 2 * num2), 0f);
+        vertex[1].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector(num3 * 2 + (float)(1 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
+        vertex[2].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector(num3 * 2 + (float)(2 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
 
-        vertex[3].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2) + (float)(2 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
-        vertex[4].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2) + (float)(3 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
-        vertex[5].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector((num3 * 2), Engine.Width / 2 * num2), 0f);
+        vertex[3].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector(num3 * 2 + (float)(2 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
+        vertex[4].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector(num3 * 2 + (float)(3 * Math.PI / 2), Engine.Width / 2 * num2), 0f);
+        vertex[5].Position = new Vector3(new Vector2(Engine.Width / 2, Engine.Height / 2) - Calc.AngleToVector(num3 * 2, Engine.Width / 2 * num2), 0f);
 
         GFX.DrawVertices(Matrix.Identity, vertex, vertex.Length);
     }

@@ -24,7 +24,7 @@ public class DiamondWipe : ScreenWipe
     {
         for (int i = 0; i < vertex.Length; i++)
         {
-            vertex[i].Color = (WipeIn ? Color.Black : Color.White);
+            vertex[i].Color = WipeIn ? Color.Black : Color.White;
         }
     }
 
@@ -40,15 +40,15 @@ public class DiamondWipe : ScreenWipe
         //    Draw.Rect(-1f, (1080f - num) * 0.5f, 1922f, num, (!WipeIn) ? Color.White : Color.Black);
         //    Draw.SpriteBatch.End();
         //}
-        float num2 = ((Percent * Percent) + (Percent * Percent * Percent)) / 2;
+        float num2 = (Percent * Percent + Percent * Percent * Percent) / 2;
         float num3 = WipeIn ? num2 : -num2;
         Vector2 center = new Vector2(Engine.Width / 2f, Engine.Height / 2f);
-        vertex[0].Position = new Vector3(center.X, center.Y - (num2 * (center.X + center.Y)), 0);
-        vertex[1].Position = new Vector3(center.X - (num2 * (center.X + center.Y)), center.Y, 0);
-        vertex[2].Position = new Vector3(center.X, center.Y + (num2 * (center.X + center.Y)), 0);
-        vertex[3].Position = new Vector3(center.X, center.Y - (num2 * (center.X + center.Y)), 0);
-        vertex[4].Position = new Vector3(center.X + (num2 * (center.X + center.Y)), center.Y, 0);
-        vertex[5].Position = new Vector3(center.X, center.Y + (num2 * (center.X + center.Y)), 0);
+        vertex[0].Position = new Vector3(center.X, center.Y - num2 * (center.X + center.Y), 0);
+        vertex[1].Position = new Vector3(center.X - num2 * (center.X + center.Y), center.Y, 0);
+        vertex[2].Position = new Vector3(center.X, center.Y + num2 * (center.X + center.Y), 0);
+        vertex[3].Position = new Vector3(center.X, center.Y - num2 * (center.X + center.Y), 0);
+        vertex[4].Position = new Vector3(center.X + num2 * (center.X + center.Y), center.Y, 0);
+        vertex[5].Position = new Vector3(center.X, center.Y + num2 * (center.X + center.Y), 0);
 
 
         GFX.DrawVertices(Matrix.Identity, vertex, vertex.Length);

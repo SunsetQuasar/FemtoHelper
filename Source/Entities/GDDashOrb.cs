@@ -112,10 +112,10 @@ public class GdDashOrb : Entity
 
         if (Yeahforsure && !Lastforsure)
         {
-            Scene.Add(new Ring(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2)));
+            Scene.Add(new Ring(Position + Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2));
         }
         Cooldown = Math.Max(Cooldown - Engine.DeltaTime, 0);
-        if (Yeahforsure && (Cooldown <= 0))
+        if (Yeahforsure && Cooldown <= 0)
         {
             if (Input.Jump.Pressed && !LastJump)
             {
@@ -167,11 +167,11 @@ public class GdDashOrb : Entity
 
         Color col = Color.Lerp(BaseColor, Color.White, Ease.QuintIn(PulsePercent));
 
-        RingTexture.DrawOutlineCentered(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2), Color.Black, 1 + (Ease.QuintIn(PulsePercent) * 0.6f));
-        OrbTexture.DrawOutlineCentered(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2), Color.Black, 1 + (Ease.QuintIn(PulsePercent) * 0.6f), Angle);
+        RingTexture.DrawOutlineCentered(Position + Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2, Color.Black, 1 + Ease.QuintIn(PulsePercent) * 0.6f);
+        OrbTexture.DrawOutlineCentered(Position + Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2, Color.Black, 1 + Ease.QuintIn(PulsePercent) * 0.6f, Angle);
 
-        RingTexture.DrawCentered(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2), Color.White, 1 + (Ease.QuintIn(PulsePercent) * 0.6f));
-        OrbTexture.DrawCentered(Position + (Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2), col, 1 + (Ease.QuintIn(PulsePercent) * 0.6f), Angle);
+        RingTexture.DrawCentered(Position + Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2, Color.White, 1 + Ease.QuintIn(PulsePercent) * 0.6f);
+        OrbTexture.DrawCentered(Position + Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2, col, 1 + Ease.QuintIn(PulsePercent) * 0.6f, Angle);
 
 
     }

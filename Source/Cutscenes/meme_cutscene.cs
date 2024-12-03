@@ -226,8 +226,8 @@ public class CsFunnyAsHell : CutsceneEntity
 				Draw.Rect(Level.Camera.X - 1f, Level.Camera.Y - 1f, 322f, 182f, Color.White * fade);
 			}
 			Draw.Rect(Level.Camera.X - 1f, Level.Camera.Y - 1f, 322f, 182f, Color.Black * darkness);
-			Draw.Rect(player.X + 80 - (width / 2), Level.Camera.Y - 3f, Math.Max(width, 0), 185f, Color.White * 0.5f);
-			Draw.Rect(player.X + 80 - ((width - 4) / 2), Level.Camera.Y - 3f, Math.Max(width-4, 0), 185f, Color.White * 0.5f);
-			Draw.Rect(player.X + 80 - ((width - 8) / 2), Level.Camera.Y - 3f, Math.Max(width-8, 0), 185f, Color.White * 0.5f);
+			Draw.Rect(player.X + 80 - width / 2, Level.Camera.Y - 3f, Math.Max(width, 0), 185f, Color.White * 0.5f);
+			Draw.Rect(player.X + 80 - (width - 4) / 2, Level.Camera.Y - 3f, Math.Max(width-4, 0), 185f, Color.White * 0.5f);
+			Draw.Rect(player.X + 80 - (width - 8) / 2, Level.Camera.Y - 3f, Math.Max(width-8, 0), 185f, Color.White * 0.5f);
 		}
 	}

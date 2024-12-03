@@ -122,7 +122,7 @@ public class CustomMoonCreature : Entity
 			Trail[i] = new TrailNode
 			{
 				Position = Position,
-				Color = Color.Lerp(value, value2, (float)i / (trailCount - 1)) * (trailBaseAlpha - ((trailBaseAlpha - trailTipAlpha) * i / trailCount))
+				Color = Color.Lerp(value, value2, (float)i / (trailCount - 1)) * (trailBaseAlpha - (trailBaseAlpha - trailTipAlpha) * i / trailCount)
 			};
 		}
 		Add(sprite = GFX.SpriteBank.Create(spritePath));
@@ -210,8 +210,8 @@ public class CustomMoonCreature : Entity
 			}
 		}
 		Vector2 value = (Target - Position).SafeNormalize();
-		speed += value * ((following == null) ? acceleration : followAcceleration) * Engine.DeltaTime;
-		speed = speed.SafeNormalize() * Math.Min(speed.Length(), (following == null) ? maxSpeed : maxFollowSpeed);
+		speed += value * (following == null ? acceleration : followAcceleration) * Engine.DeltaTime;
+		speed = speed.SafeNormalize() * Math.Min(speed.Length(), following == null ? maxSpeed : maxFollowSpeed);
 		bump = bump.SafeNormalize() * Calc.Approach(bump.Length(), 0f, Engine.DeltaTime * 80f);
 		Position += (speed + bump) * Engine.DeltaTime;
 		Vector2 position = Position;

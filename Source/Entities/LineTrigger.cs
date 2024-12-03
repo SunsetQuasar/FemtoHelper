@@ -42,10 +42,10 @@ public class LineTrigger : Entity
         if (Player != null)
         {
             float percent = Calc.ClampedMap(Player.Y, Position.Y, Node.Y, Position.X, Node.X);
-            bool left = (Player.X < percent);
+            bool left = Player.X < percent;
             if (left != LastLeft)
             {
-                if((Player.Y >= Position.Y) && (Player.Y <= Node.Y)) (Scene as Level).Session.SetFlag(Flag, LeftIsTrue ? left : !left);
+                if(Player.Y >= Position.Y && Player.Y <= Node.Y) (Scene as Level).Session.SetFlag(Flag, LeftIsTrue ? left : !left);
             }
             LastLeft = left;
         }

@@ -94,7 +94,7 @@ public class DistortedParallax : Parallax
 		}
 		else
 		{
-			fadein = (Visible ? 1 : 0);
+			fadein = Visible ? 1 : 0;
 		}
 	}
 
@@ -168,28 +168,28 @@ public class DistortedParallax : Parallax
 					for (float i = 0; i < slices.Length; i++)
 					{
 						Vector2 newnum2 = new Vector2(num2, num3);
-						newnum2 += (vector * Scroll);
+						newnum2 += vector * Scroll;
 						if (num2 == vector2.X && LoopX)
 						{
-							sliceId = (float)Math.Round(i + (Math.Sin(((newnum2.X + i) / frequency.X) + timer.X) * amplitude.X));
+							sliceId = (float)Math.Round(i + Math.Sin((newnum2.X + i) / frequency.X + timer.X) * amplitude.X);
 							sliceId2 = FlipX ? (int)Mod(slices.Length - sliceId, slices.Length) : (int)Mod(sliceId, slices.Length);
-							slices[sliceId2].Draw(new Vector2(num2 - Texture.Width + i, num3) + new Vector2(0f, (float)(Math.Sin(((newnum2.X + i) / frequency.Y) + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
+							slices[sliceId2].Draw(new Vector2(num2 - Texture.Width + i, num3) + new Vector2(0f, (float)(Math.Sin((newnum2.X + i) / frequency.Y + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
 						}
 						if(num3 == vector2.Y && LoopY)
 						{
-							sliceId = (float)Math.Round(i + (Math.Sin(((newnum2.X + i) / frequency.X) + timer.X) * amplitude.X));
+							sliceId = (float)Math.Round(i + Math.Sin((newnum2.X + i) / frequency.X + timer.X) * amplitude.X);
 							sliceId2 = FlipX ? (int)Mod(slices.Length - sliceId, slices.Length) : (int)Mod(sliceId, slices.Length);
-							slices[sliceId2].Draw(new Vector2(num2 + i, num3 - Texture.Height) + new Vector2(0f, (float)(Math.Sin(((newnum2.X + i) / frequency.Y) + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
+							slices[sliceId2].Draw(new Vector2(num2 + i, num3 - Texture.Height) + new Vector2(0f, (float)(Math.Sin((newnum2.X + i) / frequency.Y + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
 						}
 						if(num2 == vector2.X && num3 == vector2.Y && LoopX && LoopY)
 						{
-							sliceId = (float)Math.Round(i + (Math.Sin(((newnum2.X + i) / frequency.X) + timer.X) * amplitude.X));
+							sliceId = (float)Math.Round(i + Math.Sin((newnum2.X + i) / frequency.X + timer.X) * amplitude.X);
 							sliceId2 = FlipX ? (int)Mod(slices.Length - sliceId, slices.Length) : (int)Mod(sliceId, slices.Length);
-							slices[sliceId2].Draw(new Vector2(num2 - Texture.Width + i, num3 - Texture.Height) + new Vector2(0f, (float)(Math.Sin(((newnum2.X + i) / frequency.Y) + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
+							slices[sliceId2].Draw(new Vector2(num2 - Texture.Width + i, num3 - Texture.Height) + new Vector2(0f, (float)(Math.Sin((newnum2.X + i) / frequency.Y + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
 						}
-						sliceId = (float)Math.Round(i + (Math.Sin(((newnum2.X + i) / frequency.X) + timer.X) * amplitude.X));
+						sliceId = (float)Math.Round(i + Math.Sin((newnum2.X + i) / frequency.X + timer.X) * amplitude.X);
 						sliceId2 = FlipX ? (int)Mod(slices.Length - sliceId, slices.Length) : (int)Mod(sliceId, slices.Length);
-						slices[sliceId2].Draw(new Vector2(num2 + i, num3) + new Vector2(0f, (float)(Math.Sin(((newnum2.X + i) / frequency.Y) + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
+						slices[sliceId2].Draw(new Vector2(num2 + i, num3) + new Vector2(0f, (float)(Math.Sin((newnum2.X + i) / frequency.Y + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
 					}
 					if (!LoopY)
 					{
@@ -215,28 +215,28 @@ public class DistortedParallax : Parallax
 					{
 
 						Vector2 newnum2 = new Vector2(num2, num3);
-						newnum2 += (vector * Scroll);
+						newnum2 += vector * Scroll;
 						if (num2 == vector2.X && LoopX)
 						{
-							sliceId = (float)Math.Round(i + (Math.Sin(((newnum2.Y + i) / frequency.Y) + timer.Y) * amplitude.Y));
+							sliceId = (float)Math.Round(i + Math.Sin((newnum2.Y + i) / frequency.Y + timer.Y) * amplitude.Y);
 							sliceId2 = FlipY ? (int)Mod(slices.Length - sliceId, slices.Length) : (int)Mod(sliceId, slices.Length);
-							slices[sliceId2].Draw(new Vector2(num2 - Texture.Width, num3 + i) + new Vector2((float)(Math.Sin(((newnum2.Y + i) / frequency.X) + timer.X) * amplitude.X), 0f), Vector2.Zero, color, 1f, 0f, flip);
+							slices[sliceId2].Draw(new Vector2(num2 - Texture.Width, num3 + i) + new Vector2((float)(Math.Sin((newnum2.Y + i) / frequency.X + timer.X) * amplitude.X), 0f), Vector2.Zero, color, 1f, 0f, flip);
 						}
 						if (num3 == vector2.Y && LoopY)
 						{
-							sliceId = (float)Math.Round(i + (Math.Sin(((newnum2.Y + i) / frequency.Y) + timer.Y) * amplitude.Y));
+							sliceId = (float)Math.Round(i + Math.Sin((newnum2.Y + i) / frequency.Y + timer.Y) * amplitude.Y);
 							sliceId2 = FlipY ? (int)Mod(slices.Length - sliceId, slices.Length) : (int)Mod(sliceId, slices.Length);
-							slices[sliceId2].Draw(new Vector2(num2, num3 + i - Texture.Height) + new Vector2((float)(Math.Sin(((newnum2.Y + i) / frequency.X) + timer.X) * amplitude.X), 0f), Vector2.Zero, color, 1f, 0f, flip);
+							slices[sliceId2].Draw(new Vector2(num2, num3 + i - Texture.Height) + new Vector2((float)(Math.Sin((newnum2.Y + i) / frequency.X + timer.X) * amplitude.X), 0f), Vector2.Zero, color, 1f, 0f, flip);
 						}
 						if (num2 == vector2.X && num3 == vector2.Y && LoopX && LoopY)
 						{
-							sliceId = (float)Math.Round(i + (Math.Sin(((newnum2.Y + i) / frequency.Y) + timer.Y) * amplitude.Y));
+							sliceId = (float)Math.Round(i + Math.Sin((newnum2.Y + i) / frequency.Y + timer.Y) * amplitude.Y);
 							sliceId2 = FlipY ? (int)Mod(slices.Length - sliceId, slices.Length) : (int)Mod(sliceId, slices.Length);
-							slices[sliceId2].Draw(new Vector2(num2 - Texture.Width, num3 + i - Texture.Height) + new Vector2((float)(Math.Sin(((newnum2.Y + i) / frequency.X) + timer.X) * amplitude.X), 0f), Vector2.Zero, color, 1f, 0f, flip);
+							slices[sliceId2].Draw(new Vector2(num2 - Texture.Width, num3 + i - Texture.Height) + new Vector2((float)(Math.Sin((newnum2.Y + i) / frequency.X + timer.X) * amplitude.X), 0f), Vector2.Zero, color, 1f, 0f, flip);
 						}
-						sliceId = (float)Math.Round(i + (Math.Sin(((newnum2.Y + i) / frequency.Y) + timer.Y) * amplitude.Y));
+						sliceId = (float)Math.Round(i + Math.Sin((newnum2.Y + i) / frequency.Y + timer.Y) * amplitude.Y);
 						sliceId2 = FlipY ? (int)Mod(slices.Length - sliceId, slices.Length) : (int)Mod(sliceId, slices.Length);
-						slices[sliceId2].Draw(new Vector2(num2, num3 + i) + new Vector2((float)(Math.Sin(((newnum2.Y + i) / frequency.X) + timer.X) * amplitude.X), 0f), Vector2.Zero, color, 1f, 0f, flip);
+						slices[sliceId2].Draw(new Vector2(num2, num3 + i) + new Vector2((float)(Math.Sin((newnum2.Y + i) / frequency.X + timer.X) * amplitude.X), 0f), Vector2.Zero, color, 1f, 0f, flip);
 					}
 
 					if (!LoopY)
@@ -259,7 +259,7 @@ public class DistortedParallax : Parallax
 					{
 						for (float j = 0; j < Texture.Height; j++)
 						{
-							slices2[(int)i, (int)j].Draw(new Vector2(num2 + i, num3 + j) + new Vector2((float)(Math.Sin(((num3 + j) / frequency.X) + timer.X) * amplitude.X), (float)(Math.Sin(((num2 + i) / frequency.Y) + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
+							slices2[(int)i, (int)j].Draw(new Vector2(num2 + i, num3 + j) + new Vector2((float)(Math.Sin((num3 + j) / frequency.X + timer.X) * amplitude.X), (float)(Math.Sin((num2 + i) / frequency.Y + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
 						}
 							
 					}
@@ -286,11 +286,11 @@ public class DistortedParallax : Parallax
 					{
 						for (float j = 0; j < Texture.Height; j++)
 						{
-							float sliceId = (float)Math.Round(j + (Math.Sin(((num3 + j) / frequency.Y) + timer.Y) * amplitude.Y));
+							float sliceId = (float)Math.Round(j + Math.Sin((num3 + j) / frequency.Y + timer.Y) * amplitude.Y);
 							int sliceId2 = (int)Mod(sliceId, Texture.Height);
-							float sliceId3 = (float)Math.Round(i + (Math.Sin(((num2 + i) / frequency.X) + timer.X) * amplitude.X));
+							float sliceId3 = (float)Math.Round(i + Math.Sin((num2 + i) / frequency.X + timer.X) * amplitude.X);
 							int sliceId4 = (int)Mod(sliceId, Texture.Width);
-							slices2[sliceId4, sliceId2].Draw(new Vector2(num2 + i, num3 + j) + new Vector2((float)(Math.Sin(((num3 + j) / frequency.X) + timer.X) * amplitude.X), (float)(Math.Sin(((num2 + i) / frequency.Y) + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
+							slices2[sliceId4, sliceId2].Draw(new Vector2(num2 + i, num3 + j) + new Vector2((float)(Math.Sin((num3 + j) / frequency.X + timer.X) * amplitude.X), (float)(Math.Sin((num2 + i) / frequency.Y + timer.Y) * amplitude.Y)), Vector2.Zero, color, 1f, 0f, flip);
 						}
 							
 

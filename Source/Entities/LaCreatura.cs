@@ -97,7 +97,7 @@ public class LaCreatura : Entity
             trail[i] = new TrailNode
             {
                 Position = Position,
-                Color = Color.Lerp(value, value2, i / 4f) * (0.2f - (0.1f * i / 6))
+                Color = Color.Lerp(value, value2, i / 4f) * (0.2f - 0.1f * i / 6)
             };
         }
         Add(sprite = FemtoModule.FemtoSpriteBank.Create("butterfly"));
@@ -126,7 +126,7 @@ public class LaCreatura : Entity
 		Vector2 vector = (Position - player.Center).SafeNormalize(player.Speed.Length() * 0.3f);
 		if (!(vector.LengthSquared() > bump.LengthSquared())) return;
 		bump = vector;
-		if (!((player.Center - start).Length() < 200f) || !((MinFollowTime + MaxFollowTime) > 0)) return;
+		if (!((player.Center - start).Length() < 200f) || !(MinFollowTime + MaxFollowTime > 0)) return;
 		following = player;
 		followingTime = Calc.Random.Range(MinFollowTime, MaxFollowTime);
 		GetFollowOffset();
@@ -188,8 +188,8 @@ public class LaCreatura : Entity
 			}
 		}
 		Vector2 value = (target - Position).SafeNormalize();
-		speed += value * ((following == null) ? acceleration : acceleration * (1 + (1/3))) * Engine.DeltaTime;
-		speed = speed.SafeNormalize() * Math.Min(speed.Length(), (following == null) ? maxSpeed : maxSpeed + 30f);
+		speed += value * (following == null ? acceleration : acceleration * (1 + 1/3)) * Engine.DeltaTime;
+		speed = speed.SafeNormalize() * Math.Min(speed.Length(), following == null ? maxSpeed : maxSpeed + 30f);
 		bump = bump.SafeNormalize() * Calc.Approach(bump.Length(), 0f, Engine.DeltaTime * 80f);
 		Position += (speed + bump) * Engine.DeltaTime;
 		Vector2 position = Position;

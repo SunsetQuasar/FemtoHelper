@@ -278,7 +278,7 @@ public class CustomFakeHeart : Entity
 			respawnTimer -= Engine.DeltaTime;
 			if (respawnTimer <= 0f)
 			{
-				Collidable = (Visible = true);
+				Collidable = Visible = true;
 				if (!nobloom){
 					bloom.Visible = true;
 				}
@@ -397,7 +397,7 @@ public class CustomFakeHeart : Entity
 	{
 		if (Collidable)
 		{
-			Collidable = (Visible = false);
+			Collidable = Visible = false;
 			respawnTimer = respawnTime;
 			Celeste.Freeze(0.05f);
 			SceneAs<Level>().Shake();

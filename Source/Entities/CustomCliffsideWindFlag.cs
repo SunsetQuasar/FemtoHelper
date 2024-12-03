@@ -98,7 +98,7 @@ public class CustomCliffsideWindFlag : Entity
 
 	private float Sin(float timer)
 	{
-		return (float)Math.Sin(0f - (timer / sineFrequency)) * sineAmplitude;
+		return (float)Math.Sin(0f - timer / sineFrequency) * sineAmplitude;
 	}
 
 	private void SetFlagSegmentPosition(int i, float windValue, bool snap)

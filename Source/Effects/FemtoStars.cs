@@ -85,7 +85,7 @@ public class FemtoStars : Backdrop
 		{
 			stars[i] = new Star
 			{
-				Position = new Vector2(Calc.Random.NextFloat(320f + extraLoopBorderX) - (extraLoopBorderX / 2), Calc.Random.NextFloat(180f + extraLoopBorderY) - (extraLoopBorderY / 2)),
+				Position = new Vector2(Calc.Random.NextFloat(320f + extraLoopBorderX) - extraLoopBorderX / 2, Calc.Random.NextFloat(180f + extraLoopBorderY) - extraLoopBorderY / 2),
 				Timer = Calc.Random.NextFloat((float)Math.PI * 2f),
 				Rate = animationRate + Calc.Random.NextFloat(2f),
 				TextureSet = Calc.Random.Next(textures.Count),
@@ -95,10 +95,10 @@ public class FemtoStars : Backdrop
 			int randomAlphas = Calc.Random.Next(alphas3.Length);
 			for (int j = 0; j < stars[i].Colors.Length; j++)
 			{
-				stars[i].Colors[j] = colors2[randomIndex] * (float)(alphas3[randomAlphas]) * (1f - j / (float)stars[i].Colors.Length);
+				stars[i].Colors[j] = colors2[randomIndex] * (float)alphas3[randomAlphas] * (1f - j / (float)stars[i].Colors.Length);
 			}
 			//Logger.Log("hi oomfie", alphas3[0].ToString()); //ffs lmao
-			stars[i].MainColor = colors2[randomIndex] * (float)(alphas3[randomAlphas]);
+			stars[i].MainColor = colors2[randomIndex] * (float)alphas3[randomAlphas];
 			stars[i].Speed = new Vector2(Calc.Random.Range(minXSpeed, maxXSpeed), Calc.Random.Range(minYSpeed, maxYSpeed));
 			//Logger.Log("fun", stars[i].speed.Y.ToString());
 		}

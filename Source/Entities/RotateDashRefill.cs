@@ -44,7 +44,7 @@ public class ExtraTrailManager() : Component(true, true)
             }
             if (Player.Speed != Vector2.Zero && Scene.OnInterval(0.02f) && DashParticleCount > 0)
             {
-                ParticleType type = ((!Player.wasDashB) ? Player.P_DashA : ((Player.Sprite.Mode != PlayerSpriteMode.MadelineAsBadeline) ? Player.P_DashB : Player.P_DashBadB));
+                ParticleType type = !Player.wasDashB ? Player.P_DashA : Player.Sprite.Mode != PlayerSpriteMode.MadelineAsBadeline ? Player.P_DashB : Player.P_DashBadB;
                 Player.level.ParticlesFG.Emit(type, Player.Center + Calc.Random.Range(Vector2.One * -2f, Vector2.One * 2f), Player.DashDir.Angle());
                 DashParticleCount--;
             }
@@ -144,7 +144,7 @@ public class RotateDashRefill : Entity
         flash.CenterOrigin();
         Add(wiggler = Wiggler.Create(1f, 4f, delegate (float v)
         {
-            sprite.Scale = (flash.Scale = Vector2.One * (1f + v * 0.2f));
+            sprite.Scale = flash.Scale = Vector2.One * (1f + v * 0.2f);
         }));
         Add(new MirrorReflection());
         Add(bloom = new BloomPoint(0.8f, 16f));
@@ -198,8 +198,8 @@ public class RotateDashRefill : Entity
 
     private void UpdateY()
     {
-        float num2 = (bloom.Y = sine.Value * 2f);
-        float num5 = (flash.Y = (sprite.Y = num2));
+        float num2 = bloom.Y = sine.Value * 2f;
+        float num5 = flash.Y = sprite.Y = num2;
     }
 
     public override void Render()
@@ -232,7 +232,7 @@ public class RotateDashRefill : Entity
         Celeste.Freeze(0.05f);
         yield return null;
         level.Shake();
-        sprite.Visible = (flash.Visible = false);
+        sprite.Visible = flash.Visible = false;
         if (!oneUse)
         {
             outline.Visible = true;

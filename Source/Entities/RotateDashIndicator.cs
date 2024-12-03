@@ -18,7 +18,7 @@ public class RotateDashIndicator() : Component(true, true)
     public override void Update()
     {
         base.Update();
-        if (Timer > 0 && !Anim) Timer = Math.Max(Timer - (Engine.DeltaTime * 4), 0);
+        if (Timer > 0 && !Anim) Timer = Math.Max(Timer - Engine.DeltaTime * 4, 0);
     }
 
     public override void Render()

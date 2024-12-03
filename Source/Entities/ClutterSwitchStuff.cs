@@ -47,7 +47,7 @@ public class NoLightClutterSwitch : Solid
         : base(position, 32f, 16f, safe: true)
     {
         this.color = color;
-        startY = (atY = Y);
+        startY = atY = Y;
         OnDashCollide = OnDashed;
         SurfaceSoundIndex = 21;
         Add(sprite = GFX.SpriteBank.Create("clutterSwitch"));

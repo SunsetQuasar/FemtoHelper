@@ -178,12 +178,12 @@ public class FoolSpaceCustomCheckpoint : Entity
 
 	public override void Render()
 	{
-		MTexture obj = (Activated ? numbersActive : numbersEmpty);
-		MTexture objB = (Activated ? numbersActiveB : numbersEmptyB);
+		MTexture obj = Activated ? numbersActive : numbersEmpty;
+		MTexture objB = Activated ? numbersActiveB : numbersEmptyB;
 		MTexture mTexture = baseActive;
 		if (!Activated)
 		{
-			mTexture = (Scene.BetweenInterval(0.25f) ? baseEmpty : baseToggle);
+			mTexture = Scene.BetweenInterval(0.25f) ? baseEmpty : baseToggle;
 		}
 		mTexture.Draw(Position - new Vector2(mTexture.Width / 2 + 1, mTexture.Height / 2));
 		obj.DrawJustified(Position + new Vector2(-1f, 1f), new Vector2(1f, 0f));

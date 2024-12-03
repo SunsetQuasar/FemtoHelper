@@ -38,7 +38,7 @@ public class HelixHazard : Entity
         base.Update();
         for(int i = 0; i < (int)(AWidth / 4); i++)
         {
-            (Collider as ColliderList).colliders[i].Position.Y = -2 + ((float)Math.Sin(Phase + i) * (AHeight / 2)) + (AHeight / 2);
+            (Collider as ColliderList).colliders[i].Position.Y = -2 + (float)Math.Sin(Phase + i) * (AHeight / 2) + AHeight / 2;
         }
     }
     public override void Render()

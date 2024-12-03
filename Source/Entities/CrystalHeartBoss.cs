@@ -15,7 +15,7 @@ public class CrystalHeartBoss : FinalBoss
 		this.dialog = dialog;
 		this.startHit = startHit;
 		Add(light = new VertexLight(Color.White, 1f, 32, 64));
-		Collider = (circle = new Circle(8f, 0f, -4f));
+		Collider = circle = new Circle(8f, 0f, -4f);
 		Add(new PlayerCollider(OnPlayer));
 		this.nodes = new Vector2[nodes.Length + 1];
 		this.nodes[0] = Position;
