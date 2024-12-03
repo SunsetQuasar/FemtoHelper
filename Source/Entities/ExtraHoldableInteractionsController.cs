@@ -1,4 +1,6 @@
 ﻿
+using System.Linq;
+
 namespace Celeste.Mod.FemtoHelper.Code.Entities;
 
 [Tracked]
@@ -21,6 +23,9 @@ public class ExtraHoldableInteractionsController : Entity
     public Vector2 SwapBlockSpeedReq;
     public Vector2 FallingBlockSpeedReq;
 
+    public bool ExactSpeedMatch;
+    public float ExactSpeedTolerance;
+
     public ExtraHoldableInteractionsController(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Tag |= Tags.Persistent;
@@ -40,17 +45,17 @@ public class ExtraHoldableInteractionsController : Entity
         MoveBlockSpeedReq = new Vector2(data.Float("moveBlockXSpeedReq", 120f), data.Float("moveBlockYSpeedReq", 120f));
         SwapBlockSpeedReq = new Vector2(data.Float("swapBlockXSpeedReq", 120f), data.Float("swapBlockYSpeedReq", 120f));
         FallingBlockSpeedReq = new Vector2(data.Float("fallingBlockXSpeedReq", 120f), data.Float("fallingBlockYSpeedReq", 120f));
+        
+        ExactSpeedMatch = data.Bool("exactSpeedMatch", false);
+        ExactSpeedTolerance = data.Float("exactSpeedTolerance", 1f);
     }
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        foreach (ExtraHoldableInteractionsController controller in scene.Tracker.GetEntities<ExtraHoldableInteractionsController>())
+        foreach (var controller in scene.Tracker.GetEntities<ExtraHoldableInteractionsController>().Cast<ExtraHoldableInteractionsController>().Where(controller => controller != this))
         {
-            if (controller != this)
-            {
-                controller.RemoveSelf();
-            }
+            controller.RemoveSelf();
         }
     }
 }

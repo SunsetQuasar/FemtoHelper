@@ -21,7 +21,7 @@ internal class ParticleRemoteEmit(EntityData data, Vector2 offset) : Trigger(dat
 			bool flagge;
 			if (emitter.Flag.StartsWith("!"))
 			{
-				flagge = !level.Session.GetFlag(emitter.Flag.Substring(1));
+				flagge = !level.Session.GetFlag(emitter.Flag[1..]);
 			}
 			else
 			{

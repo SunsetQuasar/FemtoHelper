@@ -16,7 +16,7 @@ public static class LevelExtensions
     {
         if (flag.StartsWith('!'))
         {
-            return !level.Session.GetFlag(flag.Substring(1));
+            return !level.Session.GetFlag(flag[1..]);
         }
         return string.IsNullOrEmpty(flag) || level.Session.GetFlag(flag);
     }

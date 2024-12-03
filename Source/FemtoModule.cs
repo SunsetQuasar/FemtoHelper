@@ -211,6 +211,15 @@ public class FemtoModule : EverestModule
             cursor.EmitDelegate(InvokeExtraCollisionActionsH);
         }
     }
+    
+    private static bool CheckSpeed(float speed, float req, bool equal, float tolerance)
+    {
+        if (!equal)
+        {
+            return speed >= req;
+        }
+        return Math.Abs(speed - req) < tolerance;
+    }
 
     public static CollisionData InvokeExtraCollisionActionsH(CollisionData data, Actor self)
     {
@@ -222,83 +231,74 @@ public class FemtoModule : EverestModule
 
         if (controller != null)
         {
-            if (controller.InteractWithCrushBlocks && data.Hit is CrushBlock block)
+            switch (data.Hit)
             {
-                if (block.CanActivate(-data.Direction))
-                {
-                    if (Math.Abs(h.GetSpeed().X) >= controller.CrushBlockSpeedReq.X) block.Attack(-data.Direction);
-                }
-            }
-
-            if (controller.InteractWithDashBlocks && data.Hit is DashBlock dashBlock)
-            {
-                if (Math.Abs(h.GetSpeed().X) >= controller.DashBlockSpeedReq.X) dashBlock.Break(self.Center, data.Direction, true, true);
-            }
-
-            if (controller.InteractWithBreakerBoxes && data.Hit is LightningBreakerBox box)
-            {
-                if (!(data.Direction == Vector2.UnitX && box.spikesLeft) && !(data.Direction == -Vector2.UnitX && box.spikesRight) && Math.Abs(h.GetSpeed().X) >= controller.BreakerBoxSpeedReq.X)
-                {
-                    (box.Scene as Level).DirectionalShake(data.Direction);
-                    box.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
-                    box.health--;
-                    if (box.health > 0)
+                case CrushBlock block when controller.InteractWithCrushBlocks:
+                    if (block.CanActivate(-data.Direction) && CheckSpeed(Math.Abs(h.GetSpeed().X), controller.CrushBlockSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance)) block.Attack(-data.Direction);
+                    break;
+                case DashBlock dashBlock when controller.InteractWithDashBlocks:
+                    if(CheckSpeed(Math.Abs(h.GetSpeed().X), controller.DashBlockSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance)) dashBlock.Break(self.Center, data.Direction, true, true);
+                    break;
+                case LightningBreakerBox box when controller.InteractWithBreakerBoxes:
+                    if (!(data.Direction == Vector2.UnitX && box.spikesLeft) && !(data.Direction == -Vector2.UnitX && box.spikesRight) && CheckSpeed(Math.Abs(h.GetSpeed().X), controller.BreakerBoxSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance))
                     {
-                        box.Add(box.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
-                        Celeste.Freeze(0.1f);
-                        box.shakeCounter = 0.2f;
-                        box.shaker.On = true;
-                        box.bounceDir = data.Direction;
-                        box.bounce.Start();
-                        box.smashParticles = true;
-                        box.Pulse();
-                        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+                        (box.Scene as Level)?.DirectionalShake(data.Direction);
+                        box.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
+                        box.health--;
+                        if (box.health > 0)
+                        {
+                            box.Add(box.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
+                            Celeste.Freeze(0.1f);
+                            box.shakeCounter = 0.2f;
+                            box.shaker.On = true;
+                            box.bounceDir = data.Direction;
+                            box.bounce.Start();
+                            box.smashParticles = true;
+                            box.Pulse();
+                            Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+                        }
+                        else
+                        {
+                            box.firstHitSfx?.Stop();
+                            Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", box.Position);
+                            Celeste.Freeze(0.2f);
+                            box.Break();
+                            Input.Rumble(RumbleStrength.Strong, RumbleLength.Long);
+                            box.SmashParticles(data.Direction.Perpendicular());
+                            box.SmashParticles(-data.Direction.Perpendicular());
+                        }
                     }
-                    else
+                    break;
+                case SwapBlock swapBlock when controller.InteractWithSwapBlocks:
+                    if (CheckSpeed(Math.Abs(h.GetSpeed().X), controller.SwapBlockSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance))
                     {
-                        box.firstHitSfx?.Stop();
-                        Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", box.Position);
-                        Celeste.Freeze(0.2f);
-                        box.Break();
-                        Input.Rumble(RumbleStrength.Strong, RumbleLength.Long);
-                        box.SmashParticles(data.Direction.Perpendicular());
-                        box.SmashParticles(-data.Direction.Perpendicular());
+                        swapBlock.Swapping = swapBlock.lerp < 1f;
+                        swapBlock.target = 1;
+                        swapBlock.returnTimer = 0.8f;
+                        swapBlock.burst = (swapBlock.Scene as Level)?.Displacement.AddBurst(swapBlock.Center, 0.2f, 0f, 16f);
+                        swapBlock.speed = swapBlock.lerp >= 0.2f ? swapBlock.maxForwardSpeed : MathHelper.Lerp(swapBlock.maxForwardSpeed * 0.333f, swapBlock.maxForwardSpeed, swapBlock.lerp / 0.2f);
+                        Audio.Stop(swapBlock.returnSfx);
+                        Audio.Stop(swapBlock.moveSfx);
+                        if (!swapBlock.Swapping)
+                        {
+                            Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", swapBlock.Center);
+                        }
+                        else
+                        {
+                            swapBlock.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", swapBlock.Center);
+                        }
                     }
-                }
-            }
-            if(controller.InteractWithSwapBlocks && data.Hit is SwapBlock hit)
-            {
-                if (Math.Abs(h.GetSpeed().X) >= controller.SwapBlockSpeedReq.X)
-                {
-                    hit.Swapping = hit.lerp < 1f;
-                    hit.target = 1;
-                    hit.returnTimer = 0.8f;
-                    hit.burst = (hit.Scene as Level).Displacement.AddBurst(hit.Center, 0.2f, 0f, 16f);
-                    hit.speed = hit.lerp >= 0.2f ? hit.maxForwardSpeed : MathHelper.Lerp(hit.maxForwardSpeed * 0.333f, hit.maxForwardSpeed, hit.lerp / 0.2f);
-                    Audio.Stop(hit.returnSfx);
-                    Audio.Stop(hit.moveSfx);
-                    if (!hit.Swapping)
-                    {
-                        Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", hit.Center);
-                    }
-                    else
-                    {
-                        hit.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", hit.Center);
-                    }
-                }
-            }
-            if (controller.InteractWithMoveBlocks && (data.Hit is MoveBlock moveBlock) && (Math.Abs(h.GetSpeed().X) >= controller.MoveBlockSpeedReq.X))
-            {
-                moveBlock.triggered = true;
-            }
-            if (controller.InteractWithFallingBlocksH && (data.Hit is FallingBlock fallingBlock) && (Math.Abs(h.GetSpeed().X) >= controller.FallingBlockSpeedReq.X))
-            {
-                fallingBlock.Triggered = true;
+                    break;
+                case MoveBlock moveBlock when controller.InteractWithMoveBlocks && CheckSpeed(Math.Abs(h.GetSpeed().X), controller.MoveBlockSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance):
+                    moveBlock.triggered = true;
+                    break;
+                case FallingBlock fallingBlock when controller.InteractWithMoveBlocks && CheckSpeed(Math.Abs(h.GetSpeed().X), controller.FallingBlockSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance):
+                    fallingBlock.Triggered = true;
+                    break;
             }
         }
 
-        if (data.Hit is not GenericSmwBlock smwblock) return data;
-        if (smwblock.Active) return data;
+        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Active) return data;
         
         if (h.GetSpeed().X > 20)
         {
@@ -323,7 +323,7 @@ public class FemtoModule : EverestModule
             cursor.EmitDelegate(InvokeExtraCollisionActionsV);
         }
     }
-
+    
     public static CollisionData InvokeExtraCollisionActionsV(CollisionData data, Actor self)
     {
         if (self is Debris) return data;
@@ -332,88 +332,82 @@ public class FemtoModule : EverestModule
 
         ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
 
-        if (controller != null)
+        if (true)
         {
-            if (controller.InteractWithCrushBlocks && data.Hit is CrushBlock block)
+            switch (data.Hit)
             {
-                if (block.CanActivate(-data.Direction))
-                {
-                    if (Math.Abs(h.GetSpeed().Y) >= controller.CrushBlockSpeedReq.Y) block.Attack(-data.Direction);
-                }
-            }
-
-            if (controller.InteractWithDashBlocks && data.Hit is DashBlock dashBlock)
-            {
-                if (Math.Abs(h.GetSpeed().Y) >= controller.DashBlockSpeedReq.Y) dashBlock.Break(self.Center, data.Direction, true, true);
-            }
-
-            if (controller.InteractWithBreakerBoxes && data.Hit is LightningBreakerBox box)
-            {
-                if (!(data.Direction == Vector2.UnitX && box.spikesLeft) && !(data.Direction == -Vector2.UnitX && box.spikesRight) && Math.Abs(h.GetSpeed().Y) >= controller.BreakerBoxSpeedReq.Y)
-                {
-                    (box.Scene as Level).DirectionalShake(data.Direction);
-                    box.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
-                    box.health--;
-                    if (box.health > 0)
+                case CrushBlock block when controller.InteractWithCrushBlocks:
+                    if (block.CanActivate(-data.Direction))
                     {
-                        box.Add(box.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
-                        Celeste.Freeze(0.1f);
-                        box.shakeCounter = 0.2f;
-                        box.shaker.On = true;
-                        box.bounceDir = data.Direction;
-                        box.bounce.Start();
-                        box.smashParticles = true;
-                        box.Pulse();
-                        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+                        if (CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.CrushBlockSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance)) block.Attack(-data.Direction);
                     }
-                    else
+                    break;
+                case DashBlock dashBlock when controller.InteractWithDashBlocks:
+                    if (CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.DashBlockSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance)) dashBlock.Break(self.Center, data.Direction, true, true);
+                    break;
+                case LightningBreakerBox box when controller.InteractWithBreakerBoxes:
+                    if (!(data.Direction == Vector2.UnitX && box.spikesLeft) && !(data.Direction == -Vector2.UnitX && box.spikesRight) && CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.BreakerBoxSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance))
                     {
-                        if (box.firstHitSfx != null)
+                        (box.Scene as Level)?.DirectionalShake(data.Direction);
+                        box.sprite.Scale = new Vector2(1f + Math.Abs(data.Direction.Y) * 0.4f - Math.Abs(data.Direction.X) * 0.4f, 1f + Math.Abs(data.Direction.X) * 0.4f - Math.Abs(data.Direction.Y) * 0.4f);
+                        box.health--;
+                        if (box.health > 0)
                         {
-                            box.firstHitSfx.Stop();
+                            box.Add(box.firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
+                            Celeste.Freeze(0.1f);
+                            box.shakeCounter = 0.2f;
+                            box.shaker.On = true;
+                            box.bounceDir = data.Direction;
+                            box.bounce.Start();
+                            box.smashParticles = true;
+                            box.Pulse();
+                            Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
                         }
-                        Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", box.Position);
-                        Celeste.Freeze(0.2f);
-                        box.Break();
-                        Input.Rumble(RumbleStrength.Strong, RumbleLength.Long);
-                        box.SmashParticles(data.Direction.Perpendicular());
-                        box.SmashParticles(-data.Direction.Perpendicular());
+                        else
+                        {
+                            box.firstHitSfx?.Stop();
+                            Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", box.Position);
+                            Celeste.Freeze(0.2f);
+                            box.Break();
+                            Input.Rumble(RumbleStrength.Strong, RumbleLength.Long);
+                            box.SmashParticles(data.Direction.Perpendicular());
+                            box.SmashParticles(-data.Direction.Perpendicular());
+                        }
                     }
-                }
-            }
-            if (controller.InteractWithSwapBlocks && data.Hit is SwapBlock hit)
-            {
-                if (Math.Abs(h.GetSpeed().Y) >= controller.SwapBlockSpeedReq.Y)
-                {
-                    hit.Swapping = hit.lerp < 1f;
-                    hit.target = 1;
-                    hit.returnTimer = 0.8f;
-                    hit.burst = (hit.Scene as Level).Displacement.AddBurst(hit.Center, 0.2f, 0f, 16f);
-                    hit.speed = hit.lerp >= 0.2f ? hit.maxForwardSpeed : MathHelper.Lerp(hit.maxForwardSpeed * 0.333f, hit.maxForwardSpeed, hit.lerp / 0.2f);
-                    Audio.Stop(hit.returnSfx);
-                    Audio.Stop(hit.moveSfx);
-                    if (!hit.Swapping)
+                    break;
+                case SwapBlock swapBlock when controller.InteractWithSwapBlocks:
+                    if (CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.SwapBlockSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance))
                     {
-                        Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", hit.Center);
+                        swapBlock.Swapping = swapBlock.lerp < 1f;
+                        swapBlock.target = 1;
+                        swapBlock.returnTimer = 0.8f;
+                        swapBlock.burst = (swapBlock.Scene as Level)?.Displacement.AddBurst(swapBlock.Center, 0.2f, 0f, 16f);
+                        swapBlock.speed = swapBlock.lerp >= 0.2f ? swapBlock.maxForwardSpeed : MathHelper.Lerp(swapBlock.maxForwardSpeed * 0.333f, swapBlock.maxForwardSpeed, swapBlock.lerp / 0.2f);
+                        Audio.Stop(swapBlock.returnSfx);
+                        Audio.Stop(swapBlock.moveSfx);
+                        if (!swapBlock.Swapping)
+                        {
+                            Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", swapBlock.Center);
+                        }
+                        else
+                        {
+                            swapBlock.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", swapBlock.Center);
+                        }
                     }
-                    else
-                    {
-                        hit.moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_move", hit.Center);
-                    }
-                }
+                    break;
+                case MoveBlock moveBlock when controller.InteractWithMoveBlocks && CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.MoveBlockSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance):
+                    moveBlock.triggered = true;
+                    break;
+                case FallingBlock fallingBlock when controller.InteractWithFallingBlocksV && CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.FallingBlockSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance):
+                    fallingBlock.Triggered = true;
+                    break;
             }
-            if (controller.InteractWithMoveBlocks && (data.Hit is MoveBlock moveBlock) && (Math.Abs(h.GetSpeed().Y) >= controller.MoveBlockSpeedReq.Y))
-            {
-                moveBlock.triggered = true;
-            }
-            if (controller.InteractWithFallingBlocksV && (data.Hit is FallingBlock fallingBlock) && (Math.Abs(h.GetSpeed().Y) >= controller.FallingBlockSpeedReq.Y))
-            {
-                fallingBlock.Triggered = true;
-            }
+            
         }
+        
+        //smw block handling
 
-        if (data.Hit is not GenericSmwBlock smwblock) return data;
-        if (smwblock.Active) return data;
+        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Active) return data;
         
         if (h.GetSpeed().Y > 80)
         {
