@@ -26,7 +26,9 @@ FemtoHelperExtraHoldableInteractionsController.placements = {
         activateFallingBlocksHorizontal = false,
         activateFallingBlocksVertical = false,
         fallingBlockXSpeedReq = 120,
-        fallingBlockYSpeedReq = 0
+        fallingBlockYSpeedReq = 0,
+        exactSpeedMatch = false,
+        exactSpeedTolerance = 0.1
     }
 }
 

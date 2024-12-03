@@ -54,6 +54,8 @@ entities.FemtoHelper/EHIController.attributes.description.activateFallingBlocksH
 entities.FemtoHelper/EHIController.attributes.description.activateFallingBlocksVertical=Whether the controller should allow Holdable entities to activate Falling Blocks vertically.
 entities.FemtoHelper/EHIController.attributes.description.fallingBlockXSpeedReq=The horizontal speed requirement for activating Falling Blocks.
 entities.FemtoHelper/EHIController.attributes.description.fallingBlockYSpeedReq=The vertical speed requirement for activating Falling Blocks.
+entities.FemtoHelper/EHIController.attributes.description.exactSpeedMatch=The speed must meet the requirement exactly rather than only needing to be greater or equal than it.
+entities.FemtoHelper/EHIController.attributes.description.exactSpeedTolerance=How much the speed can deviate from the exact speed requirement.\nA non-zero value is recommended to avoid float/float comparison issues.\nDoes nothing if "Exact Speed Match" is disabled.
 
 # GD Boost Orb
 entities.FemtoHelper/GDDashOrb.placements.name.default=GD Boost Orb (Green)
