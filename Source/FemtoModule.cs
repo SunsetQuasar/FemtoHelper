@@ -332,7 +332,7 @@ public class FemtoModule : EverestModule
 
         ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
 
-        if (true)
+        if (controller != null)
         {
             switch (data.Hit)
             {
@@ -395,11 +395,17 @@ public class FemtoModule : EverestModule
                         }
                     }
                     break;
-                case MoveBlock moveBlock when controller.InteractWithMoveBlocks && CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.MoveBlockSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance):
-                    moveBlock.triggered = true;
+                case MoveBlock moveBlock when controller.InteractWithMoveBlocks:
+                    if (CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.MoveBlockSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance))
+                    {
+                        moveBlock.triggered = true;
+                    }
                     break;
-                case FallingBlock fallingBlock when controller.InteractWithFallingBlocksV && CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.FallingBlockSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance):
-                    fallingBlock.Triggered = true;
+                case FallingBlock fallingBlock when controller.InteractWithFallingBlocksV:
+                    if (CheckSpeed(Math.Abs(h.GetSpeed().Y), controller.FallingBlockSpeedReq.Y, controller.ExactSpeedMatch, controller.ExactSpeedTolerance))
+                    {
+                        fallingBlock.Triggered = true;
+                    }
                     break;
             }
             

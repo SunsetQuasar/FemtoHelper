@@ -9,7 +9,7 @@ FemtoHelperCinematicText.depth = -3000000
 FemtoHelperCinematicText.texture = "loenn/FemtoHelper/cinematictext"
 FemtoHelperCinematicText.justification = {0.5, 0.5}
 FemtoHelperCinematicText.nodeVisibility = "always"
-FemtoHelperCinematicText.nodeRenderType = "fan"
+FemtoHelperCinematicText.nodeRenderType = "line"
 
 FemtoHelperCinematicText.nodeLimits = {0, 2}
 

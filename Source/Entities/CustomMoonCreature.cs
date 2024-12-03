@@ -3,6 +3,8 @@ using Celeste;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 [CustomEntity("FemtoHelper/CustomMoonCreature")]
 public class CustomMoonCreature : Entity
@@ -54,8 +56,6 @@ public class CustomMoonCreature : Entity
 
 	private Rectangle originLevelBounds;
 
-	private readonly Color[] colors;
-
 	private readonly bool tintSprite;
 
 	private readonly int trailCount;
@@ -105,13 +105,8 @@ public class CustomMoonCreature : Entity
 		trailBaseAlpha = data.Float("trailBaseAlpha", 1f);
 		trailTipAlpha = data.Float("trailTipAlpha", 1f);
 		trailGravity = data.Float("trailGravity", 0.05f);
-		string[] array = data.Attr("colors", "c34fc7,4f95c7,53c74f").Split(',');
-		var colors = new Color[array.Length];
-		for (int i = 0; i < colors.Length; i++)
-		{
-			colors[i] = Calc.HexToColor(array[i]);
-		}
-		centerColor = Color.Lerp(this.colors[Calc.Random.Next(this.colors.Length)], Color.White, 0);
+		List<Color> colors = data.Attr("colors", "c34fc7,4f95c7,53c74f").Split(',').Select(Calc.HexToColor).ToList();
+		centerColor = Color.Lerp(colors[Calc.Random.Next(colors.Count)], Color.White, 0);
 		orbColor = Calc.HexToColor("b0e6ff");
 		//Logger.Log("a", mainColors[0].ToString());
 		Color value = Color.Lerp(centerColor, Calc.HexToColor(data.Attr("trailSubcolor1", "bde4ee")), data.Float("trailSubcolor1LerpAmount", 0.5f));
