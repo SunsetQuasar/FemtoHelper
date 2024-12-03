@@ -1,15 +1,17 @@
+local drawableSprite = require("structs.drawable_sprite")
+local utils = require("utils")
+local drawableLine = require("structs.drawable_line")
+
 local FemtoHelperCinematicText = {}
 
 FemtoHelperCinematicText.name = "FemtoHelper/CinematicText"
 FemtoHelperCinematicText.depth = -3000000
 FemtoHelperCinematicText.texture = "loenn/FemtoHelper/cinematictext"
 FemtoHelperCinematicText.justification = {0.5, 0.5}
+FemtoHelperCinematicText.nodeVisibility = "always"
+FemtoHelperCinematicText.nodeRenderType = "fan"
 
-FemtoHelperCinematicText.nodeLimits = {0, 1}
-
-function FemtoHelperCinematicText.nodeColor(room, entity, node, nodeIndex)
-    return {1, 1, 1, 0.5}
-end
+FemtoHelperCinematicText.nodeLimits = {0, 2}
 
 FemtoHelperCinematicText.fieldInformation = {
     mainColor = {
@@ -64,5 +66,35 @@ FemtoHelperCinematicText.placements = {
         visibilityFlag = ""
     }
 }
+
+function FemtoHelperCinematicText.nodeSprite(room, entity, node, nodeIndex) 
+    local spr = {}
+    local sprite = (nodeIndex == 1) and drawableSprite.fromTexture("loenn/FemtoHelper/cinematictext", entity) or drawableSprite.fromTexture("loenn/FemtoHelper/cinematictextnode", entity)
+    sprite:addPosition(node.x - entity.x, node.y - entity.y);
+    if (nodeIndex == 1) then
+        sprite:setColor({1, 1, 1, 0.5})
+    end
+
+    table.insert(spr, sprite)
+    table.insert(spr, drawableLine.fromPoints({entity.x, entity.y, node.x, node.y}, {1, 0, 0.5, 0.3}, 1))
+
+    return spr
+end
+
+function FemtoHelperCinematicText.selection(room, entity)
+    local nodelist = {}
+    for i, node in ipairs(entity.nodes) do
+
+        local rect = utils.rectangle(node.x - 4, node.y - 4, 8, 8)
+
+        if (i == 1) then
+            rect = utils.rectangle(node.x - 16, node.y - 4, 32, 8)
+        end
+
+        table.insert(nodelist, rect)
+
+    end
+    return utils.rectangle(entity.x - 16, entity.y - 4, 32, 8), nodelist
+end
 
 return FemtoHelperCinematicText
