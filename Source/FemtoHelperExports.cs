@@ -9,28 +9,28 @@ public static class FemtoHelperExports
 	[ModExportName("FemtoHelper.SMWBlockInfo")]
 	public static class SmwBlockInfo
 	{
-		public static void GetHitMethod(Entity block, Player player, int dir) => (block as GenericSmwBlock)?.Hit(player, dir);
+		public static void GetHitMethod(Entity block, Player player, int dir) => (block as Generic_SMWBlock)?.Hit(player, dir);
 
 		public static bool IsActive(Entity block)
 		{
-                return (block as GenericSmwBlock)?.Active ?? false;
+                return (block as Generic_SMWBlock)?.Active ?? false;
 		}
 
 		public static bool CanHitTop(Entity block)
 		{
-			return (block as GenericSmwBlock)?.CanHitTop ?? false;
+			return (block as Generic_SMWBlock)?.CanHitTop ?? false;
 		}
 		public static bool CanHitBottom(Entity block)
 		{
-			return (block as GenericSmwBlock)?.CanHitBottom ?? false;
+			return (block as Generic_SMWBlock)?.CanHitBottom ?? false;
 		}
 		public static bool CanHitLeft(Entity block)
 		{
-			return (block as GenericSmwBlock)?.CanHitLeft ?? false;
+			return (block as Generic_SMWBlock)?.CanHitLeft ?? false;
 		}
 		public static bool CanHitRight(Entity block)
 		{
-			return (block as GenericSmwBlock)?.CanHitRight ?? false;
+			return (block as Generic_SMWBlock)?.CanHitRight ?? false;
 		}
 	}
 
