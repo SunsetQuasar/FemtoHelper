@@ -8,7 +8,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 
 [Tracked]
 [CustomEntity("FemtoHelper/SMWBlock")]
-public class GenericSmwBlock : Solid
+public class Generic_SMWBlock : Solid
 {
     public class Coin : Entity
     {
@@ -135,7 +135,7 @@ public class GenericSmwBlock : Solid
     public readonly bool InactiveReward;
     public readonly bool UncollidableReward;
 
-    public GenericSmwBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
+    public Generic_SMWBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
         Depth = data.Int("depth", -15000);
         SpecialHandling = data.Bool("specialEntityHandling", true);

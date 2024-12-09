@@ -58,7 +58,7 @@ public class FemtoModule : EverestModule
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            if (data.Hit is GenericSmwBlock { Active: false } block)
+            if (data.Hit is Generic_SMWBlock { Active: false } block)
             {
                 switch (self.hitSpeed.X)
                 {
@@ -81,7 +81,7 @@ public class FemtoModule : EverestModule
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            if (data.Hit is GenericSmwBlock { Active: false } block)
+            if (data.Hit is Generic_SMWBlock { Active: false } block)
             {
                 switch (self.hitSpeed.Y)
                 {
@@ -106,7 +106,7 @@ public class FemtoModule : EverestModule
         orig(self);
         Collider collider = self.Collider;
         self.Collider = new Circle(40f);
-        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
+        foreach (var entity in from Generic_SMWBlock entity in self.Scene.Tracker.GetEntities<Generic_SMWBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
         {
             entity.Hit(null, 0);
         }
@@ -117,7 +117,7 @@ public class FemtoModule : EverestModule
         IEnumerator origEnum = orig(self);
         while (origEnum.MoveNext()) yield return origEnum.Current;
         self.Collider = new Circle(40f);
-        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
+        foreach (var entity in from Generic_SMWBlock entity in self.Scene.Tracker.GetEntities<Generic_SMWBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
         {
             entity.Hit(null, 0);
         }
@@ -298,7 +298,7 @@ public class FemtoModule : EverestModule
             }
         }
 
-        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Active) return data;
+        if (data.Hit is not Generic_SMWBlock smwblock || smwblock.Active) return data;
         
         if (h.GetSpeed().X > 20)
         {
@@ -413,7 +413,7 @@ public class FemtoModule : EverestModule
         
         //smw block handling
 
-        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Active) return data;
+        if (data.Hit is not Generic_SMWBlock smwblock || smwblock.Active) return data;
         
         if (h.GetSpeed().Y > 80)
         {
