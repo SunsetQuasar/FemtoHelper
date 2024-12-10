@@ -156,6 +156,7 @@ public class FemtoModule : EverestModule
         CrystalHeartBoss.Load();
         PlutoniumText.Load();
         ClutterShadowController.Load();
+        SMWHoldable.Load();
 
         Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
     }
@@ -176,6 +177,7 @@ public class FemtoModule : EverestModule
         CrystalHeartBoss.Unload();
         PlutoniumText.Unload();
         ClutterShadowController.Unload();
+        SMWHoldable.Unload();
     }
 
     private static void CoreModeToggle_Update(On.Celeste.CoreModeToggle.orig_Update orig, CoreModeToggle self)

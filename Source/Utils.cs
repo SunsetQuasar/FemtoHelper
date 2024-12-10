@@ -39,4 +39,29 @@ public static class EntityExtensions
         }
         return null;
     }
+
+    public static bool TrySquishWiggleNoPusher(this Actor actor, int wiggleX = 3, int wiggleY = 3)
+    {
+        for (int i = 0; i <= wiggleX; i++)
+        {
+            for (int j = 0; j <= wiggleY; j++)
+            {
+                if (i == 0 && j == 0)
+                {
+                    continue;
+                }
+                for (int num = 1; num >= -1; num -= 2)
+                {
+                    for (int num2 = 1; num2 >= -1; num2 -= 2)
+                    {
+                        Vector2 vector = new Vector2(i * num, j * num2);
+                        if (actor.CollideCheck<Solid>(actor.Position + vector)) continue;
+                        actor.Position += vector;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
