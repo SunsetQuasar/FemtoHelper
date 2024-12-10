@@ -332,7 +332,7 @@ public partial class CinematicText : Entity
         Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
         Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
 
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
+        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
         Vector2 position = (Scene as Level).Camera.Position;
         Vector2 vector = position + new Vector2(160f, 90f);
@@ -365,6 +365,17 @@ public partial class CinematicText : Entity
 
     public override void Render()
     {
+        MTexture orDefault = GFX.ColorGrades.GetOrDefault((Scene as Level).lastColorGrade, GFX.ColorGrades["none"]);
+        MTexture orDefault2 = GFX.ColorGrades.GetOrDefault((Scene as Level).Session.ColorGrade, GFX.ColorGrades["none"]);
+        if ((Scene as Level).colorGradeEase > 0f && orDefault != orDefault2)
+        {
+            ColorGrade.Set(orDefault, orDefault2, (Scene as Level).colorGradeEase);
+        }
+        else
+        {
+            ColorGrade.Set(orDefault2);
+        }
+
         base.Render();
 
         if (!Active || !(Scene as Level).FancyCheckFlag(VisibilityFlag)) return;
@@ -375,7 +386,7 @@ public partial class CinematicText : Entity
         {
             SubHudRenderer.EndRender();
 
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Engine.ScreenMatrix.M11 * 6 < 6 ? Matrix.Identity : Engine.ScreenMatrix);
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Engine.ScreenMatrix.M11 * 6 < 6 ? Matrix.Identity : Engine.ScreenMatrix);
         }
 
         Draw.SpriteBatch.Draw(Buffer, Hud ? Vector2.Zero : (Scene as Level).Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, SaveData.Instance.Assists.MirrorMode && Hud ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);

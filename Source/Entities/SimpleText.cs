@@ -83,6 +83,17 @@ public partial class SimpleText : Entity
 
     public override void Render()
     {
+        MTexture orDefault = GFX.ColorGrades.GetOrDefault((Scene as Level).lastColorGrade, GFX.ColorGrades["none"]);
+        MTexture orDefault2 = GFX.ColorGrades.GetOrDefault((Scene as Level).Session.ColorGrade, GFX.ColorGrades["none"]);
+        if ((Scene as Level).colorGradeEase > 0f && orDefault != orDefault2)
+        {
+            ColorGrade.Set(orDefault, orDefault2, (Scene as Level).colorGradeEase);
+        }
+        else
+        {
+            ColorGrade.Set(orDefault2);
+        }
+
         if (!(Scene as Level).FancyCheckFlag(VisibilityFlag)) return;
 
         string str2 = PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>());
