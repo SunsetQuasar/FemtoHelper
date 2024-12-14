@@ -83,13 +83,14 @@ public class SMWHoldable : Holdable
 
     private static bool CanUnDuckHack(bool orig, Player p)
     {
-        if ((orig && p.Holding is not SMWHoldable) || Input.MoveY != 1)
+        if (p.Holding is not SMWHoldable) return orig;
+        if (Input.MoveY != 1)
         {
-            p.Sprite.Scale = new Vector2(0.8f, 1.2f);
-            return true;
+            if(orig) p.Sprite.Scale = new Vector2(0.8f, 1.2f);
+            return orig;
         }
 
-        ;
+
         return false;
     }
 
