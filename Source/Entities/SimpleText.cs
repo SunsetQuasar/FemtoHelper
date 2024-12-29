@@ -25,40 +25,47 @@ public partial class SimpleText : Entity
     {
         Nodes = [];
 
-        string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
-        string[] splitStr2 = new string[splitStr.Length];
-        int num = 0;
-        foreach (var t in splitStr)
+        if(!Dialog.Has(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")))
         {
-            if (!string.IsNullOrEmpty(t))
-            {
-                splitStr2[num++] = t;
-            }
-        }
-
-        for(int i = 0; i < splitStr2.Length; i++)
+            Nodes.Add(new PlutoniumTextNodes.Text(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"))));
+        } 
+        else
         {
-            if (splitStr2[i] == "{")
+            string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
+            string[] splitStr2 = new string[splitStr.Length];
+            int num = 0;
+            foreach (var t in splitStr)
             {
-                i++;
-
-                for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
+                if (!string.IsNullOrEmpty(t))
                 {
-                    if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
-                    string[] splitOnceAgain = splitStr2[i].Split(';');
-                    if (splitOnceAgain.Length == 3)
+                    splitStr2[num++] = t;
+                }
+            }
+
+            for (int i = 0; i < splitStr2.Length; i++)
+            {
+                if (splitStr2[i] == "{")
+                {
+                    i++;
+
+                    for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
                     {
-                        Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
-                    } 
-                    else
-                    {
-                        Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                        if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
+                        string[] splitOnceAgain = splitStr2[i].Split(';');
+                        if (splitOnceAgain.Length == 3)
+                        {
+                            Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
+                        }
+                        else
+                        {
+                            Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                        }
                     }
                 }
-            } 
-            else
-            {
-                Nodes.Add(new PlutoniumTextNodes.Text(splitStr2[i]));
+                else
+                {
+                    Nodes.Add(new PlutoniumTextNodes.Text(splitStr2[i]));
+                }
             }
         }
 

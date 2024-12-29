@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Utils;
 public class Utils
@@ -38,6 +39,36 @@ public static class EntityExtensions
             t.Collidable = collidable;
         }
         return null;
+    }
+
+    public static Vector2 ExplodeLaunch(this Holdable hold, Vector2 from, bool snapUp = true, bool sidesOnly = false)
+    {
+        Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
+        Celeste.Freeze(0.1f);
+        Vector2 vector = (hold.Entity.Center - from).SafeNormalize(-Vector2.UnitY);
+        float num = Vector2.Dot(vector, Vector2.UnitY);
+        if (snapUp && num <= -0.7f)
+        {
+            vector.X = 0f;
+            vector.Y = -1f;
+        }
+        else if (num <= 0.65f && num >= -0.55f)
+        {
+            vector.Y = 0f;
+            vector.X = Math.Sign(vector.X);
+        }
+        if (sidesOnly && vector.X != 0f)
+        {
+            vector.Y = 0f;
+            vector.X = Math.Sign(vector.X);
+        }
+        hold.SetSpeed(280f * vector);
+        if (hold.GetSpeed().Y <= 50f)
+        {
+            hold.SetSpeed(new Vector2(hold.GetSpeed().X, Math.Min(-150f, hold.GetSpeed().Y)));
+        }
+        SlashFx.Burst(hold.Entity.Center, hold.GetSpeed().Angle());
+        return vector;
     }
 
     public static bool TrySquishWiggleNoPusher(this Actor actor, int wiggleX = 3, int wiggleY = 3)

@@ -82,41 +82,48 @@ public partial class CinematicText : Entity
 
         Str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
 
-        string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
-        string[] splitStr2 = new string[splitStr.Length];
-        int num = 0;
-        foreach (var t in splitStr)
+        if(!Dialog.Has(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")))
         {
-            if (!string.IsNullOrEmpty(t))
-            {
-                splitStr2[num++] = t;
-            }
-        }
-
-        for (int i = 0; i < splitStr2.Length; i++)
+            Nodes.Add(new PlutoniumTextNodes.Text(Str));
+        } 
+        else
         {
-            if (splitStr2[i] == "{")
+            string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
+            string[] splitStr2 = new string[splitStr.Length];
+            int num = 0;
+            foreach (var t in splitStr)
             {
-                i++;
-
-                for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
+                if (!string.IsNullOrEmpty(t))
                 {
-                    if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
-                    
-                    string[] splitOnceAgain = splitStr2[i].Split(';');
-                    if (splitOnceAgain.Length == 3)
-                    {
-                        Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
-                    }
-                    else
-                    {
-                        Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
-                    }
+                    splitStr2[num++] = t;
                 }
             }
-            else
+
+            for (int i = 0; i < splitStr2.Length; i++)
             {
-                Nodes.Add(new PlutoniumTextNodes.Text(splitStr2[i]));
+                if (splitStr2[i] == "{")
+                {
+                    i++;
+
+                    for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
+                    {
+                        if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
+
+                        string[] splitOnceAgain = splitStr2[i].Split(';');
+                        if (splitOnceAgain.Length == 3)
+                        {
+                            Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
+                        }
+                        else
+                        {
+                            Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                        }
+                    }
+                }
+                else
+                {
+                    Nodes.Add(new PlutoniumTextNodes.Text(splitStr2[i]));
+                }
             }
         }
 
@@ -213,6 +220,7 @@ public partial class CinematicText : Entity
     {
         if (HasInstantReloaded) return;
         Active = Entered = HasInstantReloaded = true;
+        Str = PlutoniumTextNodes.ConstructString(Nodes, Scene as Level);
         FinalStringLen = Str.Length;
         Add(new Coroutine(InstaSequence()));
         foreach (CinematicText t in Scene.Tracker.GetEntities<CinematicText>())

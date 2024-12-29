@@ -12,14 +12,16 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [TrackedAs(typeof(Holdable))]
 public class SMWHoldable : Holdable
 {
-    public Action OnClipDeath;
-    public Action OnClipWiggleSuccess;
+    public Action<Vector2> OnClipDeath;
+    public Action<Vector2> OnClipWiggleSuccess;
 
     public SMWHoldable() : base(0f)
     {
     }
 
     private static ILHook _hookPickupCoroutine;
+
+    private static ILHook _hookOrigPickup;
 
     public static void Load()
     {
@@ -30,6 +32,18 @@ public class SMWHoldable : Holdable
                 typeof(Player).GetMethod("PickupCoroutine", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetStateMachineTarget(), PickupRoutineHook);
         IL.Celeste.Player.NormalUpdate += hook_NormalUpdate;
+
+        _hookOrigPickup = new ILHook(typeof(Player).GetMethod("orig_Pickup", BindingFlags.Instance | BindingFlags.NonPublic), hook_OrigPickup);
+    }
+
+    private static void hook_OrigPickup(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        while (cursor.TryGotoNext(MoveType.After, (Instruction instr) => instr.MatchLdcR4(0.35f)))
+        {
+            cursor.EmitLdarg0();
+            cursor.EmitDelegate(ModPickupSpeed);
+        }
     }
 
     private static void hook_Release(On.Celeste.Holdable.orig_Release orig, Holdable self, Vector2 force)
@@ -41,12 +55,12 @@ public class SMWHoldable : Holdable
                 bool flag = !(self.Entity as Actor)?.TrySquishWiggleNoPusher() ?? false;
                 if (flag)
                 {
-                    smwholdable.OnClipDeath?.Invoke();
+                    smwholdable.OnClipDeath?.Invoke(force);
                     return;
                 } 
                 else 
                 {
-                    smwholdable.OnClipWiggleSuccess?.Invoke();
+                    smwholdable.OnClipWiggleSuccess?.Invoke(force);
                 }
             }
         }
@@ -132,6 +146,9 @@ public class SMWHoldable : Holdable
     {
         On.Celeste.Player.UpdateCarry -= hook_UpdateCarry;
         _hookPickupCoroutine?.Dispose();
+        _hookPickupCoroutine = null;
         IL.Celeste.Player.NormalUpdate -= hook_NormalUpdate;
+        _hookOrigPickup?.Dispose();
+        _hookOrigPickup = null;
     }
 }
