@@ -13,9 +13,8 @@ public static class FemtoHelperExports
 
 		public static bool IsActive(Entity block)
 		{
-                return (block as Generic_SMWBlock)?.Active ?? false;
+            return (block as Generic_SMWBlock)?.Active ?? false;
 		}
-
 		public static bool CanHitTop(Entity block)
 		{
 			return (block as Generic_SMWBlock)?.CanHitTop ?? false;

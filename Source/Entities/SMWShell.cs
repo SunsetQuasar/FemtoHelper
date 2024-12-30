@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -169,7 +168,7 @@ public class SMWShell : Actor
         dontKillTimer = 0.1f;
         hold.cannotHoldTimer = 0.02f;
         sprite.Play("kicked");
-        Audio.Play($"{audioPath}enemykill", Center);
+        Audio.Play($"{audioPath}shellkick", Center);
     }
 
     private void OnClipDeath(Vector2 force)
@@ -177,12 +176,34 @@ public class SMWShell : Actor
         Die(force.X);
     }
 
+    public override void OnSquish(CollisionData data)
+    {
+        //base.OnSquish(data);
+        if (!TrySquishWiggle(data, 3, 3))
+        {
+            Die(data.Direction.X);
+        }
+    }
+
+    public override bool IsRiding(JumpThru jumpThru)
+    {
+        if (state == States.Dead) return false;
+        return base.IsRiding(jumpThru);
+    }
+
+    public override bool IsRiding(Solid solid)
+    {
+        if (state == States.Dead) return false;
+        return base.IsRiding(solid);
+    }
 
     private void Die(float f)
     {
+        if (state == States.Dead) return;
         Splash(Center);
         Audio.Play($"{audioPath}enemykill", Center);
         Collidable = false;
+        TreatNaive = true;
         state = States.Dead;
         speed.Y = -120;
         speed.X = f * -Calc.Random.Range(100, 200);
@@ -229,6 +250,7 @@ public class SMWShell : Actor
         }
         else
         {
+            TreatNaive = false;
             if (OnGround())
             {
                 float target = ((!OnGround(Position + Vector2.UnitX * 3f)) ? 20f : (OnGround(Position - Vector2.UnitX * 3f) ? 0f : (-20f)));
@@ -295,18 +317,16 @@ public class SMWShell : Actor
 
     private void OnCollideH(CollisionData data)
     {
-        if (TrySquishWiggle(data)) return;
-        speed.X *= state == States.Kicked ? -1 : -0.5f;
-        Audio.Play($"{audioPath}blockhit", Center);
         if (data.Hit is DashSwitch)
         {
             (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitX * Math.Sign(speed.X));
         }
+        speed.X *= state == States.Kicked ? -1 : -0.5f;
+        Audio.Play($"{audioPath}blockhit", Center);
     }
 
     private void OnCollideV(CollisionData data)
     {
-        if (TrySquishWiggle(data)) return;
         if (data.Hit is DashSwitch)
         {
             (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitY * Math.Sign(speed.Y));
@@ -351,6 +371,7 @@ public class SMWShell : Actor
         speed = Vector2.Zero;
         Drop();
         AddTag(Tags.Persistent);
+        TreatNaive = true;
     }
 
     private void Drop()
@@ -374,7 +395,7 @@ public class SMWShell : Actor
                 if (Input.Aim.Value.Y < 0f)
                 {
                     Splash(Center);
-                    Audio.Play($"{audioPath}enemykill", Center);
+                    Audio.Play($"{audioPath}shellkick", Center);
                     kicked = false;
                     force.Y = -3f;
                     force.X = player.Speed.X / 200f;
@@ -398,6 +419,7 @@ public class SMWShell : Actor
         RemoveTag(Tags.Persistent);
         Position = new(MathF.Round(Position.X), MathF.Round(Position.Y));
         dontTouchKickTimer = 0.15f;
+        TreatNaive = false;
     }
 
     public override void Render()
