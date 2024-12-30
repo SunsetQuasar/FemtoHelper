@@ -1,10 +1,40 @@
 using System;
+using System.Collections;
+using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/SMWShell")]
+[Tracked]
 public class SMWShell : Actor
 {
+    public class SplashEffect : Entity
+    {
+        private Image img;
+        public SplashEffect(Vector2 pos, MTexture texture) : base(pos)
+        {
+            Add(img = new Image(texture));
+            img.JustifyOrigin(new(0.5f, 0.5f));
+            Add(Alarm.Set(this, 0.20f, RemoveSelf));
+            Depth = -25000;
+            Add(new Coroutine(Routine()));
+        }
+
+        public override void Update()
+        {
+            base.Update();
+        }
+
+        public IEnumerator Routine()
+        {
+            while (true)
+            {
+                yield return 0.03f;
+                img.FlipX = !img.FlipX;
+            }
+        }
+    }
+
     private enum States
     {
         Dropped = 0,
@@ -22,24 +52,49 @@ public class SMWShell : Actor
     private Vector2 prevLiftSpeed;
 
     private float dontKillTimer;
+    private float dontTouchKickTimer;
 
     private const float HorizontalFriction = 60f;
     private const float MaxFallSpeed = 200f;
     private const float Gravity = 450f;
 
+    private readonly Sprite sprite;
+
+    private readonly MTexture splash;
+    private readonly bool doNotSplash;
+    private readonly bool doFreezeFrames;
+    private readonly string audioPath;
+
     public SMWShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         speed = Vector2.Zero;
 
-        Collider = new Hitbox(12f, 10f, -6f, -4f);
+        Collider = new Hitbox(12f, 9f, -6f, -2f);
         Add(new PlayerCollider(OnPlayer));
 
-        Add(new PlayerCollider(OnPlayerBonk, new Hitbox(12f, 4f, -6f, -8f)));
+        Add(new PlayerCollider(OnPlayerBonk, new Hitbox(12f, 7f, -6f, -9f)));
 
         Depth = -10;
         Add(hold = new SMWHoldable());
 
-        hold.PickupCollider = new Hitbox(20f, 14f, -10f, -4f);
+        string prefix = data.Attr("texturesPrefix", "objects/FemtoHelper/SMWShell/");
+        string key = data.Attr("sprite", "green");
+
+        splash = GFX.Game[$"{prefix}splash"];
+        doNotSplash = !data.Bool("doSplashEffect", true);
+        doFreezeFrames = data.Bool("freezeFrames", true);
+        audioPath = data.Attr("audioPath", "event:/FemtoHelper/");
+
+        Add(sprite = new Sprite(GFX.Game, prefix));
+
+        sprite.AddLoop("idle", $"{key}_idle", 15f);
+        sprite.AddLoop("kicked", $"{key}_kicked", 0.1f);
+
+        sprite.Play("idle");
+
+        sprite.RenderPosition -= new Vector2(sprite.Width / 2, sprite.Height / 2);
+
+        hold.PickupCollider = new Hitbox(20f, 14f, -10f, -2f);
         hold.SlowFall = false;
         hold.SlowRun = false;
         hold.OnPickup = OnPickup;
@@ -55,9 +110,14 @@ public class SMWShell : Actor
 
     private void OnPlayerBonk(Player p)
     {
+        if (state == States.Dropped && !(Input.Grab.Check && p.StateMachine.state != Player.StClimb)) TouchKick(p);
         if (state != States.Kicked || dontKillTimer > 0) return;
+        if (doFreezeFrames) Celeste.Freeze(0.05f);
+        Input.Rumble(RumbleStrength.Light, RumbleLength.Short);
         p.Bounce(Top);
-        state = States.Dropped;
+        Drop();
+        Splash(TopCenter - Vector2.UnitY * 6);
+        Audio.Play($"{audioPath}enemykill", Center);
     }
 
     private void OnPlayer(Player p)
@@ -69,32 +129,37 @@ public class SMWShell : Actor
                 p.Die((Position - p.Center).SafeNormalize());
             }
         }
-        else if (!Input.Grab.Check)
+        else if (!(Input.Grab.Check && p.StateMachine.state != Player.StClimb))
         {
+            TouchKick(p);
+        }
+    }
 
-            float kickSpeed = 0;
-            if (p.CenterX > CenterX)
+    private void TouchKick(Player p)
+    {
+        if (dontTouchKickTimer > 0) return;
+        float kickSpeed = 0;
+        if (p.CenterX > CenterX)
+        {
+            kickSpeed = -200;
+        }
+        else if (p.CenterX < CenterX)
+        {
+            kickSpeed = 200;
+        }
+        else
+        {
+            if (p.Facing == Facings.Left)
             {
                 kickSpeed = -200;
             }
-            else if (p.CenterX < CenterX)
+            else
             {
                 kickSpeed = 200;
             }
-            else
-            {
-                if (p.Facing == Facings.Left)
-                {
-                    kickSpeed = -200;
-                }
-                else
-                {
-                    kickSpeed = 200;
-                }
-            }
-
-            Kick(Vector2.UnitX * kickSpeed);
         }
+        if (doFreezeFrames) Celeste.Freeze(0.05f);
+        Kick(Vector2.UnitX * kickSpeed);
     }
 
     private void Kick(Vector2? spd = null)
@@ -103,6 +168,8 @@ public class SMWShell : Actor
         state = States.Kicked;
         dontKillTimer = 0.1f;
         hold.cannotHoldTimer = 0.02f;
+        sprite.Play("kicked");
+        Audio.Play($"{audioPath}enemykill", Center);
     }
 
     private void OnClipDeath(Vector2 force)
@@ -113,12 +180,21 @@ public class SMWShell : Actor
 
     private void Die(float f)
     {
+        Splash(Center);
+        Audio.Play($"{audioPath}enemykill", Center);
         Collidable = false;
         state = States.Dead;
         speed.Y = -120;
         speed.X = f * -Calc.Random.Range(100, 200);
         hold.cannotHoldTimer = 0.02f;
-        Depth = -100000;
+        Depth = -10000;
+        sprite.FlipY = true;
+    }
+
+    private void Splash(Vector2 pos)
+    {
+        if (doNotSplash) return;
+        Scene.Add(new SplashEffect(pos, splash));
     }
 
     public override void Update()
@@ -141,6 +217,11 @@ public class SMWShell : Actor
         {
             dontKillTimer -= Engine.DeltaTime;
             if (hold.IsHeld) dontKillTimer = 0;
+        }
+        if (dontTouchKickTimer > 0)
+        {
+            dontTouchKickTimer -= Engine.DeltaTime;
+            if (hold.IsHeld) dontTouchKickTimer = 0;
         }
         if (hold.IsHeld)
         {
@@ -216,11 +297,20 @@ public class SMWShell : Actor
     {
         if (TrySquishWiggle(data)) return;
         speed.X *= state == States.Kicked ? -1 : -0.5f;
+        Audio.Play($"{audioPath}blockhit", Center);
+        if (data.Hit is DashSwitch)
+        {
+            (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitX * Math.Sign(speed.X));
+        }
     }
 
     private void OnCollideV(CollisionData data)
     {
         if (TrySquishWiggle(data)) return;
+        if (data.Hit is DashSwitch)
+        {
+            (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitY * Math.Sign(speed.Y));
+        }
         if (Math.Abs(speed.Y) > 40 && state != States.Kicked)
         {
             speed.Y *= Math.Sign(speed.Y) == 1 ? -0.3f : -0.1f;
@@ -259,8 +349,15 @@ public class SMWShell : Actor
     private void OnPickup()
     {
         speed = Vector2.Zero;
-        state = States.Dropped;
+        Drop();
         AddTag(Tags.Persistent);
+    }
+
+    private void Drop()
+    {
+        state = States.Dropped;
+        sprite.Play("idle");
+        dontTouchKickTimer = 0.15f;
     }
 
     private void OnRelease(Vector2 force)
@@ -276,6 +373,8 @@ public class SMWShell : Actor
                 //force.Y = -0.4f;
                 if (Input.Aim.Value.Y < 0f)
                 {
+                    Splash(Center);
+                    Audio.Play($"{audioPath}enemykill", Center);
                     kicked = false;
                     force.Y = -3f;
                     force.X = player.Speed.X / 200f;
@@ -289,16 +388,20 @@ public class SMWShell : Actor
             force.X = player.Speed.X / 400f;
             force.X += player.Facing == Facings.Right ? 0.25f : -0.25f;
         }
-        if (kicked) Kick();
+        if (kicked)
+        {
+            Splash(Center);
+            Kick();
+        }
         hold.cannotHoldTimer = 0.2f;
         speed = force * new Vector2(240, 100);
         RemoveTag(Tags.Persistent);
+        Position = new(MathF.Round(Position.X), MathF.Round(Position.Y));
+        dontTouchKickTimer = 0.15f;
     }
 
     public override void Render()
     {
         base.Render();
-        Draw.Rect(Collider, Color.Aqua);
-        Draw.HollowRect(X - 8, Y - 8, 16, 16, Color.Gray);
     }
 }

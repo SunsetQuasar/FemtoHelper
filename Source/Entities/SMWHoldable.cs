@@ -15,6 +15,8 @@ public class SMWHoldable : Holdable
     public Action<Vector2> OnClipDeath;
     public Action<Vector2> OnClipWiggleSuccess;
 
+    public float TurnPercent;
+
     public SMWHoldable() : base(0f)
     {
     }
@@ -34,6 +36,17 @@ public class SMWHoldable : Holdable
         IL.Celeste.Player.NormalUpdate += hook_NormalUpdate;
 
         _hookOrigPickup = new ILHook(typeof(Player).GetMethod("orig_Pickup", BindingFlags.Instance | BindingFlags.NonPublic), hook_OrigPickup);
+        On.Celeste.Holdable.Pickup += Holdable_Pickup;
+    }
+
+    private static bool Holdable_Pickup(On.Celeste.Holdable.orig_Pickup orig, Holdable self, Player player)
+    {
+        if(self is SMWHoldable smwholdable)
+        {
+            //smwholdable.TurnPercent = smwholdable.TurnPercent = player.Facing == Facings.Left ? 0 : 1;
+            smwholdable.TurnPercent = Calc.Map(player.CenterX - smwholdable.Entity.CenterX, self.Entity.Width / 2, -self.Entity.Width / 2);
+        }
+        return orig(self, player);
     }
 
     private static void hook_OrigPickup(ILContext il)
@@ -50,9 +63,14 @@ public class SMWHoldable : Holdable
     {
         if (self is SMWHoldable smwholdable)
         {
+            if(self.Holder is {} p)
+            {
+                smwholdable.TurnPercent = p.Facing == Facings.Left ? 0 : 1;
+            }
+            
             if (smwholdable.Entity.CollideCheck<Solid>())
             {
-                bool flag = !(self.Entity as Actor)?.TrySquishWiggleNoPusher() ?? false;
+                bool flag = !(self.Entity as Actor)?.TrySquishWiggleNoPusher(7, 5) ?? false;
                 if (flag)
                 {
                     smwholdable.OnClipDeath?.Invoke(force);
@@ -117,9 +135,18 @@ public class SMWHoldable : Holdable
     {
         if (self.Holding is SMWHoldable smwholdable)
         {
-            float x = self.Facing == Facings.Left ? -12 : 12;
+            if(self.Facing == Facings.Left)
+            {
+                smwholdable.TurnPercent = Calc.Approach(smwholdable.TurnPercent, 0, 6 * Engine.DeltaTime);
+            } 
+            else
+            {
+                smwholdable.TurnPercent = Calc.Approach(smwholdable.TurnPercent, 1, 6 * Engine.DeltaTime);
+            }
+
+            float x = Calc.LerpClamp(-12, 12, Ease.CubeInOut(smwholdable.TurnPercent));
             float y = self.Ducking ? -8 : -12;
-            self.carryOffset = new Vector2(x, y);
+            self.carryOffset = new(x, y);
         }
 
         orig(self);
@@ -150,5 +177,6 @@ public class SMWHoldable : Holdable
         IL.Celeste.Player.NormalUpdate -= hook_NormalUpdate;
         _hookOrigPickup?.Dispose();
         _hookOrigPickup = null;
+        On.Celeste.Holdable.Pickup -= Holdable_Pickup;
     }
 }
