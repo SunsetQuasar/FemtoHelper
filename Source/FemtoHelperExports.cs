@@ -33,9 +33,33 @@ public static class FemtoHelperExports
 		}
 	}
 
+    [ModExportName("FemtoHelper.PlutoniumTextInfo")]
+    public static class PlutoniumTextInfo
+	{
+		public static object CreateTextEffectData(bool wavey, Vector2 amp, float offset, bool shakey, float amount, bool obfuscated, bool twitchy, float twitchChance, float phaseIncrement, float waveSpeed)
+		{
+			return new TextEffectData(wavey, amp, offset, shakey, amount, obfuscated, twitchy, twitchChance, phaseIncrement, waveSpeed);
+		}
+
+		public static object EmptyTextEffectData() => new TextEffectData();
+
+		public static Component CreatePlutoniumTextComponent(string fontPath, string charList, Vector2 fontSize) => new PlutoniumText(fontPath, charList, fontSize);
+
+		public static void PrintPlutoniumText(Component text, Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, object TextEffectData /* create an empty one for no effects */, float scale /* = 1 */, int id /* = 0 */)
+        {
+			(text as PlutoniumText)?.Print(pos, str, shadow, spacing, mainColor, outlineColor, (TextEffectData as TextEffectData) ?? new TextEffectData(), 1, 0);
+		}
+
+        public static void PrintPlutoniumTextCentered(Component text, Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, object TextEffectData /* create an empty one for no effects */, float scale /* = 1 */, int id /* = 0 */)
+        {
+            (text as PlutoniumText)?.PrintCentered(pos, str, shadow, spacing, mainColor, outlineColor, (TextEffectData as TextEffectData) ?? new TextEffectData(), 1, 0);
+        }
+    }
+
 	internal static void Initialize()
 	{
 		typeof(SmwBlockInfo).ModInterop();
+		typeof(PlutoniumTextInfo).ModInterop();
 	}
 }
 

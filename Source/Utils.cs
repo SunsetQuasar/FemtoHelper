@@ -11,6 +11,35 @@ public class Utils
 {
 
 }
+
+public static class SpriteExtensions
+{
+    public static void PlayDontRestart(this Sprite spr, string id, bool restart = false, bool randomizeFrame = false)
+    {
+        if (spr.OnChange != null)
+        {
+            spr.OnChange(spr.LastAnimationID, id);
+        }
+
+        string lastAnimationID = (spr.CurrentAnimationID = id);
+        spr.LastAnimationID = lastAnimationID;
+        spr.currentAnimation = spr.animations[id];
+        spr.Animating = spr.currentAnimation.Delay > 0f;
+        if (randomizeFrame)
+        {
+            spr.animationTimer = Calc.Random.NextFloat(spr.currentAnimation.Delay);
+            spr.CurrentAnimationFrame = Calc.Random.Next(spr.currentAnimation.Frames.Length);
+        }
+        else if (restart)
+        {
+            spr.animationTimer = 0f;
+            spr.CurrentAnimationFrame = 0;
+        }
+
+        spr.SetFrame(spr.currentAnimation.Frames[spr.CurrentAnimationFrame]);
+    }
+}
+
 public static class LevelExtensions
 {
     public static bool FancyCheckFlag(this Level level, string flag)
@@ -27,11 +56,11 @@ public static class EntityExtensions
 {
     public static T CollideFirstIgnoreCollidable<T>(this Entity entity, Vector2 at) where T : Entity
     {
-        foreach(Entity t in entity.Scene.Tracker.Entities[typeof(T)])
+        foreach (Entity t in entity.Scene.Tracker.Entities[typeof(T)])
         {
             bool collidable = t.Collidable;
             t.Collidable = true;
-            if(entity.CollideCheck(t, at))
+            if (entity.CollideCheck(t, at))
             {
                 t.Collidable = collidable;
                 return t as T;

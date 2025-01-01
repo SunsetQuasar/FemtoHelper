@@ -70,7 +70,7 @@ public class SMWHoldable : Holdable
             
             if (smwholdable.Entity.CollideCheck<Solid>())
             {
-                bool flag = !(self.Entity as Actor)?.TrySquishWiggleNoPusher(7, 5) ?? false;
+                bool flag = !(self.Entity as Actor)?.TrySquishWiggleNoPusher(5, 5) ?? false;
                 if (flag)
                 {
                     smwholdable.OnClipDeath?.Invoke(force);

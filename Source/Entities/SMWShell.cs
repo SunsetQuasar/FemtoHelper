@@ -1,5 +1,7 @@
+using Celeste.Mod.FemtoHelper.Utils;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -64,6 +66,13 @@ public class SMWShell : Actor
     private readonly bool doFreezeFrames;
     private readonly string audioPath;
 
+    private readonly bool isDisco;
+    private readonly string[] Animations;
+    private int currentSpriteIndex;
+    private string currentSpriteTrimmedName;
+    private float discoTarget;
+    private bool ignoreOtherShells;
+
     public SMWShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         speed = Vector2.Zero;
@@ -77,19 +86,38 @@ public class SMWShell : Actor
         Add(hold = new SMWHoldable());
 
         string prefix = data.Attr("texturesPrefix", "objects/FemtoHelper/SMWShell/");
-        string key = data.Attr("sprite", "green");
 
         splash = GFX.Game[$"{prefix}splash"];
         doNotSplash = !data.Bool("doSplashEffect", true);
         doFreezeFrames = data.Bool("freezeFrames", true);
         audioPath = data.Attr("audioPath", "event:/FemtoHelper/");
+        ignoreOtherShells = data.Bool("ignoreOtherShells", false);
 
         Add(sprite = new Sprite(GFX.Game, prefix));
 
-        sprite.AddLoop("idle", $"{key}_idle", 15f);
-        sprite.AddLoop("kicked", $"{key}_kicked", 0.1f);
-
-        sprite.Play("idle");
+        if (isDisco = data.Bool("disco", false))
+        {
+            Animations = data.Attr("discoSprites", "yellow,blue,red,green,teal,gray,gold,gray").Split(',');
+            foreach(string s in Animations)
+            {
+                sprite.AddLoop($"idle_{s}", $"{s}_idle", 15f);
+                sprite.AddLoop($"kicked_{s}", $"{s}_kicked", 0.06f);
+            }
+            currentSpriteIndex = 0;
+            ChangeSprite("kicked");
+            state = States.Kicked;
+            hold.cannotHoldTimer = 0.2f;
+        }
+        else
+        {
+            string key = data.Attr("sprite", "green");
+            Animations = [key];
+            sprite.AddLoop($"idle_{key}", $"{key}_idle", 15f);
+            sprite.AddLoop($"kicked_{key}", $"{key}_kicked", 0.06f);
+            currentSpriteIndex = 0;
+            ChangeSprite("idle");
+        }
+        Add(new Coroutine(DiscoRoutine()));
 
         sprite.RenderPosition -= new Vector2(sprite.Width / 2, sprite.Height / 2);
 
@@ -105,11 +133,29 @@ public class SMWShell : Actor
         onCollideH = OnCollideH;
         onCollideV = OnCollideV;
         hold.OnClipDeath = OnClipDeath;
+
+        Add(new HoldableCollider(OnAnotherShell));
     }
 
     private void OnPlayerBonk(Player p)
     {
-        if (state == States.Dropped && !(Input.Grab.Check && p.StateMachine.state != Player.StClimb)) TouchKick(p);
+        if (isDisco && dontKillTimer <= 0)
+        {
+            p.PointBounce(Center);
+            p.Speed *= new Vector2(0.5f, 0.75f);
+            p.varJumpSpeed = p.Speed.Y;
+            p.varJumpTimer = 0.25f;
+            p.jumpGraceTimer = 0f;
+            p.AutoJump = true;
+            p.AutoJumpTimer = 0.1f;
+            Audio.Play($"{audioPath}stomp_bounce", Center);
+            Splash(TopCenter - Vector2.UnitY * 6);
+            if (doFreezeFrames) Celeste.Freeze(0.05f);
+            Input.Rumble(RumbleStrength.Light, RumbleLength.Short);
+            dontKillTimer = 0.1f;
+            return;
+        }
+        if (state == States.Dropped && (!Input.Grab.Check || p.StateMachine.state == Player.StClimb || p.Holding != null) && p.Holding != hold) TouchKick(p);
         if (state != States.Kicked || dontKillTimer > 0) return;
         if (doFreezeFrames) Celeste.Freeze(0.05f);
         Input.Rumble(RumbleStrength.Light, RumbleLength.Short);
@@ -117,6 +163,26 @@ public class SMWShell : Actor
         Drop();
         Splash(TopCenter - Vector2.UnitY * 6);
         Audio.Play($"{audioPath}enemykill", Center);
+    }
+
+    private void OnAnotherShell(Holdable h)
+    {
+        if (h is not SMWHoldable holdable) return;
+        if (holdable.Entity is not SMWShell otherShell) return;
+        if (otherShell.ignoreOtherShells || ignoreOtherShells || otherShell.state == States.Dead || state == States.Dead) return;
+
+        float dir = CenterX > otherShell.CenterX ? 1 : CenterX == otherShell.CenterX ? 0 : -1;
+
+        if(otherShell.speed.LengthSquared() > 0)
+        {
+            if (speed.LengthSquared() > 0) otherShell.Die(-dir);
+            Die(dir);
+        } else
+        {
+            if (speed.LengthSquared() <= 0) Die(dir);
+            otherShell.Die(-dir);
+        }
+        if (hold.IsHeld) Die(dir);
     }
 
     private void OnPlayer(Player p)
@@ -128,10 +194,26 @@ public class SMWShell : Actor
                 p.Die((Position - p.Center).SafeNormalize());
             }
         }
-        else if (!(Input.Grab.Check && p.StateMachine.state != Player.StClimb))
+        else if ((!Input.Grab.Check || p.StateMachine.state == Player.StClimb || p.Holding != null) && p.Holding != hold)
         {
             TouchKick(p);
         }
+    }
+
+    private IEnumerator DiscoRoutine()
+    {
+        while (true)
+        {
+            yield return 0.02f;
+            currentSpriteIndex = Mod(currentSpriteIndex + 1, Animations.Length);
+            ChangeSprite($"{currentSpriteTrimmedName}", true);
+        }
+    }
+
+    private void ChangeSprite(string path, bool keep = false)
+    {
+        sprite.PlayDontRestart($"{path}_{Animations[currentSpriteIndex]}", !keep);
+        currentSpriteTrimmedName = path;
     }
 
     private void TouchKick(Player p)
@@ -167,8 +249,9 @@ public class SMWShell : Actor
         state = States.Kicked;
         dontKillTimer = 0.1f;
         hold.cannotHoldTimer = 0.02f;
-        sprite.Play("kicked");
+        ChangeSprite("kicked");
         Audio.Play($"{audioPath}shellkick", Center);
+        base.LiftSpeed = prevLiftSpeed = Vector2.Zero;
     }
 
     private void OnClipDeath(Vector2 force)
@@ -200,13 +283,21 @@ public class SMWShell : Actor
     private void Die(float f)
     {
         if (state == States.Dead) return;
+        state = States.Dead;
+        if (hold.IsHeld)
+        {
+            if (hold.Holder is { } player)
+            {
+                player.Drop();
+            }
+        }
         Splash(Center);
+        ChangeSprite("idle");
         Audio.Play($"{audioPath}enemykill", Center);
         Collidable = false;
         TreatNaive = true;
-        state = States.Dead;
-        speed.Y = -120;
-        speed.X = f * -Calc.Random.Range(100, 200);
+        speed.Y = -Calc.Random.Range(100,120);
+        speed.X = f * -Calc.Random.Range(90, 110);
         hold.cannotHoldTimer = 0.02f;
         Depth = -10000;
         sprite.FlipY = true;
@@ -251,66 +342,93 @@ public class SMWShell : Actor
         else
         {
             TreatNaive = false;
-            if (OnGround())
+            if (isDisco)
             {
-                float target = ((!OnGround(Position + Vector2.UnitX * 3f)) ? 20f : (OnGround(Position - Vector2.UnitX * 3f) ? 0f : (-20f)));
-                if (state != States.Kicked) speed.X = Calc.Approach(speed.X, target, 800f * Engine.DeltaTime);
-                Vector2 liftSpeed = base.LiftSpeed;
-                if (liftSpeed == Vector2.Zero && prevLiftSpeed != Vector2.Zero)
+                Player player = Scene.Tracker.GetEntity<Player>();
+                if(player != null)
                 {
-                    speed = prevLiftSpeed;
-                    prevLiftSpeed = Vector2.Zero;
-                    speed.Y = Math.Min(speed.Y * 0.6f, 0f);
-                    if (speed.X != 0f && speed.Y == 0f)
+                    if(player.CenterX > CenterX)
                     {
-                        speed.Y = -60f;
-                    }
-                    if (speed.Y < 0f)
+                        discoTarget = 1f;
+                    } 
+                    else
                     {
-                        noGravityTimer = 0.15f;
+                        discoTarget = -1f;
                     }
                 }
-                else
+                speed.X = Calc.Approach(speed.X, 120 * discoTarget, 700 * Engine.DeltaTime);
+                if (!OnGround() && hold.ShouldHaveGravity)
                 {
-                    prevLiftSpeed = liftSpeed;
-                    if (liftSpeed.Y < 0f && speed.Y < 0f)
+                    float num = 800f;
+                    if (Math.Abs(speed.Y) <= 30f)
                     {
-                        speed.Y = 0f;
+                        num *= 0.5f;
+                    }
+                    if (noGravityTimer > 0f)
+                    {
+                        noGravityTimer -= Engine.DeltaTime;
+                    }
+                    else
+                    {
+                        speed.Y = Calc.Approach(speed.Y, MaxFallSpeed, num * Engine.DeltaTime);
                     }
                 }
             }
-            else if (hold.ShouldHaveGravity)
+            else
             {
-                float num = 800f;
-                if (Math.Abs(speed.Y) <= 30f)
+                if (OnGround())
                 {
-                    num *= 0.5f;
+                    float target = (!OnGround(Position + Vector2.UnitX * 3f)) ? 20f : (OnGround(Position - Vector2.UnitX * 3f) ? 0f : (-20f));
+                    if (state != States.Kicked) speed.X = Calc.Approach(speed.X, target, 800f * Engine.DeltaTime);
+                    Vector2 liftSpeed = base.LiftSpeed;
+                    if (liftSpeed == Vector2.Zero && prevLiftSpeed != Vector2.Zero)
+                    {
+                        speed = prevLiftSpeed;
+                        prevLiftSpeed = Vector2.Zero;
+                        speed.Y = Math.Min(speed.Y * 0.6f, 0f);
+                        if (speed.X != 0f && speed.Y == 0f)
+                        {
+                            speed.Y = -60f;
+                        }
+                        if (speed.Y < 0f)
+                        {
+                            noGravityTimer = 0.15f;
+                        }
+                    }
+                    else
+                    {
+                        prevLiftSpeed = liftSpeed;
+                        if (liftSpeed.Y < 0f && speed.Y < 0f)
+                        {
+                            speed.Y = 0f;
+                        }
+                    }
                 }
-                float num2 = 250f;
-                if (speed.Y < 0f)
+                else if (hold.ShouldHaveGravity)
                 {
-                    num2 *= 0.5f;
-                }
-                if (state != States.Kicked) speed.X = Calc.Approach(speed.X, 0f, num2 * Engine.DeltaTime);
-                if (noGravityTimer > 0f)
-                {
-                    noGravityTimer -= Engine.DeltaTime;
-                }
-                else
-                {
-                    speed.Y = Calc.Approach(speed.Y, MaxFallSpeed, num * Engine.DeltaTime);
+                    float num = 800f;
+                    if (Math.Abs(speed.Y) <= 30f)
+                    {
+                        num *= 0.5f;
+                    }
+                    float num2 = 250f;
+                    if (speed.Y < 0f)
+                    {
+                        num2 *= 0.5f;
+                    }
+                    if (state != States.Kicked) speed.X = Calc.Approach(speed.X, 0f, num2 * Engine.DeltaTime);
+                    if (noGravityTimer > 0f)
+                    {
+                        noGravityTimer -= Engine.DeltaTime;
+                    }
+                    else
+                    {
+                        speed.Y = Calc.Approach(speed.Y, MaxFallSpeed, num * Engine.DeltaTime);
+                    }
                 }
             }
             MoveH(speed.X * Engine.DeltaTime, onCollideH);
             MoveV(speed.Y * Engine.DeltaTime, onCollideV);
-            Player entity = base.Scene.Tracker.GetEntity<Player>();
-            TempleGate templeGate = CollideFirst<TempleGate>();
-            if (templeGate != null && entity != null)
-            {
-                templeGate.Collidable = false;
-                MoveH((float)(Math.Sign(entity.X - base.X) * 32) * Engine.DeltaTime);
-                templeGate.Collidable = true;
-            }
         }
         hold.CheckAgainstColliders();
     }
@@ -377,7 +495,7 @@ public class SMWShell : Actor
     private void Drop()
     {
         state = States.Dropped;
-        sprite.Play("idle");
+        ChangeSprite("idle");
         dontTouchKickTimer = 0.15f;
     }
 
@@ -415,7 +533,7 @@ public class SMWShell : Actor
             Kick();
         }
         hold.cannotHoldTimer = 0.2f;
-        speed = force * new Vector2(240, 100);
+        speed = force * new Vector2(200, 100);
         RemoveTag(Tags.Persistent);
         Position = new(MathF.Round(Position.X), MathF.Round(Position.Y));
         dontTouchKickTimer = 0.15f;
@@ -425,5 +543,10 @@ public class SMWShell : Actor
     public override void Render()
     {
         base.Render();
+    }
+
+    private int Mod(int x, int m)
+    {
+        return (x % m + m) % m;
     }
 }
