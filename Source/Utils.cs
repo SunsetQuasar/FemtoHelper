@@ -4,12 +4,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Utils;
 public class Utils
 {
 
 }
+
+public static class SpriteExtensions
+{
+    public static void PlayDontRestart(this Sprite spr, string id, bool restart = false, bool randomizeFrame = false)
+    {
+        if (spr.OnChange != null)
+        {
+            spr.OnChange(spr.LastAnimationID, id);
+        }
+
+        string lastAnimationID = (spr.CurrentAnimationID = id);
+        spr.LastAnimationID = lastAnimationID;
+        spr.currentAnimation = spr.animations[id];
+        spr.Animating = spr.currentAnimation.Delay > 0f;
+        if (randomizeFrame)
+        {
+            spr.animationTimer = Calc.Random.NextFloat(spr.currentAnimation.Delay);
+            spr.CurrentAnimationFrame = Calc.Random.Next(spr.currentAnimation.Frames.Length);
+        }
+        else if (restart)
+        {
+            spr.animationTimer = 0f;
+            spr.CurrentAnimationFrame = 0;
+        }
+
+        spr.SetFrame(spr.currentAnimation.Frames[spr.CurrentAnimationFrame]);
+    }
+}
+
 public static class LevelExtensions
 {
     public static bool FancyCheckFlag(this Level level, string flag)
@@ -26,11 +56,11 @@ public static class EntityExtensions
 {
     public static T CollideFirstIgnoreCollidable<T>(this Entity entity, Vector2 at) where T : Entity
     {
-        foreach(Entity t in entity.Scene.Tracker.Entities[typeof(T)])
+        foreach (Entity t in entity.Scene.Tracker.Entities[typeof(T)])
         {
             bool collidable = t.Collidable;
             t.Collidable = true;
-            if(entity.CollideCheck(t, at))
+            if (entity.CollideCheck(t, at))
             {
                 t.Collidable = collidable;
                 return t as T;
@@ -38,6 +68,36 @@ public static class EntityExtensions
             t.Collidable = collidable;
         }
         return null;
+    }
+
+    public static Vector2 ExplodeLaunch(this Holdable hold, Vector2 from, bool snapUp = true, bool sidesOnly = false)
+    {
+        Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
+        Celeste.Freeze(0.1f);
+        Vector2 vector = (hold.Entity.Center - from).SafeNormalize(-Vector2.UnitY);
+        float num = Vector2.Dot(vector, Vector2.UnitY);
+        if (snapUp && num <= -0.7f)
+        {
+            vector.X = 0f;
+            vector.Y = -1f;
+        }
+        else if (num <= 0.65f && num >= -0.55f)
+        {
+            vector.Y = 0f;
+            vector.X = Math.Sign(vector.X);
+        }
+        if (sidesOnly && vector.X != 0f)
+        {
+            vector.Y = 0f;
+            vector.X = Math.Sign(vector.X);
+        }
+        hold.SetSpeed(280f * vector);
+        if (hold.GetSpeed().Y <= 50f)
+        {
+            hold.SetSpeed(new Vector2(hold.GetSpeed().X, Math.Min(-150f, hold.GetSpeed().Y)));
+        }
+        SlashFx.Burst(hold.Entity.Center, hold.GetSpeed().Angle());
+        return vector;
     }
 
     public static bool TrySquishWiggleNoPusher(this Actor actor, int wiggleX = 3, int wiggleY = 3)

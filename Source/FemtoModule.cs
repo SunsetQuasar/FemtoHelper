@@ -150,13 +150,13 @@ public class FemtoModule : EverestModule
         On.Celeste.Seeker.RegenerateCoroutine += Seeker_RegenKaizoHook;
         IL.Celeste.Actor.MoveHExact += onCollideH_IL;
         IL.Celeste.Actor.MoveVExact += onCollideV_IL;
-        On.Celeste.CoreModeToggle.Update += CoreModeToggle_Update;
         CodecumberPortStuff.Load();
         VitalDrainController.Load();
         CrystalHeartBoss.Load();
         PlutoniumText.Load();
         ClutterShadowController.Load();
         SMWHoldable.Load();
+        ExtraHoldableInteractionsController.Load();
 
         Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
     }
@@ -171,34 +171,13 @@ public class FemtoModule : EverestModule
         On.Celeste.Seeker.RegenerateCoroutine -= Seeker_RegenKaizoHook;
         IL.Celeste.Actor.MoveHExact -= onCollideH_IL;
         IL.Celeste.Actor.MoveVExact -= onCollideV_IL;
-        On.Celeste.CoreModeToggle.Update -= CoreModeToggle_Update;
         CodecumberPortStuff.Unload();
         VitalDrainController.Unload();
         CrystalHeartBoss.Unload();
         PlutoniumText.Unload();
         ClutterShadowController.Unload();
         SMWHoldable.Unload();
-    }
-
-    private static void CoreModeToggle_Update(On.Celeste.CoreModeToggle.orig_Update orig, CoreModeToggle self)
-    {
-        orig(self);
-        ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
-
-        if (controller is not { InteractWithCoreSwitch: true }) return;
-        if (!self.CollideCheckByComponent<Holdable>() || !self.Usable || !(self.cooldownTimer <= 0f)) return;
-        
-        self.playSounds = true;
-        Level level = self.SceneAs<Level>();
-        level.CoreMode = level.CoreMode == global::Celeste.Session.CoreModes.Cold ? global::Celeste.Session.CoreModes.Hot : global::Celeste.Session.CoreModes.Cold;
-        if (self.persistent)
-        {
-            level.Session.CoreMode = level.CoreMode;
-        }
-        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-        level.Flash(Color.White * 0.15f, drawPlayerOver: true);
-        Celeste.Freeze(0.05f);
-        self.cooldownTimer = 1f;
+        ExtraHoldableInteractionsController.Unload();
     }
 
 

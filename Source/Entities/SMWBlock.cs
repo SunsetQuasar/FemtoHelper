@@ -420,11 +420,11 @@ public class Generic_SMWBlock : Solid
         if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
         {
             if (!(player.Bottom - 2 <= Top) || Active || Bouncetimer > 0) return;
-            if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || FemtoModule.CommunalHelperSupport.HasDreamTunnelDash.Invoke())) Hit(player, 3);
+            if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || (FemtoModule.CommunalHelperSupport.HasDreamTunnelDash?.Invoke() ?? false))) Hit(player, 3);
         } else
         {
             if (!(player.Top + 2 >= Bottom) || Active || Bouncetimer > 0) return;
-            if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || FemtoModule.CommunalHelperSupport.HasDreamTunnelDash.Invoke())) Hit(player, 0);
+            if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || (FemtoModule.CommunalHelperSupport.HasDreamTunnelDash?.Invoke() ?? false))) Hit(player, 0);
         }      
     }
 

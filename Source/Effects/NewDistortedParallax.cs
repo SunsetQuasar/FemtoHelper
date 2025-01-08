@@ -70,7 +70,6 @@ public class NewDistortedParallax : Backdrop
     {
         Position = new Vector2(data.AttrFloat("offsetX", 0f), data.AttrFloat("offsetY", 0f));
 
-        Buffer = VirtualContent.CreateRenderTarget("distortedParallax", 320, 180);
         Texture = GFX.Game[data.Attr("texture", "bgs/disperse_clouds")].GetPaddedSubtextureCopy(); //DODO: rewrite the base shader to support textures from atlases rather than doing this
         LoopX = data.AttrBool("loopX", true);
         LoopY = data.AttrBool("loopY", true);
@@ -181,6 +180,30 @@ public class NewDistortedParallax : Backdrop
         }
 
     }
+    //stolen from ja
+    private VirtualRenderTarget EnsureValidBuffer()
+    {
+        var gpBuffer = GameplayBuffers.Gameplay;
+
+        int targetWidth = gpBuffer?.Width ?? 320;
+        int targetHeight = gpBuffer?.Height ?? 180;
+
+        if (gpBuffer is null || gpBuffer.Width == 320 || gpBuffer.Width == 321)
+        {
+            Buffer ??= VirtualContent.CreateRenderTarget("FemtoHelper/DistoredParallax", targetWidth, targetHeight);
+            return Buffer;
+        }
+
+        // We need a bigger buffer due to zoomout.
+        // We'll keep the 320x180 buffer around, in case some other cloudscape wants to render with ZoomBehavior=StaySame
+        if (Buffer is null || Buffer.IsDisposed || Buffer.Width != gpBuffer.Width)
+        {
+            Buffer?.Dispose();
+            Buffer = VirtualContent.CreateRenderTarget("FemtoHelper/DistoredParallax", targetWidth, targetHeight);
+        }
+
+        return Buffer;
+    }
 
     public override void BeforeRender(Scene scene)
     {
@@ -190,7 +213,7 @@ public class NewDistortedParallax : Backdrop
 
         BlendState blend = graphicsDevice.BlendState;
 
-        if(Buffer == null) Buffer = VirtualContent.CreateRenderTarget("distortedParallax", 320, 180);
+        Buffer = EnsureValidBuffer();
 
         Level level = scene as Level;
 
@@ -210,6 +233,7 @@ public class NewDistortedParallax : Backdrop
         }
 
         EffectParameterCollection parameters = Effect.Parameters;
+        parameters["Dimensions"]?.SetValue(new Vector2(Buffer.Width, Buffer.Height));
         parameters["tint"]?.SetValue(col.ToVector4());
         parameters["DeltaTime"]?.SetValue(Engine.DeltaTime);
         parameters["Time"]?.SetValue(Time);

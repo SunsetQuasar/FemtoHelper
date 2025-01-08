@@ -14,10 +14,12 @@ public class PointFourCircle(Color color) : Component(true, true)
 {
     public float Timer = 0.4f;
     public Color Color = color;
+    public float alpha = 0f;
 
     public override void Update()
     {
         base.Update();
+        alpha = Calc.Approach(alpha, 1, Engine.DeltaTime * 5);
         if (Timer > 0)
         {
             Timer -= Engine.DeltaTime;
@@ -32,7 +34,7 @@ public class PointFourCircle(Color color) : Component(true, true)
     public override void Render()
     {
         base.Render();
-        Draw.Circle(Entity.Center, Timer * 48f, Color * 0.8f, 16);
+        Draw.Circle(Entity.Center, Timer * 64f, Color * 0.8f * Ease.CubeInOut(alpha), 1);
     }
 }
 

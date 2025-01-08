@@ -271,8 +271,6 @@ public class RotateDashRefill : Entity
         On.Celeste.Player.Update -= RotateDashBugCheck;
     }
 
-
-
     private static void RotateDashInitialize(On.Celeste.LevelLoader.orig_LoadingThread orig, LevelLoader self)
     {
         orig(self);
@@ -293,10 +291,7 @@ public class RotateDashRefill : Entity
     {
         if (FemtoModule.Session.HasRotateDash)
         {
-            Engine.TimeRate = 0.05f;
-            self.Add(new Coroutine(CodecumberPortStuff.RotateDashAlignAnim(self)));
-            yield return 0.005f;
-            Engine.TimeRate = 1;
+            Celeste.Freeze(0.1f);
 
             self.Speed = Vector2.Transform(self.Speed, Matrix.CreateRotationZ(-FemtoModule.Session.RotateDashAngle));
             (self.Scene as Level).DirectionalShake(self.Speed.SafeNormalize());
@@ -346,8 +341,8 @@ public class RotateDashRefill : Entity
     private static void RotateDashAddComponent(On.Celeste.Player.orig_Added orig, Player self, Scene scene)
     {
         orig(self, scene);
-        self.Add(new RotateDashIndicator());
         self.Add(new ExtraTrailManager());
+        self.Add(new RotateDashIndicator());
     }
 
     public static void RotateDashInitialize()

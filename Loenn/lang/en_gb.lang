@@ -590,19 +590,19 @@ style.effects.FemtoHelper/NewDistortedParallax.description.xXOffset=The offset (
 style.effects.FemtoHelper/NewDistortedParallax.description.xXWaveSpeed=The wave speed (in degrees/second) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground horizontally in relation to its horizontal screen position.
 
 style.effects.FemtoHelper/NewDistortedParallax.description.xYAmplitude=The amplitude (in pixels) for the X in relation to Y wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
-style.effects.FemtoHelper/NewDistortedParallax.description.xYPeriod=The period (in pixels/180°) for the X in relation to X wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
-style.effects.FemtoHelper/NewDistortedParallax.description.xYOffset=The offset (in degrees) for the X in relation to X wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
-style.effects.FemtoHelper/NewDistortedParallax.description.xYWaveSpeed=The wave speed (in degrees/second) for the X in relation to X wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.xYPeriod=The period (in pixels/180°) for the X in relation to Y wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.xYOffset=The offset (in degrees) for the X in relation to Y wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.xYWaveSpeed=The wave speed (in degrees/second) for the X in relation to Y wave, i.e. the transversal wave that affects the styleground horizontally in relation to its vertical screen position.
 
 style.effects.FemtoHelper/NewDistortedParallax.description.yXAmplitude=The amplitude (in pixels) for the Y in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
-style.effects.FemtoHelper/NewDistortedParallax.description.yXPeriod=The period (in pixels/180°) for the X in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
-style.effects.FemtoHelper/NewDistortedParallax.description.yXOffset=The offset (in degrees) for the X in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
-style.effects.FemtoHelper/NewDistortedParallax.description.yXWaveSpeed=The wave speed (in degrees/second) for the X in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yXPeriod=The period (in pixels/180°) for the Y in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yXOffset=The offset (in degrees) for the Y in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yXWaveSpeed=The wave speed (in degrees/second) for the Y in relation to X wave, i.e. the transversal wave that affects the styleground vertically in relation to its horizontal screen position.
 
 style.effects.FemtoHelper/NewDistortedParallax.description.yYAmplitudee=The amplitude (in pixels) for the Y in relation to Y wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
-style.effects.FemtoHelper/NewDistortedParallax.description.yYPeriod=The period (in pixels/180°) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
-style.effects.FemtoHelper/NewDistortedParallax.description.yYOffset=The offset (in degrees) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
-style.effects.FemtoHelper/NewDistortedParallax.description.yYWaveSpeed=The wave speed (in degrees/second) for the X in relation to X wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yYPeriod=The period (in pixels/180°) for the Y in relation to Y wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yYOffset=The offset (in degrees) for the Y in relation to Y wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
+style.effects.FemtoHelper/NewDistortedParallax.description.yYWaveSpeed=The wave speed (in degrees/second) for the Y in relation to Y wave, i.e. the longitudinal wave that affects the styleground vertically in relation to its vertical screen position.
 
 style.effects.FemtoHelper/NewDistortedParallax.description.scale=The styleground's scale multiplier. This affects parallax.
 style.effects.FemtoHelper/NewDistortedParallax.description.scaleAmplitude=The amplitude for the scale over time wave.
