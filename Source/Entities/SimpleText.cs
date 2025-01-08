@@ -25,12 +25,12 @@ public partial class SimpleText : Entity
     public readonly Vector2 RenderOffset;
     public SimpleText(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
+        TruncateSliders = data.Bool("truncateSliderValues", false);
+        
         Nodes = [];
 
         string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
         string[] splitStr2 = new string[splitStr.Length];
-
-        TruncateSliders = bool.Parse(data.Attr("truncateSliderValues", "false"));
 
         int num = 0;
         foreach (var t in splitStr)
