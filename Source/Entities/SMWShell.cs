@@ -2,6 +2,7 @@ using Celeste.Mod.FemtoHelper.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -429,6 +430,14 @@ public class SMWShell : Actor
             }
             MoveH(speed.X * Engine.DeltaTime, onCollideH);
             MoveV(speed.Y * Engine.DeltaTime, onCollideV);
+
+            foreach (TouchSwitch entity2 in base.Scene.Tracker.GetEntities<TouchSwitch>())
+            {
+                if (CollideCheck(entity2))
+                {
+                    entity2.TurnOn();
+                }
+            }
         }
         hold.CheckAgainstColliders();
     }

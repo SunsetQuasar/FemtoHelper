@@ -36,6 +36,8 @@ public static class SpriteExtensions
             spr.CurrentAnimationFrame = 0;
         }
 
+        spr.CurrentAnimationFrame %= spr.currentAnimation.Frames.Length;
+
         spr.SetFrame(spr.currentAnimation.Frames[spr.CurrentAnimationFrame]);
     }
 }
