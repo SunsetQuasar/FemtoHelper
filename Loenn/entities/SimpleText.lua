@@ -31,6 +31,7 @@ FemtoHelperSimpleText.placements = {
         fontPath = "objects/FemtoHelper/PlutoniumText/example",
         fontWidth = 8,
         hud = true,
+        truncateSliderValues = false,
         mainColor = "FFFFFFFF",
         outlineColor = "000000FF",
         parallax = 1,

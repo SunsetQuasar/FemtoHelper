@@ -1,4 +1,4 @@
-﻿using Celeste.Mod.FemtoHelper.Utils;
+using Celeste.Mod.FemtoHelper.Utils;
 using Celeste.Mod.UI;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -17,14 +17,17 @@ public partial class SimpleText : Entity
     public readonly PlutoniumText Text;
     public readonly float Parallax;
     public readonly bool Hud;
+
+    public readonly bool TruncateSliders;
     public readonly float Scale;
     public readonly string VisibilityFlag;
 
     public readonly Vector2 RenderOffset;
     public SimpleText(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
+        TruncateSliders = data.Bool("truncateSliderValues", false);
+        
         Nodes = [];
-
         if(!Dialog.Has(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")))
         {
             Nodes.Add(new PlutoniumTextNodes.Text(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"))));
@@ -51,6 +54,7 @@ public partial class SimpleText : Entity
                     for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
                     {
                         if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
+                        
                         string[] splitOnceAgain = splitStr2[i].Split(';');
                         if (splitOnceAgain.Length == 3)
                         {
@@ -58,7 +62,11 @@ public partial class SimpleText : Entity
                         }
                         else
                         {
-                            Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                            if (splitStr2[i][0] == '@') {
+                                Nodes.Add(new PlutoniumTextNodes.Slider(splitStr2[i].Remove(0,1), TruncateSliders));
+                            } else {
+                                Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                            }
                         }
                     }
                 }
