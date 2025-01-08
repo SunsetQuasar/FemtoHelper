@@ -41,6 +41,7 @@ FemtoHelperCinematicText.placements = {
         ignoreAudioRegex = false,
 	    instantReload = false,
 	    instantLoad = false,
+        truncateSliderValues = false,
         mainColor = "FFFFFFFF",
         nextTextTag = "tag2",
         obfuscated = false,

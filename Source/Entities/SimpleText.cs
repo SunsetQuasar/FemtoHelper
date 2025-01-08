@@ -17,6 +17,8 @@ public partial class SimpleText : Entity
     public readonly PlutoniumText Text;
     public readonly float Parallax;
     public readonly bool Hud;
+
+    public readonly bool TruncateSliders;
     public readonly float Scale;
     public readonly string VisibilityFlag;
 
@@ -27,6 +29,9 @@ public partial class SimpleText : Entity
 
         string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
         string[] splitStr2 = new string[splitStr.Length];
+
+        TruncateSliders = bool.Parse(data.Attr("truncateSliderValues", "false"));
+
         int num = 0;
         foreach (var t in splitStr)
         {
@@ -52,7 +57,11 @@ public partial class SimpleText : Entity
                     } 
                     else
                     {
-                        Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                        if (splitStr2[i][0] == '@') {
+                            Nodes.Add(new PlutoniumTextNodes.Slider(splitStr2[i].Remove(0,1), TruncateSliders));
+                        } else {
+                            Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                        }
                     }
                 }
             } 

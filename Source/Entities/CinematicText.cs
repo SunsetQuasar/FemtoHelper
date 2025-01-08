@@ -47,6 +47,8 @@ public partial class CinematicText : Entity
 
     public readonly float Scale;
     public readonly bool Hud;
+
+    public readonly bool TruncateSliders;
     public readonly bool IgnoreRegex;
 
     public readonly bool OnlyOnce;
@@ -82,6 +84,8 @@ public partial class CinematicText : Entity
 
         Str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
 
+        TruncateSliders = bool.Parse(data.Attr("truncateSliderValues", "false"));
+
         string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
         string[] splitStr2 = new string[splitStr.Length];
         int num = 0;
@@ -110,7 +114,11 @@ public partial class CinematicText : Entity
                     }
                     else
                     {
-                        Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                        if (splitStr2[i][0] == '@') {
+                            Nodes.Add(new PlutoniumTextNodes.Slider(splitStr2[i].Remove(0,1), TruncateSliders));
+                        } else {
+                            Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                        }
                     }
                 }
             }
