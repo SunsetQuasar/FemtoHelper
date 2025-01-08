@@ -1,4 +1,4 @@
-﻿using Celeste.Mod.FemtoHelper.Utils;
+using Celeste.Mod.FemtoHelper.Utils;
 using Celeste.Mod.UI;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -47,6 +47,8 @@ public partial class CinematicText : Entity
 
     public readonly float Scale;
     public readonly bool Hud;
+
+    public readonly bool TruncateSliders;
     public readonly bool IgnoreRegex;
 
     public readonly bool OnlyOnce;
@@ -71,6 +73,8 @@ public partial class CinematicText : Entity
     public readonly Vector2 RenderOffset;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
+
+        TruncateSliders = data.Bool("truncateSliderValues", false);
 
         if (data.NodesOffset(offset).Length > 0) Position = data.NodesOffset(offset)[0];
         if (data.NodesOffset(offset).Length > 1)
@@ -116,7 +120,11 @@ public partial class CinematicText : Entity
                         }
                         else
                         {
-                            Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                            if (splitStr2[i][0] == '@') {
+                                Nodes.Add(new PlutoniumTextNodes.Slider(splitStr2[i].Remove(0,1), TruncateSliders));
+                            } else {
+                                Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
+                            }
                         }
                     }
                 }

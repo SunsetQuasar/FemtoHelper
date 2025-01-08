@@ -19,12 +19,30 @@ public static class PlutoniumTextNodes
     {
         public readonly string Key = k;
     }
+
+    public class Slider(string k, bool t) : Node 
+    {
+        public readonly string Key = k;
+        public readonly bool Truncate = t;
+    }
     public class Flag(string k, string on, string off) : Node
     {
         public readonly string Key = k;
         public readonly string StrIfOn = on;
         public readonly string StrIfOff = off;
     }
+
+    private static readonly string[] bigNumberNames = ["", "", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion", "undecillion"];
+
+    private static string getShorthandNumber(float f) {
+        if (f < 1000000) return f.ToString();
+        int orderOfMagnitudeTriplets = (int) (MathF.Log10(f) / 3);
+        double num = Math.Round(f / Math.Pow(10, 3 * orderOfMagnitudeTriplets), 3);
+        string str = num.ToString();
+        if (orderOfMagnitudeTriplets < bigNumberNames.Length - 1) return str + " " + bigNumberNames[orderOfMagnitudeTriplets];
+        else return f.ToString();
+    }
+
     public static string ConstructString(List<Node> nodes, Level level)
     {
         var result = "";
@@ -37,6 +55,9 @@ public static class PlutoniumTextNodes
                     break;
                 case Counter c:
                     result += level.Session.GetCounter(c.Key).ToString();
+                    break;
+                case Slider s:              
+                    result += s.Truncate ? getShorthandNumber(level.Session.GetSlider(s.Key)) : level.Session.GetSlider(s.Key);;  
                     break;
                 case Flag f:
                     result += level.Session.GetFlag(f.Key) ? f.StrIfOn : f.StrIfOff;
