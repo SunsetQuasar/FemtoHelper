@@ -74,6 +74,8 @@ public partial class CinematicText : Entity
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
 
+        TruncateSliders = data.Bool("truncateSliderValues", false);
+
         if (data.NodesOffset(offset).Length > 0) Position = data.NodesOffset(offset)[0];
         if (data.NodesOffset(offset).Length > 1)
         {
@@ -83,8 +85,6 @@ public partial class CinematicText : Entity
         Nodes = [];
 
         Str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
-
-        TruncateSliders = bool.Parse(data.Attr("truncateSliderValues", "false"));
 
         string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
         string[] splitStr2 = new string[splitStr.Length];
