@@ -27,6 +27,7 @@ public class FemtoModule : EverestModule
     {
         public static Func<int> GetPlayerGravity;
         public static Action<int, float> SetPlayerGravity;
+        public static Func<Actor, Action<Entity, int, float>, Component> CreateGravityListener;
     }
 
     [ModImportName("CommunalHelper.DashStates")]
@@ -157,6 +158,7 @@ public class FemtoModule : EverestModule
         ClutterShadowController.Load();
         SMWHoldable.Load();
         ExtraHoldableInteractionsController.Load();
+        Monopticon.Load();
 
         Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
     }
@@ -178,6 +180,7 @@ public class FemtoModule : EverestModule
         ClutterShadowController.Unload();
         SMWHoldable.Unload();
         ExtraHoldableInteractionsController.Unload();
+        Monopticon.Unload();
     }
 
 
