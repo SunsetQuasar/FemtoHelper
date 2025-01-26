@@ -59,19 +59,15 @@ public class MovingWaterBlock : GenericWaterBlock
 
     public bool Dying;
 
-    public float Wvtimer;
-
     public Vector2 Anchor;
 
     public readonly Wiggler IconWiggler;
     public Vector2 IconScale;
 
     public readonly WaterSprite Sprite;
-    public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height)
+    public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
         Anchor = data.Position + offset;
-        WaterData = new DynData<Water>(this);
-        WaterData["FillColor"] = Color.Transparent;
         Add(moveSfx = new SoundSource());
         Triggered = false;
         TargetSpeed = data.Float("maxSpeed", 60f);
@@ -82,7 +78,6 @@ public class MovingWaterBlock : GenericWaterBlock
         {
             Color = Calc.HexToColor("81F4F0") * 0.25f
         };
-        Wvtimer = 0f;
         Depth = -51000;
         Tinydrops = new ParticleType
         {
@@ -165,7 +160,6 @@ public class MovingWaterBlock : GenericWaterBlock
             Shake = Shaketimer > 0 ? new Vector2(Calc.Random.Range(-1f, 1f), Calc.Random.Range(-1f, 1f)) : Vector2.Zero;
         }
         if (Shaketimer > 0) Shaketimer -= Engine.DeltaTime;
-        Wvtimer += Engine.DeltaTime;
     }
 
     public IEnumerator Destroy()

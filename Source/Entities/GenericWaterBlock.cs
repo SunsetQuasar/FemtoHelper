@@ -11,7 +11,8 @@ public abstract class GenericWaterBlock : Water
 
     public Vector2 LiftSpeed;
 
-    public GenericWaterBlock(Vector2 pos, float wid, float hei) : base(pos, false, false, wid, hei)
+    private readonly bool canCarry;
+    public GenericWaterBlock(Vector2 pos, float wid, float hei, bool can_carry) : base(pos, false, false, wid, hei)
     {
         FillColor = Color.Transparent;
         DisplacementRenderHook d = Components.Get<DisplacementRenderHook>();
@@ -19,6 +20,7 @@ public abstract class GenericWaterBlock : Water
         Add(new DisplacementRenderHook(DrawDisplacement));
 
         RemoveTag(Tags.TransitionUpdate);
+        canCarry = can_carry;
     }
 
     public abstract void DrawDisplacement();
@@ -110,6 +112,7 @@ public abstract class GenericWaterBlock : Water
     {
 
         Position.X += moveH;
+        if (!canCarry) return;
         foreach (Entity entity in contains.Select((w) => w.Entity))
         {
             if (entity is Actor actor)
@@ -127,8 +130,8 @@ public abstract class GenericWaterBlock : Water
 
     public void MoveVExact(int moveV)
     {
-
         Position.Y += moveV;
+        if (!canCarry) return;
         foreach (Entity entity in contains.Select((w) => w.Entity))
         {
             if (entity is Actor actor)

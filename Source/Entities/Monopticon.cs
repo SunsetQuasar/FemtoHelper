@@ -128,6 +128,33 @@ public class Monopticon : Lookout
         On.Celeste.Player.DashBegin += Player_DashBegin;
         On.Celeste.Player.WallJump += Player_WallJump;
         On.Celeste.Player.ClimbJump += Player_ClimbJump;
+        On.Celeste.Actor.MoveHExact += Actor_MoveHExact;
+        On.Celeste.Actor.MoveVExact += Actor_MoveVExact;
+    }
+
+    private static bool Actor_MoveHExact(On.Celeste.Actor.orig_MoveHExact orig, Actor self, int moveH, Collision onCollide, Solid pusher)
+    {
+        bool ret = orig(self, moveH, onCollide, pusher);
+        if (self is Player player)
+        {
+            foreach(Entity e in player.Scene.Tracker.GetEntities<Monopticon>())
+            {
+                e.Position = player.Position;
+            }
+        }
+        return ret;
+    }
+    private static bool Actor_MoveVExact(On.Celeste.Actor.orig_MoveVExact orig, Actor self, int moveV, Collision onCollide, Solid pusher)
+    {
+        bool ret = orig(self, moveV, onCollide, pusher);
+        if (self is Player player)
+        {
+            foreach (Entity e in player.Scene.Tracker.GetEntities<Monopticon>())
+            {
+                e.Position = player.Position;
+            }
+        }
+        return ret;
     }
 
     public static void Unload()
@@ -138,6 +165,8 @@ public class Monopticon : Lookout
         On.Celeste.Player.DashBegin -= Player_DashBegin;
         On.Celeste.Player.WallJump -= Player_WallJump;
         On.Celeste.Player.ClimbJump -= Player_ClimbJump;
+        On.Celeste.Actor.MoveHExact -= Actor_MoveHExact;
+        On.Celeste.Actor.MoveVExact -= Actor_MoveVExact;
     }
 
     public override void Awake(Scene scene)
@@ -353,7 +382,6 @@ public class Monopticon : Lookout
         {
 
         }
-
         Position = player?.Position ?? Position;
 
         if (Input.Talk.Pressed)
