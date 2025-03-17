@@ -34,11 +34,9 @@
         <Anim id="pop" path="boosterRed" delay="0.08" frames="9-17"/>
     </FemtoHelper_boosting_booster_purp>
     
-    <theo_crystal_evil path="characters/ZBC2023/spear_queer/theo/" start="idle">
+    <theo_crystal_evil path="characters/FemtoHelper/evilTheoCrystal/" start="idle">
         <Origin x="32" y="42"/>
         <Loop id="idle" path="idleEvil" delay="0.08"/>
-        <Anim id="shatter" path="shatter" delay="0.08" goto="shattered"/>
-    <Loop id="shattered" path="shatter" frames="16" delay="0.08"/>
   </theo_crystal_evil>
 
 </Sprites>

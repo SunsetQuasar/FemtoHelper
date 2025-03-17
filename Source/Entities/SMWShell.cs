@@ -156,6 +156,7 @@ public class SMWShell : Actor
     private readonly float groundFriction;
     private readonly float maxFallSpeed;
     private readonly bool idleActivateTouchSwitches;
+    private readonly bool capSpeed;
 
     private readonly bool discoSleep;
 
@@ -174,7 +175,7 @@ public class SMWShell : Actor
 
     public SMWShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-
+        Position.Y++;   //let's pretend the placement doesn't spawn the shell 1px above the ground
         speed = Vector2.Zero;
 
         Collider = new Hitbox(12f, 9f, -6f, -2f);
@@ -213,6 +214,7 @@ public class SMWShell : Actor
         maxFallSpeed = data.Float("maxFallSpeed", 200f);
         idleActivateTouchSwitches = data.Bool("idleActivateTouchSwitches", true);
         discoSleep = data.Bool("discoSleep", false);
+        capSpeed = data.Bool("capSpeed", true);
 
         initialBounceCount = data.Int("bounceCount", 1);
         displayConfig = data.Enum("bounceCountDisplay", BounceCountDisplay.SpriteText);
@@ -235,7 +237,7 @@ public class SMWShell : Actor
         }
         else
         {
-            string key = data.Attr("sprite", "green");
+            string key = data.Attr("mainSprite", "green");
             Animations = [key];
             sprite.AddLoop($"idle_{key}", $"{key}_idle", 15f);
             sprite.AddLoop($"kicked_{key}", $"{key}_kicked", 0.06f);
@@ -255,7 +257,10 @@ public class SMWShell : Actor
         hold.OnRelease = OnRelease;
         hold.SpeedGetter = () => speed;
         hold.OnHitSpring = HitSpring;
-        hold.SpeedSetter = (spd) => speed = spd;
+        hold.SpeedSetter = (spd) => {
+            if (capSpeed && state == States.Kicked) speed = new Vector2(Math.Min(isDisco ? discoSpeed : shellSpeed, spd.X), spd.Y);
+            else speed = spd;
+        };
 
         if (!(isCarriable = data.Bool("carriable", true)))
         {
@@ -319,7 +324,7 @@ public class SMWShell : Actor
                     p.Die((Position - p.Center).SafeNormalize());
                 }
             }
-            else if ((!(Input.Grab.Check && isCarriable) || p.StateMachine.state == Player.StClimb || p.Holding != null) && p.Holding != hold)
+            else if ((!(Input.Grab.Check && !p.Ducking && isCarriable) || p.StateMachine.state == Player.StClimb || p.Holding != null) && p.Holding != hold)
             {
                 TouchKick(p);
             }
@@ -386,7 +391,7 @@ public class SMWShell : Actor
                 p.Die((Position - p.Center).SafeNormalize());
             }
         }
-        else if ((!(Input.Grab.Check && isCarriable) || p.StateMachine.state == Player.StClimb || p.Holding != null) && p.Holding != hold)
+        else if ((!(Input.Grab.Check && !p.Ducking && isCarriable) || p.StateMachine.state == Player.StClimb || p.Holding != null) && p.Holding != hold)
         {
             TouchKick(p);
         }
@@ -442,7 +447,7 @@ public class SMWShell : Actor
 
     private void Kick(Vector2? spd = null)
     {
-        if (spd != null) speed = Vector2.UnitX * spd ?? Vector2.Zero;
+        if (spd != null) hold.SetSpeed(Vector2.UnitX * spd ?? Vector2.Zero);
         state = States.Kicked;
         bounceCount = initialBounceCount;
         dontKillTimer = 0.1f;
@@ -706,18 +711,18 @@ public class SMWShell : Actor
         switch (spring.Orientation)
         {
             case Spring.Orientations.Floor when speed.Y >= 0f:
-                speed.X *= 0.5f;
-                speed.Y = -160f;
+                if (state != States.Kicked) speed.X *= 0.5f;
+                speed.Y = -300f;
                 return true;
             case Spring.Orientations.WallLeft when speed.X <= 0f:
                 MoveTowardsY(spring.CenterY + 5f, 4f);
-                speed.X = 160f;
-                speed.Y = -80f;
+                speed.X = isDisco ? discoSpeed : shellSpeed;
+                speed.Y = Math.Min(speed.Y, -160f);
                 return true;
             case Spring.Orientations.WallRight when speed.X >= 0f:
                 MoveTowardsY(spring.CenterY + 5f, 4f);
-                speed.X = -160f;
-                speed.Y = -80f;
+                speed.X = isDisco ? discoSpeed : shellSpeed;
+                speed.Y = Math.Min(speed.Y, -160f);
                 return true;
             default:
                 return false;
@@ -726,7 +731,7 @@ public class SMWShell : Actor
 
     private void OnPickup()
     {
-        speed = Vector2.Zero;
+        hold.SetSpeed(Vector2.Zero);
         Drop();
         AddTag(Tags.Persistent);
         if (counter != null) counter.AddTag(Tags.Persistent);
@@ -774,7 +779,7 @@ public class SMWShell : Actor
             Kick();
         }
         hold.cannotHoldTimer = 0.2f;
-        speed = force * new Vector2(shellSpeed, 100);
+        hold.SetSpeed(force * new Vector2(shellSpeed, 100));
         RemoveTag(Tags.Persistent);
         if (counter != null) counter.RemoveTag(Tags.Persistent);
         Position = new(MathF.Round(Position.X), MathF.Round(Position.Y));

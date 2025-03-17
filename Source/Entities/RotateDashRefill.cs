@@ -115,12 +115,13 @@ public class RotateDashRefill : Entity
         twoDashes = false;
         oneUse = data.Bool("oneUse", false);
         Angle = data.Float("angle", 90);
-        Scalar = data.Float("scalar", 1.5f);
-        EffectColors = data.Attr("effectColors", "7958ad,cbace6,634691").Split(',').Select(Calc.HexToColor).ToArray();
-        if (EffectColors.Length != 3) EffectColors = [Calc.HexToColor("7958ad"), Calc.HexToColor("cbace6"), Calc.HexToColor("634691")];
+        Scalar = data.Float("scalar", 1.5f); 
         string text = data.Attr("texture", "objects/refill/");
-        string[] colors = data.Attr("colors", "dba0d0,ca6dd1,e6aec1,e376df").Split(',');
+        string[] efColors = data.Attr("effectColors", "7958ad,cbace6,634691").Split(',');
+        if (efColors.Length != 3) efColors = "7958ad,cbace6,634691".Split(',');
+        string[] colors = data.Attr("particleColors", "dba0d0,ca6dd1,e6aec1,e376df").Split(',');
         if (colors.Length != 4) colors = "dba0d0,ca6dd1,e6aec1,e376df".Split(',');
+        EffectColors = efColors.Select(Calc.HexToColor).ToArray();
         pShatter = new ParticleType(Refill.P_Shatter);
         pRegen = new ParticleType(Refill.P_Regen);
         pGlow = new ParticleType(Refill.P_Glow);

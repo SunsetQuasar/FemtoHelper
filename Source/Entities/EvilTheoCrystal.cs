@@ -71,6 +71,7 @@ public class EvilTheoCrystal : Actor
         Hold.OnHitSpring = HitSpring;
         Hold.OnHitSpinner = HitSpinner;
         Hold.SpeedGetter = () => Speed;
+        Hold.SpeedSetter = (t) => Speed += t;
         onCollideH = OnCollideH;
         onCollideV = OnCollideV;
         LiftSpeedGraceTime = 0.1f;
@@ -250,7 +251,6 @@ public class EvilTheoCrystal : Actor
         }
         yield return 0.5f;
         level.Shake();
-        sprite.Play("shatter");
         yield return 1f;
         level.Shake();
     }
@@ -459,7 +459,7 @@ public class EvilTheoCrystal : Actor
             {
                 force.Y *= 1.5f;
                 Speed.Y -= 80;
-                p.Speed = force * 400f;
+                p.Speed = force * 350f;
             }
         }
         skipit:

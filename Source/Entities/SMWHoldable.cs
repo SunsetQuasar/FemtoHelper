@@ -6,6 +6,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
+using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

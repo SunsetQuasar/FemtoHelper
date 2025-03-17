@@ -1,4 +1,5 @@
-﻿using IL.MonoMod;
+﻿using Celeste.Mod.FemtoHelper.Entities;
+using IL.MonoMod;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,6 +71,50 @@ public static class EntityExtensions
             t.Collidable = collidable;
         }
         return null;
+    }
+
+    public static bool CollideCheckIgnoreCollidable<T>(this Entity entity, Vector2 at) where T : Entity
+    {
+        foreach (Entity t in entity.Scene.Tracker.Entities[typeof(T)])
+        {
+            bool collidable = t.Collidable;
+            t.Collidable = true;
+            if (entity.CollideCheck(t, at))
+            {
+                return true;
+            }
+            t.Collidable = collidable;
+        }
+        return false;
+    }
+
+    public static bool WaterWallJumpCheck(this Player player, int dir)
+    {
+        int num = 3;
+        bool flag = player.DashAttacking && player.DashDir.X == 0f && player.DashDir.Y == -1f;
+        if (flag)
+        {
+            Spikes.Directions directions = ((dir <= 0) ? Spikes.Directions.Right : Spikes.Directions.Left);
+            foreach (Spikes entity in player.level.Tracker.GetEntities<Spikes>())
+            {
+                if (entity.Direction == directions && player.CollideCheck(entity, player.Position + Vector2.UnitX * dir * 5f))
+                {
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        if (flag)
+        {
+            num = 5;
+        }
+        if (player.ClimbBoundsCheck(dir) && !ClimbBlocker.EdgeCheck(player.level, player, dir * num))
+        {
+            bool flag2 = false;
+            player.CollideDo<Water>((e) => { if (e is GenericWaterBlock) flag2 = true; }, player.Position + Vector2.UnitX * dir * num);
+            return flag2;
+        }
+        return false;
     }
 
     public static Vector2 ExplodeLaunch(this Holdable hold, Vector2 from, bool snapUp = true, bool sidesOnly = false)

@@ -4,6 +4,7 @@ using MonoMod.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
+[Pooled]
 public class Droplet : Entity
 {
     public Vector2 Start;
@@ -24,7 +25,12 @@ public class Droplet : Entity
             Y = Calc.LerpClamp(Start.Y, End.Y, t.Eased);
             Image.Scale = Vector2.One * t.Eased;
         };
-        t.OnComplete += (t) => RemoveSelf();
+        t.OnComplete += (t) =>
+        {
+            Remove(Image);
+            Remove(t);
+            RemoveSelf();
+        };
         Add(t);
         return this;
     }
@@ -50,13 +56,6 @@ public class MovingWaterBlock : GenericWaterBlock
     public readonly MTexture Arrow;
     public readonly MTexture Deadsprite;
 
-    public readonly ParticleType Dissipate;
-    public readonly ParticleType Tinydrops;
-    public readonly ParticleType Tinydrops2;
-
-    public float Shaketimer;
-    public Vector2 Shake;
-
     public bool Dying;
 
     public Vector2 Anchor;
@@ -67,45 +66,19 @@ public class MovingWaterBlock : GenericWaterBlock
     public readonly WaterSprite Sprite;
     public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
+
+        string prefix = data.Attr("spritePath", "objects/FemtoHelper/moveWater/");
+
         Anchor = data.Position + offset;
         Add(moveSfx = new SoundSource());
         Triggered = false;
         TargetSpeed = data.Float("maxSpeed", 60f);
         Angle = data.Float("angle", 90f) / 180 * MathF.PI;
-        Arrow = GFX.Game["objects/FemtoHelper/moveWater/arrow"];
-        Deadsprite = GFX.Game["objects/FemtoHelper/moveWater/dead"];
-        Dissipate = new ParticleType(Booster.P_Burst)
-        {
-            Color = Calc.HexToColor("81F4F0") * 0.25f
-        };
+        Arrow = GFX.Game[prefix + "arrow"];
+        Deadsprite = GFX.Game[prefix + "dead"];
         Depth = -51000;
-        Tinydrops = new ParticleType
-        {
-            Size = 1f,
 
-            Color = Color.LightSkyBlue * 0.6f,
-            DirectionRange = MathF.PI / 30f,
-            LifeMin = 0.3f,
-            LifeMax = 0.6f,
-            SpeedMin = 5f,
-            SpeedMax = 10f,
-            SpeedMultiplier = 0.10f,
-            FadeMode = ParticleType.FadeModes.Linear,
-        };
-        Tinydrops2 = new ParticleType
-        {
-            Size = 1f,
-            Color = Color.LightSkyBlue,
-            DirectionRange = MathF.PI / 30f,
-            LifeMin = 0.6f,
-            LifeMax = 1f,
-            SpeedMin = 40f,
-            SpeedMax = 50f,
-            SpeedMultiplier = 0.25f,
-            FadeMode = ParticleType.FadeModes.Late
-        };
-
-        Add(Sprite = new WaterSprite());
+        Add(Sprite = new WaterSprite(prefix + "nineSlice"));
 
         IconScale = Vector2.One;
 
@@ -154,12 +127,6 @@ public class MovingWaterBlock : GenericWaterBlock
         {
             Add(new Coroutine(Destroy()));
         }
-
-        if (Scene.OnInterval(0.02f))
-        {
-            Shake = Shaketimer > 0 ? new Vector2(Calc.Random.Range(-1f, 1f), Calc.Random.Range(-1f, 1f)) : Vector2.Zero;
-        }
-        if (Shaketimer > 0) Shaketimer -= Engine.DeltaTime;
     }
 
     public IEnumerator Destroy()
@@ -175,7 +142,7 @@ public class MovingWaterBlock : GenericWaterBlock
 
         Audio.Play("event:/FemtoHelper/movewater_break", Position);
         moveSfx.Stop();
-        Shaketimer = 0.2f;
+        StartShaking(0.2f);
 
         yield return 0.2f;
 
@@ -200,7 +167,7 @@ public class MovingWaterBlock : GenericWaterBlock
             {
                 Vector2 vector6 = new Vector2(X + i + 4f, Y + j + 4f);
                 Vector2 vec = (vector6 - Center).SafeNormalize();
-                Color col = Color.Lerp(Color.CadetBlue * 0.2f, Color.White * 0.3f, vec.LengthSquared());
+                Color col = Color.CadetBlue * 0.2f;
                 Scene.Add(Engine.Pooler.Create<Droplet>().Init(vector6 + vec * 12f, vector6, col));
             }
         }
@@ -214,12 +181,6 @@ public class MovingWaterBlock : GenericWaterBlock
         Dying = Triggered = false;
 
     }
-
-    public override void DrawDisplacement()
-    {
-
-    }
-
     public void TriggerBlock()
     {
         for (float i = 0; i < Width; i += 8)
@@ -233,7 +194,7 @@ public class MovingWaterBlock : GenericWaterBlock
             SceneAs<Level>().ParticlesFG.Emit(Tinydrops2, new Vector2(Right, Y) + new Vector2(0, i) + new Vector2(Calc.Random.Range(-2f, 2f), Calc.Random.Range(-2f, 2f)), Color.LightSkyBlue * 0.3f, 0);
         }
         Triggered = true;
-        Shaketimer = 0.2f;
+        StartShaking(0.2f);
         IconWiggler.Start();
         Sprite.Wiggle.Start();
         Audio.Play("event:/game/04_cliffside/arrowblock_activate", Position);
@@ -257,6 +218,5 @@ public class MovingWaterBlock : GenericWaterBlock
         tex.DrawOutlineCentered(Center, Color.Black, IconScale, ang);
         tex.DrawCentered(Center, Color.White, IconScale, ang);
         Position = num3;
-
     }
 }

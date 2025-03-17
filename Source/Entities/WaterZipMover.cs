@@ -14,22 +14,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/WaterZipMover")]
 public class WaterZipMover : GenericWaterBlock
 {
-    public static Color ropeColor = Color.MediumAquamarine * 0.25f;
-    public static Color ropeLightColor = Color.Aquamarine * 0.15f;
-
-    public static ParticleType Tinydrops = new ParticleType
-    {
-        Size = 1f,
-
-        Color = Color.LightSkyBlue * 0.6f,
-        DirectionRange = MathF.PI / 30f,
-        LifeMin = 0.3f,
-        LifeMax = 0.6f,
-        SpeedMin = 5f,
-        SpeedMax = 10f,
-        SpeedMultiplier = 0.10f,
-        FadeMode = ParticleType.FadeModes.Linear,
-    };
+    public static Color ropeLightColor = Calc.HexToColor("2C5560") * (93f / 255f);
 
     private class WaterZipMoverPathRenderer : Entity
     {
@@ -152,7 +137,9 @@ public class WaterZipMover : GenericWaterBlock
 
     public WaterZipMover(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
-        Add(waterSprite = new WaterSprite());
+        texturePath = data.Attr("texturePath", "objects/FemtoHelper/waterZipMover/");
+
+        Add(waterSprite = new WaterSprite(texturePath + "nineSlice"));
         start = data.Position + offset;
         target = data.Nodes[0] + offset;
         Add(new Coroutine(Sequence()));
@@ -160,8 +147,6 @@ public class WaterZipMover : GenericWaterBlock
         Add(sfx);
 
         behavior = data.Enum("behavior", Behaviors.Default);
-
-        texturePath = data.Attr("texturePath", "objects/FemtoHelper/waterZipMover/");
 
         Image center = null;
         if (behavior == Behaviors.NoReturn)
@@ -172,7 +157,7 @@ public class WaterZipMover : GenericWaterBlock
                 Position = new Vector2(Width, Height) / 2,
                 Origin = new Vector2(tex.Width, tex.Height) / 2
             });
-        } 
+        }
         else if (behavior == Behaviors.Permanent)
         {
             MTexture tex = GFX.Game[$"{texturePath}permanent"];
@@ -182,7 +167,7 @@ public class WaterZipMover : GenericWaterBlock
                 Origin = new Vector2(tex.Width, tex.Height) / 2
             });
         }
-        
+
         Add(cornerL = new Sprite(GFX.Game, texturePath));
         Add(bloomL = new BloomPoint(0.5f, 6f));
         cornerL.Add("frames", "cornerL", 1f);
@@ -233,13 +218,9 @@ public class WaterZipMover : GenericWaterBlock
         scene.Add(pathRenderer = new WaterZipMoverPathRenderer(this, texturePath));
     }
 
-    public override void DrawDisplacement()
-    {
-
-    }
-
     private void WiggleEverything(float dur = 0.6f, float freq = 4)
     {
+        StartShaking(0.2f);
         cornerWiggler.Start();
         waterSprite.Wiggle.Start();
         pathRenderer.cogWiggler.increment = 1f / dur;
@@ -250,7 +231,7 @@ public class WaterZipMover : GenericWaterBlock
     private IEnumerator Sequence()
     {
         Vector2 start = Position;
-        label_start:
+    label_start:
         while (true)
         {
             if (!CollideCheck<Player>())
@@ -347,7 +328,7 @@ public class WaterZipMover : GenericWaterBlock
                 cornerR.SetAnimationFrame(1);
                 sfx.Stop();
                 goto label_start;
-            } 
+            }
             else
             {
                 cornerL.SetAnimationFrame(2);
@@ -374,5 +355,13 @@ public class WaterZipMover : GenericWaterBlock
                 yield return 0.5f;
             }
         }
+    }
+
+    public override void Render()
+    {
+        Vector2 pos = Position;
+        Position += Shake;
+        base.Render();
+        Position = pos;
     }
 }

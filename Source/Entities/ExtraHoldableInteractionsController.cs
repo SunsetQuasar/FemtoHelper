@@ -1,5 +1,6 @@
 ﻿
 using Celeste.Mod.FemtoHelper.Utils;
+using System;
 using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper.Code.Entities;
@@ -100,7 +101,7 @@ public class ExtraHoldableInteractionsController : Entity
         orig(self, scene);
         scene.OnEndOfFrame += () =>
         {
-            ExtraHoldableInteractionsController controller = self.Scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
+            ExtraHoldableInteractionsController controller = scene.Tracker.GetEntity<ExtraHoldableInteractionsController>();
             if (controller is not { InteractWithBumpers: true }) return;
 
             self.Add(new HoldableCollider((Holdable h) =>

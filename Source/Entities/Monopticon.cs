@@ -8,6 +8,7 @@ using Celeste;
 using Microsoft.Xna.Framework;
 using Monocle;
 using Celeste.Mod.Entities;
+using Celeste.Mod.FemtoHelper.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -76,7 +77,7 @@ public class Monopticon : Lookout
 
         AddTag(Tags.TransitionUpdate);
 
-        summit = data.Bool("summit");
+        summit = false;
         onlyY = data.Bool("onlyY");
         base.Collider = new Hitbox(4f, 4f, -2f, -4f);
         Add(new MirrorReflection());
@@ -101,7 +102,7 @@ public class Monopticon : Lookout
         Vector2[] array = data.NodesOffset(offset);
         if (array != null && array.Length != 0)
         {
-            nodes = new List<Vector2>(array);
+            nodes = [.. array];
         }
         blockJump = data.Bool("blockJump", true);
         blockDash = data.Bool("blockDash", true);
@@ -345,11 +346,8 @@ public class Monopticon : Lookout
         }
     }
 
-
-
     public override void Update()
     {
-
         //base.Update(); // fuck you !!!!!!!
         Components.Update();
 

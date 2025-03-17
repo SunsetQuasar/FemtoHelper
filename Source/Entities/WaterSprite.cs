@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -17,17 +18,19 @@ public class WaterSprite : GraphicsComponent
 
     public Wiggler Wiggle;
     public Vector2 ExtraSize;
-    public WaterSprite() : base(true)
+
+    public bool drawn;
+    public WaterSprite(string path = "objects/FemtoHelper/moveWater/nineSlice") : base(true)
     {
         if (Everest.Content.TryGet($"Effects/FemtoHelper/WaterSprite.cso", out var effectAsset, true))
         {
             Effect = new Effect(Engine.Graphics.GraphicsDevice, effectAsset.Data);
         }
-        NinSlice = new MTexture[3, 3];
-        MTexture nine = GFX.Game["objects/FemtoHelper/moveWater/nineSlice"];
-        for (int i = 0; i < 3; i++)
+        NinSlice = new MTexture[4, 4];
+        MTexture nine = GFX.Game[path];
+        for (int i = 0; i < 4; i++)
         {
-            for (int j = 0; j < 3; j++)
+            for (int j = 0; j < 4; j++)
             {
                 NinSlice[i, j] = nine.GetSubtexture(new Rectangle(i * 8, j * 8, 8, 8));
             }
@@ -56,6 +59,7 @@ public class WaterSprite : GraphicsComponent
 
     public void BeforeRender()
     {
+        if (drawn) return;
         Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
         Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
 
@@ -65,29 +69,43 @@ public class WaterSprite : GraphicsComponent
 
         Color color = Color.White;
         Vector2 pos = Vector2.One * Padding;
-        int num = (int)(size.X / 8f);
-        int num2 = (int)(size.Y / 8f);
-        NinSlice[0, 0].Draw(pos + new Vector2(0f, 0f), Vector2.Zero, color);
-        NinSlice[2, 0].Draw(pos + new Vector2(size.X - 8f, 0f), Vector2.Zero, color);
-        NinSlice[0, 2].Draw(pos + new Vector2(0f, size.Y - 8f), Vector2.Zero, color);
-        NinSlice[2, 2].Draw(pos + new Vector2(size.X - 8f, size.Y - 8f), Vector2.Zero, color);
-        for (int i = 1; i < num - 1; i++)
+        //int num = (int)(size.X / 8f);
+        //int num2 = (int)(size.Y / 8f);
+        //NinSlice[0, 0].Draw(pos + new Vector2(0f, 0f), Vector2.Zero, color);
+        //NinSlice[2, 0].Draw(pos + new Vector2(size.X - 8f, 0f), Vector2.Zero, color);
+        //NinSlice[0, 2].Draw(pos + new Vector2(0f, size.Y - 8f), Vector2.Zero, color);
+        //NinSlice[2, 2].Draw(pos + new Vector2(size.X - 8f, size.Y - 8f), Vector2.Zero, color);
+        //for (int i = 1; i < num - 1; i++)
+        //{
+        //    NinSlice[1, 0].Draw(pos + new Vector2(i * 8, 0f), Vector2.Zero, color);
+        //    NinSlice[1, 2].Draw(pos + new Vector2(i * 8, size.Y - 8f), Vector2.Zero, color);
+        //}
+        //for (int j = 1; j < num2 - 1; j++)
+        //{
+        //    NinSlice[0, 1].Draw(pos + new Vector2(0f, j * 8), Vector2.Zero, color);
+        //    NinSlice[2, 1].Draw(pos + new Vector2(size.X - 8f, j * 8), Vector2.Zero, color);
+        //}
+        //for (int k = 1; k < num - 1; k++)
+        //{
+        //    for (int l = 1; l < num2 - 1; l++)
+        //    {
+        //        NinSlice[1, 1].Draw(pos + new Vector2(k, l) * 8f, Vector2.Zero, color);
+        //    }
+        //}
+
+        int num = NinSlice.GetLength(0);
+        int num2 = NinSlice.GetLength(1);
+        for (int i = 0; (float)i < Entity.Width; i += 8)
         {
-            NinSlice[1, 0].Draw(pos + new Vector2(i * 8, 0f), Vector2.Zero, color);
-            NinSlice[1, 2].Draw(pos + new Vector2(i * 8, size.Y - 8f), Vector2.Zero, color);
-        }
-        for (int j = 1; j < num2 - 1; j++)
-        {
-            NinSlice[0, 1].Draw(pos + new Vector2(0f, j * 8), Vector2.Zero, color);
-            NinSlice[2, 1].Draw(pos + new Vector2(size.X - 8f, j * 8), Vector2.Zero, color);
-        }
-        for (int k = 1; k < num - 1; k++)
-        {
-            for (int l = 1; l < num2 - 1; l++)
+            for (int j = 0; (float)j < Entity.Height; j += 8)
             {
-                NinSlice[1, 1].Draw(pos + new Vector2(k, l) * 8f, Vector2.Zero, color);
+                int num3 = ((i != 0) ? ((!((float)i >= Entity.Width - 8f)) ? Calc.Random.Next(1, num - 1) : (num - 1)) : 0);
+                int num4 = ((j != 0) ? ((!((float)j >= Entity.Height - 8f)) ? Calc.Random.Next(1, num2 - 1) : (num2 - 1)) : 0);
+                NinSlice[num3, num4].Draw(pos + new Vector2(i, j), Vector2.Zero, color);
             }
         }
+
+        drawn = true;
 
         Draw.SpriteBatch.End();
 

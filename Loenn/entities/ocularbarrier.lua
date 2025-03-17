@@ -28,18 +28,34 @@ local ninePatchOptions = {
 FemtoHelperOcularBarrier.minimumSize = {16, 16}
 
 FemtoHelperOcularBarrier.placements = {
-    name = "ocularBarrier",
-    data = {
-        flag = "lookout_interacting",
-        invert = false,
-        width = 16,
-        height = 16,
-        activeColor = "99FF66",
-        inactiveColor = "005500",
-        invertedActiveColor = "6699FF",
-        invertedInactiveColor = "000055",
-        texturePath = "objects/FemtoHelper/OcularBarrier/"
-    }
+    {
+        name = "ocularBarrier",
+        data = {
+            flag = "monopticon_interacting",
+            invert = false,
+            width = 16,
+            height = 16,
+            activeColor = "99FF66",
+            inactiveColor = "005500",
+            invertedActiveColor = "6699FF",
+            invertedInactiveColor = "000055",
+            texturePath = "objects/FemtoHelper/OcularBarrier/"
+        }
+    },
+    {
+        name = "ocularBarrierInverted",
+        data = {
+            flag = "monopticon_interacting",
+            invert = true,
+            width = 16,
+            height = 16,
+            activeColor = "99FF66",
+            inactiveColor = "005500",
+            invertedActiveColor = "6699FF",
+            invertedInactiveColor = "000055",
+            texturePath = "objects/FemtoHelper/OcularBarrier/"
+        }
+    },
 }
 
 

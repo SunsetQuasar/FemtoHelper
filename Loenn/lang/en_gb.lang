@@ -363,7 +363,7 @@ entities.FemtoHelper/VitalDrainController.attributes.description.colorgradeB=The
 entities.FemtoHelper/SimpleText.placements.name.default=Simple Text
 entities.FemtoHelper/SimpleText.attributes.description.charList=The list of all existing characters in the font.\nThe font image must match this list, and the list must start with a space.
 entities.FemtoHelper/SimpleText.attributes.description.depth=The entity's depth. Higher values are further back, lower values are in front, and the Player has depth 0.
-entities.FemtoHelper/SimpleText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support vanilla FancyText dialog effects.\nUse brackets to display counters and flags;\n{my_counter} displays "my_counter"'s value;\n{my_flag;value_if_on;value_if_off} displays "value_if_on" if the flag "my_flag" is on, and "value_if_off" if the flag is off.
+entities.FemtoHelper/SimpleText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support vanilla FancyText dialog effects.\nBrackets within the dialog entry can be used to display counters and flags;\ndialog_key = {my_counter} displays "my_counter"'s value;\ndialog_key = {my_flag;value_if_on;value_if_off} displays "value_if_on" if the flag "my_flag" is on, and "value_if_off" if the flag is off.
 entities.FemtoHelper/SimpleText.attributes.description.fontHeight=The height of a character in the given font.
 entities.FemtoHelper/SimpleText.attributes.description.fontPath=The font image.\nThe characters in this image must match 1 to 1 with the charList attribute and be of the correct size or the text will appear garbled.
 entities.FemtoHelper/SimpleText.attributes.description.fontWidth=The width of a character in the given font.
@@ -381,7 +381,7 @@ entities.FemtoHelper/SimpleText.attributes.description.visibilityFlag=The flag t
 entities.FemtoHelper/CinematicText.placements.name.default=Cinematic Text
 entities.FemtoHelper/CinematicText.attributes.description.charList=The list of all existing characters in the font.\nThe font image must match this list, and the list must start with a space.
 entities.FemtoHelper/CinematicText.attributes.description.depth=The entity's depth. Higher values are further back, lower values are in front, and the Player has depth 0.
-entities.FemtoHelper/CinematicText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support FancyText dialog effects.\nUse brackets to display counters and flags;\n{my_counter} displays "my_counter"'s value;\n{my_flag;value_if_on;value_if_off} displays "value_if_on" if the flag "my_flag" is on, and "value_if_off" if the flag is off.
+entities.FemtoHelper/CinematicText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support vanilla FancyText dialog effects.\nBrackets within the dialog entry can be used to display counters and flags;\ndialog_key = {my_counter} displays "my_counter"'s value;\ndialog_key = {my_flag;value_if_on;value_if_off} displays "value_if_on" if the flag "my_flag" is on, and "value_if_off" if the flag is off.
 entities.FemtoHelper/CinematicText.attributes.description.fontHeight=The height of a character in the given font.
 entities.FemtoHelper/CinematicText.attributes.description.fontPath=The font image.\nThe characters in this image must match 1 to 1 with the charList attribute and be of the correct size or the text will appear garbled.
 entities.FemtoHelper/CinematicText.attributes.description.fontWidth=The width of a character in the given font.
@@ -419,8 +419,114 @@ entities.FemtoHelper/CinematicText.attributes.description.waveY=(Wave) The verti
 entities.FemtoHelper/CinematicText.attributes.description.retriggerable=Allows the text to be triggered again after it fades out.
 entities.FemtoHelper/CinematicText.attributes.description.visibilityFlag=The flag that determines if the text should be visible or not;\nPrecede with "!" to invert the flag.
 
+# Boosting Booster
 
+entities.FemtoHelper/BoostingBooster.placements.name.green=Boosting Booster (Green)
+entities.FemtoHelper/BoostingBooster.placements.name.red=Boosting Booster (Red)
+entities.FemtoHelper/BoostingBooster.attributes.description.red=Acts like a Red Booster.
 
+# Circle Mover
+
+entities.FemtoHelper/CircleMover.placements.name.circleMover=Circle Mover
+entities.FemtoHelper/CircleMover.placements.name.circleMoverNoReturn=Circle Mover (No Return)
+entities.FemtoHelper/CircleMover.attributes.description.counterClockwise=Whether the Circle Mover moves clockwise or counter-clockwise.
+entities.FemtoHelper/CircleMover.attributes.description.angle=How much along the circle the Circle Mover moves, in degrees.
+entities.FemtoHelper/CircleMover.attributes.description.behavior=This controls how the Circle Mover behaves.\nDefault: Moves like a regular Zip Mover; Charges to the endpoint, then slowly returns.\nNoReturn: Regular No Return behavior; Charges to the endpoint but doesn't return, waiting for the player to activate it again.\nPermanent: Charges to the endpoint and then deactivates.
+entities.FemtoHelper/CircleMover.attributes.description.chainZipperFlag=If this field isn't empty and the input flag is active, this Circle Mover can activate other Circle Movers on contact when slamming into the endpoint.
+entities.FemtoHelper/CircleMover.attributes.description.spritePath=The sprite directory for the Circle Mover.
+entities.FemtoHelper/CircleMover.attributes.description.activateFallingBlocks=Makes it so the Circle Mover activates falling blocks on endpoint contact.
+
+# Water Circle Mover
+
+entities.FemtoHelper/WaterCircleMover.placements.name.circleMover=Water Circle Mover
+entities.FemtoHelper/WaterCircleMover.placements.name.circleMoverNoReturn=Water Circle Mover (No Return)
+entities.FemtoHelper/WaterCircleMover.attributes.description.counterClockwise=Whether the Water Circle Mover moves clockwise or counter-clockwise.
+entities.FemtoHelper/WaterCircleMover.attributes.description.angle=How much along the circle the Water Circle Mover moves, in degrees.
+entities.FemtoHelper/WaterCircleMover.attributes.description.behavior=This controls how the Water Circle Mover behaves.\nDefault: Moves like a regular Zip Mover; Charges to the endpoint, then slowly returns.\nNoReturn: Regular No Return behavior; Charges to the endpoint but doesn't return, waiting for the player to activate it again.\nPermanent: Charges to the endpoint and then deactivates.
+entities.FemtoHelper/WaterCircleMover.attributes.description.chainZipperFlag=If this field isn't empty and the input flag is active, this Water Circle Mover can activate other Water Circle Movers on contact when slamming into the endpoint.
+entities.FemtoHelper/WaterCircleMover.attributes.description.spritePath=The sprite directory for the Water Circle Mover.
+entities.FemtoHelper/WaterCircleMover.attributes.description.activateFallingBlocks=Makes it so the Water Circle Mover activates falling blocks on endpoint contact.
+entities.FemtoHelper/WaterCircleMover.attributes.description.canCarry=Whether the Water Circle Mover can carry the player with it and give liftboost or not. 
+
+# Water Move Block
+
+entities.FemtoHelper/MovingWaterBlock.placements.name.waterMoveBlock=Water Move Block
+entities.FemtoHelper/MovingWaterBlock.attributes.description.spritePath=The sprite directory for the Water Move Block.
+entities.FemtoHelper/MovingWaterBlock.attributes.description.angle=The Move Block's travel angle, in degrees.
+entities.FemtoHelper/MovingWaterBlock.attributes.description.canCarry=Whether the Water Move Block can carry the player with it and give liftboost or not. 
+entities.FemtoHelper/MovingWaterBlock.attributes.description.maxSpeed=The Move Block's maximum speed.
+
+# Water Falling Block
+
+entities.FemtoHelper/WaterFallingBlock.placements.name.waterFallingBlockD=Water Falling Block (Down)
+entities.FemtoHelper/WaterFallingBlock.placements.name.waterFallingBlockR=Water Falling Block (Right)
+entities.FemtoHelper/WaterFallingBlock.placements.name.waterFallingBlockU=Water Falling Block (Up)
+entities.FemtoHelper/WaterFallingBlock.placements.name.waterFallingBlockL=Water Falling Block (Left)
+entities.FemtoHelper/WaterFallingBlock.attributes.description.canCarry=Whether the Water Falling Block can carry the player with it and give liftboost or not.
+entities.FemtoHelper/WaterFallingBlock.attributes.description.direction=The Water Falling Block's falling direction.
+entities.FemtoHelper/WaterFallingBlock.attributes.description.spritePath=The sprite directory for the Water Falling Block.
+
+# Water Zip Mover
+
+entities.FemtoHelper/WaterZipMover.placements.name.waterZipMover=Water Zip Mover
+entities.FemtoHelper/WaterZipMover.placements.name.waterZipMoverNoReturn=Water Zip Mover (No Return)
+entities.FemtoHelper/WaterZipMover.attributes.description.behavior=This controls how the Water Zip Mover behaves.\nDefault: Moves like a regular Zip Mover; Charges to the endpoint, then slowly returns.\nNoReturn: Regular No Return behavior; Charges to the endpoint but doesn't return, waiting for the player to activate it again.\nPermanent: Charges to the endpoint and then deactivates.
+entities.FemtoHelper/WaterZipMover.attributes.description.canCarry=Whether the Water Zip Mover can carry the player with it and give liftboost or not.
+entities.FemtoHelper/WaterZipMover.attributes.description.spritePath=The sprite directory for the Water Zip Mover.
+
+# Water Swap Block
+
+entities.FemtoHelper/WaterSwapBlock.placements.name.waterSwapBlock=Water Swap Block
+entities.FemtoHelper/WaterSwapBlock.placements.name.waterSwapBlockToggle=Water Swap Block (Toggle)
+entities.FemtoHelper/WaterSwapBlock.attributes.description.canCarry=Whether the Water Swap Block can carry the player with it and give liftboost or not.
+entities.FemtoHelper/WaterSwapBlock.attributes.description.toggle=Whether the Water Swap Block toggles between two positions or returns after moving.
+entities.FemtoHelper/WaterSwapBlock.attributes.description.spritePath=The sprite directory for the Water Swap Block.
+
+# Water Switch Gate
+
+entities.FemtoHelper/WaterSwitchGate.placements.name.waterSwitchGate=Water Switch Gate
+entities.FemtoHelper/WaterSwitchGate.attributes.description.canCarry=Whether the Water Switch Gate can carry the player with it and give liftboost or not.
+entities.FemtoHelper/WaterSwitchGate.attributes.description.spritePath=The sprite directory for the Water Switch Gate.
+entities.FemtoHelper/WaterSwitchGate.attributes.description.persistent=Will stay open once activated, even if the player dies.
+
+# Rotate Dash Refill
+
+entities.FemtoHelper/RotateDashRefill.placements.name.rotate_refill=Rotate Dash Refill
+entities.FemtoHelper/RotateDashRefill.attributes.description.oneUse=Whether the refill should respawn after being used.
+entities.FemtoHelper/RotateDashRefill.attributes.description.scalar=How much the player's velocity is multiplied Rotate Dashing.
+entities.FemtoHelper/RotateDashRefill.attributes.description.texture=The texture path for the refill's sprite.
+entities.FemtoHelper/RotateDashRefill.attributes.description.effectColors=The colors used for the Rotate Dash effect. This affects the hair color and the arrow indicator.
+entities.FemtoHelper/RotateDashRefill.attributes.description.particleColors=The refill's particle colors.
+entities.FemtoHelper/RotateDashRefill.attributes.description.angle=How much the player's speed should be rotated counter-clockwise, or clockwise if the angle value is negative.\nMeasured in degrees.
+
+# Monopticon
+
+entities.FemtoHelper/Monopticon.placements.name.monopticon=Monopticon
+entities.FemtoHelper/Monopticon.attributes.description.onlyY=Makes it so the screen can only be panned horizontally.
+entities.FemtoHelper/Monopticon.attributes.description.interactFlag=This flag is activated while the player is using the Monopticon.
+entities.FemtoHelper/Monopticon.attributes.description.blockDash=Whether the player can dash while outside of bino state.
+entities.FemtoHelper/Monopticon.attributes.description.blockJump=Whether the player can jump while outside of bino state.
+entities.FemtoHelper/Monopticon.attributes.description.dashCancelDelay=How many frames before the bino state is canceled after dashing.
+entities.FemtoHelper/Monopticon.attributes.description.dashInputCancel=Makes it so the dash input immediately cancels bino state, rather than the dashing itself.
+entities.FemtoHelper/Monopticon.attributes.description.openFrames=Frames after "Pre Open Frames" before the bino state takes place. 
+entities.FemtoHelper/Monopticon.attributes.description.preOpenFrames=Frames after interacting with the Monopticon before the bino sound plays.\nCombined with "Open Frames" to create the delay before the bino state takes place.
+entities.FemtoHelper/Monopticon.attributes.description.closeFrames=Frames to exit bino state.
+entities.FemtoHelper/Monopticon.attributes.description.cooldownFrames=The cooldown after interacting with the Monopticon before you may cancel the bino state.\nAllows for tech to be performed in this short window of time without losing bino state.
+entities.FemtoHelper/Monopticon.attributes.description.strictStateReset=Whether the interact bind should be able to reset the player's state midair or only when the player is grounded (strict).
+entities.FemtoHelper/Monopticon.attributes.description.binoAcceleration=The Monopticon's panning acceleration.
+entities.FemtoHelper/Monopticon.attributes.description.binoMaxSpeed=The Monopticon's max panning speed.
+
+# Ocular Barrier
+
+entities.FemtoHelper/OcularBarrier.placements.name.ocularBarrier=Ocular Barrier (Off)
+entities.FemtoHelper/OcularBarrier.placements.name.ocularBarrierInverted=Ocular Barrier (On)
+entities.FemtoHelper/OcularBarrier.attributes.description.flag=Controls the barrier's On/Off state.\nShould be the same as the Monopticon's interaction flag.
+entities.FemtoHelper/OcularBarrier.attributes.description.invert=Determines if the barrier should activate with the flag or deactivate with the flag.
+entities.FemtoHelper/OcularBarrier.attributes.description.activeColor=The barrier's color when it is active and not inverted.
+entities.FemtoHelper/OcularBarrier.attributes.description.inactiveColor=The barrier's color when it is inactive and not inverted.
+entities.FemtoHelper/OcularBarrier.attributes.description.invertedActiveColor=The barrier's color when it is active and inverted.
+entities.FemtoHelper/OcularBarrier.attributes.description.invertedInactiveColor=The barrier's color when it is inactive and inverted.
+entities.FemtoHelper/OcularBarrier.attributes.description.texturePath=The texture path for the barrier's sprite.
 
 # ---------- Triggers ----------
 
