@@ -518,8 +518,8 @@ entities.FemtoHelper/Monopticon.attributes.description.binoMaxSpeed=The Monoptic
 
 # Ocular Barrier
 
-entities.FemtoHelper/OcularBarrier.placements.name.ocularBarrier=Ocular Barrier (Off)
-entities.FemtoHelper/OcularBarrier.placements.name.ocularBarrierInverted=Ocular Barrier (On)
+entities.FemtoHelper/OcularBarrier.placements.name.ocularBarrier=Ocular Barrier
+entities.FemtoHelper/OcularBarrier.placements.name.ocularBarrierInverted=Ocular Barrier (Inverted)
 entities.FemtoHelper/OcularBarrier.attributes.description.flag=Controls the barrier's On/Off state.\nShould be the same as the Monopticon's interaction flag.
 entities.FemtoHelper/OcularBarrier.attributes.description.invert=Determines if the barrier should activate with the flag or deactivate with the flag.
 entities.FemtoHelper/OcularBarrier.attributes.description.activeColor=The barrier's color when it is active and not inverted.
