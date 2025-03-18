@@ -173,6 +173,8 @@ public class SMWShell : Actor
 
     private BounceDisplay counter;
 
+    private readonly float discoSpriteRate;
+
     public SMWShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Position.Y++;   //let's pretend the placement doesn't spawn the shell 1px above the ground
@@ -218,7 +220,7 @@ public class SMWShell : Actor
 
         initialBounceCount = data.Int("bounceCount", 1);
         displayConfig = data.Enum("bounceCountDisplay", BounceCountDisplay.SpriteText);
-
+        discoSpriteRate = data.Float("discoSpriteRate", 50f);
 
         Add(sprite = new Sprite(GFX.Game, prefix));
 
@@ -401,7 +403,7 @@ public class SMWShell : Actor
     {
         while (true)
         {
-            yield return 0.02f;
+            yield return 1/(discoSpriteRate * (Settings.Instance.DisableFlashes ? 0.25f : 1f));
             currentSpriteIndex = Mod(currentSpriteIndex + 1, Animations.Length);
             ChangeSprite($"{currentSpriteTrimmedName}", true);
         }

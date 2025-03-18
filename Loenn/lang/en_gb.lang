@@ -528,6 +528,33 @@ entities.FemtoHelper/OcularBarrier.attributes.description.invertedActiveColor=Th
 entities.FemtoHelper/OcularBarrier.attributes.description.invertedInactiveColor=The barrier's color when it is inactive and inverted.
 entities.FemtoHelper/OcularBarrier.attributes.description.texturePath=The texture path for the barrier's sprite.
 
+# SMW Shell
+entities.FemtoHelper/SMWShell.placements.name.smw_shell=SMW Shell
+entities.FemtoHelper/SMWShell.placements.name.smw_shell_disco=SMW Shell (Disco)
+entities.FemtoHelper/SMWShell.attributes.description.doSplashEffect=Toggles the splash effect when an impact happens.
+entities.FemtoHelper/SMWShell.attributes.description.texturesPrefix=The texture path prefix for the Shell.\nMust have the Shell sprites as <texturesPrefix>/<sprite>_idle00.png, and <texturesPrefix>/<sprite>_kickedXX.png.\nShould also contain digitX.png for hit count text, and splash.png for the impact splash.
+entities.FemtoHelper/SMWShell.attributes.description.ignoreOtherShells=If true, this Shell ignores interactions with any other Shells.
+entities.FemtoHelper/SMWShell.attributes.description.doFreezeFrames=Whether interactions with the Shell include freeze frames.
+entities.FemtoHelper/SMWShell.attributes.description.disco=Turns the Shell into a Disco Shell.\n Cycles through multiple sprites and chases the player continuously.\nCan't be killed by stomping.
+entities.FemtoHelper/SMWShell.attributes.description.discoSprites=The Disco Shell's list of sprites.\n See "Main Sprite".
+entities.FemtoHelper/SMWShell.attributes.description.audioPath=The event prefix for the Shell's sound effects.
+entities.FemtoHelper/SMWShell.attributes.description.mainSprite=The Shell's sprite prefix. should contain a <sprite>_idle00.png image, and a series of <sprite>_kickedXX.png sprites for the kicked animation.
+entities.FemtoHelper/SMWShell.attributes.description.canBeBouncedOn=If false, the player cannot bounce on the Shell. Instead the player dies.
+entities.FemtoHelper/SMWShell.attributes.description.touchKickBehavior=What happens when the Shell is touch kicked (touched by the player when idle and not grabbing).\nNormal: The shell is kicked away from the player.\nKill: Kills the player.\nIgnore: Ignores the player completely.
+entities.FemtoHelper/SMWShell.attributes.description.carriable=Whether the player can carry the Shell.
+entities.FemtoHelper/SMWShell.attributes.description.shellSpeed=The kicked speed of the Shell.
+entities.FemtoHelper/SMWShell.attributes.description.discoSpeed=The chase speed of the Disco Shell.
+entities.FemtoHelper/SMWShell.attributes.description.discoAcceleration=The chase acceleration of the Disco Shell.
+entities.FemtoHelper/SMWShell.attributes.description.gravity=The Shell's gravity acceleration.
+entities.FemtoHelper/SMWShell.attributes.description.airFriction=The Shell's friction while in the air.
+entities.FemtoHelper/SMWShell.attributes.description.groundFriction=The Shell's friction while on the ground.
+entities.FemtoHelper/SMWShell.attributes.description.idleActivateTouchSwitches=If true, the Shell can activate Touch Switches while idle.
+entities.FemtoHelper/SMWShell.attributes.description.discoSleep=Whether a Disco Shell is allowed to move before the player moves after respawning.
+entities.FemtoHelper/SMWShell.attributes.description.maxFallSpeed=The Shell's terminal falling speed.
+entities.FemtoHelper/SMWShell.attributes.description.bounceCount=How many times a player needs to bounce on top of the Shell to stop it.\nIf the count is over 1, an indicatior shows up on top of the Shell, unless disabled.
+entities.FemtoHelper/SMWShell.attributes.description.bounceCountDisplay=Which kind of bounce count display the Shell uses.\nNone: Nothing is displayed.\nHUD: The bounce count is displayed using high resolution text. \nSpriteText: The bounce count is displayed using sprite digits.
+entities.FemtoHelper/SMWShell.attributes.description.discoSpriteRate=The rate in which the sprites in the Disco Shell cycle.\nNote: this value is divided by 4 if photosensitivity mode is enabled.
+
 # ---------- Triggers ----------
 
 # Remote Particle Emitter Activator (please spare my soul its the best name i could come up with)
