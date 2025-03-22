@@ -1,4 +1,6 @@
 local drawableSprite = require("structs.drawable_sprite")
+local drawableLine = require("structs.drawable_line")
+local drawing = require("utils.drawing")
 
 local FemtoHelperSMWShell = {}
 
@@ -36,15 +38,16 @@ FemtoHelperSMWShell.placements = {
             shellSpeed = 200,
             discoSpeed = 120,
             discoAcceleration = 700,
-            gravity = 800,
-            airFriction = 250,
+            gravity = 750,
+            airFriction = 200,
             groundFriction = 800,
             idleActivateTouchSwitches = true,
             discoSleep = false,
-            maxFallSpeed = 200,
+            maxFallSpeed = 160,
             bounceCount = 1,
             bounceCountDisplay = "SpriteText",
             discoSpriteRate = 50,
+            bubble = false,
         }
     },
     {
@@ -64,15 +67,16 @@ FemtoHelperSMWShell.placements = {
             shellSpeed = 200,
             discoSpeed = 120,
             discoAcceleration = 700,
-            gravity = 800,
-            airFriction = 250,
+            gravity = 750,
+            airFriction = 200,
             groundFriction = 800,
             idleActivateTouchSwitches = true,
             discoSleep = false,
-            maxFallSpeed = 200,
+            maxFallSpeed = 160,
             bounceCount = 1,
             bounceCountDisplay = "SpriteText",
             discoSpriteRate = 50,
+            bubble = false,
         }
     }
 }
@@ -85,6 +89,18 @@ function FemtoHelperSMWShell.sprite(room, entity)
 
     shellSprite:setJustification(0.5, 0.5)
     shellSprite:addPosition(0, 1)
+
+    if entity.bubble then
+        local x, y = entity.x or 0, entity.y or 0
+        local points = drawing.getSimpleCurve({x - 11, y + 6}, {x + 11, y + 6}, {x - 0, y + 1})
+        local lineSprites = drawableLine.fromPoints(points):getDrawableSprite()
+        local jellySprite = drawableSprite.fromTexture(texture, entity)
+
+        table.insert(lineSprites, 1, shellSprite)
+
+        return lineSprites
+
+    end
 
     return shellSprite
 end

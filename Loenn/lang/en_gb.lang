@@ -554,6 +554,7 @@ entities.FemtoHelper/SMWShell.attributes.description.maxFallSpeed=The Shell's te
 entities.FemtoHelper/SMWShell.attributes.description.bounceCount=How many times a player needs to bounce on top of the Shell to stop it.\nIf the count is over 1, an indicatior shows up on top of the Shell, unless disabled.
 entities.FemtoHelper/SMWShell.attributes.description.bounceCountDisplay=Which kind of bounce count display the Shell uses.\nNone: Nothing is displayed.\nHUD: The bounce count is displayed using high resolution text. \nSpriteText: The bounce count is displayed using sprite digits.
 entities.FemtoHelper/SMWShell.attributes.description.discoSpriteRate=The rate in which the sprites in the Disco Shell cycle.\nNote: this value is divided by 4 if photosensitivity mode is enabled.
+entities.FemtoHelper/SMWShell.attributes.description.bubble=Whether the Shell should be hovering in the air before being interacted with.
 
 # ---------- Triggers ----------
 

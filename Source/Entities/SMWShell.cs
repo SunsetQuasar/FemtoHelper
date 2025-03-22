@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using static Celeste.LavaRect;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -175,6 +177,8 @@ public class SMWShell : Actor
 
     private readonly float discoSpriteRate;
 
+    private bool bubble;
+
     public SMWShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Position.Y++;   //let's pretend the placement doesn't spawn the shell 1px above the ground
@@ -221,6 +225,8 @@ public class SMWShell : Actor
         initialBounceCount = data.Int("bounceCount", 1);
         displayConfig = data.Enum("bounceCountDisplay", BounceCountDisplay.SpriteText);
         discoSpriteRate = data.Float("discoSpriteRate", 50f);
+
+        bubble = data.Bool("bubble", false);
 
         Add(sprite = new Sprite(GFX.Game, prefix));
 
@@ -335,6 +341,7 @@ public class SMWShell : Actor
 
         if (isDisco && dontKillTimer <= 0)
         {
+            if (bubble) UnBubble();
             p.PointBounce(Center);
             p.Speed *= new Vector2(0.5f, 0.75f);
             p.varJumpSpeed = p.Speed.Y;
@@ -444,12 +451,13 @@ public class SMWShell : Actor
             }
         }
         if (doFreezeFrames) Celeste.Freeze(0.05f);
-        Kick(Vector2.UnitX * kickSpeed);
+        Kick(new Vector2(1 * kickSpeed, speed.Y));
     }
 
     private void Kick(Vector2? spd = null)
     {
-        if (spd != null) hold.SetSpeed(Vector2.UnitX * spd ?? Vector2.Zero);
+        if (bubble) UnBubble();
+        if (spd != null) hold.SetSpeed(Vector2.One * spd ?? Vector2.Zero);
         state = States.Kicked;
         bounceCount = initialBounceCount;
         dontKillTimer = 0.1f;
@@ -592,7 +600,7 @@ public class SMWShell : Actor
                     }
                 }
                 speed.X = Calc.Approach(speed.X, discoSpeed * discoTarget, discoAcceleration * Engine.DeltaTime);
-                if (!OnGround() && hold.ShouldHaveGravity)
+                if (!OnGround() && !bubble && hold.ShouldHaveGravity)
                 {
                     float num = gravity;
                     if (Math.Abs(speed.Y) <= 30f)
@@ -641,7 +649,7 @@ public class SMWShell : Actor
                         }
                     }
                 }
-                else if (hold.ShouldHaveGravity)
+                else if (hold.ShouldHaveGravity && !bubble)
                 {
                     float num = gravity;
                     if (Math.Abs(speed.Y) <= 30f)
@@ -723,7 +731,7 @@ public class SMWShell : Actor
                 return true;
             case Spring.Orientations.WallRight when speed.X >= 0f:
                 MoveTowardsY(spring.CenterY + 5f, 4f);
-                speed.X = isDisco ? discoSpeed : shellSpeed;
+                speed.X = isDisco ? -discoSpeed : -shellSpeed;
                 speed.Y = Math.Min(speed.Y, -160f);
                 return true;
             default:
@@ -733,6 +741,7 @@ public class SMWShell : Actor
 
     private void OnPickup()
     {
+        if (bubble) UnBubble();
         hold.SetSpeed(Vector2.Zero);
         Drop();
         AddTag(Tags.Persistent);
@@ -792,6 +801,36 @@ public class SMWShell : Actor
     public override void Render()
     {
         base.Render();
+        if (bubble)
+        {
+            for (int i = 0; i < 24; i++)
+            {
+                Draw.Point(Position + PlatformAdd(i), PlatformColor(i));
+            }
+        }
+    }
+
+    private Vector2 PlatformAdd(int num)
+    {
+        return new Vector2(-12 + num, 2 + (int)Math.Round(Math.Sin(base.Scene.TimeActive + (float)num * 0.2f) * 1.7999999523162842));
+    }
+
+    private Color PlatformColor(int num)
+    {
+        if (num <= 1 || num >= 22)
+        {
+            return Color.White * 0.4f;
+        }
+        return Color.White * 0.8f;
+    }
+
+    private void UnBubble()
+    {
+        for (int i = 0; i < 24; i++)
+        {
+            SceneAs<Level>().Particles.Emit(Glider.P_Platform, Position + PlatformAdd(i), PlatformColor(i));
+        }
+        bubble = false;
     }
 
     private int Mod(int x, int m)

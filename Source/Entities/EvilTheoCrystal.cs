@@ -98,6 +98,7 @@ public class EvilTheoCrystal : Actor
 
     public override void Update()
     {
+
         base.Update();
         if (shattering || dead)
         {
