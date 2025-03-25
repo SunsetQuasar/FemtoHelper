@@ -281,7 +281,7 @@ public class SMWShell : Actor
 
         Add(new HoldableCollider(OnAnotherShell));
 
-        gravityListener = FemtoModule.GravityHelperSupport.CreateGravityListener(this, OnGravityChange);
+        gravityListener = FemtoModule.GravityHelperSupport.CreateGravityListener?.Invoke(this, OnGravityChange);
         if (gravityListener != null) Add(gravityListener);
     }
 
