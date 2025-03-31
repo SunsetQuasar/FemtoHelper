@@ -331,6 +331,7 @@ public class WaterCircleMover : GenericWaterBlock
                 idle = true;
                 sfx.Stop();
                 if (ThreeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360) continue;
+                activateSignal = false;
                 while (!(activateSignal || CollideCheck<Player>()))
                 {
                     yield return null;

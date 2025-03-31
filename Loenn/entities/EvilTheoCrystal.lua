@@ -6,6 +6,9 @@ FemtoHelperEvilTheoCrystal.name = "FemtoHelper/EvilTheoCrystal"
 FemtoHelperEvilTheoCrystal.depth = 100
 FemtoHelperEvilTheoCrystal.placements = {
     name = "evil_theo_crystal",
+    data = {
+        spriteOverride = ''
+    }
 }
 
 -- Offset is from sprites.xml, not justifications

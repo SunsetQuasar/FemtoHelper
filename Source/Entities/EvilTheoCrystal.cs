@@ -51,13 +51,13 @@ public class EvilTheoCrystal : Actor
 
     public readonly VertexLight Light;
 
-    public EvilTheoCrystal(Vector2 position)
+    public EvilTheoCrystal(Vector2 position, string spriteOverride)
         : base(position)
     {
         previousPosition = position;
         Depth = 100;
         Collider = new Hitbox(8f, 10f, -4f, -10f);
-        Add(sprite = FemtoModule.FemtoSpriteBank.Create("theo_crystal_evil"));
+        Add(sprite = !string.IsNullOrEmpty(spriteOverride) ? GFX.SpriteBank.Create(spriteOverride) : FemtoModule.FemtoSpriteBank.Create("theo_crystal_evil"));
         sprite.Scale.X = -1f;
         Add(Hold = new Holdable());
         Hold.PickupCollider = new Hitbox(16f, 22f, -8f, -16f);
@@ -80,7 +80,7 @@ public class EvilTheoCrystal : Actor
     }
 
     public EvilTheoCrystal(EntityData e, Vector2 offset)
-        : this(e.Position + offset)
+        : this(e.Position + offset, e.Attr("spriteOverride", ""))
     {
     }
 

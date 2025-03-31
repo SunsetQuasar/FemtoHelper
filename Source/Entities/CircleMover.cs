@@ -439,6 +439,7 @@ public class CircleMover : Solid
                 idle = true;
                 sfx.Stop();
                 if (ThreeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360) continue;
+                activateSignal = false;
                 while (!(activateSignal || HasPlayerRider()))
                 {
                     yield return null;
