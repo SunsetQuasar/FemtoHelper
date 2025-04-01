@@ -1,6 +1,7 @@
 ﻿
 using MonoMod.ModInterop;
 using Celeste.Mod.FemtoHelper.Entities;
+using System;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -56,10 +57,31 @@ public static class FemtoHelperExports
         }
     }
 
+    [ModExportName("FemtoHelper.EvilTheoInterop")]
+    public static class EvilTheoInterop
+    {
+        public static Entity TransformIntoEvilTheo(Actor from, string spriteOverride)
+        {
+            Holdable hFrom = from.Get<Holdable>();
+            if (hFrom != null) return null;
+            Entity evil = new EvilTheoCrystal(from.Position, spriteOverride);
+            (evil as EvilTheoCrystal).Hold.SetSpeed(hFrom.GetSpeed());
+            return evil;
+        }
+
+        public static Component GetEvilTheoCollider(Action<Entity> callback)
+        {
+            Console.WriteLine("yo");
+            Component collider = new EntityCollider<EvilTheoCrystal>(callback);
+            return collider;
+        }
+    }
+
     internal static void Initialize()
     {
         typeof(SmwBlockInfo).ModInterop();
         typeof(PlutoniumTextInfo).ModInterop();
+        typeof(EvilTheoInterop).ModInterop();
     }
 }
 
