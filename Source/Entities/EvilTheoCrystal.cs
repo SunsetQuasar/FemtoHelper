@@ -9,7 +9,7 @@ using MonoMod.Cil;
 namespace Celeste.Mod.FemtoHelper.Entities;
 
 
-[Tracked(false)]
+[Tracked]
 [CustomEntity("FemtoHelper/EvilTheoCrystal")]
 public class EvilTheoCrystal : Actor
 {
@@ -71,7 +71,7 @@ public class EvilTheoCrystal : Actor
         Hold.OnHitSpring = HitSpring;
         Hold.OnHitSpinner = HitSpinner;
         Hold.SpeedGetter = () => Speed;
-        Hold.SpeedSetter = (t) => Speed += t;
+        Hold.SpeedSetter = (t) => Speed = t;
         onCollideH = OnCollideH;
         onCollideV = OnCollideV;
         LiftSpeedGraceTime = 0.1f;

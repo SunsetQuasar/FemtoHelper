@@ -69,7 +69,8 @@ FemtoHelperSMWBlock.placements = {
         specialEntityHandling = true,
         affectVisible = true,
         affectActive = true,
-        affectCollidable = false
+        affectCollidable = false,
+        dashableKaizo = false,
     },
 },
 {
@@ -109,7 +110,8 @@ FemtoHelperSMWBlock.placements = {
         specialEntityHandling = true,
         affectVisible = true,
         affectActive = true,
-        affectCollidable = false
+        affectCollidable = false,
+        dashableKaizo = false,
     }
 },
 {
@@ -149,7 +151,8 @@ FemtoHelperSMWBlock.placements = {
         specialEntityHandling = true,
         affectVisible = true,
         affectActive = true,
-        affectCollidable = false
+        affectCollidable = false,
+        dashableKaizo = false,
     }
 }
 }

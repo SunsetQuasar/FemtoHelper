@@ -135,6 +135,8 @@ public class Generic_SMWBlock : Solid
     public readonly bool InactiveReward;
     public readonly bool UncollidableReward;
 
+    private readonly bool DashableKaizo;
+
     public Generic_SMWBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
         Depth = data.Int("depth", -15000);
@@ -157,6 +159,7 @@ public class Generic_SMWBlock : Solid
         HasIndicator = data.Bool("indicate", false);
         Bouncetimer = 0;
         Collidable = Solidbeforehit = data.Bool("solidBeforeHit", false);
+        DashableKaizo = data.Bool("dashableKaizo", false);
         if (!Collidable) DisableStaticMovers();
         PlCol = new Hitbox(Width - 2, 2, 1, Height);
 
@@ -212,6 +215,8 @@ public class Generic_SMWBlock : Solid
     
     public override void Update()
     {
+        Player player = Scene.Tracker.GetEntity<Player>();
+
         if (Catched == false && !SwitchMode)
         {
             foreach (Entity entity in Scene.Entities)
@@ -229,31 +234,66 @@ public class Generic_SMWBlock : Solid
 
         if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
         {
-            PlCol.Position.Y = - 2;
-        } else
+            PlCol.Position.Y = -2;
+        }
+        else
         {
             PlCol.Position.Y = Height;
         }
 
         base.Update();
 
-        Player player = Scene.Tracker.GetEntity<Player>();
-        if (player != null)
+        if (!Solidbeforehit && player != null)
         {
+            //bottom (top in inverted gravity)
+
             if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
             {
-                if (CollideCheck<Player>(Position - Vector2.UnitY) && player.Bottom - 4 <= Top && player.Speed.Y < 0 && !(Active || Bouncetimer > 0) && !Solidbeforehit)
+                if (CollideCheck<Player>(Position - Vector2.UnitY) && player.Bottom - 4 <= Top && player.Speed.Y < 0 && !(Active || Bouncetimer > 0))
                 {
                     if (CanHitBottom) Hit(player, 3);
                 }
             } else
             {
-                if (CollideCheck<Player>(Position + Vector2.UnitY) && player.Top + 4 >= Bottom && player.Speed.Y < 0 && !(Active || Bouncetimer > 0) && !Solidbeforehit)
+                if (CollideCheck<Player>(Position + Vector2.UnitY) && player.Top + 4 >= Bottom && player.Speed.Y < 0 && !(Active || Bouncetimer > 0))
                 {
                     if (CanHitBottom) Hit(player, 0);
                 }
             }
-            
+
+            if (DashableKaizo && player.DashAttacking)
+            {
+                //top (bottom in inverted gravity)
+
+                if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
+                {
+                    if (CollideCheck<Player>(Position + Vector2.UnitY) && player.Top + 4 >= Bottom && player.Speed.Y > 0 && !(Active || Bouncetimer > 0))
+                    {
+                        if (CanHitTop) Hit(player, 0);
+                    }
+                }
+                else
+                {
+                    if (CollideCheck<Player>(Position - Vector2.UnitY) && player.Bottom - 4 <= Top && player.Speed.Y > 0 && !(Active || Bouncetimer > 0))
+                    {
+                        if (CanHitTop) Hit(player, 3);
+                    }
+                }
+
+                // to the right (left wall)
+
+                if (CollideCheck<Player>(Position - Vector2.UnitX) && player.Right - 4 <= Left && player.Speed.X > 0 && !(Active || Bouncetimer > 0))
+                {
+                    if (CanHitLeft) Hit(player, 1);
+                }
+
+                // to the left (right wall)
+
+                if (CollideCheck<Player>(Position + Vector2.UnitX) && player.Left + 4 >= Right && player.Speed.X < 0 && !(Active || Bouncetimer > 0))
+                {
+                    if (CanHitRight) Hit(player, 2);
+                }
+            }
         }
         if (Bouncetimer > 0) Bouncetimer -= Engine.DeltaTime * 60;
 
@@ -340,7 +380,6 @@ public class Generic_SMWBlock : Solid
         
         HasBeenHitOnce = true;
         if(!SwitchMode) Active = true;
-        Collidable = true;
         EnableStaticMovers();
         Bouncetimer = 8;
         if (player != null)
@@ -351,9 +390,21 @@ public class Generic_SMWBlock : Solid
                     player.Position.Y += Bottom - player.Top;
                     player.Speed = Vector2.Zero;
                     break;
-                case 3 when FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1:
+                case 1 when DashableKaizo:
+                    player.MoveToX(Left - (player.Width / 2));
+                    player.Rebound(-1);
+                    break;
+                case 2 when DashableKaizo:
+                    player.MoveToX(Right + (player.Width / 2));
+                    player.Rebound(1);
+                    break;
+                case 3 when FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1 || DashableKaizo:
                     player.Position.Y += Top - player.Bottom;
                     player.Speed = Vector2.Zero;
+                    if (DashableKaizo)
+                    {
+                        player.Rebound(0);
+                    }
                     break;
             }
 
@@ -362,6 +413,7 @@ public class Generic_SMWBlock : Solid
             if (player.Ducking && dir == 3 && FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1) { player.Ducking = false; player.Position.Y -= 5; };
             if (GiveCoyoteFramesOnHit)player.StartJumpGraceTime();
         }
+        Collidable = true;
         Celeste.Freeze(0.05f);
 
         if (Rewards.Count != 0)

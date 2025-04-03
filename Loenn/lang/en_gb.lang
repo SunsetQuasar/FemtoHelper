@@ -336,6 +336,7 @@ entities.FemtoHelper/SMWBlock.attributes.description.specialEntityHandling=Wheth
 entities.FemtoHelper/SMWBlock.attributes.description.affectVisible=If checked, the reward entities will be invisible before being released, and visible afterwards.\nIf unchecked, the Visible state will be ignored.
 entities.FemtoHelper/SMWBlock.attributes.description.affectCollidable=If checked, the reward entities will be uncollidable before being released, and collidable afterwards.\nIf unchecked, the Collidable state will be ignored.
 entities.FemtoHelper/SMWBlock.attributes.description.affectActive=If checked, the reward entities will be inactive before being released, and active afterwards.\nIf unchecked, the Active state will be ignored.
+entities.FemtoHelper/SMWBlock.attributes.description.dashableKaizo=If checked, the player can hit an otherwise intangible hidden SMW Block from above or the sides by dahsing on it.
 
 # SMW Fish
 
