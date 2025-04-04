@@ -48,6 +48,7 @@ FemtoHelperSMWShell.placements = {
             bounceCountDisplay = "SpriteText",
             discoSpriteRate = 50,
             bubble = false,
+            downwardsLeniencySpeed = 300,
         }
     },
     {
@@ -77,6 +78,7 @@ FemtoHelperSMWShell.placements = {
             bounceCountDisplay = "SpriteText",
             discoSpriteRate = 50,
             bubble = false,
+            downwardsLeniencySpeed = 300,
         }
     }
 }

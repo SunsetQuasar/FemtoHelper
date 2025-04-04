@@ -179,6 +179,8 @@ public class SMWShell : Actor
 
     private bool bubble;
 
+    private readonly float downwardsLeniencySpeed;
+
     public SMWShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Position.Y++;   //let's pretend the placement doesn't spawn the shell 1px above the ground
@@ -225,6 +227,8 @@ public class SMWShell : Actor
         initialBounceCount = data.Int("bounceCount", 1);
         displayConfig = data.Enum("bounceCountDisplay", BounceCountDisplay.SpriteText);
         discoSpriteRate = data.Float("discoSpriteRate", 50f);
+
+        downwardsLeniencySpeed = data.Float("downwardsLeniencySpeed", -1);
 
         bubble = data.Bool("bubble", false);
 
@@ -329,7 +333,10 @@ public class SMWShell : Actor
             {
                 if (dontKillTimer <= 0)
                 {
-                    p.Die((Position - p.Center).SafeNormalize());
+                    if (!(downwardsLeniencySpeed >= 0 && p.Speed.LengthSquared() >= downwardsLeniencySpeed * downwardsLeniencySpeed && p.Speed.Y > 0))
+                    {
+                        p.Die((Position - p.Center).SafeNormalize());
+                    }
                 }
             }
             else if ((!(Input.Grab.Check && !p.Ducking && isCarriable) || p.StateMachine.state == Player.StClimb || p.Holding != null) && p.Holding != hold)
@@ -397,7 +404,10 @@ public class SMWShell : Actor
         {
             if (dontKillTimer <= 0)
             {
-                p.Die((Position - p.Center).SafeNormalize());
+                if (!(downwardsLeniencySpeed >= 0 && p.Speed.LengthSquared() >= downwardsLeniencySpeed * downwardsLeniencySpeed && p.Speed.Y > 0))
+                {
+                    p.Die((Position - p.Center).SafeNormalize());
+                }
             }
         }
         else if ((!(Input.Grab.Check && !p.Ducking && isCarriable) || p.StateMachine.state == Player.StClimb || p.Holding != null) && p.Holding != hold)
