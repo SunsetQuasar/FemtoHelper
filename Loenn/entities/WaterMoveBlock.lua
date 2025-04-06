@@ -28,7 +28,8 @@ FemtoHelperWaterMoveBlock.placements = {
             maxSpeed = 60,
             angle = 180,
             canCarry = true,
-            spritePath = 'objects/FemtoHelper/moveWater/'
+            spritePath = 'objects/FemtoHelper/moveWater/',
+            acceleration = 80,
         }
     }
 }

@@ -75,7 +75,7 @@ public class MovingWaterBlock : GenericWaterBlock
         Add(moveSfx = new SoundSource());
         Triggered = false;
         TargetSpeed = data.Float("maxSpeed", 60f);
-        Acceleration = data.Float("acceleration", 80f);
+        Acceleration = data.Float("acceleration", 160f);
         Angle = data.Float("angle", 90f) / 180 * MathF.PI;
         Arrow = GFX.Game[prefix + "arrow"];
         Deadsprite = GFX.Game[prefix + "dead"];

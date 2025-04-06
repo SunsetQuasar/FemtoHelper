@@ -456,6 +456,7 @@ entities.FemtoHelper/MovingWaterBlock.attributes.description.spritePath=The spri
 entities.FemtoHelper/MovingWaterBlock.attributes.description.angle=The Move Block's travel angle, in degrees.
 entities.FemtoHelper/MovingWaterBlock.attributes.description.canCarry=Whether the Water Move Block can carry the player with it and give liftboost or not. 
 entities.FemtoHelper/MovingWaterBlock.attributes.description.maxSpeed=The Move Block's maximum speed.
+entities.FemtoHelper/MovingWaterBlock.attributes.description.acceleration=How fast the Move Block accelerates to full speed.
 
 # Water Falling Block
 
