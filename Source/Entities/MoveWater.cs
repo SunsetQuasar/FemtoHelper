@@ -119,10 +119,13 @@ public class MovingWaterBlock : GenericWaterBlock
             }
         }
 
-        MoveTo(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime);
+        //MoveTo(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime);
 
-        if ((Left < (Scene as Level).Bounds.Left || Right > (Scene as Level).Bounds.Right || Top < (Scene as Level).Bounds.Top || Bottom > (Scene as Level).Bounds.Bottom
-          || MoveToCollideBarriers(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime))
+        if ((Left < (Scene as Level).Bounds.Left || 
+            Right > (Scene as Level).Bounds.Right || 
+            Top < (Scene as Level).Bounds.Top || 
+            Bottom > (Scene as Level).Bounds.Bottom || 
+            MoveToCollideBarriers(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime))
           && !Dying)
         {
             Add(new Coroutine(Destroy()));
