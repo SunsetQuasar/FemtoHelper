@@ -64,6 +64,8 @@ public class MovingWaterBlock : GenericWaterBlock
     public Vector2 IconScale;
 
     public readonly WaterSprite Sprite;
+
+    private readonly float Acceleration;
     public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
 
@@ -73,6 +75,7 @@ public class MovingWaterBlock : GenericWaterBlock
         Add(moveSfx = new SoundSource());
         Triggered = false;
         TargetSpeed = data.Float("maxSpeed", 60f);
+        Acceleration = data.Float("acceleration", 80f);
         Angle = data.Float("angle", 90f) / 180 * MathF.PI;
         Arrow = GFX.Game[prefix + "arrow"];
         Deadsprite = GFX.Game[prefix + "dead"];
@@ -109,7 +112,7 @@ public class MovingWaterBlock : GenericWaterBlock
         {
             if (!Dying)
             {
-                Speed = Calc.Approach(Speed, TargetSpeed, 80f * Engine.DeltaTime);
+                Speed = Calc.Approach(Speed, TargetSpeed, Acceleration * Engine.DeltaTime);
                 if (Scene.OnInterval(0.04f))
                 {
                     Vector2 pos2 = Position + new Vector2(Calc.Random.NextFloat(Width), Calc.Random.NextFloat(Height));
