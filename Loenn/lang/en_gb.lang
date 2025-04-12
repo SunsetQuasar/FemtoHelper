@@ -458,6 +458,11 @@ entities.FemtoHelper/MovingWaterBlock.attributes.description.canCarry=Whether th
 entities.FemtoHelper/MovingWaterBlock.attributes.description.maxSpeed=The Move Block's maximum speed.
 entities.FemtoHelper/MovingWaterBlock.attributes.description.acceleration=How fast the Move Block accelerates to full speed.
 
+# Water Block
+
+entities.FemtoHelper/WaterBlock.placements.name.waterMoveBlock=Water Block
+entities.FemtoHelper/WaterBlock.attributes.description.spritePath=The sprite directory for the Water Block.
+
 # Water Falling Block
 
 entities.FemtoHelper/WaterFallingBlock.placements.name.waterFallingBlockD=Water Falling Block (Down)
