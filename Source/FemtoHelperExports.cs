@@ -62,7 +62,6 @@ public static class FemtoHelperExports
 
     public static Component GetEvilTheoCollider(Action<Entity> callback)
     {
-        Console.WriteLine("yo");
         Component collider = new EntityCollider<EvilTheoCrystal>(callback);
         return collider;
     }
