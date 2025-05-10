@@ -68,6 +68,13 @@ entities.FemtoHelper/GDDashOrb.attributes.description.additive=Whether the orb s
 # Waterfall Blocker
 entities.FemtoHelper/WaterfallBlocker.placements.name.default=Waterfall Blocker
 
+# Pop Refill
+entities.FemtoHelper/PopRefill.placements.name.PopRefill=Pop Refill
+entities.FemtoHelper/PopRefill.placements.name.PopRefillTwo=Pop Refill (Two Dashes)
+entities.FemtoHelper/PopRefill.attributes.description.twoDash=Gives two dashes instead of one.
+entities.FemtoHelper/PopRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/PopRefill.attributes.description.spawnTime=The time it takes for the refill to spawn once triggered.
+
 # Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.boolean=Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.booleanTwo=Timed Flag Refill (Two Dashes)
