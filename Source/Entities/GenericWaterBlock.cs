@@ -138,6 +138,7 @@ public abstract class GenericWaterBlock : Water
 
     public static void DoSomeWaterStuff(Player player, bool canUnDuck)
     {
+        if (player == null) return;
         if (canUnDuck && player.WaterWallJumpCheck(1))
         {
             if (player.DashAttacking && player.SuperWallJumpAngleCheck)

@@ -160,6 +160,7 @@ public class FemtoModule : EverestModule
         ExtraHoldableInteractionsController.Load();
         Monopticon.Load();
         GenericWaterBlock.Load();
+        TheContraption.Load();
 
         Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
     }
@@ -183,6 +184,7 @@ public class FemtoModule : EverestModule
         ExtraHoldableInteractionsController.Unload();
         Monopticon.Unload();
         GenericWaterBlock.Unload();
+        TheContraption.Unload();
     }
 
 
