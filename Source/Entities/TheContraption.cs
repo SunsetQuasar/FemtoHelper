@@ -1,11 +1,8 @@
-﻿using Celeste.Mod.FemtoHelper.Utils;
+﻿using Iced.Intel;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using static Celeste.GaussianBlur;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -13,6 +10,179 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [Tracked]
 public class TheContraption : Actor
 {
+    [Pooled]
+    public class ContraptionDebris : Actor
+    {
+        private Image image;
+
+        private float lifeTimer;
+
+        private float alpha;
+
+        private Vector2 speed;
+
+        private Collision collideH;
+
+        private Collision collideV;
+
+        private int rotateSign;
+
+        private float fadeLerp;
+
+        private bool playSound = true;
+
+        private bool dreaming;
+
+        private SineWave dreamSine;
+
+        private bool hasHitGround;
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public ContraptionDebris()
+            : base(Vector2.Zero)
+        {
+            base.Collider = new Hitbox(4f, 4f, -2f, -2f);
+            base.Tag = Tags.Persistent;
+            base.Depth = 2000;
+            Add(image = new Image(null));
+            collideH = OnCollideH;
+            collideV = OnCollideV;
+            Add(dreamSine = new SineWave(0.6f, 0f));
+            dreamSine.Randomize();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public override void Added(Scene scene)
+        {
+            base.Added(scene);
+            dreaming = SceneAs<Level>().Session.Dreaming;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public ContraptionDebris Init(Vector2 pos, string sprite, bool playSound = true)
+        {
+            ContraptionDebris debris = orig_Init(pos, sprite, playSound);
+            debris.image.Texture = GFX.Game[sprite];
+            return debris;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public ContraptionDebris BlastFrom(Vector2 from)
+        {
+            float length = Calc.Random.Range(300, 400);
+            speed = (Position - from).SafeNormalize(length);
+            speed = speed.Rotate(Calc.Random.Range(-MathF.PI / 12f, MathF.PI / 12f));
+            return this;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void OnCollideH(CollisionData data)
+        {
+            speed.X *= -0.8f;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void OnCollideV(CollisionData data)
+        {
+            if (speed.Y > 0f)
+            {
+                hasHitGround = true;
+            }
+            speed.Y *= -0.6f;
+            if (speed.Y < 0f && speed.Y > -50f)
+            {
+                speed.Y = 0f;
+            }
+            if (speed.Y != 0f || !hasHitGround)
+            {
+                ImpactSfx(Math.Abs(speed.Y));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void ImpactSfx(float spd)
+        {
+            if (playSound)
+            {
+                string path = "event:/game/general/debris_stone";
+                Audio.Play(path, Position, "debris_velocity", Calc.ClampedMap(spd, 0f, 150f));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public override void Update()
+        {
+            base.Update();
+            image.Rotation += Math.Abs(speed.X) * (float)rotateSign * Engine.DeltaTime;
+            if (fadeLerp < 1f)
+            {
+                fadeLerp = Calc.Approach(fadeLerp, 1f, 2f * Engine.DeltaTime);
+            }
+            MoveH(speed.X * Engine.DeltaTime, collideH);
+            MoveV(speed.Y * Engine.DeltaTime, collideV);
+            if (dreaming)
+            {
+                speed.X = Calc.Approach(speed.X, 0f, 50f * Engine.DeltaTime);
+                speed.Y = Calc.Approach(speed.Y, 6f * dreamSine.Value, 100f * Engine.DeltaTime);
+            }
+            else
+            {
+                bool flag = OnGround();
+                speed.X = Calc.Approach(speed.X, 0f, (flag ? 50f : 20f) * Engine.DeltaTime);
+                if (!flag)
+                {
+                    if (speed.Y < 100f) speed.Y = Calc.Approach(speed.Y, 300f, 400f * Engine.DeltaTime);
+                }
+            }
+            if (lifeTimer > 0f)
+            {
+                lifeTimer -= Engine.DeltaTime;
+            }
+            else if (alpha > 0f)
+            {
+                alpha -= 4f * Engine.DeltaTime;
+                if (alpha <= 0f)
+                {
+                    RemoveSelf();
+                }
+            }
+            image.Color = Color.Lerp(Color.White, Color.Gray, fadeLerp) * alpha;
+        }
+
+        public ContraptionDebris Init(Vector2 pos, string sprite)
+        {
+            return Init(pos, sprite, playSound: true);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public ContraptionDebris orig_Init(Vector2 pos, string sprite, bool playSound = true)
+        {
+            Position = pos;
+            this.playSound = playSound;
+            lifeTimer = Calc.Random.Range(0.6f, 2.6f);
+            alpha = 1f;
+            hasHitGround = false;
+            speed = Vector2.Zero;
+            fadeLerp = 0f;
+            rotateSign = Calc.Random.Choose(1, -1);
+            image.Texture = GFX.Game[sprite];
+            image.CenterOrigin();
+            image.Color = Color.White * alpha;
+            image.Rotation = Calc.Random.NextAngle();
+            image.Scale.X = Calc.Random.Range(0.5f, 1f);
+            image.Scale.Y = Calc.Random.Range(0.5f, 1f);
+            image.FlipX = Calc.Random.Chance(0.5f);
+            image.FlipY = Calc.Random.Chance(0.5f);
+            return this;
+        }
+
+        public override void Render()
+        {
+            image.DrawOutline(Color.Black * (image.Color.A / 255));
+            base.Render();
+        }
+    }
+
     public class ChildSolid : Solid
     {
         public TheContraption parent;
@@ -20,6 +190,7 @@ public class TheContraption : Actor
         {
             SurfaceSoundIndex = 9;
             this.parent = parent;
+            Depth = 5000;
             Collider.Position = new Vector2((0f - width) / 2f, 0f - height);
             OnDashCollide = OnDashed;
         }
@@ -30,20 +201,23 @@ public class TheContraption : Actor
         public override void Render()
         {
             base.Render();
-            Draw.HollowRect(Collider, Color.Thistle);
+            Draw.Rect(TopLeft - Vector2.UnitY + Shake, Width, Height + 2, Color.Black);
+            Draw.Rect(TopLeft - Vector2.UnitX + Shake, Width + 2, Height, Color.Black);
         }
 
         public DashCollisionResults OnDashed(Player player, Vector2 dir)
         {
-            Collider collider = parent.Collider;
-            parent.Collider = parent.Hold.PickupCollider;
-            if (!(player.StateMachine.State != Player.StRedDash && player.StateMachine.State != Player.StSummitLaunch) || parent.Hold.IsHeld || (parent.CollideCheck(player) && Input.Grab.Check))
+            // Easier wall bounces. (stole from communal helper)
+            if ((player.Left >= Right - 4f || player.Right < Left + 4f) && dir.Y == -1)
             {
-                parent.Collider = collider;
                 return DashCollisionResults.NormalCollision;
             }
-            parent.Collider = collider;
-            parent.Hit();
+
+            if (!(player.StateMachine.State != Player.StRedDash && player.StateMachine.State != Player.StSummitLaunch) || parent.Hold.IsHeld || (dir.Y == -1 && Input.Grab.Check) || parent.HitState)
+            {
+                return DashCollisionResults.NormalCollision;
+            }
+            parent.Hit(dir);
             return DashCollisionResults.Rebound;
         }
 
@@ -86,6 +260,31 @@ public class TheContraption : Actor
 
     private float highFrictionTimer;
 
+    private MTexture[,] edges = new MTexture[4, 4];
+    private MTexture cog;
+    private float cogRotation;
+
+    private Vector2 lastPosition;
+
+    private SoundSource sfx;
+
+    private string spritePath;
+
+    private static ParticleType Steam2 = new(ParticleTypes.Steam)
+    {
+        SpeedMin = 15,
+        SpeedMax = 40,
+        Acceleration = new Vector2(-4f, -12f),
+        Friction = 10,
+    };
+
+    private Hitbox airHitbox => new Hitbox(Width, 8, -Width / 2, 0);
+    private Hitbox groundHitbox => new Hitbox(Width + 4, 10, (-Width / 2) - 2, -5);
+
+    private readonly bool particles;
+
+    private readonly bool reducedDebris;
+
     public TheContraption(EntityData data, Vector2 offset) : base(data.Position + offset + new Vector2((float)data.Width / 2f, data.Height))
     {
         Depth = -5;
@@ -105,8 +304,91 @@ public class TheContraption : Actor
             SpeedSetter = (speed) => Speed = speed
         });
 
+        spritePath = data.String("spritePath", "objects/Femtohelper/TheContraption/");
+
+        MTexture slice = GFX.Game[$"{spritePath}nineSlice"];
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                edges[i, j] = slice.GetSubtexture(i * 8, j * 8, 8, 8);
+            }
+        }
+        cog = GFX.Game[$"{spritePath}cog"];
+
         onCollideH = OnCollideH;
         onCollideV = OnCollideV;
+        lastPosition = Position;
+        sfx = new SoundSource();
+        Add(sfx);
+        sfx.Play("event:/FemtoHelper/contraption_idle");
+
+        Add(new Coroutine(ShakeOccasionally()));
+        if (particles = data.Bool("particles", true))
+        {
+            Add(new Coroutine(IdleSteam()));
+            Add(new Coroutine(ExaustSteam()));
+        }
+        reducedDebris = data.Bool("reducedDebris", false);
+    }
+
+    public IEnumerator IdleSteam()
+    {
+        while (true)
+        {
+            (Scene as Level).ParticlesFG.Emit(ParticleTypes.Steam, TopLeft + new Vector2(Calc.Random.NextFloat(Width), Calc.Random.NextFloat(Height)));
+
+            yield return 300f / Width / Height;
+        }
+    }
+
+    public IEnumerator ShakeOccasionally()
+    {
+        while (true)
+        {
+            if (Calc.Random.NextFloat() < 0.4f)
+            {
+                child.StartShaking(0.06f);
+            }
+            yield return Calc.Random.Range(0.3f, 0.8f);
+        }
+    }
+
+    public IEnumerator ExaustSteam()
+    {
+        while (true)
+        {
+            for (int i = -1; i < 2; i++)
+            {
+                (Scene as Level).ParticlesBG.Emit(Steam2, BottomCenter + Vector2.UnitX * 4 * i, 90f * Calc.DegToRad);
+            }
+            yield return Calc.Random.Range(0.3f, 0.7f);
+        }
+    }
+
+    public override void Render()
+    {
+        Vector2 position = Position;
+        Position = child.TopLeft + child.Shake;
+        for (int k = 0; (float)k < base.Width / 8f; k++)
+        {
+            for (int l = 0; (float)l < base.Height / 8f; l++)
+            {
+                int num4 = (int)(base.Width / 8f) == 1 ? 3 : ((k != 0) ? (((float)k != base.Width / 8f - 1f) ? 1 : 2) : 0);
+                int num5 = (int)(base.Height / 8f) == 1 ? 3 : ((l != 0) ? (((float)l != base.Height / 8f - 1f) ? 1 : 2) : 0);
+                edges[num4, num5].Draw(new Vector2(base.X + (float)(k * 8), base.Y + (float)(l * 8)));
+            }
+        }
+
+        cog.DrawCentered(child.Center + child.Shake - Vector2.UnitX, Calc.HexToColor("505050"), 1, cogRotation);
+        cog.DrawCentered(child.Center + child.Shake - Vector2.UnitY, Calc.HexToColor("505050"), 1, cogRotation);
+        cog.DrawCentered(child.Center + child.Shake + Vector2.UnitX, Calc.HexToColor("505050"), 1, cogRotation);
+        cog.DrawCentered(child.Center + child.Shake + Vector2.UnitY, Calc.HexToColor("505050"), 1, cogRotation);
+        cog.DrawCentered(child.Center + child.Shake, Color.White, 1, cogRotation);
+
+        base.Render();
+        Position = position;
     }
 
     private void OnPickup()
@@ -116,7 +398,7 @@ public class TheContraption : Actor
         Speed = Vector2.Zero;
         AddTag(Tags.Persistent);
         child.AddTag(Tags.Persistent);
-        foreach(StaticMover e in child.staticMovers)
+        foreach (StaticMover e in child.staticMovers)
         {
             e.Entity.AddTag(Tags.Persistent);
         }
@@ -143,9 +425,24 @@ public class TheContraption : Actor
         }
     }
 
-    private void Hit()
+    private void Hit(Vector2 dir)
     {
-        Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_1", child.Center);
+        (Scene as Level).Shake();
+        Celeste.Freeze(0.05f);
+        Input.Rumble(RumbleStrength.Strong, RumbleLength.Short);
+        Audio.Play("event:/FemtoHelper/contraption_hit");
+        sfx.Play("event:/FemtoHelper/contraption_angry");
+        child.StartShaking(0.5f);
+        if (particles)
+        {
+            for (int i = 0; i < Width / 8f; i++)
+            {
+                for (int j = 0; j < Height / 8f; j++)
+                {
+                    (Scene as Level).ParticlesFG.Emit(Steam2, TopLeft + new Vector2(i * 8, j * 8), -((TopLeft + new Vector2(i * 8, j * 8) - Center)).Angle());
+                }
+            }
+        }
         Speed.X *= 0.25f;
         Speed.Y *= 0.5f;
         HitState = true;
@@ -228,6 +525,22 @@ public class TheContraption : Actor
 
     public void Explode()
     {
+        for (int i = 0; (float)i < base.Width / 8f; i++)
+        {
+            for (int j = 0; (float)j < base.Height / 8f; j++)
+            {
+                bool flag = true;
+                if (reducedDebris)
+                {
+                    if (Calc.Random.NextFloat() < 0.5f)
+                    {
+                        flag = false;
+                    }
+                } 
+
+                if (flag) base.Scene.Add(Engine.Pooler.Create<ContraptionDebris>().Init(TopLeft + new Vector2(4 + i * 8, 4 + j * 8), $"{spritePath}debris", true).BlastFrom(Center));
+            }
+        }
         Collider collider = base.Collider;
         base.Collider = new Hitbox(collider.Width + 48, collider.Height + 48, collider.Left - 24, collider.Top - 24);
         Audio.Play("event:/new_content/game/10_farewell/puffer_splode", Position);
@@ -289,7 +602,8 @@ public class TheContraption : Actor
 
         if (CollideCheck<Solid>())
         {
-            if (!ReleasedSquishWiggle()) {
+            if (!ReleasedSquishWiggle())
+            {
                 Die();
             }
             force = Vector2.Zero;
@@ -312,6 +626,7 @@ public class TheContraption : Actor
             force.Y = -0.4f;
         }
         Speed = force * 100f;
+        MoveTo(Position - Vector2.UnitY * 4);
         child.MoveTo(Position);
     }
 
@@ -336,11 +651,11 @@ public class TheContraption : Actor
     {
         if (HitState)
         {
-            if(Speed.Y < 0)
+            if (Speed.Y < 0)
             {
                 Explode();
             }
-        } 
+        }
         else
         {
             if (Math.Abs(Speed.Y) > 8f)
@@ -388,7 +703,7 @@ public class TheContraption : Actor
                 }
                 if (OnGround())
                 {
-                    Hold.PickupCollider = new Hitbox(Width + 4, 10, (-Width / 2) - 2, -5);
+                    Hold.PickupCollider = groundHitbox;
 
                     float target2 = ((!OnGround(Position + Vector2.UnitX * 3f)) ? 20f : (OnGround(Position - Vector2.UnitX * 3f) ? 0f : (-20f)));
                     Speed.X = Calc.Approach(Speed.X, target2, 800f * Engine.DeltaTime);
@@ -424,7 +739,7 @@ public class TheContraption : Actor
                     float num3 = ((Speed.Y < 0f) ? 40f : ((!(highFrictionTimer <= 0f)) ? 10f : 40f));
                     Speed.X = Calc.Approach(Speed.X, 0f, num3 * Engine.DeltaTime);
 
-                    Hold.PickupCollider = new Hitbox(Width, 8, -Width / 2, 0);
+                    Hold.PickupCollider = airHitbox;
                     if (Hold.ShouldHaveGravity)
                     {
                         float num2 = 200f;
@@ -444,6 +759,7 @@ public class TheContraption : Actor
                 }
 
                 Move(Speed * Engine.DeltaTime);
+
 
                 if (base.Left < (float)level.Bounds.Left)
                 {
@@ -470,7 +786,7 @@ public class TheContraption : Actor
                 }
                 Hold.CheckAgainstColliders();
             }
-        } 
+        }
         else
         {
             if (Hold.IsHeld)
@@ -483,6 +799,15 @@ public class TheContraption : Actor
 
             Move(Speed * Engine.DeltaTime);
         }
+
+
+
+
+        Scene.OnEndOfFrame += () =>
+        {
+            cogRotation += Engine.DeltaTime + ((Position - lastPosition).X * 0.1f) + ((Position - lastPosition).Y * 0.1f);
+            lastPosition = Position;
+        };
     }
 
     public bool HitSpring(Spring spring)

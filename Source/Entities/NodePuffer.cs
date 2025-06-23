@@ -22,10 +22,6 @@ public class NodePuffer : Entity
         Gone
     }
 
-    private const float RespawnTime = 0.75f;
-
-    private const float RespawnMoveTime = 0.5f;
-
     private const float BounceSpeed = 200f;
 
     private const float ExplodeRadius = 40f;
@@ -85,14 +81,33 @@ public class NodePuffer : Entity
     private float eyeSpin;
 
     private Vector2[] nodes;
+    private float[] nodeLens;
 
     private int nodeIndex;
     private bool moveSignal;
     private bool moving;
 
     private bool returnSoundPlayed;
+    private float timer;
+    private ParticleType PufferPath = new(Seeker.P_Regen)
+    {
+        Color = Calc.HexToColor("fccbde") * 0.4f,
+        Color2 = Calc.HexToColor("d957c1") * 0.3f,
+        FadeMode = ParticleType.FadeModes.InAndOut,
+        SpeedMin = 10,
+        SpeedMax = 40,
+        Direction = 0,
+        DirectionRange = 360,
+        Friction = 10,
+    };
 
-    public NodePuffer(Vector2 position, bool faceRight, Vector2[] nodes)
+    private float sequenceTimer;
+    private readonly float speedFactor;
+
+    private readonly Color lineColor1;
+    private readonly Color lineColor2;
+
+    public NodePuffer(Vector2 position, bool faceRight, float speed, Color col1, Color col2, Vector2[] nodes)
         : base(position)
     {
         base.Collider = new Hitbox(14f, 12f, -7f, -7f);
@@ -114,7 +129,7 @@ public class NodePuffer : Entity
         detectRadius = new Circle(32f);
         breakWallsRadius = new Circle(16f);
         scale = Vector2.One;
-        bounceWiggler = Wiggler.Create(0.6f, 2.5f,  (float v) =>
+        bounceWiggler = Wiggler.Create(0.6f, 2.5f, (float v) =>
         {
             sprite.Rotation = v * 20f * (MathF.PI / 180f);
         });
@@ -127,16 +142,42 @@ public class NodePuffer : Entity
         {
             this.nodes[i + 1] = nodes[i];
         }
+
+        nodeLens = new float[nodes.Length];
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            nodeLens[i] = Vector2.Distance(nodes[i], nodes[(i + 1 == nodes.Length) ? 0 : i + 1]);
+        }
+
+        timer = Calc.Random.NextFloat(500f);
+
         Add(new Coroutine(Sequence()));
+        speedFactor = speed;
+
+        lineColor1 = col1;
+        lineColor2 = col2;
+
+        PufferPath = new(Seeker.P_Regen)
+        {
+            Color = Color.Lerp(lineColor1, Color.White, 0.7f) * 0.4f,
+            Color2 = Color.Lerp(lineColor1, lineColor2, 0.5f) * 0.3f,
+            FadeMode = ParticleType.FadeModes.InAndOut,
+            SpeedMin = 10,
+            SpeedMax = 40,
+            Direction = 0,
+            DirectionRange = 360,
+            Friction = 10,
+        };
     }
 
-    
+
     public NodePuffer(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Bool("right"), data.NodesOffset(offset))
+        : this(data.Position + offset, data.Bool("right", true), data.Float("speed", 2), data.HexColor("lineColor", Color.HotPink), data.HexColor("activeLineColor", Color.DeepPink), data.NodesOffset(offset))
     {
+
     }
 
-    
+
     private void GotoIdle()
     {
         if (state == States.Gone)
@@ -162,16 +203,17 @@ public class NodePuffer : Entity
             moveSignal = false;
             moving = true;
             Collidable = false;
-            float i = 0;
+            sequenceTimer = 0;
             Vector2 start = nodes[nodeIndex];
             Vector2 end = nodes[(nodeIndex + 1) % nodes.Length];
-            while (i <= 1)
+            while (sequenceTimer <= 1)
             {
                 lastSpeedPosition = Position;
-                Position = Vector2.Lerp(start, end, Ease.CubeOut(i));
-                i += Engine.DeltaTime * 2f;
+                Position = Vector2.Lerp(start, end, Ease.CubeOut(sequenceTimer));
+                sequenceTimer += Engine.DeltaTime * speedFactor;
                 yield return null;
             }
+            sequenceTimer = 0;
             nodeIndex = (nodeIndex + 1) % (nodes.Length - 1);
             moving = false;
             Collidable = true;
@@ -195,16 +237,16 @@ public class NodePuffer : Entity
         state = States.Hit;
     }
 
-    
+
     private void GotoGone()
     {
         if (!moving) moveSignal = true;
-        goneTimer = RespawnTime;
+        goneTimer = (1 / speedFactor) + 0.25f;
         returnSoundPlayed = false;
         state = States.Gone;
     }
 
-    
+
     private void Explode()
     {
         Collider collider = base.Collider;
@@ -255,15 +297,26 @@ public class NodePuffer : Entity
         }
     }
 
-    
+
     public override void Render()
     {
         Vector2 sineOffset = new Vector2(idleSine.Value * 1f, idleSine.ValueOverTwo * 1f);
         Position += sineOffset;
 
-        for(int i = 0; i < nodes.Length - 1; i++)
+        for (int i = 0; i < nodes.Length - 1; i++)
         {
-            Draw.Line(nodes[i], nodes[i + 1], Color.HotPink, 3);
+            float next_factor = nodeIndex == i ? Ease.SineInOut(1 - sequenceTimer) : nodeIndex == Utils.Utils.Mod(i - 1, nodes.Length - 1) ? Ease.SineInOut(sequenceTimer) : 0;
+            Color col = Color.Lerp(lineColor1, lineColor2, next_factor);
+            col.A = 0;
+            float count = MathF.Round(nodeLens[Utils.Utils.Mod(i - 1, nodeLens.Length)] / 8f);
+            for (float j = 0; j < count; j++)
+            {
+                float percent = j / count;
+                float percentNext = (j + 1) / count;
+                Vector2 perp = (nodes[i + 1] - nodes[i]).Perpendicular().SafeNormalize(1f + (1f * next_factor));
+                Draw.Line(Vector2.Lerp(nodes[i], nodes[i + 1], percent) + perp * MathF.Sin((timer * -3) + ((j + (i * count)) * 1.7f)), Vector2.Lerp(nodes[i], nodes[i + 1], percentNext) + perp * MathF.Sin((timer * -3) + ((j + 1 + (i * count)) * 1.7f)), col * 0.4f * (0.5f + 0.5f * MathF.Cos((timer * 4) + ((j + (i * count)) * 0.2f))), 2);
+            }
+            Draw.Circle(nodes[i + 1], (6 + (2 * next_factor)) + (2 + (1 * next_factor)) * MathF.Cos((timer * 4) + (i * count * 0.2f)), col * 0.4f * (0.5f + 0.5f * MathF.Cos((timer * 4) + (i * count * 0.2f))), 5);
         }
 
         sprite.Scale = scale * (1f + inflateWiggler.Value * 0.4f);
@@ -281,6 +334,7 @@ public class NodePuffer : Entity
         {
             flag = true;
         }
+        if (!Collidable && state != States.Gone) flag = false;
         if (flag)
         {
             sprite.DrawSimpleOutline();
@@ -332,7 +386,11 @@ public class NodePuffer : Entity
             }
         }
 
+        if (!Collidable && state != States.Gone) sprite.Color = Color.White * 0.5f;
+
         base.Render();
+
+        sprite.Color = Color.White;
 
         if (sprite.CurrentAnimationID == "alerted")
         {
@@ -347,10 +405,18 @@ public class NodePuffer : Entity
         Position -= sineOffset;
     }
 
-    
+
     public override void Update()
     {
         base.Update();
+        timer += Engine.DeltaTime;
+        if (Scene.OnInterval(0.3f))
+        {
+            for (int i = 0; i < nodes.Length - 1; i++)
+            {
+                (Scene as Level).Particles.Emit(PufferPath, Vector2.Lerp(nodes[i], nodes[i + 1], Calc.Random.NextFloat()) + new Vector2(Calc.Random.Range(-2, 2), Calc.Random.Range(-2, 2)));
+            }
+        }
         eyeSpin = Calc.Approach(eyeSpin, 0f, Engine.DeltaTime * 1.5f);
         scale = Calc.Approach(scale, Vector2.One, 1f * Engine.DeltaTime);
         if (cannotHitTimer > 0f)
@@ -428,7 +494,7 @@ public class NodePuffer : Entity
                 {
                     float num = goneTimer;
                     goneTimer -= Engine.DeltaTime;
-                    if (goneTimer <= RespawnMoveTime && !returnSoundPlayed)
+                    if (goneTimer <= (1 / speedFactor) && !returnSoundPlayed)
                     {
                         returnSoundPlayed = true;
                         Audio.Play("event:/new_content/game/10_farewell/puffer_return", Position);
@@ -444,7 +510,7 @@ public class NodePuffer : Entity
     }
 
 
-    
+
     private bool ProximityExplodeCheck()
     {
         if (cantExplodeTimer > 0f || !Collidable)
@@ -463,7 +529,7 @@ public class NodePuffer : Entity
         return result;
     }
 
-    
+
     private bool AlertedCheck()
     {
         Player entity = base.Scene.Tracker.GetEntity<Player>();
@@ -474,7 +540,7 @@ public class NodePuffer : Entity
         return false;
     }
 
-    
+
     private void Alert(bool restart, bool playSfx)
     {
         if (sprite.CurrentAnimationID == "idle")
@@ -493,7 +559,7 @@ public class NodePuffer : Entity
         alertTimer = 2f;
     }
 
-    
+
     private void OnPlayer(Player player)
     {
         if (state == States.Gone || !(cantExplodeTimer <= 0f))

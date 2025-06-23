@@ -5,12 +5,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Utils;
 public class Utils
 {
+    public static float Mod(float x, float m)
+    {
+        return (x % m + m) % m;
+    }
 
+    public static int Mod(int x, int m)
+    {
+        return (x % m + m) % m;
+    }
 }
 
 public static class SpriteExtensions
