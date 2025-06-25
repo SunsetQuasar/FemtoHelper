@@ -287,6 +287,9 @@ entities.FemtoHelper/ParticleEmitter.attributes.description.foreground=If set, t
 entities.FemtoHelper/ParticleEmitter.attributes.description.flag=If this field is not empty, particles will only be emitted when a flag is active. Put "!" before the flag to invert it.
 entities.FemtoHelper/ParticleEmitter.attributes.description.tag=Whenever a Remote Particle Emitter Activator with this flag is touched, a particle will be emitted.
 entities.FemtoHelper/ParticleEmitter.attributes.description.noTexture=If set, the particles will ignore the provided texture and be drawn as a rectangle instead.\nNote that for a single pixel appearance, the particle must not have any rotation or have Particle Scale Out set.
+entities.FemtoHelper/ParticleEmitter.attributes.description.attachToPlayer= Makes the emitter follow then player's position. 
+entities.FemtoHelper/ParticleEmitter.attributes.description.attachToPlayerOffsetX= X offset for the player attaching function.
+entities.FemtoHelper/ParticleEmitter.attributes.description.attachToPlayerOffsetY= Y offset for the player attaching function.
 
 # Pseudo Polyhedron
 entities.FemtoHelper/PseudoPolyhedron.placements.name.default=Polyhedron Wireframe

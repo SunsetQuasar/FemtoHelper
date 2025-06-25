@@ -77,7 +77,10 @@ FemtoHelperParticleEmitter.placements = {
       foreground=false,
       tag="",
       flag="",
-      noTexture = false
+      noTexture = false,
+      attachToPlayer = false,
+      attachToPlayerOffsetX = 0,
+      attachToPlayerOffsetY = 0,
     }
 }
 

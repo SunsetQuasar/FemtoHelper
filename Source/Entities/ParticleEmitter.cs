@@ -29,6 +29,9 @@ public class ParticleEmitter : Entity
 
 	public readonly string Tag;
 
+	public readonly bool AttachToPlayer;
+	public readonly Vector2 AttachToPlayerOffset;
+
 	public ParticleEmitter(EntityData data, Vector2 offset)
 		: base(data.Position + offset)
 	{
@@ -39,7 +42,9 @@ public class ParticleEmitter : Entity
 		SpawnChance = data.Float("spawnChance");
 		ParticleAngle = data.Float("particleAngle");
 		ParticleAngleRange = data.Float("particleAngleRange");
-		IsFg = data.Bool("foreground", false);
+		AttachToPlayer = data.Bool("attachToPlayer", false);
+		AttachToPlayerOffset = new(data.Float("attachToPlayerOffsetX", 0f), data.Float("attachToPlayerOffsetY", 0f));
+        IsFg = data.Bool("foreground", false);
 		Flag = data.Attr("flag", "");
 		Tag = data.Attr("tag", "");
 		string[] texString = data.Attr("particleTexture").Split(',');
@@ -101,6 +106,14 @@ public class ParticleEmitter : Entity
 	{
 		Level level = Scene as Level;
 		base.Update();
+		if (AttachToPlayer)
+		{
+			Player player = Scene.Tracker.GetEntity<Player>();
+			if (player != null)
+			{
+				Position = player.Position + AttachToPlayerOffset;
+			}
+		}
 		SpawnTimer += 1f;
 		if (!Visible || !Scene.OnInterval(SpawnInterval))
 		{
