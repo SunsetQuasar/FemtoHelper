@@ -16,6 +16,9 @@ using Celeste.Mod.FemtoHelper.Code.Effects;
 using System.Linq;
 using Celeste.Mod.FemtoHelper.Wipes;
 using Celeste.Mod.FemtoHelper.Code.Entities;
+using MonoMod.RuntimeDetour;
+using System.Reflection;
+using static Celeste.Mod.FemtoHelper.Entities.SparkRefill;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -133,8 +136,64 @@ public class FemtoModule : EverestModule
 
     // Set up any hooks, event handlers and your mod in general here.
     // Load runs before Celeste itself has initialized properly.
+
+    private static ILHook dashCoroutineHook;
+    private static ILHook redDashCoroutineHook;
+
+    public Hook canDashHook;
+    private delegate bool orig_CanDash(Player self);
+    private bool modCanDash(orig_CanDash orig, Player self)
+    {
+        if (self.Get<LimitRefill.DirectionConstraint>() is { } d)
+        {
+            Vector2 aim = Input.GetAimVector();
+
+            // block the dash directly if the player is holding a forbidden direction, and does not have Dash Assist enabled.
+            return orig(self) && (SaveData.Instance.Assists.DashAssist || isDashDirectionAllowed(aim, d));
+        }
+        return orig(self);
+    }
+    private bool isDashDirectionAllowed(Vector2 direction, LimitRefill.DirectionConstraint d)
+    {
+        // if directions are not integers, make them integers.
+        direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
+
+        // bottom-left (-1, 1) is row 2, column 0.
+        return d.dirs[(int)(direction.Y + 1),(int)(direction.X + 1)];
+    }
+
+    private static void modDashSpeed(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        // find 240f in the method (dash speed) and multiply it with our modifier.
+        if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(240f)))
+        {
+            cursor.EmitLdloc1();
+            cursor.EmitDelegate(GetMultiplier);
+            cursor.EmitMul();
+        }
+    }
+
+    private static float GetMultiplier(Player player)
+    {
+        if (player.Get<SparkDash>() is { } s) return 2f;
+        return 1f;
+    }
+
+    private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
+    {
+        orig(self);
+        if (self.Get<SparkDash>() is { } s) s.RemoveSelf();
+    }
+
     public override void Load()
     {
+        canDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(FemtoModule).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Instance), this);
+
+        dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), modDashSpeed);
+        redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), modDashSpeed);
+        On.Celeste.Player.DashEnd += Player_DashEnd;
 
         typeof(FemtoHelperExports).ModInterop();
 
@@ -161,6 +220,8 @@ public class FemtoModule : EverestModule
         Monopticon.Load();
         GenericWaterBlock.Load();
         TheContraption.Load();
+        LimitRefill.Load();
+        BoundRefill.Load();
 
         Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
     }
@@ -168,6 +229,16 @@ public class FemtoModule : EverestModule
 
     public override void Unload()
     {
+        canDashHook?.Dispose();
+
+        dashCoroutineHook?.Dispose();
+        redDashCoroutineHook?.Dispose();
+
+        dashCoroutineHook = null;
+        redDashCoroutineHook = null;
+
+        On.Celeste.Player.DashEnd -= Player_DashEnd;
+
         Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
         On.Celeste.Puffer.OnCollideH -= Puffer_KaizoCollideHHook;
         On.Celeste.Puffer.OnCollideV -= Puffer_KaizoCollideVHook;
@@ -185,6 +256,8 @@ public class FemtoModule : EverestModule
         Monopticon.Unload();
         GenericWaterBlock.Unload();
         TheContraption.Unload();
+        LimitRefill.Unload();
+        BoundRefill.Unload();
     }
 
 

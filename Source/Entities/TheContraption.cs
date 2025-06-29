@@ -812,13 +812,10 @@ public class TheContraption : Actor
 
     public bool HitSpring(Spring spring)
     {
-        Console.WriteLine("1");
         if (!Hold.IsHeld)
         {
-            Console.WriteLine("2");
             if (spring.Orientation == Spring.Orientations.Floor && Speed.Y >= 0f)
             {
-                Console.WriteLine("floor");
                 Speed.X *= 0.5f;
                 Speed.Y = -160f;
                 noGravityTimer = 0.15f;
@@ -826,7 +823,6 @@ public class TheContraption : Actor
             }
             if (spring.Orientation == Spring.Orientations.WallLeft && Speed.X <= 0f)
             {
-                Console.WriteLine("wleft");
                 MoveTowardsY(spring.CenterY + 5f, 4f);
                 Speed.X = 160f;
                 Speed.Y = -80f;
@@ -835,7 +831,6 @@ public class TheContraption : Actor
             }
             if (spring.Orientation == Spring.Orientations.WallRight && Speed.X >= 0f)
             {
-                Console.WriteLine("wright");
                 MoveTowardsY(spring.CenterY + 5f, 4f);
                 Speed.X = -160f;
                 Speed.Y = -80f;
@@ -843,7 +838,6 @@ public class TheContraption : Actor
                 return true;
             }
         }
-        Console.WriteLine("nope");
         return false;
     }
 
