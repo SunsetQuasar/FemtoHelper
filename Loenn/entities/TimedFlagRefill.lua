@@ -30,7 +30,8 @@ FemtoHelperTimedFlagRefill.placements = {
             flagMode = 0,
             duration = 1,
             refillDash = true,
-            refillStamina = true
+            refillStamina = true,
+            respawnTime = 2.5,
         }
     },
     {
@@ -46,7 +47,8 @@ FemtoHelperTimedFlagRefill.placements = {
             flagMode = 0,
             duration = 1,
             refillDash = true,
-            refillStamina = true
+            refillStamina = true,
+            respawnTime = 2.5,
         }
     }
 }

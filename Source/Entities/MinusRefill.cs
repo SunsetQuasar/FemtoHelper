@@ -46,8 +46,9 @@ public class MinusRefill : Entity
     };
 
 	private float respawnTimer;
+	private readonly float respawnTime;
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
+	
 	public MinusRefill(Vector2 position, EntityData data)
 		: base(position)
 	{
@@ -70,7 +71,7 @@ public class MinusRefill : Entity
 			flash.Visible = false;
 		};
 		flash.CenterOrigin();
-		Add(wiggler = Wiggler.Create(1f, 4f, [MethodImpl(MethodImplOptions.NoInlining)] (float v) =>
+		Add(wiggler = Wiggler.Create(1f, 4f,  (float v) =>
 		{
 			sprite.Scale = (flash.Scale = Vector2.One * (1f + v * 0.2f));
 		}));
@@ -81,22 +82,23 @@ public class MinusRefill : Entity
 		sine.Randomize();
 		UpdateY();
 		base.Depth = -100;
-	}
+		respawnTime = data.Float("respawnTime", 2.5f);
+    }
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
+	
 	public MinusRefill(EntityData data, Vector2 offset)
 		: this(data.Position + offset, data)
 	{
 	}
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
+	
 	public override void Added(Scene scene)
 	{
 		base.Added(scene);
 		level = SceneAs<Level>();
 	}
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
+	
 	public override void Update()
 	{
 		base.Update();
@@ -122,7 +124,7 @@ public class MinusRefill : Entity
 		}
 	}
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
+	
 	private void Respawn()
 	{
 		if (!Collidable)
@@ -137,7 +139,7 @@ public class MinusRefill : Entity
 		}
 	}
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
+	
 	private void UpdateY()
 	{
 		Sprite obj = flash;
@@ -147,7 +149,7 @@ public class MinusRefill : Entity
 		obj.Y = y;
 	}
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
+	
 	public override void Render()
 	{
 		if (sprite.Visible)
@@ -157,7 +159,7 @@ public class MinusRefill : Entity
 		base.Render();
 	}
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
+	
 	private void OnPlayer(Player player)
 	{
 		
@@ -169,10 +171,10 @@ public class MinusRefill : Entity
 		Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
 		Collidable = false;
 		Add(new Coroutine(MinusRefillRoutine(player)));
-		respawnTimer = 2.5f;
+		respawnTimer = respawnTime;
 	}
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
+	
 	private IEnumerator MinusRefillRoutine(Player player)
 	{
 		Celeste.Freeze(0.05f);

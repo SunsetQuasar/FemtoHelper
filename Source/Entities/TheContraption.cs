@@ -37,7 +37,7 @@ public class TheContraption : Actor
 
         private bool hasHitGround;
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public ContraptionDebris()
             : base(Vector2.Zero)
         {
@@ -51,14 +51,14 @@ public class TheContraption : Actor
             dreamSine.Randomize();
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public override void Added(Scene scene)
         {
             base.Added(scene);
             dreaming = SceneAs<Level>().Session.Dreaming;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public ContraptionDebris Init(Vector2 pos, string sprite, bool playSound = true)
         {
             ContraptionDebris debris = orig_Init(pos, sprite, playSound);
@@ -66,7 +66,7 @@ public class TheContraption : Actor
             return debris;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public ContraptionDebris BlastFrom(Vector2 from)
         {
             float length = Calc.Random.Range(300, 400);
@@ -75,13 +75,13 @@ public class TheContraption : Actor
             return this;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         private void OnCollideH(CollisionData data)
         {
             speed.X *= -0.8f;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         private void OnCollideV(CollisionData data)
         {
             if (speed.Y > 0f)
@@ -99,7 +99,7 @@ public class TheContraption : Actor
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         private void ImpactSfx(float spd)
         {
             if (playSound)
@@ -109,7 +109,7 @@ public class TheContraption : Actor
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public override void Update()
         {
             base.Update();
@@ -154,7 +154,7 @@ public class TheContraption : Actor
             return Init(pos, sprite, playSound: true);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public ContraptionDebris orig_Init(Vector2 pos, string sprite, bool playSound = true)
         {
             Position = pos;

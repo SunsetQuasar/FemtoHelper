@@ -177,14 +177,20 @@ public class FemtoModule : EverestModule
 
     private static float GetMultiplier(Player player)
     {
-        if (player.Get<SparkDash>() is { } s) return 2f;
+        if (player.Get<SparkDash>() is { } s) return s.ThisDashHasStarted ? 2f : 1f;
         return 1f;
+    }
+
+    private void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
+    {
+        orig(self);
+        if (self.Get<SparkDash>() is { } s) s.ThisDashHasStarted = true;
     }
 
     private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
     {
         orig(self);
-        if (self.Get<SparkDash>() is { } s) s.RemoveSelf();
+        if (self.Get<SparkDash>() is { } s && s.ThisDashHasStarted) s.RemoveSelf();
     }
 
     public override void Load()
@@ -194,6 +200,7 @@ public class FemtoModule : EverestModule
         dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), modDashSpeed);
         redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), modDashSpeed);
         On.Celeste.Player.DashEnd += Player_DashEnd;
+        On.Celeste.Player.DashBegin += Player_DashBegin;
 
         typeof(FemtoHelperExports).ModInterop();
 
@@ -226,7 +233,6 @@ public class FemtoModule : EverestModule
         Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
     }
 
-
     public override void Unload()
     {
         canDashHook?.Dispose();
@@ -238,6 +244,7 @@ public class FemtoModule : EverestModule
         redDashCoroutineHook = null;
 
         On.Celeste.Player.DashEnd -= Player_DashEnd;
+        On.Celeste.Player.DashBegin -= Player_DashBegin;
 
         Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
         On.Celeste.Puffer.OnCollideH -= Puffer_KaizoCollideHHook;

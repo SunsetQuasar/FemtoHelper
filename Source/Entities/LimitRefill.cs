@@ -90,6 +90,7 @@ public class LimitRefill : Entity
     };
 
     private float respawnTimer;
+    private readonly float respawnTime;
 
     public enum Directions
     {
@@ -105,7 +106,7 @@ public class LimitRefill : Entity
 
     private Directions direction;
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public LimitRefill(Vector2 position, EntityData data)
         : base(position)
     {
@@ -139,7 +140,7 @@ public class LimitRefill : Entity
             flash.Visible = false;
         };
         flash.CenterOrigin();
-        Add(wiggler = Wiggler.Create(1f, 4f, [MethodImpl(MethodImplOptions.NoInlining)] (float v) =>
+        Add(wiggler = Wiggler.Create(1f, 4f,  (float v) =>
         {
             sprite.Scale = (flash.Scale = Vector2.One * (1f + v * 0.2f));
         }));
@@ -150,22 +151,23 @@ public class LimitRefill : Entity
         sine.Randomize();
         UpdateY();
         base.Depth = -100;
+        respawnTime = data.Float("respawnTime", 2.5f);
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public LimitRefill(EntityData data, Vector2 offset)
         : this(data.Position + offset, data)
     {
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public override void Added(Scene scene)
     {
         base.Added(scene);
         level = SceneAs<Level>();
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public override void Update()
     {
         base.Update();
@@ -191,7 +193,7 @@ public class LimitRefill : Entity
         }
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     private void Respawn()
     {
         if (!Collidable)
@@ -206,7 +208,7 @@ public class LimitRefill : Entity
         }
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     private void UpdateY()
     {
         Sprite obj = flash;
@@ -216,7 +218,7 @@ public class LimitRefill : Entity
         obj.Y = y;
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public override void Render()
     {
         if (sprite.Visible)
@@ -226,7 +228,7 @@ public class LimitRefill : Entity
         base.Render();
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     private void OnPlayer(Player player)
     {
         player.UseRefill(false);
@@ -236,10 +238,10 @@ public class LimitRefill : Entity
         Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
         Collidable = false;
         Add(new Coroutine(LimitRefillRoutine(player)));
-        respawnTimer = 2.5f;
+        respawnTimer = respawnTime;
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     private IEnumerator LimitRefillRoutine(Player player)
     {
         Celeste.Freeze(0.05f);

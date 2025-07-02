@@ -74,14 +74,14 @@ public class WaterZipMover : GenericWaterBlock
             SceneAs<Level>().ParticlesBG.Emit(Tinydrops, to - sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirToB);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public override void Render()
         {
             //DrawCogs(Vector2.UnitY, Color.Black);
             DrawCogs(Vector2.Zero);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         private void DrawCogs(Vector2 offset)
         {
             Vector2 vector = (to - from).SafeNormalize();

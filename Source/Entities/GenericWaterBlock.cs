@@ -98,7 +98,7 @@ public abstract class GenericWaterBlock : Water
         shakeTimer = time;
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public void StopShaking()
     {
         shaking = false;

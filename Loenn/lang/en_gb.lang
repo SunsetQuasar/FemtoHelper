@@ -75,6 +75,50 @@ entities.FemtoHelper/PopRefill.attributes.description.twoDash=Gives two dashes i
 entities.FemtoHelper/PopRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/PopRefill.attributes.description.spawnTime=The time it takes for the refill to spawn once triggered.
 
+# Spark Refill
+entities.FemtoHelper/SparkRefill.placements.name.spark=Spark Refill
+entities.FemtoHelper/SparkRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/SparkRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+
+# Avert Refill
+entities.FemtoHelper/AvertRefill.placements.name.avertUp=Avert Refill (Up)
+entities.FemtoHelper/AvertRefill.placements.name.avertDown=Avert Refill (Down)
+entities.FemtoHelper/AvertRefill.placements.name.avertLeft=Avert Refill (Left)
+entities.FemtoHelper/AvertRefill.placements.name.avertRight=Avert Refill (Right)
+entities.FemtoHelper/AvertRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/AvertRefill.attributes.description.direction=The direction of momentum redirection.
+entities.FemtoHelper/AvertRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+
+# Minus Refill
+entities.FemtoHelper/MinusRefill.placements.name.minus=Minus Refill
+entities.FemtoHelper/MinusRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/MinusRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+
+# Upend Refill
+entities.FemtoHelper/UpendRefill.placements.name.upendHorizontal=Upend Refill (Horizontal)
+entities.FemtoHelper/UpendRefill.placements.name.upendVertical=Upend Refill (Vertical)
+entities.FemtoHelper/UpendRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/UpendRefill.attributes.description.type=Axis of momentum reversion.
+entities.FemtoHelper/UpendRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+
+# Limit Refill
+entities.FemtoHelper/LimitRefill.placements.name.limitUp=Limit Refill (Up)
+entities.FemtoHelper/LimitRefill.placements.name.limitDown=Limit Refill (Down)
+entities.FemtoHelper/LimitRefill.placements.name.limitLeft=Limit Refill (Left)
+entities.FemtoHelper/LimitRefill.placements.name.limitRight=Avert Refill (Right)
+entities.FemtoHelper/LimitRefill.placements.name.limitUpRight=Limit Refill (Up-Right)
+entities.FemtoHelper/LimitRefill.placements.name.limitDownLefr=Limit Refill (Down-Left)
+entities.FemtoHelper/LimitRefill.placements.name.limitUpLeft=Limit Refill (Up-Left)
+entities.FemtoHelper/LimitRefill.placements.name.limitDownRight=Avert Refill (Down-Right)
+entities.FemtoHelper/LimitRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/LimitRefill.attributes.description.direction=The direction the dash is limited to.
+entities.FemtoHelper/LimitRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+
+# Bound Refill
+entities.FemtoHelper/BoundRefill.placements.name.bound=Bound Refill
+entities.FemtoHelper/BoundRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/BoundRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+
 # Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.boolean=Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.booleanTwo=Timed Flag Refill (Two Dashes)

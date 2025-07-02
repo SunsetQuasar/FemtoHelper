@@ -17,7 +17,7 @@ public class WaterSwapBlock : GenericWaterBlock
 
         private float timer;
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public PathRenderer(WaterSwapBlock block)
             : base(block.Position)
         {
@@ -26,14 +26,14 @@ public class WaterSwapBlock : GenericWaterBlock
             timer = Calc.Random.NextFloat();
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public override void Update()
         {
             base.Update();
             timer += Engine.DeltaTime * 4f;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        
         public override void Render()
         {
             float num = 0.5f * (0.5f + ((float)Math.Sin(timer) + 1f) * 0.25f);

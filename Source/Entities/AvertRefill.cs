@@ -46,6 +46,7 @@ public class AvertRefill : Entity
     };
 
     private float respawnTimer;
+    private readonly float respawnTime;
 
     private enum Directions
     {
@@ -61,7 +62,7 @@ public class AvertRefill : Entity
 
     private Directions direction;
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public AvertRefill(Vector2 position, EntityData data)
         : base(position)
     {
@@ -85,7 +86,7 @@ public class AvertRefill : Entity
             flash.Visible = false;
         };
         flash.CenterOrigin();
-        Add(wiggler = Wiggler.Create(1f, 4f, [MethodImpl(MethodImplOptions.NoInlining)] (float v) =>
+        Add(wiggler = Wiggler.Create(1f, 4f,  (float v) =>
         {
             sprite.Scale = (flash.Scale = Vector2.One * (1f + v * 0.2f));
         }));
@@ -98,22 +99,23 @@ public class AvertRefill : Entity
         sine.Randomize();
         UpdateY();
         base.Depth = -100;
+        respawnTime = data.Float("respawnTime", 2.5f);
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public AvertRefill(EntityData data, Vector2 offset)
         : this(data.Position + offset, data)
     {
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public override void Added(Scene scene)
     {
         base.Added(scene);
         level = SceneAs<Level>();
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public override void Update()
     {
         base.Update();
@@ -139,7 +141,7 @@ public class AvertRefill : Entity
         }
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     private void Respawn()
     {
         if (!Collidable)
@@ -154,7 +156,7 @@ public class AvertRefill : Entity
         }
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     private void UpdateY()
     {
         Sprite obj = flash;
@@ -164,7 +166,7 @@ public class AvertRefill : Entity
         obj.Y = y;
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     public override void Render()
     {
         if (sprite.Visible)
@@ -174,7 +176,7 @@ public class AvertRefill : Entity
         base.Render();
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     private void OnPlayer(Player player)
     {
         player.Speed = (-Vector2.UnitY * 240).Rotate((float)direction * Calc.DegToRad);
@@ -182,10 +184,10 @@ public class AvertRefill : Entity
         Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
         Collidable = false;
         Add(new Coroutine(AvertRefillRoutine(player)));
-        respawnTimer = 2.5f;
+        respawnTimer = respawnTime;
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    
     private IEnumerator AvertRefillRoutine(Player player)
     {
         Celeste.Freeze(0.05f);

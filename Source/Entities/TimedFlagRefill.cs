@@ -68,7 +68,9 @@ public class BooleanGem : Entity
 
     public readonly bool RefillStamina;
 
-    public BooleanGem(Vector2 position, bool twoDashes, bool oneUse, string path, string pcolors)
+    private readonly float respawnTime;
+
+    public BooleanGem(Vector2 position, bool twoDashes, bool oneUse, string path, string pcolors, float respawnTime)
         : base(position)
     {
         //thanks communal helper
@@ -115,11 +117,11 @@ public class BooleanGem : Entity
         sine.Randomize();
         UpdateY();
         Depth = -100;
-
+        this.respawnTime = respawnTime;
     }
 
     public BooleanGem(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"), data.Attr("path", "objects/refill/"), data.Attr("particleColors", "d3edff,94a5ef,a5c3ff,6c74dd"))
+        : this(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"), data.Attr("path", "objects/refill/"), data.Attr("particleColors", "d3edff,94a5ef,a5c3ff,6c74dd"), data.Float("respawnTime", 2.5f))
     {
         PShatter = new ParticleType(Refill.P_Shatter);
         PRegen = new ParticleType(Refill.P_Regen);
@@ -210,7 +212,7 @@ public class BooleanGem : Entity
         Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
         Collidable = false;
         Add(new Coroutine(RefillRoutine(player)));
-        respawnTimer = 2.5f;
+        respawnTimer = respawnTime;
     }
 
     private IEnumerator RefillRoutine(Player player)
