@@ -173,14 +173,16 @@ public class SparkRefill : Entity
     
     private void OnPlayer(Player player)
     {
-        player.UseRefill(false);
-        if (player.Get<SparkDash>() is { } d) d.RemoveSelf();
-        player.Add(new SparkDash());
-        Audio.Play("event:/game/general/diamond_touch", Position);
-        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-        Collidable = false;
-        Add(new Coroutine(SparkRefillRoutine(player)));
-        respawnTimer = respawnTime;
+        if (!(player.Get<SparkDash>() is { } s && !s.ThisDashHasStarted))
+        {
+            player.UseRefill(false);
+            player.Add(new SparkDash());
+            Audio.Play("event:/game/general/diamond_touch", Position);
+            Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+            Collidable = false;
+            Add(new Coroutine(SparkRefillRoutine(player)));
+            respawnTimer = respawnTime; Audio.Play("event:/game/general/diamond_touch", Position);
+        }
     }
 
     

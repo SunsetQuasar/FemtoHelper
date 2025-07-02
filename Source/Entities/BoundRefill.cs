@@ -195,14 +195,16 @@ public class BoundRefill : Entity
     
     private void OnPlayer(Player player)
     {
-        player.UseRefill(false);
-        if (player.Get<Bounder>() is { } b) b.RemoveSelf();
-        player.Add(new Bounder());
-        Audio.Play("event:/game/general/diamond_touch", Position);
-        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-        Collidable = false;
-        Add(new Coroutine(BoundRefillRoutine(player)));
-        respawnTimer = respawnTime;
+        if (!(player.Get<Bounder>() is { } b))
+        {
+            player.UseRefill(false);
+            player.Add(new Bounder());
+            Audio.Play("event:/game/general/diamond_touch", Position);
+            Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+            Collidable = false;
+            Add(new Coroutine(BoundRefillRoutine(player)));
+            respawnTimer = respawnTime;
+        }
     }
 
     
