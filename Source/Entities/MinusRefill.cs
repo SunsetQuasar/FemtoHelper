@@ -29,20 +29,20 @@ public class MinusRefill : Entity
 
 	private static ParticleType p_shatter = new(Refill.P_Shatter)
     {
-        Color = Calc.HexToColor("9ca5f3"),
-        Color2 = Calc.HexToColor("9ca5f3")
+        Color = Calc.HexToColor("d3e8ff"),
+        Color2 = Calc.HexToColor("85b0fc")
     };
 
 	private static ParticleType p_regen = new(Refill.P_Regen)
     {
-        Color = Calc.HexToColor("404dbd"),
-        Color2 = Calc.HexToColor("404dbd")
+        Color = Calc.HexToColor("a5d1ff"),
+        Color2 = Calc.HexToColor("6da0e0")
     };
 
 	private static ParticleType p_glow = new(Refill.P_Glow)
     {
-        Color = Calc.HexToColor("404dbd"),
-        Color2 = Calc.HexToColor("404dbd")
+        Color = Calc.HexToColor("a5d1ff"),
+        Color2 = Calc.HexToColor("6da0e0")
     };
 
 	private float respawnTimer;
