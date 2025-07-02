@@ -105,11 +105,11 @@ entities.FemtoHelper/UpendRefill.attributes.description.respawnTime=The time it 
 entities.FemtoHelper/LimitRefill.placements.name.limitUp=Limit Refill (Up)
 entities.FemtoHelper/LimitRefill.placements.name.limitDown=Limit Refill (Down)
 entities.FemtoHelper/LimitRefill.placements.name.limitLeft=Limit Refill (Left)
-entities.FemtoHelper/LimitRefill.placements.name.limitRight=Avert Refill (Right)
+entities.FemtoHelper/LimitRefill.placements.name.limitRight=Limit Refill (Right)
 entities.FemtoHelper/LimitRefill.placements.name.limitUpRight=Limit Refill (Up-Right)
 entities.FemtoHelper/LimitRefill.placements.name.limitDownLefr=Limit Refill (Down-Left)
 entities.FemtoHelper/LimitRefill.placements.name.limitUpLeft=Limit Refill (Up-Left)
-entities.FemtoHelper/LimitRefill.placements.name.limitDownRight=Avert Refill (Down-Right)
+entities.FemtoHelper/LimitRefill.placements.name.limitDownRight=Limit Refill (Down-Right)
 entities.FemtoHelper/LimitRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/LimitRefill.attributes.description.direction=The direction the dash is limited to.
 entities.FemtoHelper/LimitRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
@@ -133,6 +133,7 @@ entities.FemtoHelper/TimedFlagRefill.attributes.description.flagMode=How the con
 entities.FemtoHelper/TimedFlagRefill.attributes.description.duration=The amount of frames the flag should be affected for.\nUse -1 to set the flag permanently.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.refillDash=Whether the refill should refill the player's dash.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.refillStamina=Whether the refill should refill the player's stamina.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
 
 # Directional Sprites Line
 entities.FemtoHelper/DirectionalLine.placements.name.default=Directional Sprites Line
