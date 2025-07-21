@@ -17,8 +17,11 @@ public class S2A12Intro : CutsceneEntity
 
 	private readonly float targetX;
 
-	public S2A12Intro(Player player)
+	private readonly int dashes;
+
+	public S2A12Intro(Player player, int dashes)
 	{
+		this.dashes = dashes;
 		Depth = -8500;
 		this.player = player;
 		targetX = player.CameraTarget.X + 8f;
@@ -41,7 +44,7 @@ public class S2A12Intro : CutsceneEntity
 		player.StateMachine.State = 11;
 		player.Visible = false;
 		player.Active = false;
-		player.Dashes = 2;
+		player.Dashes = dashes;
 		for (float t = 0f; t < 1f; t += Engine.DeltaTime / 0.9f)
 		{
 			level.Wipe.Percent = 0f;
@@ -95,7 +98,7 @@ public class S2A12Intro : CutsceneEntity
 	public override void OnEnd(Level level)
 	{
 		level.Session.Inventory.Dashes = 1;
-		player.Dashes = 2;
+		player.Dashes = dashes;
 		player.Depth = 0;
 		player.Speed = Vector2.Zero;
 		player.Position = level.GetSpawnPoint(player.Position) + new Vector2(0f, -32f);
