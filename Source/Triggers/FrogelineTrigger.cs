@@ -24,6 +24,11 @@ internal class FrogelineTrigger(EntityData data, Vector2 offset) : Trigger(data,
 				Scene.Add(new TguCs0Intro(player));
 				RemoveSelf();
 				break;
+            case "solards_intro" when !level.Session.GetFlag("solards_intro"):
+                level.Session.SetFlag("solards_intro");
+                Scene.Add(new S2A12Intro(player));
+                RemoveSelf();
+                break;
             case "cu_intro" when !level.Session.GetFlag("cu_intro"):
 				level.Session.SetFlag("cu_intro");
 				Scene.Add(new S2A12Intro(player));
