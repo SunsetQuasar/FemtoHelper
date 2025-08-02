@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Celeste.Mod.FemtoHelper.Utils;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,17 @@ public static class PlutoniumTextNodes
         public readonly string StrIfOff = off;
     }
 
+    public class ExpressionAsFlag(string k, string on, string off) : Node
+    {
+        public string exp = k;
+        public string strIfOn = on;
+        public string strIfOff = off;
+    }
+    public class ExpressionAsCounter(string k) : Node
+    {
+        public string exp = k;
+    }
+
     private static readonly string[] bigNumberNames = ["", "", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion", "undecillion"];
 
     private static string getShorthandNumber(float f) {
@@ -61,6 +73,12 @@ public static class PlutoniumTextNodes
                     break;
                 case Flag f:
                     result += level.Session.GetFlag(f.Key) ? f.StrIfOn : f.StrIfOff;
+                    break;
+                case ExpressionAsFlag ef:
+                    result += Util.EvaluateExpressionAsBool(ef.exp, level.Session) ? ef.strIfOn : ef.strIfOff;
+                    break;
+                case ExpressionAsCounter ec:
+                    result += Util.EvaluateExpressionAsInt(ec.exp, level.Session).ToString();
                     break;
             }
         }
