@@ -1,13 +1,18 @@
-﻿using Celeste.Mod.FemtoHelper.Utils;
+﻿using Celeste.Mod.FemtoHelper.Entities;
+using Celeste.Mod.FemtoHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Celeste.Mod.FemtoHelper;
 
+
+
 public static class PlutoniumTextNodes
 {
+
     public class Node
     {
 
@@ -53,6 +58,58 @@ public static class PlutoniumTextNodes
         string str = num.ToString();
         if (orderOfMagnitudeTriplets < bigNumberNames.Length - 1) return str + " " + bigNumberNames[orderOfMagnitudeTriplets];
         else return f.ToString();
+    }
+
+    public static List<Node> Parse(string dialogID, bool truncateSliders)
+    {
+        List<Node> Nodes = [];
+
+        string[] splitStr = SimpleText.MyRegex().Split(dialogID);
+        string[] splitStr2 = new string[splitStr.Length];
+        int num = 0;
+        foreach (var t in splitStr)
+        {
+            if (!string.IsNullOrEmpty(t))
+            {
+                splitStr2[num++] = t;
+            }
+        }
+
+        for (int i = 0; i < splitStr2.Length; i++)
+        {
+            if (splitStr2[i] == "{")
+            {
+                i++;
+
+                for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
+                {
+                    if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
+
+                    string[] splitOnceAgain = splitStr2[i].Split(';');
+                    if (splitOnceAgain.Length == 3)
+                    {
+                        Nodes.Add(new Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
+                    }
+                    else
+                    {
+                        if (splitStr2[i][0] == '@')
+                        {
+                            Nodes.Add(new Slider(splitStr2[i].Remove(0, 1), truncateSliders));
+                        }
+                        else
+                        {
+                            Nodes.Add(new Counter(splitStr2[i]));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Nodes.Add(new Text(splitStr2[i]));
+            }
+        }
+
+        return Nodes;
     }
 
     public static string ConstructString(List<Node> nodes, Level level)

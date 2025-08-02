@@ -94,47 +94,7 @@ public partial class CinematicText : Entity
         } 
         else
         {
-            string[] splitStr = MyRegex().Split(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")));
-            string[] splitStr2 = new string[splitStr.Length];
-            int num = 0;
-            foreach (var t in splitStr)
-            {
-                if (!string.IsNullOrEmpty(t))
-                {
-                    splitStr2[num++] = t;
-                }
-            }
-
-            for (int i = 0; i < splitStr2.Length; i++)
-            {
-                if (splitStr2[i] == "{")
-                {
-                    i++;
-
-                    for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
-                    {
-                        if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
-
-                        string[] splitOnceAgain = splitStr2[i].Split(';');
-                        if (splitOnceAgain.Length == 3)
-                        {
-                            Nodes.Add(new PlutoniumTextNodes.Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
-                        }
-                        else
-                        {
-                            if (splitStr2[i][0] == '@') {
-                                Nodes.Add(new PlutoniumTextNodes.Slider(splitStr2[i].Remove(0,1), TruncateSliders));
-                            } else {
-                                Nodes.Add(new PlutoniumTextNodes.Counter(splitStr2[i]));
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Nodes.Add(new PlutoniumTextNodes.Text(splitStr2[i]));
-                }
-            }
+            Nodes = PlutoniumTextNodes.Parse(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"), TruncateSliders);
         }
 
         Color1 = Calc.HexToColorWithAlpha(data.Attr("mainColor", "ffffffff"));
