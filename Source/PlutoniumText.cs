@@ -71,6 +71,7 @@ public static class PlutoniumTextNodes
         {
             if (!string.IsNullOrEmpty(t))
             {
+                Console.WriteLine(t);
                 splitStr2[num++] = t;
             }
         }
@@ -89,6 +90,14 @@ public static class PlutoniumTextNodes
                     if (splitOnceAgain.Length == 3)
                     {
                         Nodes.Add(new Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
+                    }
+                    else if (splitOnceAgain.Length == 4 && splitOnceAgain[0] == "exp")
+                    {
+                        Nodes.Add(new ExpressionAsFlag(splitOnceAgain[1], splitOnceAgain[2], splitOnceAgain[3]));
+                    }
+                    else if (splitOnceAgain.Length == 2 && splitOnceAgain[0] == "exp")
+                    {
+                        Nodes.Add(new ExpressionAsCounter(splitOnceAgain[1]));
                     }
                     else
                     {

@@ -104,6 +104,6 @@ public partial class SimpleText : Entity
         }
     }
 
-    [GeneratedRegex(@"(\s|\{|\})")]
+    [GeneratedRegex(@"(\{|\})")]
     public static partial Regex MyRegex();
 }
