@@ -19,6 +19,7 @@ using Celeste.Mod.FemtoHelper.Code.Entities;
 using MonoMod.RuntimeDetour;
 using System.Reflection;
 using static Celeste.Mod.FemtoHelper.Entities.SparkRefill;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -44,6 +45,15 @@ public class FemtoModule : EverestModule
     public static class CavernHelperSupport
     {
         public static Func<Action<Vector2>, Collider, Component> GetCrystalBombExplosionCollider;
+    }
+
+    [ModImportName("FrostHelper")]
+    public static class FrostHelperSupport
+    {
+        public delegate bool TryCreateSessionExpressionDelegate(string str, [NotNullWhen(true)] out object expression);
+        public static TryCreateSessionExpressionDelegate TryCreateSessionExpression;
+
+        public static Func<object, Session, int> GetIntSessionExpressionValue;
     }
 
     // Only one alive module instance can exist at any given time.
@@ -210,6 +220,8 @@ public class FemtoModule : EverestModule
 
         typeof(CavernHelperSupport).ModInterop(); //:333
 
+        typeof(FrostHelperSupport).ModInterop();
+
         Everest.Events.Level.OnLoadBackdrop += Level_OnLoadBackdrop;
         On.Celeste.Puffer.OnCollideH += Puffer_KaizoCollideHHook;
         On.Celeste.Puffer.OnCollideV += Puffer_KaizoCollideVHook;
@@ -236,6 +248,7 @@ public class FemtoModule : EverestModule
     public override void Unload()
     {
         canDashHook?.Dispose();
+        canDashHook = null;
 
         dashCoroutineHook?.Dispose();
         redDashCoroutineHook?.Dispose();

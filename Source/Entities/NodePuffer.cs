@@ -305,10 +305,10 @@ public class NodePuffer : Entity
 
         for (int i = 0; i < nodes.Length - 1; i++)
         {
-            float next_factor = nodeIndex == i ? Ease.SineInOut(1 - sequenceTimer) : nodeIndex == Utils.Utils.Mod(i - 1, nodes.Length - 1) ? Ease.SineInOut(sequenceTimer) : 0;
+            float next_factor = nodeIndex == i ? Ease.SineInOut(1 - sequenceTimer) : nodeIndex == Utils.Util.Mod(i - 1, nodes.Length - 1) ? Ease.SineInOut(sequenceTimer) : 0;
             Color col = Color.Lerp(lineColor1, lineColor2, next_factor);
             col.A = 0;
-            float count = MathF.Round(nodeLens[Utils.Utils.Mod(i - 1, nodeLens.Length)] / 8f);
+            float count = MathF.Round(nodeLens[Utils.Util.Mod(i - 1, nodeLens.Length)] / 8f);
             for (float j = 0; j < count; j++)
             {
                 float percent = j / count;

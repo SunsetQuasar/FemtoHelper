@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Celeste.Mod.FemtoHelper.Utils;
-public class Utils
+public class Util
 {
     public static float Mod(float x, float m)
     {
@@ -17,6 +17,33 @@ public class Utils
     public static int Mod(int x, int m)
     {
         return (x % m + m) % m;
+    }
+
+    public static int EvaluateExpressionAsInt(string exp, Session session)
+    {
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
+        {
+            return FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue?.Invoke(obj, session) ?? 0;
+        }
+        else return 0;
+    }
+
+    public static bool EvaluateExpressionAsBool(string exp, Session session)
+    {
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
+        {
+            return (FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue?.Invoke(obj, session) ?? 0) != 0;
+        }
+        else return false;
+    }
+
+    public static bool EvaluateExpressionAsBoolOrFancyFlag(string exp, Session session)
+    {
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
+        {
+            return (FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue?.Invoke(obj, session) ?? 0) != 0;
+        }
+        else return session.FancyCheckFlag(exp);
     }
 }
 
@@ -59,6 +86,15 @@ public static class LevelExtensions
             return !level.Session.GetFlag(flag[1..]);
         }
         return string.IsNullOrEmpty(flag) || level.Session.GetFlag(flag);
+    }
+
+    public static bool FancyCheckFlag(this Session session, string flag)
+    {
+        if (flag.StartsWith('!'))
+        {
+            return !session.GetFlag(flag[1..]);
+        }
+        return string.IsNullOrEmpty(flag) || session.GetFlag(flag);
     }
 }
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Data;
 using System.Linq;
-
+using System.Reflection.Metadata;
+using Celeste.Mod.FemtoHelper.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -12,7 +14,7 @@ public class GloriousPassage : Entity
     public readonly string Flag;
     public int Lastinput;
     public readonly string RoomName;
-    public bool Yeahforsure;
+    public bool PlayerInside;
     public Player Player;
     public readonly string Audio;
     public readonly MTexture Closed;
@@ -26,6 +28,8 @@ public class GloriousPassage : Entity
     public readonly bool SameRoom;
     public bool CarryHoldablesOver;
     public readonly TalkComponent Talk;
+    private readonly string flag;
+    private readonly string visibilityFlag;
     public GloriousPassage(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Collider = new Hitbox(data.Width, data.Height);
@@ -44,6 +48,8 @@ public class GloriousPassage : Entity
         KeepDashes = data.Bool("keepDashes", false);
         SameRoom = data.Bool("sameRoom", false);
         CarryHoldablesOver = data.Bool("carryHoldablesOver", false);
+        flag = data.String("flag", "");
+        visibilityFlag = data.String("visibilityFlag", "");
         if (!InteractToOpen) return;
         Add(Talk = new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width / 2, -8), OnTalk));
         Talk.PlayerMustBeFacing = false;
@@ -70,24 +76,25 @@ public class GloriousPassage : Entity
             Add(new Coroutine(Routine(player)));
             return;
         }
-        Yeahforsure = true;
+        PlayerInside = true;
         Player = player;
     }
 
     public override void Update()
     {
+        if (!Util.EvaluateExpressionAsBoolOrFancyFlag(flag, SceneAs<Level>().Session)) return;
         base.Update();
-        if (Yeahforsure && !Done && !InteractToOpen && Player != null && Player.OnGround() && Input.MoveY.Value == -1 && Lastinput != -1)
+        if (PlayerInside && !Done && !InteractToOpen && Player != null && Player.OnGround() && Input.MoveY.Value == -1 && Lastinput != -1)
         {
             Add(new Coroutine(Routine(Player)));
         }
         Lastinput = Input.MoveY.Value;
-        Yeahforsure = false;
+        PlayerInside = false;
     }
 
     public IEnumerator Routine(Player player)
     {
-        if(!string.IsNullOrEmpty(Flag))(Scene as Level).Session.SetFlag(Flag, true);
+        if (!string.IsNullOrEmpty(Flag)) (Scene as Level).Session.SetFlag(Flag, true);
         if (!string.IsNullOrEmpty(Audio)) global::Celeste.Audio.Play(Audio);
         Done = true;
         Level level = Scene as Level;
@@ -115,7 +122,7 @@ public class GloriousPassage : Entity
             Vector2 pos, playerDelta;
             Leader leader;
 
-            if(level.Session.Level == RoomName && SameRoom)
+            if (level.Session.Level == RoomName && SameRoom)
             {
                 level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(SpawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
 
@@ -141,7 +148,7 @@ public class GloriousPassage : Entity
                     leader.PastPoints[i] += playerDelta;
                 }
 
-                if(player.Holding != null)
+                if (player.Holding != null)
                 {
                     player.Holding.Entity.Position += playerDelta;
                 }
@@ -220,9 +227,9 @@ public class GloriousPassage : Entity
                 */
             player.Visible = true;
             player.Sprite.Visible = true;
-            if(KeepDashes) player.Dashes = dashes;
+            if (KeepDashes) player.Dashes = dashes;
 
-            if(hold != null)
+            if (hold != null)
             {
                 hold.Entity.Position += playerDelta;
                 hold.Entity.RemoveTag(Tags.Global);
@@ -249,7 +256,7 @@ public class GloriousPassage : Entity
     public override void Render()
     {
         base.Render();
-        if (Simple) return;
+        if (Simple || !Util.EvaluateExpressionAsBoolOrFancyFlag(visibilityFlag, SceneAs<Level>().Session)) return;
         if (Done)
         {
             Open.DrawCentered(Center);

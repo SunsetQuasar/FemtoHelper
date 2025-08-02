@@ -88,7 +88,7 @@ public class Generic_SMWBlock : Solid
 
     public Rectangle Rewardcatcher;
 
-    public bool Catched;
+    public bool Caught;
 
     public int Bumpdir;
 
@@ -137,11 +137,19 @@ public class Generic_SMWBlock : Solid
 
     private readonly bool DashableKaizo;
 
+    private readonly HashSet<string> Whitelist;
+    private readonly HashSet<string> Blacklist;
+
     public Generic_SMWBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
+        Whitelist = [.. data.String("whitelist", "").Split(',')];
+        Blacklist = [.. data.String("blacklist", "").Split(',')];
+        Whitelist.Remove("");
+        Blacklist.Remove("");
+
         Depth = data.Int("depth", -15000);
         SpecialHandling = data.Bool("specialEntityHandling", true);
-        Catched = false;
+        Caught = false;
         EjectDuration = data.Float("ejectDuration", 0.5f);
         EjectDirection = data.Int("ejectDirection", 4);
         Path = data.Attr("path", "objects/FemtoHelper/SMWBlock/solid/");
@@ -217,19 +225,47 @@ public class Generic_SMWBlock : Solid
     {
         Player player = Scene.Tracker.GetEntity<Player>();
 
-        if (Catched == false && !SwitchMode)
+        if (Caught == false && !SwitchMode)
         {
             foreach (Entity entity in Scene.Entities)
             {
                 if (!Collide.CheckRect(entity, Rewardcatcher) && !Rewardcatcher.Contains((int)entity.X, (int)entity.Y)) continue;
                 if (entity == (Scene as Level).SolidTiles) continue;
+                
+                if(Whitelist.Count > 0)
+                {
+                    bool whitelisted = false;
+                    foreach(string str in Whitelist)
+                    {
+                        if (entity.GetType().FullName == str)
+                        {
+                            whitelisted = true;
+                            break;
+                        }
+                    }
+                    if (!whitelisted) continue;
+                } 
+                else
+                {
+                    bool blacklisted = false;
+                    foreach(string str in Blacklist)
+                    {
+                        if (entity.GetType().FullName == str)
+                        {
+                            blacklisted = true;
+                            break;
+                        }
+                    }
+                    if (blacklisted) continue;
+                }
+
                 Offsets.Add(entity.Position - new Vector2(Rewardcatcher.Center.X, Rewardcatcher.Center.Y));
                 Rewards.Add(entity);
                 if(InactiveReward) entity.Active = false;
                 if(InvisibleReward) entity.Visible = false;
                 if(UncollidableReward) entity.Collidable = false;
             }
-            Catched = true;
+            Caught = true;
         }
 
         if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)

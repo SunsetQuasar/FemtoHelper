@@ -71,6 +71,8 @@ FemtoHelperSMWBlock.placements = {
         affectActive = true,
         affectCollidable = false,
         dashableKaizo = false,
+        whitelist = "",
+        blacklist = ""
     },
 },
 {
@@ -112,6 +114,8 @@ FemtoHelperSMWBlock.placements = {
         affectActive = true,
         affectCollidable = false,
         dashableKaizo = false,
+        whitelist = "",
+        blacklist = ""
     }
 },
 {
@@ -153,6 +157,8 @@ FemtoHelperSMWBlock.placements = {
         affectActive = true,
         affectCollidable = false,
         dashableKaizo = false,
+        whitelist = "",
+        blacklist = ""
     }
 }
 }
