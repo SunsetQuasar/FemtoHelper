@@ -64,7 +64,7 @@ public static class PlutoniumTextNodes
     {
         List<Node> Nodes = [];
 
-        string[] splitStr = SimpleText.MyRegex().Split(dialogID);
+        string[] splitStr = SimpleText.MyRegex().Split(Dialog.Get(dialogID));
         string[] splitStr2 = new string[splitStr.Length];
         int num = 0;
         foreach (var t in splitStr)
