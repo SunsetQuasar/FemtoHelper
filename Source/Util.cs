@@ -32,7 +32,7 @@ public class Util
     {
         if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
         {
-            return (FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue?.Invoke(obj, session) ?? 0) != 0;
+            return (FemtoModule.FrostHelperSupport.GetBoolSessionExpressionValue?.Invoke(obj, session) ?? false);
         }
         else return false;
     }
@@ -41,7 +41,7 @@ public class Util
     {
         if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
         {
-            return (FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue?.Invoke(obj, session) ?? 0) != 0;
+            return (FemtoModule.FrostHelperSupport.GetBoolSessionExpressionValue?.Invoke(obj, session) ?? false);
         }
         else return session.FancyCheckFlag(exp);
     }

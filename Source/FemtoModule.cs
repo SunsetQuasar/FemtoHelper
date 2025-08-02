@@ -54,6 +54,7 @@ public class FemtoModule : EverestModule
         public static TryCreateSessionExpressionDelegate TryCreateSessionExpression;
 
         public static Func<object, Session, int> GetIntSessionExpressionValue;
+        public static Func<object, Session, bool> GetBoolSessionExpressionValue;
     }
 
     // Only one alive module instance can exist at any given time.

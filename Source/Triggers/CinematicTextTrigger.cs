@@ -49,6 +49,8 @@ public class CinematicTextTrigger(EntityData data, Vector2 offset) : Trigger(dat
                     t.DisappearPercent = 1f;
                     t.FinalStringLen = 0;
                     t.Finished = false;
+                    if (t.ActualSequence is { } q) t.Remove(q);
+                    t.ActualSequence = null;
                     return;
                 }
                 if (t.Active) t.StopText = true;

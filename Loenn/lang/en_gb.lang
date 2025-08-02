@@ -171,6 +171,10 @@ entities.FemtoHelper/GloriousPassage.attributes.description.keepDashes=Makes it 
 entities.FemtoHelper/GloriousPassage.attributes.description.sameRoom=Don't reload the room if the source room and destination room are the same.\nDoes nothing otherwise.
 entities.FemtoHelper/GloriousPassage.attributes.description.carryHoldablesOver=Allows the player to carry holdable entities through the teleport.\nNote: may not work with all holdables, especially Eevee Helper Holdable Containers.
 entities.FemtoHelper/GloriousPassage.attributes.description.flag=The flag set when the door is opened.
+entities.FemtoHelper/GloriousPassage.attributes.name.flag=Set Flag
+entities.FemtoHelper/GloriousPassage.attributes.name.enableFlag=Door Toggle Flag
+entities.FemtoHelper/GloriousPassage.attributes.description.enableFlag=If this field is not empty, the door will require a flag to work.\nPut "!" before the flag to invert it.\nSupports session expressions if Frost Helper is enabled.
+entities.FemtoHelper/GloriousPassage.attributes.description.visibleFlag=If this field is not empty, the door will require a flag to be visible.\nPut "!" before the flag to invert it.\nSupports session expressions if Frost Helper is enabled.
 
 # Custom Cliffside Wind Flag
 entities.FemtoHelper/CustomCliffsideWindFlag.placements.name.default=Custom Wind Flag
@@ -589,6 +593,40 @@ entities.FemtoHelper/OcularBarrier.attributes.description.inactiveColor=The barr
 entities.FemtoHelper/OcularBarrier.attributes.description.invertedActiveColor=The barrier's color when it is active and inverted.
 entities.FemtoHelper/OcularBarrier.attributes.description.invertedInactiveColor=The barrier's color when it is inactive and inverted.
 entities.FemtoHelper/OcularBarrier.attributes.description.texturePath=The texture path for the barrier's sprite.
+
+# Switch Movet
+
+entities.FemtoHelper/SwitchMovet.placements.name.SwitchMovet=Switch Movet
+entities.FemtoHelper/SwitchMovet.attributes.description.color=The color of the Switch Movet.\nSwitch Movets are only activated by Switch Movet Boxes of the same color.
+entities.FemtoHelper/SwitchMovet.attributes.description.path=The sprite path of the Switch Movet.
+
+# Switch Movet Box
+
+entities.FemtoHelper/SwitchMovetBox.placements.name.SwitchMovet=Switch Movet Box
+entities.FemtoHelper/SwitchMovetBox.attributes.description.color=The color of the Switch Movet Box.\nSwitch Movet Boxes only activate Switch Movets of the same color.
+entities.FemtoHelper/SwitchMovetBox.attributes.description.path=The sprite path of the Switch Movet Box.
+
+# Node Puffer
+
+entities.FemtoHelper/NodePuffer.placements.name.NodePufferLeft=Node Puffer (Left)
+entities.FemtoHelper/NodePuffer.placements.name.NodePufferRight=Node Puffer (Right)
+entities.FemtoHelper/NodePuffer.attributes.description.speed=The speed the puffer moves between nodes.
+entities.FemtoHelper/NodePuffer.attributes.description.right=The initial direction of the puffer.
+entities.FemtoHelper/NodePuffer.attributes.description.lineColor=The idle color of the node lines.
+entities.FemtoHelper/NodePuffer.attributes.description.activeLineColor=The color of the node line the puffer is about to visit.
+
+# The Contraption
+
+entities.FemtoHelper/TheContraption.placements.name.TheContraption=The Contraption
+entities.FemtoHelper/TheContraption.attributes.description.particles=Toggles smoke particles for the contraption.
+entities.FemtoHelper/TheContraption.attributes.description.reducedDebris=Reduces the amount of debris created by the contraption when breaking.
+entities.FemtoHelper/TheContraption.attributes.description.spritePath=The sprite path of the contraption.
+
+# Geen Block
+entities.FemtoHelper/GeenBlock.placements.name.geen=Geen Block
+entities.FemtoHelper/GeenBlock.placements.name.geenInv=Geen Block (Inverted)
+entities.FemtoHelper/GeenBlock.attributes.description.speed=The lift speed the Geen Block grants the player.\nNote that the game enforces a lift speed cap that can be changed via Extended Variants.
+entities.FemtoHelper/GeenBlock.attributes.description.inverse=Makes the block give lift speed opposite to the player's input direction.
 
 # SMW Shell
 entities.FemtoHelper/SMWShell.placements.name.smw_shell=SMW Shell

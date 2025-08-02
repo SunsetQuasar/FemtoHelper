@@ -33,7 +33,9 @@ FemtoHelperGloriousPassage.placements = {
 			depth = 120,
             sameRoom = true,
             carryHoldablesOver = true,
-			flag = ""
+			flag = "",
+            enableFlag = "",
+            visibilityFlag = "",
         }
 	},
 	{
@@ -53,7 +55,9 @@ FemtoHelperGloriousPassage.placements = {
 			depth = 120,
             sameRoom = true,
             carryHoldablesOver = true,
-			flag = ""
+			flag = "",
+            enableFlag = "",
+            visibilityFlag = "",
         }
 	},
 	{
@@ -73,7 +77,9 @@ FemtoHelperGloriousPassage.placements = {
 			depth = 120,
             sameRoom = true,
             carryHoldablesOver = true,
-			flag = ""
+			flag = "",
+            enableFlag = "",
+            visibilityFlag = "",
         }
     }
 }

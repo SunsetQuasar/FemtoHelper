@@ -28,7 +28,7 @@ public class GloriousPassage : Entity
     public readonly bool SameRoom;
     public bool CarryHoldablesOver;
     public readonly TalkComponent Talk;
-    private readonly string flag;
+    private readonly string enableFlag;
     private readonly string visibilityFlag;
     public GloriousPassage(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
@@ -48,7 +48,7 @@ public class GloriousPassage : Entity
         KeepDashes = data.Bool("keepDashes", false);
         SameRoom = data.Bool("sameRoom", false);
         CarryHoldablesOver = data.Bool("carryHoldablesOver", false);
-        flag = data.String("flag", "");
+        enableFlag = data.String("enableFlag", "");
         visibilityFlag = data.String("visibilityFlag", "");
         if (!InteractToOpen) return;
         Add(Talk = new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width / 2, -8), OnTalk));
@@ -82,7 +82,20 @@ public class GloriousPassage : Entity
 
     public override void Update()
     {
-        if (!Util.EvaluateExpressionAsBoolOrFancyFlag(flag, SceneAs<Level>().Session)) return;
+        if (!Util.EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
+        {
+            if(Talk != null && Talk.UI != null)
+            {
+                Talk.UI.Visible = false;
+            }
+            PlayerInside = false;
+            return;
+        } else {
+            if (Talk != null && Talk.UI != null)
+            {
+                Talk.UI.Visible = true;
+            }
+        }
         base.Update();
         if (PlayerInside && !Done && !InteractToOpen && Player != null && Player.OnGround() && Input.MoveY.Value == -1 && Lastinput != -1)
         {
@@ -255,8 +268,9 @@ public class GloriousPassage : Entity
 
     public override void Render()
     {
+        if (!Util.EvaluateExpressionAsBoolOrFancyFlag(visibilityFlag, SceneAs<Level>().Session)) return;
         base.Render();
-        if (Simple || !Util.EvaluateExpressionAsBoolOrFancyFlag(visibilityFlag, SceneAs<Level>().Session)) return;
+        if (Simple) return;
         if (Done)
         {
             Open.DrawCentered(Center);

@@ -43,7 +43,7 @@ public partial class CinematicText : Entity
     public readonly string ActivationTag;
     public readonly string NextTextTag;
 
-    public readonly Regex NoSound = new Regex(@"\.|!|,| |\?|\/|'|\*");
+    public readonly Regex NoSound = new(@"\.|!|,| |\?|\/|'|\*");
 
     public readonly float Scale;
     public readonly bool Hud;
@@ -71,6 +71,8 @@ public partial class CinematicText : Entity
     public readonly string VisibilityFlag;
 
     public readonly Vector2 RenderOffset;
+
+    public Coroutine ActualSequence = null;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
 
@@ -259,7 +261,7 @@ public partial class CinematicText : Entity
             return;
         }
         Active = true;
-        Add(new Coroutine(Sequence()));
+        if(ActualSequence == null) Add(ActualSequence = new Coroutine(Sequence()));
         if(InstantReload) (Scene as Level)?.Session.SetFlag("PlutoniumInstaReload_" + Id);
     }
 
@@ -310,6 +312,7 @@ public partial class CinematicText : Entity
             Finished = false;
         }
         else RemoveSelf();
+        ActualSequence = null;
     }
 
     public IEnumerator InstaSequence()

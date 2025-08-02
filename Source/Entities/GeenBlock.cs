@@ -179,7 +179,7 @@ public class GeenBlock : Solid
     {
         Position += Shake;
         DrawBlock(Vector2.Zero, deactivated ? Color.Gray : Color.White);
-        arrow.DrawOutline(Calc.HexToColor("070719"));
+        if (!deactivated) arrow.DrawOutline(Calc.HexToColor("070719"));
         base.Render();
         Position -= Shake;
     }
