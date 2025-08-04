@@ -71,7 +71,6 @@ public static class PlutoniumTextNodes
         {
             if (!string.IsNullOrEmpty(t))
             {
-                Console.WriteLine(t);
                 splitStr2[num++] = t;
             }
         }
