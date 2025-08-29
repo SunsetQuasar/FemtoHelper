@@ -260,12 +260,10 @@ public class Monopticon : Lookout
 
     public static void Player_ClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self)
     {
-        Input.Jump.ConsumeBuffer();
-
-
         Monopticon mono = self.Scene.Tracker.GetEntity<Monopticon>();
         if (mono != null)
         {
+            Input.Jump.ConsumeBuffer();
             if (mono.arbInteract || !mono.blockJump)
             {
                 orig(self);
