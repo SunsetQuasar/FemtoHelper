@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using Celeste.Mod.Entities;
 using Celeste.Mod.FemtoHelper.Utils;
+using MonoMod.Cil;
+using Celeste.Mod.Helpers;
+using Mono.Cecil;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -131,6 +134,32 @@ public class Monopticon : Lookout
         On.Celeste.Player.ClimbJump += Player_ClimbJump;
         On.Celeste.Actor.MoveHExact += Actor_MoveHExact;
         On.Celeste.Actor.MoveVExact += Actor_MoveVExact;
+        IL.Celeste.Player.ClimbUpdate += Player_ClimbUpdate;
+    }
+
+    private static void Player_ClimbUpdate(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        cursor.TryGotoNextBestFit(MoveType.After, 
+            (instr) => instr.MatchLdsfld(out var reference) && reference?.Name == "Jump",
+            (instr) => instr.MatchCallOrCallvirt(out var reference) && reference?.Name == "get_Pressed"
+            );
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate(ModClimbJumpCheck);
+        cursor.EmitAnd();
+    }
+
+    public static bool ModClimbJumpCheck(Player player)
+    {
+        Monopticon mono = player.Scene.Tracker.GetEntity<Monopticon>();
+        if (mono != null)
+        {
+            if (!mono.arbInteract && mono.blockJump)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static bool Actor_MoveHExact(On.Celeste.Actor.orig_MoveHExact orig, Actor self, int moveH, Collision onCollide, Solid pusher)
@@ -168,6 +197,7 @@ public class Monopticon : Lookout
         On.Celeste.Player.ClimbJump -= Player_ClimbJump;
         On.Celeste.Actor.MoveHExact -= Actor_MoveHExact;
         On.Celeste.Actor.MoveVExact -= Actor_MoveVExact;
+        IL.Celeste.Player.ClimbUpdate -= Player_ClimbUpdate;
     }
 
     public override void Awake(Scene scene)
@@ -263,7 +293,6 @@ public class Monopticon : Lookout
         Monopticon mono = self.Scene.Tracker.GetEntity<Monopticon>();
         if (mono != null)
         {
-            Input.Jump.ConsumeBuffer();
             if (mono.arbInteract || !mono.blockJump)
             {
                 orig(self);
