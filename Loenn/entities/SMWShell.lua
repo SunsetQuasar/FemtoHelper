@@ -35,11 +35,11 @@ FemtoHelperSMWShell.placements = {
             canBeBouncedOn = true,
             touchKickBehavior = "Normal",
             carriable = true,
-            shellSpeed = 200,
+            shellSpeed = 182,
             discoSpeed = 120,
             discoAcceleration = 700,
             gravity = 750,
-            airFriction = 200,
+            airFriction = 0,
             groundFriction = 800,
             idleActivateTouchSwitches = true,
             discoSleep = false,
@@ -51,6 +51,9 @@ FemtoHelperSMWShell.placements = {
             downwardsLeniencySpeed = 300,
             holdYOffset = -6,
             holdYCrouchOffset = -6,
+            useFixedThrowSpeeds = false,
+            fixedNeutralThrowSpeed = 182,
+            fixedForwardThrowSpeed = 182
         }
     },
     {
@@ -67,11 +70,11 @@ FemtoHelperSMWShell.placements = {
             canBeBouncedOn = true,
             touchKickBehavior = "Normal",
             carriable = true,
-            shellSpeed = 200,
+            shellSpeed = 182,
             discoSpeed = 120,
             discoAcceleration = 700,
             gravity = 750,
-            airFriction = 200,
+            airFriction = 0,
             groundFriction = 800,
             idleActivateTouchSwitches = true,
             discoSleep = false,
@@ -83,6 +86,9 @@ FemtoHelperSMWShell.placements = {
             downwardsLeniencySpeed = 300,
             holdYOffset = -6,
             holdYCrouchOffset = -6,
+            useFixedThrowSpeeds = false,
+            fixedNeutralThrowSpeed = 182,
+            fixedForwardThrowSpeed = 182
         }
     }
 }
