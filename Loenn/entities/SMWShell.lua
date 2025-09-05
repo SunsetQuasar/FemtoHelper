@@ -49,6 +49,8 @@ FemtoHelperSMWShell.placements = {
             discoSpriteRate = 50,
             bubble = false,
             downwardsLeniencySpeed = 300,
+            holdYOffset = -6,
+            holdYCrouchOffset = -6,
         }
     },
     {
@@ -79,6 +81,8 @@ FemtoHelperSMWShell.placements = {
             discoSpriteRate = 50,
             bubble = false,
             downwardsLeniencySpeed = 300,
+            holdYOffset = -6,
+            holdYCrouchOffset = -6,
         }
     }
 }

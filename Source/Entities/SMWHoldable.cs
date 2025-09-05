@@ -17,9 +17,13 @@ public class SMWHoldable : Holdable
     public Action<Vector2> OnClipWiggleSuccess;
 
     public float TurnPercent;
+    public int yOffset;
+    public int crouchYOffset;
 
-    public SMWHoldable() : base(0f)
+    public SMWHoldable(int yOffset = 0, int crouchYOffset = 0) : base(0f)
     {
+        this.yOffset = yOffset;
+        this.crouchYOffset = crouchYOffset;
     }
 
     private static ILHook _hookPickupCoroutine;
@@ -146,7 +150,7 @@ public class SMWHoldable : Holdable
             }
 
             float x = Calc.LerpClamp(-12, 12, Ease.CubeInOut(smwholdable.TurnPercent));
-            float y = self.Ducking ? -8 : -12;
+            float y = self.Ducking ? smwholdable.crouchYOffset : smwholdable.yOffset;
             self.carryOffset = new(x, y);
         }
 

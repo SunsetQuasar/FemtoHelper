@@ -192,7 +192,7 @@ public class SMWShell : Actor
         Add(bonkCollider = new PlayerCollider(OnPlayerBonk, new Hitbox(12f, 7f, -6f, -9f)));
 
         Depth = -10;
-        Add(hold = new SMWHoldable());
+        Add(hold = new SMWHoldable(data.Int("holdYOffset", -6), data.Int("holdYCrouchOffset", -6)));
 
         string prefix = data.Attr("texturesPrefix", "objects/FemtoHelper/SMWShell/");
 
