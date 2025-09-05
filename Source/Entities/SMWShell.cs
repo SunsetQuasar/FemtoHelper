@@ -113,6 +113,13 @@ public class SMWShell : Actor
         SpriteText = 2
     }
 
+    private enum OutlineTextureType
+    {
+        None = 0,
+        Black = 1,
+        White = 2
+    }
+
     private BounceCountDisplay displayConfig;
 
     private States state = States.Dropped;
@@ -186,6 +193,14 @@ public class SMWShell : Actor
     private float fixedNeutralThrowSpeed;
     private float fixedForwardThrowSpeed;
 
+    private OutlineTextureType outlineTextureType;
+
+    private float playerThrownUpTimer;
+
+    public static readonly MTexture outlineTextureBlack = GFX.Game["objects/FemtoHelper/SMWShell/outline_black"];
+
+    public static readonly MTexture outlineTextureWhite = GFX.Game["objects/FemtoHelper/SMWShell/outline_white"];
+
     public SMWShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Position.Y++;   //let's pretend the placement doesn't spawn the shell 1px above the ground
@@ -240,6 +255,8 @@ public class SMWShell : Actor
         fixedForwardThrowSpeed = data.Float("fixedForwardThrowSpeed", 182);
 
         noInteractionDuration = data.Float("noInteractionDuration", 0.28f);
+
+        outlineTextureType = data.Enum("outlineTextureType", OutlineTextureType.None);
 
         bubble = data.Bool("bubble", false);
 
@@ -587,6 +604,10 @@ public class SMWShell : Actor
             dontTouchKickTimer -= Engine.DeltaTime;
             if (hold.IsHeld) dontTouchKickTimer = 0;
         }
+        if (playerThrownUpTimer > 0)
+        {
+            playerThrownUpTimer -= Engine.DeltaTime;
+        }
         if (hold.IsHeld)
         {
             prevLiftSpeed = Vector2.Zero;
@@ -619,12 +640,12 @@ public class SMWShell : Actor
             if (isDisco)
             {
                 Player player = Scene.Tracker.GetEntity<Player>();
-                if(player != null && (!discoSleep || playerHasMoved))
+                if (player != null && (!discoSleep || playerHasMoved))
                 {
-                    if(player.CenterX > CenterX)
+                    if (player.CenterX > CenterX)
                     {
                         discoTarget = 1f;
-                    } 
+                    }
                     else
                     {
                         discoTarget = -1f;
@@ -705,7 +726,7 @@ public class SMWShell : Actor
             }
             MoveH(speed.X * Engine.DeltaTime, onCollideH);
             MoveV(speed.Y * Engine.DeltaTime, onCollideV);
-            if(state != States.Dropped || idleActivateTouchSwitches)
+            if (state != States.Dropped || idleActivateTouchSwitches)
             {
                 foreach (TouchSwitch entity2 in base.Scene.Tracker.GetEntities<TouchSwitch>())
                 {
@@ -804,6 +825,7 @@ public class SMWShell : Actor
         else if (force.Y == 0 && Input.Aim.Value.Y < 0f)
         {
             // up throw
+            playerThrownUpTimer = 4f;
             Splash(Center);
             Audio.Play($"{audioPath}shellkick", Center);
             throwSpeed.X = player.Speed.X * 2f / 3f;
@@ -866,6 +888,16 @@ public class SMWShell : Actor
             for (int i = 0; i < 24; i++)
             {
                 Draw.Point(Position + PlatformAdd(i), PlatformColor(i));
+            }
+        }
+        if (outlineTextureType != OutlineTextureType.None && playerThrownUpTimer > 0)
+        {
+            var camera = SceneAs<Level>().Camera;
+            if (Bottom < camera.Top)
+            {
+                var distance = camera.Top - Bottom;
+                var texture = outlineTextureType == OutlineTextureType.Black ? outlineTextureBlack : outlineTextureWhite;
+                texture.Draw(new Vector2(Left - 3, camera.Top - (distance / 16)));
             }
         }
     }

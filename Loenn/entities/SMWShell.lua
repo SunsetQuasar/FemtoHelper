@@ -18,6 +18,12 @@ FemtoHelperSMWShell.fieldInformation = {
             "Normal", "Ignore", "Kill"
         },
         editable = false
+    },
+    outlineTextureType = {
+        options = {
+            "none", "black", "white"
+        },
+        editable = false
     }
 }
 FemtoHelperSMWShell.placements = {
@@ -55,6 +61,7 @@ FemtoHelperSMWShell.placements = {
             fixedNeutralThrowSpeed = 182,
             fixedForwardThrowSpeed = 182,
             noInteractionDuration =  0.28,
+            outlineTextureType = "none"
         }
     },
     {
@@ -91,6 +98,7 @@ FemtoHelperSMWShell.placements = {
             fixedNeutralThrowSpeed = 182,
             fixedForwardThrowSpeed = 182,
             noInteractionDuration =  0.28,
+            outlineTextureType = "none"
         }
     }
 }
