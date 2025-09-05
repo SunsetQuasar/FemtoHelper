@@ -53,7 +53,8 @@ FemtoHelperSMWShell.placements = {
             holdYCrouchOffset = -6,
             useFixedThrowSpeeds = false,
             fixedNeutralThrowSpeed = 182,
-            fixedForwardThrowSpeed = 182
+            fixedForwardThrowSpeed = 182,
+            noInteractionDuration =  0.28,
         }
     },
     {
@@ -88,7 +89,8 @@ FemtoHelperSMWShell.placements = {
             holdYCrouchOffset = -6,
             useFixedThrowSpeeds = false,
             fixedNeutralThrowSpeed = 182,
-            fixedForwardThrowSpeed = 182
+            fixedForwardThrowSpeed = 182,
+            noInteractionDuration =  0.28,
         }
     }
 }

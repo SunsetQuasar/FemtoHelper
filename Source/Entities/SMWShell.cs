@@ -130,6 +130,7 @@ public class SMWShell : Actor
 
     private float dontKillTimer;
     private float dontTouchKickTimer;
+    private readonly float noInteractionDuration;
 
     private readonly float gravity;
 
@@ -237,6 +238,8 @@ public class SMWShell : Actor
         useFixedThrowSpeeds = data.Bool("useFixedThrowSpeeds", false);
         fixedNeutralThrowSpeed = data.Float("fixedNeutralThrowSpeed", 182);
         fixedForwardThrowSpeed = data.Float("fixedForwardThrowSpeed", 182);
+
+        noInteractionDuration = data.Float("noInteractionDuration", 0.28f);
 
         bubble = data.Bool("bubble", false);
 
@@ -479,7 +482,7 @@ public class SMWShell : Actor
         if (spd != null) hold.SetSpeed(Vector2.One * spd ?? Vector2.Zero);
         state = States.Kicked;
         bounceCount = initialBounceCount;
-        dontKillTimer = 0.1f;
+        dontKillTimer = noInteractionDuration;
         hold.cannotHoldTimer = 0.02f;
         ChangeSprite("kicked");
         Audio.Play($"{audioPath}shellkick", Center);
