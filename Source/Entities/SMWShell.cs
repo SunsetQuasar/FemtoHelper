@@ -345,7 +345,11 @@ public class SMWShell : Actor
             {
                 if (dontKillTimer <= 0)
                 {
-                    if (!(downwardsLeniencySpeed >= 0 && p.Speed.LengthSquared() >= downwardsLeniencySpeed * downwardsLeniencySpeed && p.Speed.Y > 0))
+                    if (p.Speed.Y >= 0 && p.Bottom < Bottom - 2)
+                    {
+                        return;
+                    }
+                    else if (!(downwardsLeniencySpeed >= 0 && p.Speed.LengthSquared() >= downwardsLeniencySpeed * downwardsLeniencySpeed && p.Speed.Y > 0))
                     {
                         p.Die((Position - p.Center).SafeNormalize());
                     }
@@ -383,6 +387,7 @@ public class SMWShell : Actor
         bounceCount--;
         if (bounceCount == 0)
         {
+            hold.cannotHoldTimer = 0.2f;
             Drop();
         }
         else dontKillTimer = 0.15f;
@@ -416,7 +421,11 @@ public class SMWShell : Actor
         {
             if (dontKillTimer <= 0)
             {
-                if (!(downwardsLeniencySpeed >= 0 && p.Speed.LengthSquared() >= downwardsLeniencySpeed * downwardsLeniencySpeed && p.Speed.Y > 0))
+                if (p.Speed.Y >= 0 && p.Bottom < Bottom - 2)
+                {
+                    return;
+                }
+                else if (!(downwardsLeniencySpeed >= 0 && p.Speed.LengthSquared() >= downwardsLeniencySpeed * downwardsLeniencySpeed && p.Speed.Y > 0))
                 {
                     p.Die((Position - p.Center).SafeNormalize());
                 }
@@ -827,7 +836,6 @@ public class SMWShell : Actor
             {
                 // forward throw
                 throwSpeed.X = (Math.Sign(player.Speed.X) * shellSpeed) + (player.Speed.X / 2f);
-                Logger.Log(LogLevel.Info, "FemtoHelper", $"{throwSpeed.X}");
             }
             shouldKick = true;
         }
