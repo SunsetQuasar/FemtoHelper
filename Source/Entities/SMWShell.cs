@@ -206,10 +206,10 @@ public class SMWShell : Actor
         Position.Y++;   //let's pretend the placement doesn't spawn the shell 1px above the ground
         speed = Vector2.Zero;
 
-        Collider = new Hitbox(12f, 9f, -6f, -2f);
+        Collider = new Hitbox(12f, 15f, -6f, -8f);
         Add(new PlayerCollider(OnPlayer));
 
-        Add(bonkCollider = new PlayerCollider(OnPlayerBonk, new Hitbox(12f, 7f, -6f, -9f)));
+        Add(bonkCollider = new PlayerCollider(OnPlayerBonk, new Hitbox(12f, 15f, -6f, -8f)));
 
         Depth = -10;
         Add(hold = new SMWHoldable(data.Int("holdYOffset", -6), data.Int("holdYCrouchOffset", -6)));
@@ -290,7 +290,7 @@ public class SMWShell : Actor
 
         sprite.RenderPosition -= new Vector2(sprite.Width / 2, sprite.Height / 2);
 
-        hold.PickupCollider = new Hitbox(20f, 14f, -10f, -2f);
+        hold.PickupCollider = new Hitbox(20f, 20f, -10f, -8f);
         hold.SlowFall = false;
         hold.SlowRun = false;
         hold.OnPickup = OnPickup;
@@ -324,12 +324,12 @@ public class SMWShell : Actor
         if (newValue == 0) //normal gravity
         {
             sprite.Position.Y = -8f;
-            bonkCollider.Collider.Position.Y = -9f;
+            bonkCollider.Collider.Position.Y = -8f;
         } 
         else // inverted
         {
             sprite.Position.Y = 8f;
-            bonkCollider.Collider.Position.Y = 2f;
+            bonkCollider.Collider.Position.Y = 1f;
         }
 
     }
