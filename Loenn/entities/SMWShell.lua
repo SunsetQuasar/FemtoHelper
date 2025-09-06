@@ -18,6 +18,12 @@ FemtoHelperSMWShell.fieldInformation = {
             "Normal", "Ignore", "Kill"
         },
         editable = false
+    },
+    outlineTextureType = {
+        options = {
+            "none", "black", "white"
+        },
+        editable = false
     }
 }
 FemtoHelperSMWShell.placements = {
@@ -35,11 +41,11 @@ FemtoHelperSMWShell.placements = {
             canBeBouncedOn = true,
             touchKickBehavior = "Normal",
             carriable = true,
-            shellSpeed = 200,
+            shellSpeed = 182,
             discoSpeed = 120,
             discoAcceleration = 700,
             gravity = 750,
-            airFriction = 200,
+            airFriction = 0,
             groundFriction = 800,
             idleActivateTouchSwitches = true,
             discoSleep = false,
@@ -49,6 +55,13 @@ FemtoHelperSMWShell.placements = {
             discoSpriteRate = 50,
             bubble = false,
             downwardsLeniencySpeed = 300,
+            holdYOffset = -6,
+            holdYCrouchOffset = -6,
+            useFixedThrowSpeeds = false,
+            fixedNeutralThrowSpeed = 182,
+            fixedForwardThrowSpeed = 182,
+            noInteractionDuration =  0.28,
+            outlineTextureType = "none"
         }
     },
     {
@@ -65,11 +78,11 @@ FemtoHelperSMWShell.placements = {
             canBeBouncedOn = true,
             touchKickBehavior = "Normal",
             carriable = true,
-            shellSpeed = 200,
+            shellSpeed = 182,
             discoSpeed = 120,
             discoAcceleration = 700,
             gravity = 750,
-            airFriction = 200,
+            airFriction = 0,
             groundFriction = 800,
             idleActivateTouchSwitches = true,
             discoSleep = false,
@@ -79,6 +92,13 @@ FemtoHelperSMWShell.placements = {
             discoSpriteRate = 50,
             bubble = false,
             downwardsLeniencySpeed = 300,
+            holdYOffset = -6,
+            holdYCrouchOffset = -6,
+            useFixedThrowSpeeds = false,
+            fixedNeutralThrowSpeed = 182,
+            fixedForwardThrowSpeed = 182,
+            noInteractionDuration =  0.28,
+            outlineTextureType = "none"
         }
     }
 }
