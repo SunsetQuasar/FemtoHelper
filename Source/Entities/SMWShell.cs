@@ -117,7 +117,8 @@ public class SMWShell : Actor
     {
         None = 0,
         Black = 1,
-        White = 2
+        White = 2,
+        Tiny = 3
     }
 
     private BounceCountDisplay displayConfig;
@@ -165,6 +166,7 @@ public class SMWShell : Actor
     private readonly float airFriction;
     private readonly float groundFriction;
     private readonly float maxFallSpeed;
+    private readonly float upwardsThrowSpeed;
     private readonly bool idleActivateTouchSwitches;
     private readonly bool capSpeed;
 
@@ -201,18 +203,22 @@ public class SMWShell : Actor
 
     public static readonly MTexture outlineTextureWhite = GFX.Game["objects/FemtoHelper/SMWShell/outline_white"];
 
+    public static readonly MTexture outlineTextureTiny = GFX.Game["objects/FemtoHelper/SMWShell/outline_tiny"];
+
     public SMWShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Position.Y++;   //let's pretend the placement doesn't spawn the shell 1px above the ground
         speed = Vector2.Zero;
 
-        Collider = new Hitbox(12f, 15f, -6f, -8f);
+        bool legacy = data.Bool("legacy", true);
+
+        Collider = legacy ? new Hitbox(12f, 9f, -6f, -2f) : new Hitbox(12f, 12f, -6f, -5f);
         Add(new PlayerCollider(OnPlayer));
 
-        Add(bonkCollider = new PlayerCollider(OnPlayerBonk, new Hitbox(12f, 15f, -6f, -8f)));
+        Add(bonkCollider = new PlayerCollider(OnPlayerBonk, legacy ? new Hitbox(12f, 7f, -6f, -9f) : new Hitbox(12f, 15f, -6f, -8f)));
 
         Depth = -10;
-        Add(hold = new SMWHoldable(data.Int("holdYOffset", -6), data.Int("holdYCrouchOffset", -6)));
+        Add(hold = new SMWHoldable(data.Int("holdYOffset", -12), data.Int("holdYCrouchOffset", -8)));
 
         string prefix = data.Attr("texturesPrefix", "objects/FemtoHelper/SMWShell/");
 
@@ -233,13 +239,14 @@ public class SMWShell : Actor
         canBeBouncedOn = data.Bool("canBeBouncedOn", true);
         touchKickBehavior = data.Enum("touchKickBehavior", TouchKickBehaviors.Normal);
 
-        shellSpeed = data.Float("shellSpeed", 182);
+        shellSpeed = data.Float("shellSpeed", 200);
         discoSpeed = data.Float("discoSpeed", 120);
         discoAcceleration = data.Float("discoAcceleration", 700);
         gravity = data.Float("gravity", 800);
         airFriction = data.Float("airFriction", 250);
         groundFriction = data.Float("groundFriction", 800);
         maxFallSpeed = data.Float("maxFallSpeed", 200f);
+        upwardsThrowSpeed = data.Float("upwardsThrowSpeed", -300);
         idleActivateTouchSwitches = data.Bool("idleActivateTouchSwitches", true);
         discoSleep = data.Bool("discoSleep", false);
         capSpeed = data.Bool("capSpeed", true);
@@ -254,7 +261,7 @@ public class SMWShell : Actor
         fixedNeutralThrowSpeed = data.Float("fixedNeutralThrowSpeed", 182);
         fixedForwardThrowSpeed = data.Float("fixedForwardThrowSpeed", 182);
 
-        noInteractionDuration = data.Float("noInteractionDuration", 0.28f);
+        noInteractionDuration = data.Float("noInteractionDuration", 0.1f);
 
         outlineTextureType = data.Enum("outlineTextureType", OutlineTextureType.None);
 
@@ -290,7 +297,7 @@ public class SMWShell : Actor
 
         sprite.RenderPosition -= new Vector2(sprite.Width / 2, sprite.Height / 2);
 
-        hold.PickupCollider = new Hitbox(20f, 20f, -10f, -8f);
+        hold.PickupCollider = legacy ? new Hitbox(20f, 14f, -10f, -2f) : new Hitbox(20f, 20f, -10f, -8f);
         hold.SlowFall = false;
         hold.SlowRun = false;
         hold.OnPickup = OnPickup;
@@ -829,7 +836,7 @@ public class SMWShell : Actor
             Splash(Center);
             Audio.Play($"{audioPath}shellkick", Center);
             throwSpeed.X = player.Speed.X * 2f / 3f;
-            throwSpeed.Y = -400f;
+            throwSpeed.Y = upwardsThrowSpeed;
         }
         else if (useFixedThrowSpeeds)
         {
@@ -896,8 +903,8 @@ public class SMWShell : Actor
             if (Bottom < camera.Top)
             {
                 var distance = camera.Top - Bottom;
-                var texture = outlineTextureType == OutlineTextureType.Black ? outlineTextureBlack : outlineTextureWhite;
-                texture.Draw(new Vector2(Left - 3, camera.Top - (distance / 16)));
+                var texture = outlineTextureType == OutlineTextureType.Black ? outlineTextureBlack : outlineTextureType == OutlineTextureType.White ? outlineTextureWhite : outlineTextureTiny;
+                texture.Draw(new Vector2(Left - 3, camera.Top - (distance / 16)).Floor());
             }
         }
     }
