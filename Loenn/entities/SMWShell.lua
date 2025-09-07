@@ -60,9 +60,10 @@ FemtoHelperSMWShell.placements = {
             useFixedThrowSpeeds = false,
             fixedNeutralThrowSpeed = 182,
             fixedForwardThrowSpeed = 182,
-            noInteractionDuration =  0.28,
-            outlineTextureType = "tiny",
+            noInteractionDuration = 0.28,
+            outlineTextureType = "Tiny",
             upwardsThrowSpeed = -400,
+            dontRefill = false,
         }
     },
     {
@@ -99,8 +100,9 @@ FemtoHelperSMWShell.placements = {
             fixedNeutralThrowSpeed = 182,
             fixedForwardThrowSpeed = 182,
             noInteractionDuration =  0.28,
-            outlineTextureType = "tiny",
+            outlineTextureType = "Tiny",
             upwardsThrowSpeed = -400,
+            dontRefill = false,
         }
     }
 }

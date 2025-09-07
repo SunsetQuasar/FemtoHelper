@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Utils;
 public class Util
@@ -231,5 +232,28 @@ public static class Vector2Extensions
             vec = new(-1, 0);
         }
         return vec;
+    }
+}
+
+public static class PlayerExtensions
+{
+    public static void BounceMaybeRefill(this Player player, float fromY, bool refill)
+    {
+        var dashes = player.Dashes;
+        player.Bounce(fromY);
+        if (!refill)
+        {
+            player.Dashes = dashes;
+        }
+    }
+
+    public static void PointBounceMaybeRefill(this Player player, Vector2 from, bool refill)
+    {
+        var dashes = player.Dashes;
+        player.PointBounce(from);
+        if (!refill)
+        {
+            player.Dashes = dashes;
+        }
     }
 }

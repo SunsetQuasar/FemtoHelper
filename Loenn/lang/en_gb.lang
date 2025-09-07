@@ -516,6 +516,7 @@ entities.FemtoHelper/MovingWaterBlock.attributes.description.angle=The Move Bloc
 entities.FemtoHelper/MovingWaterBlock.attributes.description.canCarry=Whether the Water Move Block can carry the player with it and give liftboost or not. 
 entities.FemtoHelper/MovingWaterBlock.attributes.description.maxSpeed=The Move Block's maximum speed.
 entities.FemtoHelper/MovingWaterBlock.attributes.description.acceleration=How fast the Move Block accelerates to full speed.
+entities.FemtoHelper/MovingWaterBlock.attributes.description.ignoreBarriers=Whether the block should ignore Seeker Barriers.\nStill collides with room bounds.
 
 # Water Block
 
@@ -656,6 +657,13 @@ entities.FemtoHelper/SMWShell.attributes.description.bounceCountDisplay=Which ki
 entities.FemtoHelper/SMWShell.attributes.description.discoSpriteRate=The rate in which the sprites in the Disco Shell cycle.\nNote: this value is divided by 4 if photosensitivity mode is enabled.
 entities.FemtoHelper/SMWShell.attributes.description.bubble=Whether the Shell should be hovering in the air before being interacted with.
 entities.FemtoHelper/SMWShell.attributes.description.downwardsLeniencySpeed=If the player is moving faster than this speed treshold and moving downwards, the shell cannot kill the player.\nUseful for more lenient high-speed tech.
+entities.FemtoHelper/SMWShell.attributes.description.useFixedThrowSpeeds=Makes the Shell's speed upon being thrown unbound to the player's speed.
+entities.FemtoHelper/SMWShell.attributes.description.fixedNeutralThrowSpeed=The fixed Shell speed when being thrown with neutral horizontal input.\nDoes nothing if "Use Fixed Throw Speeds" isn't set.
+entities.FemtoHelper/SMWShell.attributes.description.fixedForwardThrowSpeed=The fixed Shell speed when being thrown forwards.\nDoes nothing if "Use Fixed Throw Speeds" isn't set.
+entities.FemtoHelper/SMWShell.attributes.description.noInteractionDuration=The amount of time the Shell cannot be interacted with right after being thrown.
+entities.FemtoHelper/SMWShell.attributes.description.outlineTextureType=The indicator sprite for when a Shell is above the screen. 
+entities.FemtoHelper/SMWShell.attributes.description.upwardsThrowSpeed=The Shell's speed upon being thrown upwards.
+entities.FemtoHelper/SMWShell.attributes.description.dontRefill=Makes the Shell not refill the player's dash when bounced on.
 
 # ---------- Triggers ----------
 

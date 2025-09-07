@@ -30,6 +30,7 @@ FemtoHelperWaterMoveBlock.placements = {
             canCarry = true,
             spritePath = 'objects/FemtoHelper/moveWater/',
             acceleration = 80,
+            ignoreBarriers = false
         }
     }
 }

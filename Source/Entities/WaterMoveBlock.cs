@@ -66,6 +66,8 @@ public class MovingWaterBlock : GenericWaterBlock
     public readonly WaterSprite Sprite;
 
     private readonly float Acceleration;
+
+    private readonly bool ignoreBarriers;
     public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
 
@@ -77,6 +79,7 @@ public class MovingWaterBlock : GenericWaterBlock
         TargetSpeed = data.Float("maxSpeed", 60f);
         Acceleration = data.Float("acceleration", 160f);
         Angle = data.Float("angle", 90f) / 180 * MathF.PI;
+        ignoreBarriers = data.Bool("ignoreBarriers", false);
         Arrow = GFX.Game[prefix + "arrow"];
         Deadsprite = GFX.Game[prefix + "dead"];
         Depth = -51000;
@@ -122,13 +125,13 @@ public class MovingWaterBlock : GenericWaterBlock
             }
         }
 
-        //MoveTo(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime);
+        if (ignoreBarriers) MoveTo(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime);
 
         if ((Left < (Scene as Level).Bounds.Left || 
             Right > (Scene as Level).Bounds.Right || 
             Top < (Scene as Level).Bounds.Top || 
             Bottom > (Scene as Level).Bounds.Bottom || 
-            MoveToCollideBarriers(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime))
+            (!ignoreBarriers && MoveToCollideBarriers(Position + Calc.AngleToVector(Angle, Speed) * Engine.DeltaTime)))
           && !Dying)
         {
             Add(new Coroutine(Destroy()));

@@ -169,6 +169,7 @@ public class SMWShell : Actor
     private readonly float upwardsThrowSpeed;
     private readonly bool idleActivateTouchSwitches;
     private readonly bool capSpeed;
+    private readonly bool dontRefill;
 
     private readonly bool discoSleep;
 
@@ -250,6 +251,7 @@ public class SMWShell : Actor
         idleActivateTouchSwitches = data.Bool("idleActivateTouchSwitches", true);
         discoSleep = data.Bool("discoSleep", false);
         capSpeed = data.Bool("capSpeed", true);
+        dontRefill = data.Bool("dontRefill", false);
 
         initialBounceCount = data.Int("bounceCount", 1);
         displayConfig = data.Enum("bounceCountDisplay", BounceCountDisplay.SpriteText);
@@ -389,7 +391,7 @@ public class SMWShell : Actor
         if (isDisco && dontKillTimer <= 0)
         {
             if (bubble) UnBubble();
-            p.PointBounce(Center);
+            p.PointBounceMaybeRefill(Center, !dontRefill);
             p.Speed *= new Vector2(0.5f, 0.75f);
             p.varJumpSpeed = p.Speed.Y;
             p.varJumpTimer = 0.25f;
@@ -407,7 +409,7 @@ public class SMWShell : Actor
         if (state != States.Kicked || dontKillTimer > 0) return;
         if (doFreezeFrames) Celeste.Freeze(0.05f);
         Input.Rumble(RumbleStrength.Light, RumbleLength.Short);
-        p.Bounce(gravityState == 0 ? Top : Bottom);
+        p.BounceMaybeRefill(gravityState == 0 ? Top : Bottom, !dontRefill);
         bounceCount--;
         if (bounceCount == 0)
         {
