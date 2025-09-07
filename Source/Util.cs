@@ -215,3 +215,21 @@ public static class EntityExtensions
         return false;
     }
 }
+
+public static class Vector2Extensions
+{
+    public static Vector2 FourWayNormalHorizontalBias(this Vector2 vec)
+    {
+        float angle = vec.Angle().ToDeg();
+        
+        if (angle >= -45 && angle <= 45)
+        {
+            vec = new(1, 0);
+        } 
+        else if ((angle <= -135 && angle >= -180) || (angle >= 135 && angle <= 180))
+        {
+            vec = new(-1, 0);
+        }
+        return vec;
+    }
+}

@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using Celeste.Mod.FemtoHelper.Utils;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -72,6 +73,8 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
 
     public bool OopsNotVisible;
 
+    public bool FourWay;
+
     public readonly bool Patient;
 
     public BoostingBoosterSorryIStoleFromCommunalHelper(EntityData data, Vector2 offset)
@@ -80,6 +83,7 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
         TheTimer = Calc.Random.Range(0, (float)Math.PI * 2);
         OopsNotVisible = false;
         Patient = data.Bool("patient", false);
+        FourWay = data.Bool("fourWay", false);
         boosterData = new DynData<Booster>(this);
         PCustomAppear = new ParticleType
         {
@@ -264,7 +268,7 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
         yield return 0.4f;
         if (player.Dead) yield break;
         Audio.Play("event:/new_content/game/10_farewell/puffer_splode", player.Position);
-        Vector2 vector2 = player.ExplodeLaunch(player.Center - (new Vector2(Input.MoveX, Input.MoveY) * 4).EightWayNormal(), snapUp: false);
+        Vector2 vector2 = player.ExplodeLaunch(player.Center - (customBooster.FourWay ? (new Vector2(Input.MoveX, Input.MoveY) * 4).FourWayNormalHorizontalBias() : (new Vector2(Input.MoveX, Input.MoveY) * 4).EightWayNormal()), snapUp: false);
         (customBooster.Scene as Level)?.DirectionalShake(vector2, 0.15f);
         (customBooster.Scene as Level)?.Displacement.AddBurst(player.Center, 0.3f, 8f, 32f, 0.8f);
         (customBooster.Scene as Level)?.Particles.Emit(customBooster.PCustomBurst2, 12, player.Center, Vector2.One * 3f, vector2.Angle());
