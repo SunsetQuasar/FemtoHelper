@@ -21,13 +21,9 @@ public class AssistHazardController : Entity
     {
         base.Added(scene);
         Level level = SceneAs<Level>();
-        foreach (var entity1 in level.Tracker.GetEntities<AssistHazardController>())
+        foreach (var entity in level.Tracker.GetEntities<AssistHazardController>().Cast<AssistHazardController>().Where(entity => entity != this))
         {
-            var entity = (AssistHazardController)entity1;
-            if (entity != this)
-            {
-                entity.RemoveSelf();
-            }
+            entity.RemoveSelf();
         }
     }
 }
