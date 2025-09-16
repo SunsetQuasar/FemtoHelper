@@ -19,7 +19,7 @@ public class WaterSprite : GraphicsComponent
     public Wiggler Wiggle;
     public Vector2 ExtraSize;
 
-    public bool drawn;
+    public bool Drawn;
     public WaterSprite(string path = "objects/FemtoHelper/moveWater/nineSlice") : base(true)
     {
         if (Everest.Content.TryGet($"Effects/FemtoHelper/WaterSprite.cso", out var effectAsset, true))
@@ -59,7 +59,7 @@ public class WaterSprite : GraphicsComponent
 
     public void BeforeRender()
     {
-        if (drawn) return;
+        if (Drawn) return;
         Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
         Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
 
@@ -105,7 +105,7 @@ public class WaterSprite : GraphicsComponent
             }
         }
 
-        drawn = true;
+        Drawn = true;
 
         Draw.SpriteBatch.End();
 

@@ -13,46 +13,46 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/OcularBarrier")]
 public class OcularBarrier : Solid
 {
-    public string flag;
-    public bool invert;
-    public MTexture[,] nineSliceOn;
-    public MTexture[,] nineSliceOff;
-    public MTexture centerOn;
-    public MTexture centerOff;
-    public Color color1;
-    public Color color2;
-    public Color color3;
-    public Color color4;
-    public float flashTimer;
-    public BloomPoint bloom;
-    public Color ReturnColor => invert ? Color.Lerp(Collidable ? color3 : color4, Color.White, Ease.CubeOut(flashTimer)) : Color.Lerp(Collidable ? color1 : color2, Color.White, Ease.CubeOut(flashTimer));
+    public string Flag;
+    public bool Invert;
+    public MTexture[,] NineSliceOn;
+    public MTexture[,] NineSliceOff;
+    public MTexture CenterOn;
+    public MTexture CenterOff;
+    public Color Color1;
+    public Color Color2;
+    public Color Color3;
+    public Color Color4;
+    public float FlashTimer;
+    public BloomPoint Bloom;
+    public Color ReturnColor => Invert ? Color.Lerp(Collidable ? Color3 : Color4, Color.White, Ease.CubeOut(FlashTimer)) : Color.Lerp(Collidable ? Color1 : Color2, Color.White, Ease.CubeOut(FlashTimer));
 
     public OcularBarrier(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
         string path = data.Attr("texturePath", "objects/FemtoHelper/OcularBarrier/");
-        flag = data.Attr("flag", "lookout_interacting");
-        invert = data.Bool("invert", false);
+        Flag = data.Attr("flag", "lookout_interacting");
+        Invert = data.Bool("invert", false);
         MTexture mTexture = GFX.Game[path + "nineSliceOn"];
         MTexture mTexture2 = GFX.Game[path + "nineSliceOff"];
-        centerOn = GFX.Game[path + "centerOn"];
-        centerOff = GFX.Game[path + "centerOff"];
-        nineSliceOn = new MTexture[3, 3];
-        nineSliceOff = new MTexture[3, 3];
-        color1 = Calc.HexToColorWithAlpha(data.Attr("activeColor", "99FF66FF"));
-        color2 = Calc.HexToColorWithAlpha(data.Attr("inactiveColor", "005500FF"));
-        color3 = Calc.HexToColorWithAlpha(data.Attr("invertedActiveColor", "6699FFFF"));
-        color4 = Calc.HexToColorWithAlpha(data.Attr("invertedInactiveColor", "000055FF"));
+        CenterOn = GFX.Game[path + "centerOn"];
+        CenterOff = GFX.Game[path + "centerOff"];
+        NineSliceOn = new MTexture[3, 3];
+        NineSliceOff = new MTexture[3, 3];
+        Color1 = Calc.HexToColorWithAlpha(data.Attr("activeColor", "99FF66FF"));
+        Color2 = Calc.HexToColorWithAlpha(data.Attr("inactiveColor", "005500FF"));
+        Color3 = Calc.HexToColorWithAlpha(data.Attr("invertedActiveColor", "6699FFFF"));
+        Color4 = Calc.HexToColorWithAlpha(data.Attr("invertedInactiveColor", "000055FF"));
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
             {
-                nineSliceOn[i, j] = mTexture.GetSubtexture(new Rectangle(i * 8, j * 8, 8, 8));
-                nineSliceOff[i, j] = mTexture2.GetSubtexture(new Rectangle(i * 8, j * 8, 8, 8));
+                NineSliceOn[i, j] = mTexture.GetSubtexture(new Rectangle(i * 8, j * 8, 8, 8));
+                NineSliceOff[i, j] = mTexture2.GetSubtexture(new Rectangle(i * 8, j * 8, 8, 8));
             }
         }
-        flashTimer = 0;
-        Add(bloom = new BloomPoint(0.3f, 9));
-        bloom.Position = new Vector2(Width / 2f, Height / 2f);
+        FlashTimer = 0;
+        Add(Bloom = new BloomPoint(0.3f, 9));
+        Bloom.Position = new Vector2(Width / 2f, Height / 2f);
         AddTag(Tags.TransitionUpdate);
     }
 
@@ -64,8 +64,8 @@ public class OcularBarrier : Solid
             Spikes spikes = staticMover.Entity as Spikes;
             if (spikes != null)
             {
-                spikes.EnabledColor = invert ? color3 : color1;
-                spikes.DisabledColor = invert ? color4 : color2;
+                spikes.EnabledColor = Invert ? Color3 : Color1;
+                spikes.DisabledColor = Invert ? Color4 : Color2;
                 spikes.VisibleWhenDisabled = true;
                 spikes.SetSpikeColor(ReturnColor);
                 spikes.Depth = base.Depth + 1;
@@ -73,7 +73,7 @@ public class OcularBarrier : Solid
             Spring spring = staticMover.Entity as Spring;
             if (spring != null)
             {
-                spring.DisabledColor = invert ? color4 : color2;
+                spring.DisabledColor = Invert ? Color4 : Color2;
                 spring.VisibleWhenDisabled = true;
                 spring.Depth = base.Depth + 1;
             }
@@ -84,7 +84,7 @@ public class OcularBarrier : Solid
     {
         base.Update();
         bool col2 = Collidable;
-        Collidable = invert ? (!(Scene as Level).Session.GetFlag(flag) && !BlockedCheck()) : ((Scene as Level).Session.GetFlag(flag) && !BlockedCheck());
+        Collidable = Invert ? (!(Scene as Level).Session.GetFlag(Flag) && !BlockedCheck()) : ((Scene as Level).Session.GetFlag(Flag) && !BlockedCheck());
         if (Collidable != col2)
         {
             if (Collidable)
@@ -96,13 +96,13 @@ public class OcularBarrier : Solid
                 Disable();
             }
         }
-        flashTimer = Calc.Approach(flashTimer, 0, Engine.DeltaTime * 3f);
-        bloom.Visible = Collidable;
+        FlashTimer = Calc.Approach(FlashTimer, 0, Engine.DeltaTime * 3f);
+        Bloom.Visible = Collidable;
     }
 
     public void Enable()
     {
-        flashTimer = 1f;
+        FlashTimer = 1f;
         EnableStaticMovers();
         Depth = -9000;
         foreach (StaticMover staticMover in staticMovers)
@@ -162,7 +162,7 @@ public class OcularBarrier : Solid
 
     private void DrawBlockStyle(Vector2 pos, float width, float height, bool active)
     {
-        MTexture[,] ninSlice = active ? nineSliceOn : nineSliceOff;
+        MTexture[,] ninSlice = active ? NineSliceOn : NineSliceOff;
         Color color = ReturnColor;
         int num = (int)(width / 8f);
         int num2 = (int)(height / 8f);
@@ -189,11 +189,11 @@ public class OcularBarrier : Solid
         }
         if (active)
         {
-            centerOn.DrawCentered(pos + new Vector2(width / 2f, height / 2f), color);
+            CenterOn.DrawCentered(pos + new Vector2(width / 2f, height / 2f), color);
         }
         else
         {
-            centerOff.DrawCentered(pos + new Vector2(width / 2f, height / 2f), color);
+            CenterOff.DrawCentered(pos + new Vector2(width / 2f, height / 2f), color);
         }
     }
 }

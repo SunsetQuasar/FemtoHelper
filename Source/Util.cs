@@ -57,8 +57,8 @@ public static class SpriteExtensions
             spr.OnChange(spr.LastAnimationID, id);
         }
 
-        string lastAnimationID = (spr.CurrentAnimationID = id);
-        spr.LastAnimationID = lastAnimationID;
+        string lastAnimationId = (spr.CurrentAnimationID = id);
+        spr.LastAnimationID = lastAnimationId;
         spr.currentAnimation = spr.animations[id];
         spr.Animating = spr.currentAnimation.Delay > 0f;
         if (randomizeFrame)

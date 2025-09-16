@@ -9,27 +9,27 @@ namespace Celeste.Mod.FemtoHelper;
 public static class FemtoHelperExports
 {
 
-    public static void GetHitMethod(Entity block, Player player, int dir) => (block as Generic_SMWBlock)?.Hit(player, dir);
+    public static void GetHitMethod(Entity block, Player player, int dir) => (block as GenericSmwBlock)?.Hit(player, dir);
 
     public static bool IsActive(Entity block)
     {
-        return (block as Generic_SMWBlock)?.Active ?? false;
+        return (block as GenericSmwBlock)?.Active ?? false;
     }
     public static bool CanHitTop(Entity block)
     {
-        return (block as Generic_SMWBlock)?.CanHitTop ?? false;
+        return (block as GenericSmwBlock)?.CanHitTop ?? false;
     }
     public static bool CanHitBottom(Entity block)
     {
-        return (block as Generic_SMWBlock)?.CanHitBottom ?? false;
+        return (block as GenericSmwBlock)?.CanHitBottom ?? false;
     }
     public static bool CanHitLeft(Entity block)
     {
-        return (block as Generic_SMWBlock)?.CanHitLeft ?? false;
+        return (block as GenericSmwBlock)?.CanHitLeft ?? false;
     }
     public static bool CanHitRight(Entity block)
     {
-        return (block as Generic_SMWBlock)?.CanHitRight ?? false;
+        return (block as GenericSmwBlock)?.CanHitRight ?? false;
     }
 
     public static object CreateTextEffectData(bool wavey, Vector2 amp, float offset, bool shakey, float amount, bool obfuscated, bool twitchy, float twitchChance, float phaseIncrement, float waveSpeed)
@@ -41,14 +41,14 @@ public static class FemtoHelperExports
 
     public static Component CreatePlutoniumTextComponent(string fontPath, string charList, Vector2 fontSize) => new PlutoniumText(fontPath, charList, fontSize);
 
-    public static void PrintPlutoniumText(Component text, Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, object TextEffectData /* create an empty one for no effects */, float scale /* = 1 */, int id /* = 0 */)
+    public static void PrintPlutoniumText(Component text, Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, object textEffectData /* create an empty one for no effects */, float scale /* = 1 */, int id /* = 0 */)
     {
-        (text as PlutoniumText)?.Print(pos, str, shadow, spacing, mainColor, outlineColor, (TextEffectData as TextEffectData) ?? new TextEffectData(), 1, 0);
+        (text as PlutoniumText)?.Print(pos, str, shadow, spacing, mainColor, outlineColor, (textEffectData as TextEffectData) ?? new TextEffectData(), 1, 0);
     }
 
-    public static void PrintPlutoniumTextCentered(Component text, Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, object TextEffectData /* create an empty one for no effects */, float scale /* = 1 */, int id /* = 0 */)
+    public static void PrintPlutoniumTextCentered(Component text, Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, object textEffectData /* create an empty one for no effects */, float scale /* = 1 */, int id /* = 0 */)
     {
-        (text as PlutoniumText)?.PrintCentered(pos, str, shadow, spacing, mainColor, outlineColor, (TextEffectData as TextEffectData) ?? new TextEffectData(), 1, 0);
+        (text as PlutoniumText)?.PrintCentered(pos, str, shadow, spacing, mainColor, outlineColor, (textEffectData as TextEffectData) ?? new TextEffectData(), 1, 0);
     }
 
     public static Entity TransformIntoEvilTheo(Actor from, string spriteOverride)

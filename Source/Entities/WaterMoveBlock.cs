@@ -65,7 +65,7 @@ public class MovingWaterBlock : GenericWaterBlock
 
     public readonly WaterSprite Sprite;
 
-    private readonly float Acceleration;
+    private readonly float acceleration;
 
     private readonly bool ignoreBarriers;
     public MovingWaterBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
@@ -77,7 +77,7 @@ public class MovingWaterBlock : GenericWaterBlock
         Add(moveSfx = new SoundSource());
         Triggered = false;
         TargetSpeed = data.Float("maxSpeed", 60f);
-        Acceleration = data.Float("acceleration", 160f);
+        acceleration = data.Float("acceleration", 160f);
         Angle = data.Float("angle", 90f) / 180 * MathF.PI;
         ignoreBarriers = data.Bool("ignoreBarriers", false);
         Arrow = GFX.Game[prefix + "arrow"];
@@ -115,7 +115,7 @@ public class MovingWaterBlock : GenericWaterBlock
         {
             if (!Dying)
             {
-                Speed = Calc.Approach(Speed, TargetSpeed, Acceleration * Engine.DeltaTime);
+                Speed = Calc.Approach(Speed, TargetSpeed, acceleration * Engine.DeltaTime);
                 if (Scene.OnInterval(0.04f))
                 {
                     Vector2 pos2 = Position + new Vector2(Calc.Random.NextFloat(Width), Calc.Random.NextFloat(Height));

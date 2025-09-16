@@ -22,11 +22,9 @@ public class BoundRefill : Entity
     private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
     {
         orig(self);
-        if (self.Get<Bounder>() is { } b)
-        {
-            b.RemoveSelf();
-            self.Add(new Coroutine(BoundRoutine(self)));
-        }
+        if (self.Get<Bounder>() is not { } b) return;
+        b.RemoveSelf();
+        self.Add(new Coroutine(BoundRoutine(self)));
     }
 
     public static void Unload()
@@ -60,19 +58,19 @@ public class BoundRefill : Entity
 
     private bool oneUse;
 
-    private static ParticleType p_shatter = new(Refill.P_Shatter)
+    private static ParticleType _pShatter = new(Refill.P_Shatter)
     {
         Color = Calc.HexToColor("ffc3fe"),
         Color2 = Calc.HexToColor("ffc3fe")
     };
 
-    private static ParticleType p_regen = new(Refill.P_Regen)
+    private static ParticleType _pRegen = new(Refill.P_Regen)
     {
         Color = Calc.HexToColor("b95fb7"),
         Color2 = Calc.HexToColor("b95fb7")
     };
 
-    private static ParticleType p_glow = new(Refill.P_Glow)
+    private static ParticleType _pGlow = new(Refill.P_Glow)
     {
         Color = Calc.HexToColor("b95fb7"),
         Color2 = Calc.HexToColor("b95fb7")
@@ -145,7 +143,7 @@ public class BoundRefill : Entity
         }
         else if (base.Scene.OnInterval(0.1f))
         {
-            level.ParticlesFG.Emit(p_glow, 1, Position, Vector2.One * 5f);
+            level.ParticlesFG.Emit(_pGlow, 1, Position, Vector2.One * 5f);
         }
         UpdateY();
         light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
@@ -168,7 +166,7 @@ public class BoundRefill : Entity
             base.Depth = -100;
             wiggler.Start();
             Audio.Play("event:/game/general/diamond_return", Position);
-            level.ParticlesFG.Emit(p_regen, 16, Position, Vector2.One * 2f);
+            level.ParticlesFG.Emit(_pRegen, 16, Position, Vector2.One * 2f);
         }
     }
 
@@ -225,8 +223,8 @@ public class BoundRefill : Entity
         Depth = 8999;
         yield return 0.05f;
         float num = player.Speed.Angle();
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
+        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
+        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
         SlashFx.Burst(Position, num);
         if (oneUse)
         {

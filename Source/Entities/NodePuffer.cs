@@ -89,7 +89,7 @@ public class NodePuffer : Entity
 
     private bool returnSoundPlayed;
     private float timer;
-    private ParticleType PufferPath = new(Seeker.P_Regen)
+    private ParticleType pufferPath = new(Seeker.P_Regen)
     {
         Color = Calc.HexToColor("fccbde") * 0.4f,
         Color2 = Calc.HexToColor("d957c1") * 0.3f,
@@ -157,7 +157,7 @@ public class NodePuffer : Entity
         lineColor1 = col1;
         lineColor2 = col2;
 
-        PufferPath = new(Seeker.P_Regen)
+        pufferPath = new(Seeker.P_Regen)
         {
             Color = Color.Lerp(lineColor1, Color.White, 0.7f) * 0.4f,
             Color2 = Color.Lerp(lineColor1, lineColor2, 0.5f) * 0.3f,
@@ -305,18 +305,18 @@ public class NodePuffer : Entity
 
         for (int i = 0; i < nodes.Length - 1; i++)
         {
-            float next_factor = nodeIndex == i ? Ease.SineInOut(1 - sequenceTimer) : nodeIndex == Utils.Util.Mod(i - 1, nodes.Length - 1) ? Ease.SineInOut(sequenceTimer) : 0;
-            Color col = Color.Lerp(lineColor1, lineColor2, next_factor);
+            float nextFactor = nodeIndex == i ? Ease.SineInOut(1 - sequenceTimer) : nodeIndex == Utils.Util.Mod(i - 1, nodes.Length - 1) ? Ease.SineInOut(sequenceTimer) : 0;
+            Color col = Color.Lerp(lineColor1, lineColor2, nextFactor);
             col.A = 0;
             float count = MathF.Round(nodeLens[Utils.Util.Mod(i - 1, nodeLens.Length)] / 8f);
             for (float j = 0; j < count; j++)
             {
                 float percent = j / count;
                 float percentNext = (j + 1) / count;
-                Vector2 perp = (nodes[i + 1] - nodes[i]).Perpendicular().SafeNormalize(1f + (1f * next_factor));
+                Vector2 perp = (nodes[i + 1] - nodes[i]).Perpendicular().SafeNormalize(1f + (1f * nextFactor));
                 Draw.Line(Vector2.Lerp(nodes[i], nodes[i + 1], percent) + perp * MathF.Sin((timer * -3) + ((j + (i * count)) * 1.7f)), Vector2.Lerp(nodes[i], nodes[i + 1], percentNext) + perp * MathF.Sin((timer * -3) + ((j + 1 + (i * count)) * 1.7f)), col * 0.4f * (0.5f + 0.5f * MathF.Cos((timer * 4) + ((j + (i * count)) * 0.2f))), 2);
             }
-            Draw.Circle(nodes[i + 1], (6 + (2 * next_factor)) + (2 + (1 * next_factor)) * MathF.Cos((timer * 4) + (i * count * 0.2f)), col * 0.4f * (0.5f + 0.5f * MathF.Cos((timer * 4) + (i * count * 0.2f))), 5);
+            Draw.Circle(nodes[i + 1], (6 + (2 * nextFactor)) + (2 + (1 * nextFactor)) * MathF.Cos((timer * 4) + (i * count * 0.2f)), col * 0.4f * (0.5f + 0.5f * MathF.Cos((timer * 4) + (i * count * 0.2f))), 5);
         }
 
         sprite.Scale = scale * (1f + inflateWiggler.Value * 0.4f);
@@ -414,7 +414,7 @@ public class NodePuffer : Entity
         {
             for (int i = 0; i < nodes.Length - 1; i++)
             {
-                (Scene as Level).Particles.Emit(PufferPath, Vector2.Lerp(nodes[i], nodes[i + 1], Calc.Random.NextFloat()) + new Vector2(Calc.Random.Range(-2, 2), Calc.Random.Range(-2, 2)));
+                (Scene as Level).Particles.Emit(pufferPath, Vector2.Lerp(nodes[i], nodes[i + 1], Calc.Random.NextFloat()) + new Vector2(Calc.Random.Range(-2, 2), Calc.Random.Range(-2, 2)));
             }
         }
         eyeSpin = Calc.Approach(eyeSpin, 0f, Engine.DeltaTime * 1.5f);

@@ -185,11 +185,11 @@ public class TheContraption : Actor
 
     public class ChildSolid : Solid
     {
-        public TheContraption parent;
+        public TheContraption Parent;
         public ChildSolid(TheContraption parent, Vector2 pos, float width, float height) : base(pos, width, height, false)
         {
             SurfaceSoundIndex = 9;
-            this.parent = parent;
+            this.Parent = parent;
             Depth = 5000;
             Collider.Position = new Vector2((0f - width) / 2f, 0f - height);
             OnDashCollide = OnDashed;
@@ -213,40 +213,40 @@ public class TheContraption : Actor
                 return DashCollisionResults.NormalCollision;
             }
 
-            if (!(player.StateMachine.State != Player.StRedDash && player.StateMachine.State != Player.StSummitLaunch) || parent.Hold.IsHeld || (dir.Y == -1 && Input.Grab.Check) || parent.HitState)
+            if (!(player.StateMachine.State != Player.StRedDash && player.StateMachine.State != Player.StSummitLaunch) || Parent.Hold.IsHeld || (dir.Y == -1 && Input.Grab.Check) || Parent.HitState)
             {
                 return DashCollisionResults.NormalCollision;
             }
-            parent.Hit(dir);
+            Parent.Hit(dir);
             return DashCollisionResults.Rebound;
         }
 
         public override void Update()
         {
             base.Update();
-            Collidable = !parent.Hold.IsHeld;
+            Collidable = !Parent.Hold.IsHeld;
         }
 
         public override void MoveHExact(int move)
         {
-            parent.AllowPushing = false;
+            Parent.AllowPushing = false;
             base.MoveHExact(move);
-            parent.AllowPushing = true;
+            Parent.AllowPushing = true;
         }
 
         public override void MoveVExact(int move)
         {
-            parent.AllowPushing = false;
+            Parent.AllowPushing = false;
             base.MoveVExact(move);
-            parent.AllowPushing = true;
+            Parent.AllowPushing = true;
         }
     }
 
     public bool HitState;
 
-    public ChildSolid child;
+    public ChildSolid Child;
 
-    private Vector2 Speed;
+    private Vector2 speed;
 
     public Holdable Hold;
 
@@ -270,7 +270,7 @@ public class TheContraption : Actor
 
     private string spritePath;
 
-    private static ParticleType Steam2 = new(ParticleTypes.Steam)
+    private static ParticleType _steam2 = new(ParticleTypes.Steam)
     {
         SpeedMin = 15,
         SpeedMax = 40,
@@ -288,7 +288,7 @@ public class TheContraption : Actor
     public TheContraption(EntityData data, Vector2 offset) : base(data.Position + offset + new Vector2((float)data.Width / 2f, data.Height))
     {
         Depth = -5;
-        child = new ChildSolid(this, Position, data.Width, data.Height);
+        Child = new ChildSolid(this, Position, data.Width, data.Height);
         Collider = new Hitbox(data.Width, data.Height);
         Collider.Position = new Vector2((0f - base.Width) / 2f, 0f - base.Height);
         Add(Hold = new Holdable(0.3f)
@@ -298,10 +298,10 @@ public class TheContraption : Actor
             SlowRun = false,
             OnPickup = OnPickup,
             OnRelease = OnRelease,
-            SpeedGetter = () => Speed,
+            SpeedGetter = () => speed,
             OnCarry = OnCarry,
             OnHitSpring = HitSpring,
-            SpeedSetter = (speed) => Speed = speed
+            SpeedSetter = (speed) => this.speed = speed
         });
 
         spritePath = data.String("spritePath", "objects/Femtohelper/TheContraption/");
@@ -349,7 +349,7 @@ public class TheContraption : Actor
         {
             if (Calc.Random.NextFloat() < 0.4f)
             {
-                child.StartShaking(0.06f);
+                Child.StartShaking(0.06f);
             }
             yield return Calc.Random.Range(0.3f, 0.8f);
         }
@@ -361,7 +361,7 @@ public class TheContraption : Actor
         {
             for (int i = -1; i < 2; i++)
             {
-                (Scene as Level).ParticlesBG.Emit(Steam2, BottomCenter + Vector2.UnitX * 4 * i, 90f * Calc.DegToRad);
+                (Scene as Level).ParticlesBG.Emit(_steam2, BottomCenter + Vector2.UnitX * 4 * i, 90f * Calc.DegToRad);
             }
             yield return Calc.Random.Range(0.3f, 0.7f);
         }
@@ -370,7 +370,7 @@ public class TheContraption : Actor
     public override void Render()
     {
         Vector2 position = Position;
-        Position = child.TopLeft + child.Shake;
+        Position = Child.TopLeft + Child.Shake;
         for (int k = 0; (float)k < base.Width / 8f; k++)
         {
             for (int l = 0; (float)l < base.Height / 8f; l++)
@@ -381,11 +381,11 @@ public class TheContraption : Actor
             }
         }
 
-        cog.DrawCentered(child.Center + child.Shake - Vector2.UnitX, Calc.HexToColor("505050"), 1, cogRotation);
-        cog.DrawCentered(child.Center + child.Shake - Vector2.UnitY, Calc.HexToColor("505050"), 1, cogRotation);
-        cog.DrawCentered(child.Center + child.Shake + Vector2.UnitX, Calc.HexToColor("505050"), 1, cogRotation);
-        cog.DrawCentered(child.Center + child.Shake + Vector2.UnitY, Calc.HexToColor("505050"), 1, cogRotation);
-        cog.DrawCentered(child.Center + child.Shake, Color.White, 1, cogRotation);
+        cog.DrawCentered(Child.Center + Child.Shake - Vector2.UnitX, Calc.HexToColor("505050"), 1, cogRotation);
+        cog.DrawCentered(Child.Center + Child.Shake - Vector2.UnitY, Calc.HexToColor("505050"), 1, cogRotation);
+        cog.DrawCentered(Child.Center + Child.Shake + Vector2.UnitX, Calc.HexToColor("505050"), 1, cogRotation);
+        cog.DrawCentered(Child.Center + Child.Shake + Vector2.UnitY, Calc.HexToColor("505050"), 1, cogRotation);
+        cog.DrawCentered(Child.Center + Child.Shake, Color.White, 1, cogRotation);
 
         base.Render();
         Position = position;
@@ -394,11 +394,11 @@ public class TheContraption : Actor
     private void OnPickup()
     {
         highFrictionTimer = 0.5f;
-        child.Collidable = false;
-        Speed = Vector2.Zero;
+        Child.Collidable = false;
+        speed = Vector2.Zero;
         AddTag(Tags.Persistent);
-        child.AddTag(Tags.Persistent);
-        foreach (StaticMover e in child.staticMovers)
+        Child.AddTag(Tags.Persistent);
+        foreach (StaticMover e in Child.staticMovers)
         {
             e.Entity.AddTag(Tags.Persistent);
         }
@@ -407,7 +407,7 @@ public class TheContraption : Actor
     private void OnCarry(Vector2 target)
     {
         Position = target;
-        child.MoveTo(Position);
+        Child.MoveTo(Position);
     }
     public override bool IsRiding(Solid solid)
     {
@@ -432,28 +432,28 @@ public class TheContraption : Actor
         Input.Rumble(RumbleStrength.Strong, RumbleLength.Short);
         Audio.Play("event:/FemtoHelper/contraption_hit");
         sfx.Play("event:/FemtoHelper/contraption_angry");
-        child.StartShaking(0.5f);
+        Child.StartShaking(0.5f);
         if (particles)
         {
             for (int i = 0; i < Width / 8f; i++)
             {
                 for (int j = 0; j < Height / 8f; j++)
                 {
-                    (Scene as Level).ParticlesFG.Emit(Steam2, TopLeft + new Vector2(i * 8, j * 8), -((TopLeft + new Vector2(i * 8, j * 8) - Center)).Angle());
+                    (Scene as Level).ParticlesFG.Emit(_steam2, TopLeft + new Vector2(i * 8, j * 8), -((TopLeft + new Vector2(i * 8, j * 8) - Center)).Angle());
                 }
             }
         }
-        Speed.X *= 0.25f;
-        Speed.Y *= 0.5f;
+        speed.X *= 0.25f;
+        speed.Y *= 0.5f;
         HitState = true;
     }
 
     private bool TryBigSquishWiggle(CollisionData data)
     {
         bool collidable = Collidable;
-        bool collidable2 = child.Collidable;
+        bool collidable2 = Child.Collidable;
         Collidable = false;
-        child.Collidable = false;
+        Child.Collidable = false;
         data.Pusher.Collidable = true;
         for (int i = 0; i <= Math.Max(3, (int)base.Width / 2); i++)
         {
@@ -471,10 +471,10 @@ public class TheContraption : Actor
                         if (!CollideCheck<Solid>(Position + vector))
                         {
                             Position += vector;
-                            child.MoveTo(Position);
+                            Child.MoveTo(Position);
                             data.Pusher.Collidable = false;
                             Collidable = collidable;
-                            child.Collidable = collidable2;
+                            Child.Collidable = collidable2;
                             return true;
                         }
                     }
@@ -483,16 +483,16 @@ public class TheContraption : Actor
         }
         data.Pusher.Collidable = false;
         Collidable = collidable;
-        child.Collidable = collidable2;
+        Child.Collidable = collidable2;
         return false;
     }
 
     private bool ReleasedSquishWiggle()
     {
         bool collidable = Collidable;
-        bool collidable2 = child.Collidable;
+        bool collidable2 = Child.Collidable;
         Collidable = false;
-        child.Collidable = false;
+        Child.Collidable = false;
         for (int i = 0; i <= Math.Max(3, (int)base.Width); i++)
         {
             for (int j = 0; j <= Math.Max(3, (int)base.Height); j++)
@@ -509,9 +509,9 @@ public class TheContraption : Actor
                         if (!CollideCheck<Solid>(Position + vector))
                         {
                             Position += vector;
-                            child.MoveTo(Position);
+                            Child.MoveTo(Position);
                             Collidable = collidable;
-                            child.Collidable = collidable2;
+                            Child.Collidable = collidable2;
                             return true;
                         }
                     }
@@ -519,7 +519,7 @@ public class TheContraption : Actor
             }
         }
         Collidable = collidable;
-        child.Collidable = collidable2;
+        Child.Collidable = collidable2;
         return false;
     }
 
@@ -593,8 +593,8 @@ public class TheContraption : Actor
     public void Die()
     {
         RemoveSelf();
-        child.DestroyStaticMovers();
-        child.RemoveSelf();
+        Child.DestroyStaticMovers();
+        Child.RemoveSelf();
     }
 
     private void OnRelease(Vector2 force)
@@ -613,10 +613,10 @@ public class TheContraption : Actor
         {
             Audio.Play("event:/new_content/char/madeline/glider_drop", Position);
         }
-        child.Collidable = true;
+        Child.Collidable = true;
         RemoveTag(Tags.Persistent);
-        child.RemoveTag(Tags.Persistent);
-        foreach (StaticMover e in child.staticMovers)
+        Child.RemoveTag(Tags.Persistent);
+        foreach (StaticMover e in Child.staticMovers)
         {
             e.Entity.RemoveTag(Tags.Persistent);
         }
@@ -625,18 +625,18 @@ public class TheContraption : Actor
         {
             force.Y = -0.4f;
         }
-        Speed = force * 100f;
+        speed = force * 100f;
         MoveTo(Position - Vector2.UnitY * 4);
-        child.MoveTo(Position);
+        Child.MoveTo(Position);
     }
 
     private void OnCollideH(CollisionData data)
     {
         if (data.Hit is DashSwitch)
         {
-            (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitX * Math.Sign(Speed.X));
+            (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitX * Math.Sign(speed.X));
         }
-        if (Speed.X < 0f)
+        if (speed.X < 0f)
         {
             //Audio.Play("event:/new_content/game/10_farewell/glider_wallbounce_left", Position);
         }
@@ -644,31 +644,31 @@ public class TheContraption : Actor
         {
             //Audio.Play("event:/new_content/game/10_farewell/glider_wallbounce_right", Position);
         }
-        Speed.X *= -1f;
+        speed.X *= -1f;
     }
 
     private void OnCollideV(CollisionData data)
     {
         if (HitState)
         {
-            if (Speed.Y < 0)
+            if (speed.Y < 0)
             {
                 Explode();
             }
         }
         else
         {
-            if (Math.Abs(Speed.Y) > 8f)
+            if (Math.Abs(speed.Y) > 8f)
             {
                 //Audio.Play("event:/new_content/game/10_farewell/glider_land", Position);
             }
-            if (Speed.Y < 0f)
+            if (speed.Y < 0f)
             {
-                Speed.Y *= -0.5f;
+                speed.Y *= -0.5f;
             }
             else
             {
-                Speed.Y = 0f;
+                speed.Y = 0f;
             }
         }
     }
@@ -706,19 +706,19 @@ public class TheContraption : Actor
                     Hold.PickupCollider = groundHitbox;
 
                     float target2 = ((!OnGround(Position + Vector2.UnitX * 3f)) ? 20f : (OnGround(Position - Vector2.UnitX * 3f) ? 0f : (-20f)));
-                    Speed.X = Calc.Approach(Speed.X, target2, 800f * Engine.DeltaTime);
+                    speed.X = Calc.Approach(speed.X, target2, 800f * Engine.DeltaTime);
                     Vector2 liftSpeed = base.LiftSpeed;
                     if (liftSpeed == Vector2.Zero && prevLiftSpeed != Vector2.Zero)
                     {
-                        Speed.Y = prevLiftSpeed.Y;
-                        if (Math.Abs(prevLiftSpeed.X) > Math.Abs(Speed.X)) Speed.X = prevLiftSpeed.X;
+                        speed.Y = prevLiftSpeed.Y;
+                        if (Math.Abs(prevLiftSpeed.X) > Math.Abs(speed.X)) speed.X = prevLiftSpeed.X;
                         prevLiftSpeed = Vector2.Zero;
-                        Speed.Y = Math.Min(Speed.Y * 0.6f, 0f);
-                        if (Speed.X != 0f && Speed.Y == 0f)
+                        speed.Y = Math.Min(speed.Y * 0.6f, 0f);
+                        if (speed.X != 0f && speed.Y == 0f)
                         {
-                            Speed.Y = -60f;
+                            speed.Y = -60f;
                         }
-                        if (Speed.Y < 0f)
+                        if (speed.Y < 0f)
                         {
                             //noGravityTimer = 0.15f;
                         }
@@ -727,23 +727,23 @@ public class TheContraption : Actor
                     {
                         prevLiftSpeed = liftSpeed;
                         prevLiftSpeedTimer = 0.18f;
-                        if (liftSpeed.Y < 0f && Speed.Y < 0f)
+                        if (liftSpeed.Y < 0f && speed.Y < 0f)
                         {
-                            Speed.Y = 0f;
+                            speed.Y = 0f;
                         }
                     }
                 }
                 else
                 {
 
-                    float num3 = ((Speed.Y < 0f) ? 40f : ((!(highFrictionTimer <= 0f)) ? 10f : 40f));
-                    Speed.X = Calc.Approach(Speed.X, 0f, num3 * Engine.DeltaTime);
+                    float num3 = ((speed.Y < 0f) ? 40f : ((!(highFrictionTimer <= 0f)) ? 10f : 40f));
+                    speed.X = Calc.Approach(speed.X, 0f, num3 * Engine.DeltaTime);
 
                     Hold.PickupCollider = airHitbox;
                     if (Hold.ShouldHaveGravity)
                     {
                         float num2 = 200f;
-                        if (Speed.Y >= -30f)
+                        if (speed.Y >= -30f)
                         {
                             num2 *= 0.5f;
                         }
@@ -753,18 +753,18 @@ public class TheContraption : Actor
                         }
                         else
                         {
-                            Speed.Y = Calc.Approach(Speed.Y, 30f, num2 * Engine.DeltaTime);
+                            speed.Y = Calc.Approach(speed.Y, 30f, num2 * Engine.DeltaTime);
                         }
                     }
                 }
 
-                Move(Speed * Engine.DeltaTime);
+                Move(speed * Engine.DeltaTime);
 
 
                 if (base.Left < (float)level.Bounds.Left)
                 {
                     base.Left = level.Bounds.Left;
-                    child.MoveToX(Position.X);
+                    Child.MoveToX(Position.X);
                     OnCollideH(new CollisionData
                     {
                         Direction = -Vector2.UnitX
@@ -773,7 +773,7 @@ public class TheContraption : Actor
                 else if (base.Right > (float)level.Bounds.Right)
                 {
                     base.Right = level.Bounds.Right;
-                    child.MoveToY(Position.Y);
+                    Child.MoveToY(Position.Y);
                     OnCollideH(new CollisionData
                     {
                         Direction = Vector2.UnitX
@@ -795,9 +795,9 @@ public class TheContraption : Actor
             }
             Hold.cannotHoldTimer = 1f;
 
-            Speed.Y = Calc.Approach(Speed.Y, -180f, 300f * Engine.DeltaTime);
+            speed.Y = Calc.Approach(speed.Y, -180f, 300f * Engine.DeltaTime);
 
-            Move(Speed * Engine.DeltaTime);
+            Move(speed * Engine.DeltaTime);
         }
 
 
@@ -814,26 +814,26 @@ public class TheContraption : Actor
     {
         if (!Hold.IsHeld)
         {
-            if (spring.Orientation == Spring.Orientations.Floor && Speed.Y >= 0f)
+            if (spring.Orientation == Spring.Orientations.Floor && speed.Y >= 0f)
             {
-                Speed.X *= 0.5f;
-                Speed.Y = -160f;
+                speed.X *= 0.5f;
+                speed.Y = -160f;
                 noGravityTimer = 0.15f;
                 return true;
             }
-            if (spring.Orientation == Spring.Orientations.WallLeft && Speed.X <= 0f)
+            if (spring.Orientation == Spring.Orientations.WallLeft && speed.X <= 0f)
             {
                 MoveTowardsY(spring.CenterY + 5f, 4f);
-                Speed.X = 160f;
-                Speed.Y = -80f;
+                speed.X = 160f;
+                speed.Y = -80f;
                 noGravityTimer = 0.1f;
                 return true;
             }
-            if (spring.Orientation == Spring.Orientations.WallRight && Speed.X >= 0f)
+            if (spring.Orientation == Spring.Orientations.WallRight && speed.X >= 0f)
             {
                 MoveTowardsY(spring.CenterY + 5f, 4f);
-                Speed.X = -160f;
-                Speed.Y = -80f;
+                speed.X = -160f;
+                speed.Y = -80f;
                 noGravityTimer = 0.1f;
                 return true;
             }
@@ -856,7 +856,7 @@ public class TheContraption : Actor
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        scene.Add(child);
+        scene.Add(Child);
     }
 
 
@@ -871,11 +871,11 @@ public class TheContraption : Actor
     {
         if (self is TheContraption contr)
         {
-            if (contr.child == null) return orig(self, downCheck);
-            bool collidable = contr.child.Collidable;
-            contr.child.Collidable = false;
+            if (contr.Child == null) return orig(self, downCheck);
+            bool collidable = contr.Child.Collidable;
+            contr.Child.Collidable = false;
             bool result = orig(self, downCheck);
-            contr.child.Collidable = collidable;
+            contr.Child.Collidable = collidable;
             return result;
         }
         else return orig(self, downCheck);
@@ -885,14 +885,14 @@ public class TheContraption : Actor
     {
         if (self is TheContraption contr)
         {
-            if (contr.child == null) return orig(self, moveV, onCollide, pusher);
-            bool collidable = contr.child.Collidable;
-            contr.child.Collidable = false;
+            if (contr.Child == null) return orig(self, moveV, onCollide, pusher);
+            bool collidable = contr.Child.Collidable;
+            contr.Child.Collidable = false;
             float oldy = self.Y;
             bool result = orig(self, moveV, onCollide, pusher);
             float moveV2 = self.Y - oldy;
-            contr.child.Collidable = collidable;
-            contr.child.MoveV(moveV2, contr.Speed.Y);
+            contr.Child.Collidable = collidable;
+            contr.Child.MoveV(moveV2, contr.speed.Y);
             return result;
         }
         else return orig(self, moveV, onCollide, pusher);
@@ -902,14 +902,14 @@ public class TheContraption : Actor
     {
         if (self is TheContraption contr)
         {
-            if (contr.child == null) return orig(self, moveH, onCollide, pusher);
-            bool collidable = contr.child.Collidable;
-            contr.child.Collidable = false;
+            if (contr.Child == null) return orig(self, moveH, onCollide, pusher);
+            bool collidable = contr.Child.Collidable;
+            contr.Child.Collidable = false;
             float oldx = self.X;
             bool result = orig(self, moveH, onCollide, pusher);
             float moveH2 = self.X - oldx;
-            contr.child.Collidable = collidable;
-            contr.child.MoveH(moveH2, contr.Speed.X);
+            contr.Child.Collidable = collidable;
+            contr.Child.MoveH(moveH2, contr.speed.X);
             return result;
         }
         else return orig(self, moveH, onCollide, pusher);

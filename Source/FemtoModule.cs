@@ -73,7 +73,7 @@ public class FemtoModule : EverestModule
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            if (data.Hit is Generic_SMWBlock { Active: false } block)
+            if (data.Hit is GenericSmwBlock { Active: false } block)
             {
                 switch (self.hitSpeed.X)
                 {
@@ -96,7 +96,7 @@ public class FemtoModule : EverestModule
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            if (data.Hit is Generic_SMWBlock { Active: false } block)
+            if (data.Hit is GenericSmwBlock { Active: false } block)
             {
                 switch (self.hitSpeed.Y)
                 {
@@ -121,7 +121,7 @@ public class FemtoModule : EverestModule
         orig(self);
         Collider collider = self.Collider;
         self.Collider = new Circle(40f);
-        foreach (var entity in from Generic_SMWBlock entity in self.Scene.Tracker.GetEntities<Generic_SMWBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
+        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
         {
             entity.Hit(null, 0);
         }
@@ -132,7 +132,7 @@ public class FemtoModule : EverestModule
         IEnumerator origEnum = orig(self);
         while (origEnum.MoveNext()) yield return origEnum.Current;
         self.Collider = new Circle(40f);
-        foreach (var entity in from Generic_SMWBlock entity in self.Scene.Tracker.GetEntities<Generic_SMWBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
+        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
         {
             entity.Hit(null, 0);
         }
@@ -148,32 +148,32 @@ public class FemtoModule : EverestModule
     // Set up any hooks, event handlers and your mod in general here.
     // Load runs before Celeste itself has initialized properly.
 
-    private static ILHook dashCoroutineHook;
-    private static ILHook redDashCoroutineHook;
+    private static ILHook _dashCoroutineHook;
+    private static ILHook _redDashCoroutineHook;
 
-    public Hook canDashHook;
-    private delegate bool orig_CanDash(Player self);
-    private bool modCanDash(orig_CanDash orig, Player self)
+    public Hook CanDashHook;
+    private delegate bool OrigCanDash(Player self);
+    private bool ModCanDash(OrigCanDash orig, Player self)
     {
         if (self.Get<LimitRefill.DirectionConstraint>() is { } d)
         {
             Vector2 aim = Input.GetAimVector();
 
             // block the dash directly if the player is holding a forbidden direction, and does not have Dash Assist enabled.
-            return orig(self) && (SaveData.Instance.Assists.DashAssist || isDashDirectionAllowed(aim, d));
+            return orig(self) && (SaveData.Instance.Assists.DashAssist || IsDashDirectionAllowed(aim, d));
         }
         return orig(self);
     }
-    private bool isDashDirectionAllowed(Vector2 direction, LimitRefill.DirectionConstraint d)
+    private bool IsDashDirectionAllowed(Vector2 direction, LimitRefill.DirectionConstraint d)
     {
         // if directions are not integers, make them integers.
         direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 
         // bottom-left (-1, 1) is row 2, column 0.
-        return d.dirs[(int)(direction.Y + 1),(int)(direction.X + 1)];
+        return d.Dirs[(int)(direction.Y + 1),(int)(direction.X + 1)];
     }
 
-    private static void modDashSpeed(ILContext il)
+    private static void ModDashSpeed(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
 
@@ -206,10 +206,10 @@ public class FemtoModule : EverestModule
 
     public override void Load()
     {
-        canDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(FemtoModule).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Instance), this);
+        CanDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(FemtoModule).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Instance), this);
 
-        dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), modDashSpeed);
-        redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), modDashSpeed);
+        _dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);
+        _redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);
         On.Celeste.Player.DashEnd += Player_DashEnd;
         On.Celeste.Player.DashBegin += Player_DashBegin;
 
@@ -235,7 +235,7 @@ public class FemtoModule : EverestModule
         CrystalHeartBoss.Load();
         PlutoniumText.Load();
         ClutterShadowController.Load();
-        SMWHoldable.Load();
+        SmwHoldable.Load();
         ExtraHoldableInteractionsController.Load();
         Monopticon.Load();
         GenericWaterBlock.Load();
@@ -248,14 +248,14 @@ public class FemtoModule : EverestModule
 
     public override void Unload()
     {
-        canDashHook?.Dispose();
-        canDashHook = null;
+        CanDashHook?.Dispose();
+        CanDashHook = null;
 
-        dashCoroutineHook?.Dispose();
-        redDashCoroutineHook?.Dispose();
+        _dashCoroutineHook?.Dispose();
+        _redDashCoroutineHook?.Dispose();
 
-        dashCoroutineHook = null;
-        redDashCoroutineHook = null;
+        _dashCoroutineHook = null;
+        _redDashCoroutineHook = null;
 
         On.Celeste.Player.DashEnd -= Player_DashEnd;
         On.Celeste.Player.DashBegin -= Player_DashBegin;
@@ -272,7 +272,7 @@ public class FemtoModule : EverestModule
         CrystalHeartBoss.Unload();
         PlutoniumText.Unload();
         ClutterShadowController.Unload();
-        SMWHoldable.Unload();
+        SmwHoldable.Unload();
         ExtraHoldableInteractionsController.Unload();
         Monopticon.Unload();
         GenericWaterBlock.Unload();
@@ -380,7 +380,7 @@ public class FemtoModule : EverestModule
             }
         }
 
-        if (data.Hit is not Generic_SMWBlock smwblock || smwblock.Active) return data;
+        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Active) return data;
         
         if (h.GetSpeed().X > 20)
         {
@@ -495,7 +495,7 @@ public class FemtoModule : EverestModule
         
         //smw block handling
 
-        if (data.Hit is not Generic_SMWBlock smwblock || smwblock.Active) return data;
+        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Active) return data;
         
         if (h.GetSpeed().Y > 80)
         {

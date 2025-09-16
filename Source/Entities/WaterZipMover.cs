@@ -14,7 +14,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/WaterZipMover")]
 public class WaterZipMover : GenericWaterBlock
 {
-    public static Color ropeLightColor = Calc.HexToColor("2C5560") * (93f / 255f);
+    public static Color RopeLightColor = Calc.HexToColor("2C5560") * (93f / 255f);
 
     private class WaterZipMoverPathRenderer : Entity
     {
@@ -36,8 +36,8 @@ public class WaterZipMover : GenericWaterBlock
 
         private float sparkDirToB;
 
-        public Wiggler cogWiggler;
-        public Vector2 cogScale = Vector2.One;
+        public Wiggler CogWiggler;
+        public Vector2 CogScale = Vector2.One;
         private float timePass;
 
         public WaterZipMoverPathRenderer(WaterZipMover zipMover, string path)
@@ -53,9 +53,9 @@ public class WaterZipMover : GenericWaterBlock
             sparkDirToA = num + MathF.PI - MathF.PI / 8f;
             sparkDirToB = num + MathF.PI + MathF.PI / 8f;
             cog = GFX.Game[$"{path}cog"];
-            Add(cogWiggler = Wiggler.Create(0.6f, 4f, (t) =>
+            Add(CogWiggler = Wiggler.Create(0.6f, 4f, (t) =>
             {
-                cogScale = Vector2.One + new Vector2(t, -t) * 0.5f;
+                CogScale = Vector2.One + new Vector2(t, -t) * 0.5f;
             }));
             timePass = Calc.Random.Range(0, MathF.Tau);
         }
@@ -98,11 +98,11 @@ public class WaterZipMover : GenericWaterBlock
                 vector4 += vector.Perpendicular() * MathF.Sin(((MathF.PI * 320f % 4f) * WaterZipMover.percent) + timePass + num / 5) * 1;
                 vector5 += vector.Perpendicular() * MathF.Sin(((MathF.PI * 320f % 4f) * WaterZipMover.percent) + timePass + num / 5) * 1;
 
-                Draw.Line(vector4 + offset, vector4 + vector * 2f + offset, ropeLightColor, 3 + 3 * MathF.Sin(((MathF.PI * 480f % 4f) * WaterZipMover.percent) - (timePass * 0.7f) + num / 4));
-                Draw.Line(vector5 + offset, vector5 - vector * 2f + offset, ropeLightColor, 3 + 3 * MathF.Cos(((MathF.PI * 480f % 4f) * WaterZipMover.percent) - (timePass * 0.7f) + num / 4));
+                Draw.Line(vector4 + offset, vector4 + vector * 2f + offset, RopeLightColor, 3 + 3 * MathF.Sin(((MathF.PI * 480f % 4f) * WaterZipMover.percent) - (timePass * 0.7f) + num / 4));
+                Draw.Line(vector5 + offset, vector5 - vector * 2f + offset, RopeLightColor, 3 + 3 * MathF.Cos(((MathF.PI * 480f % 4f) * WaterZipMover.percent) - (timePass * 0.7f) + num / 4));
             }
-            cog.DrawCentered(from + offset, Color.White, cogScale, rotation);
-            cog.DrawCentered(to + offset, Color.White, cogScale, rotation);
+            cog.DrawCentered(from + offset, Color.White, CogScale, rotation);
+            cog.DrawCentered(to + offset, Color.White, CogScale, rotation);
         }
     }
 
@@ -223,9 +223,9 @@ public class WaterZipMover : GenericWaterBlock
         StartShaking(0.2f);
         cornerWiggler.Start();
         waterSprite.Wiggle.Start();
-        pathRenderer.cogWiggler.increment = 1f / dur;
-        pathRenderer.cogWiggler.sineAdd = MathF.PI * 2f * freq;
-        pathRenderer.cogWiggler.Start();
+        pathRenderer.CogWiggler.increment = 1f / dur;
+        pathRenderer.CogWiggler.sineAdd = MathF.PI * 2f * freq;
+        pathRenderer.CogWiggler.Start();
     }
 
     private IEnumerator Sequence()

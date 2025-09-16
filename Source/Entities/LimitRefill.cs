@@ -13,41 +13,41 @@ public class LimitRefill : Entity
 {
     public class DirectionConstraint : Component
     {
-        public bool[,] dirs = new bool[3, 3];
+        public bool[,] Dirs = new bool[3, 3];
         public DirectionConstraint(Directions dir) : base(false, false)
         {
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    dirs[i, j] = false;
+                    Dirs[i, j] = false;
                 }
             }
             switch (dir)
             {
                 default:
-                    dirs[0, 1] = true;
+                    Dirs[0, 1] = true;
                     break;
                 case Directions.UpRight:
-                    dirs[0, 2] = true;
+                    Dirs[0, 2] = true;
                     break;
                 case Directions.Right:
-                    dirs[1, 2] = true;
+                    Dirs[1, 2] = true;
                     break;
                 case Directions.DownRight:
-                    dirs[2, 2] = true;
+                    Dirs[2, 2] = true;
                     break;
                 case Directions.Down:
-                    dirs[2, 1] = true;
+                    Dirs[2, 1] = true;
                     break;
                 case Directions.DownLeft:
-                    dirs[2, 0] = true;
+                    Dirs[2, 0] = true;
                     break;
                 case Directions.Left:
-                    dirs[1, 0] = true;
+                    Dirs[1, 0] = true;
                     break;
                 case Directions.UpLeft:
-                    dirs[0, 0] = true;
+                    Dirs[0, 0] = true;
                     break;
             }
         }
@@ -71,19 +71,19 @@ public class LimitRefill : Entity
 
     private bool oneUse;
 
-    private static ParticleType p_shatter = new(Refill.P_Shatter)
+    private static ParticleType _pShatter = new(Refill.P_Shatter)
     {
         Color = Calc.HexToColor("7affe8"),
         Color2 = Calc.HexToColor("7affe8")
     };
 
-    private static ParticleType p_regen = new(Refill.P_Regen)
+    private static ParticleType _pRegen = new(Refill.P_Regen)
     {
         Color = Calc.HexToColor("00cca9"),
         Color2 = Calc.HexToColor("00cca9")
     };
 
-    private static ParticleType p_glow = new(Refill.P_Glow)
+    private static ParticleType _pGlow = new(Refill.P_Glow)
     {
         Color = Calc.HexToColor("00cca9"),
         Color2 = Calc.HexToColor("00cca9")
@@ -181,7 +181,7 @@ public class LimitRefill : Entity
         }
         else if (base.Scene.OnInterval(0.1f))
         {
-            level.ParticlesFG.Emit(p_glow, 1, Position, Vector2.One * 5f);
+            level.ParticlesFG.Emit(_pGlow, 1, Position, Vector2.One * 5f);
         }
         UpdateY();
         light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
@@ -204,7 +204,7 @@ public class LimitRefill : Entity
             base.Depth = -100;
             wiggler.Start();
             Audio.Play("event:/game/general/diamond_return", Position);
-            level.ParticlesFG.Emit(p_regen, 16, Position, Vector2.One * 2f);
+            level.ParticlesFG.Emit(_pRegen, 16, Position, Vector2.One * 2f);
         }
     }
 
@@ -259,8 +259,8 @@ public class LimitRefill : Entity
         Depth = 8999;
         yield return 0.05f;
         float num = player.Speed.Angle();
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
+        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
+        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
         SlashFx.Burst(Position, num);
         if (oneUse)
         {

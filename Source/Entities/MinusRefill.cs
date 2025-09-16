@@ -27,19 +27,19 @@ public class MinusRefill : Entity
 
 	private bool oneUse;
 
-	private static ParticleType p_shatter = new(Refill.P_Shatter)
+	private static ParticleType _pShatter = new(Refill.P_Shatter)
     {
         Color = Calc.HexToColor("d3e8ff"),
         Color2 = Calc.HexToColor("85b0fc")
     };
 
-	private static ParticleType p_regen = new(Refill.P_Regen)
+	private static ParticleType _pRegen = new(Refill.P_Regen)
     {
         Color = Calc.HexToColor("a5d1ff"),
         Color2 = Calc.HexToColor("6da0e0")
     };
 
-	private static ParticleType p_glow = new(Refill.P_Glow)
+	private static ParticleType _pGlow = new(Refill.P_Glow)
     {
         Color = Calc.HexToColor("a5d1ff"),
         Color2 = Calc.HexToColor("6da0e0")
@@ -112,7 +112,7 @@ public class MinusRefill : Entity
 		}
 		else if (base.Scene.OnInterval(0.1f))
 		{
-			level.ParticlesFG.Emit(p_glow, 1, Position, Vector2.One * 5f);
+			level.ParticlesFG.Emit(_pGlow, 1, Position, Vector2.One * 5f);
 		}
 		UpdateY();
 		light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
@@ -135,7 +135,7 @@ public class MinusRefill : Entity
 			base.Depth = -100;
 			wiggler.Start();
 			Audio.Play("event:/game/general/diamond_return", Position);
-			level.ParticlesFG.Emit(p_regen, 16, Position, Vector2.One * 2f);
+			level.ParticlesFG.Emit(_pRegen, 16, Position, Vector2.One * 2f);
 		}
 	}
 
@@ -192,8 +192,8 @@ public class MinusRefill : Entity
 		Depth = 8999;
 		yield return 0.05f;
 		float num = player.Speed.Angle();
-		level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
-		level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
+		level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
+		level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
 		SlashFx.Burst(Position, num);
 		if (oneUse)
 		{

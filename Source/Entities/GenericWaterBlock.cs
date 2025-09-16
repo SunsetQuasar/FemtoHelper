@@ -11,14 +11,14 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 public abstract class GenericWaterBlock : Water
 {
 
-    public Vector2 movementCounter;
+    public Vector2 MovementCounter;
 
     public Vector2 LiftSpeed;
 
     private readonly bool canCarry;
 
-    public bool shaking;
-    public float shakeTimer;
+    public bool Shaking;
+    public float ShakeTimer;
 
     private Vector2 shakeAmount;
     public Vector2 Shake => shakeAmount;
@@ -53,20 +53,20 @@ public abstract class GenericWaterBlock : Water
         SpeedMultiplier = 0.25f,
         FadeMode = ParticleType.FadeModes.Late
     };
-    public GenericWaterBlock(Vector2 pos, float wid, float hei, bool can_carry) : base(pos, false, false, wid, hei)
+    public GenericWaterBlock(Vector2 pos, float wid, float hei, bool canCarry) : base(pos, false, false, wid, hei)
     {
         DisplacementRenderHook d = Components.Get<DisplacementRenderHook>();
         Remove(d);
         Add(new DisplacementRenderHook(DrawDisplacement));
 
         RemoveTag(Tags.TransitionUpdate);
-        canCarry = can_carry;
+        this.canCarry = canCarry;
     }
 
     public override void Update()
     {
         base.Update();
-        if (!shaking)
+        if (!Shaking)
         {
             return;
         }
@@ -76,12 +76,12 @@ public abstract class GenericWaterBlock : Water
             shakeAmount = Calc.Random.ShakeVector();
             OnShake(shakeAmount - vector);
         }
-        if (shakeTimer > 0f)
+        if (ShakeTimer > 0f)
         {
-            shakeTimer -= Engine.DeltaTime;
-            if (shakeTimer <= 0f)
+            ShakeTimer -= Engine.DeltaTime;
+            if (ShakeTimer <= 0f)
             {
-                shaking = false;
+                Shaking = false;
                 StopShaking();
             }
         }
@@ -94,14 +94,14 @@ public abstract class GenericWaterBlock : Water
 
     public void StartShaking(float time = 0f)
     {
-        shaking = true;
-        shakeTimer = time;
+        Shaking = true;
+        ShakeTimer = time;
     }
 
     
     public void StopShaking()
     {
-        shaking = false;
+        Shaking = false;
         if (shakeAmount != Vector2.Zero)
         {
             OnShake(-shakeAmount);
@@ -182,22 +182,22 @@ public abstract class GenericWaterBlock : Water
 
     public void MoveToX(float x)
     {
-        MoveH((float)((double)x - (double)Position.X - (double)movementCounter.X));
+        MoveH((float)((double)x - (double)Position.X - (double)MovementCounter.X));
     }
 
     public void MoveToX(float x, float liftSpeedX)
     {
-        MoveH((float)((double)x - (double)Position.X - (double)movementCounter.X), liftSpeedX);
+        MoveH((float)((double)x - (double)Position.X - (double)MovementCounter.X), liftSpeedX);
     }
 
     public void MoveToY(float y)
     {
-        MoveV((float)((double)y - (double)Position.Y - (double)movementCounter.Y));
+        MoveV((float)((double)y - (double)Position.Y - (double)MovementCounter.Y));
     }
 
     public void MoveToY(float y, float liftSpeedY)
     {
-        MoveV((float)((double)y - (double)Position.Y - (double)movementCounter.Y), liftSpeedY);
+        MoveV((float)((double)y - (double)Position.Y - (double)MovementCounter.Y), liftSpeedY);
     }
 
 
@@ -225,20 +225,20 @@ public abstract class GenericWaterBlock : Water
         {
             LiftSpeed.X = moveH / Engine.DeltaTime;
         }
-        movementCounter.X += moveH;
-        int num = (int)Math.Round(movementCounter.X);
+        MovementCounter.X += moveH;
+        int num = (int)Math.Round(MovementCounter.X);
         if (num == 0) return;
-        movementCounter.X -= num;
+        MovementCounter.X -= num;
         MoveHExact(num);
     }
 
     public void MoveH(float moveH, float liftSpeedH)
     {
         LiftSpeed.X = liftSpeedH;
-        movementCounter.X += moveH;
-        int num = (int)Math.Round(movementCounter.X);
+        MovementCounter.X += moveH;
+        int num = (int)Math.Round(MovementCounter.X);
         if (num == 0) return;
-        movementCounter.X -= num;
+        MovementCounter.X -= num;
         MoveHExact(num);
     }
 
@@ -252,19 +252,19 @@ public abstract class GenericWaterBlock : Water
         {
             LiftSpeed.Y = moveV / Engine.DeltaTime;
         }
-        movementCounter.Y += moveV;
-        int num = (int)Math.Round(movementCounter.Y);
+        MovementCounter.Y += moveV;
+        int num = (int)Math.Round(MovementCounter.Y);
         if (num == 0) return;
-        movementCounter.Y -= num;
+        MovementCounter.Y -= num;
         MoveVExact(num);
     }
     public void MoveV(float moveV, float liftSpeedV)
     {
         LiftSpeed.Y = liftSpeedV;
-        movementCounter.Y += moveV;
-        int num = (int)Math.Round(movementCounter.Y);
+        MovementCounter.Y += moveV;
+        int num = (int)Math.Round(MovementCounter.Y);
         if (num == 0) return;
-        movementCounter.Y -= num;
+        MovementCounter.Y -= num;
         MoveVExact(num);
     }
 
@@ -317,11 +317,11 @@ public abstract class GenericWaterBlock : Water
         {
             LiftSpeed.Y = moveV / Engine.DeltaTime;
         }
-        movementCounter.Y += moveV;
-        int num = (int)Math.Round(movementCounter.Y);
+        MovementCounter.Y += moveV;
+        int num = (int)Math.Round(MovementCounter.Y);
         if (num != 0)
         {
-            movementCounter.Y -= num;
+            MovementCounter.Y -= num;
             return MoveVExactCollideBarriers(num, onCollide, thruDashBlocks, evenSolids);
         }
         return false;
@@ -395,10 +395,10 @@ public abstract class GenericWaterBlock : Water
         {
             LiftSpeed.X = moveH / Engine.DeltaTime;
         }
-        movementCounter.X += moveH;
-        int num = (int)Math.Round(movementCounter.X);
+        MovementCounter.X += moveH;
+        int num = (int)Math.Round(MovementCounter.X);
         if (num == 0) return false;
-        movementCounter.X -= num;
+        MovementCounter.X -= num;
         return MoveHExactCollideBarriers(num, onCollide, thruDashBlocks, evenSolids);
     }
 

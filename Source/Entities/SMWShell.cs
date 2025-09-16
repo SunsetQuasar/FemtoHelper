@@ -10,18 +10,18 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/SMWShell")]
 [Tracked]
-public class SMWShell : Actor
+public class SmwShell : Actor
 {
 
     public class BounceDisplay : Entity
     {
-        SMWShell parent;
+        SmwShell parent;
 
-        public BounceDisplay(SMWShell parent) : base(Vector2.Zero)
+        public BounceDisplay(SmwShell parent) : base(Vector2.Zero)
         {
             this.parent = parent;
             //AddTag(TagsExt.SubHUD);
-            if (parent.displayConfig == BounceCountDisplay.HUD) AddTag(TagsExt.SubHUD);
+            if (parent.displayConfig == BounceCountDisplay.Hud) AddTag(TagsExt.SubHUD);
             Depth = parent.Depth;
         }
 
@@ -52,7 +52,7 @@ public class SMWShell : Actor
                     }
                 }
             } 
-            else if (parent.displayConfig == BounceCountDisplay.HUD)
+            else if (parent.displayConfig == BounceCountDisplay.Hud)
             {
                 if (parent.bounceCount == 0)
                 {
@@ -109,7 +109,7 @@ public class SMWShell : Actor
     private enum BounceCountDisplay
     {
         None = 0,
-        HUD = 1,
+        Hud = 1,
         SpriteText = 2
     }
 
@@ -125,7 +125,7 @@ public class SMWShell : Actor
 
     private States state = States.Dropped;
 
-    private SMWHoldable hold;
+    private SmwHoldable hold;
     private Vector2 speed;
     private readonly Collision onCollideH;
     private readonly Collision onCollideV;
@@ -150,7 +150,7 @@ public class SMWShell : Actor
     private readonly string audioPath;
 
     private readonly bool isDisco;
-    private readonly string[] Animations;
+    private readonly string[] animations;
     private int currentSpriteIndex;
     private string currentSpriteTrimmedName;
     private float discoTarget;
@@ -200,13 +200,13 @@ public class SMWShell : Actor
 
     private float playerThrownUpTimer;
 
-    public static readonly MTexture outlineTextureBlack = GFX.Game["objects/FemtoHelper/SMWShell/outline_black"];
+    public static readonly MTexture OutlineTextureBlack = GFX.Game["objects/FemtoHelper/SMWShell/outline_black"];
 
-    public static readonly MTexture outlineTextureWhite = GFX.Game["objects/FemtoHelper/SMWShell/outline_white"];
+    public static readonly MTexture OutlineTextureWhite = GFX.Game["objects/FemtoHelper/SMWShell/outline_white"];
 
-    public static readonly MTexture outlineTextureTiny = GFX.Game["objects/FemtoHelper/SMWShell/outline_tiny"];
+    public static readonly MTexture OutlineTextureTiny = GFX.Game["objects/FemtoHelper/SMWShell/outline_tiny"];
 
-    public SMWShell(EntityData data, Vector2 offset) : base(data.Position + offset)
+    public SmwShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Position.Y++;   //let's pretend the placement doesn't spawn the shell 1px above the ground
         speed = Vector2.Zero;
@@ -219,7 +219,7 @@ public class SMWShell : Actor
         Add(bonkCollider = new PlayerCollider(OnPlayerBonk, legacy ? new Hitbox(12f, 7f, -6f, -9f) : new Hitbox(12f, 15f, -6f, -8f)));
 
         Depth = -10;
-        Add(hold = new SMWHoldable(data.Int("holdYOffset", -12), data.Int("holdYCrouchOffset", -8)));
+        Add(hold = new SmwHoldable(data.Int("holdYOffset", -12), data.Int("holdYCrouchOffset", -8)));
 
         string prefix = data.Attr("texturesPrefix", "objects/FemtoHelper/SMWShell/");
 
@@ -273,8 +273,8 @@ public class SMWShell : Actor
 
         if (isDisco = data.Bool("disco", false))
         {
-            Animations = data.Attr("discoSprites", "yellow,blue,red,green,teal,gray,gold,gray").Split(',');
-            foreach (string s in Animations)
+            animations = data.Attr("discoSprites", "yellow,blue,red,green,teal,gray,gold,gray").Split(',');
+            foreach (string s in animations)
             {
                 sprite.AddLoop($"idle_{s}", $"{s}_idle", 15f);
                 sprite.AddLoop($"kicked_{s}", $"{s}_kicked", 0.06f);
@@ -287,7 +287,7 @@ public class SMWShell : Actor
         else
         {
             string key = data.Attr("mainSprite", "green");
-            Animations = [key];
+            animations = [key];
             sprite.AddLoop($"idle_{key}", $"{key}_idle", 15f);
             sprite.AddLoop($"kicked_{key}", $"{key}_kicked", 0.06f);
             currentSpriteIndex = 0;
@@ -423,8 +423,8 @@ public class SMWShell : Actor
 
     private void OnAnotherShell(Holdable h)
     {
-        if (h is not SMWHoldable holdable) return;
-        if (holdable.Entity is not SMWShell otherShell) return;
+        if (h is not SmwHoldable holdable) return;
+        if (holdable.Entity is not SmwShell otherShell) return;
         if (otherShell.ignoreOtherShells || ignoreOtherShells || otherShell.state == States.Dead || state == States.Dead) return;
 
         float dir = CenterX > otherShell.CenterX ? 1 : CenterX == otherShell.CenterX ? 0 : -1;
@@ -468,14 +468,14 @@ public class SMWShell : Actor
         while (true)
         {
             yield return 1/(discoSpriteRate * (Settings.Instance.DisableFlashes ? 0.25f : 1f));
-            currentSpriteIndex = Mod(currentSpriteIndex + 1, Animations.Length);
+            currentSpriteIndex = Mod(currentSpriteIndex + 1, animations.Length);
             ChangeSprite($"{currentSpriteTrimmedName}", true);
         }
     }
 
     private void ChangeSprite(string path, bool keep = false)
     {
-        sprite.PlayDontRestart($"{path}_{Animations[currentSpriteIndex]}", !keep);
+        sprite.PlayDontRestart($"{path}_{animations[currentSpriteIndex]}", !keep);
         currentSpriteTrimmedName = path;
     }
 
@@ -905,7 +905,7 @@ public class SMWShell : Actor
             if (Bottom < camera.Top)
             {
                 var distance = camera.Top - Bottom;
-                var texture = outlineTextureType == OutlineTextureType.Black ? outlineTextureBlack : outlineTextureType == OutlineTextureType.White ? outlineTextureWhite : outlineTextureTiny;
+                var texture = outlineTextureType == OutlineTextureType.Black ? OutlineTextureBlack : outlineTextureType == OutlineTextureType.White ? OutlineTextureWhite : OutlineTextureTiny;
                 texture.Draw(new Vector2(Left - 3, camera.Top - (distance / 16)).Floor());
             }
         }

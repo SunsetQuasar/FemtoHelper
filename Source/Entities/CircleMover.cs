@@ -13,13 +13,13 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/CircleMover")]
 public class CircleMover : Solid
 {
-    private static Color ropeColor = Calc.HexToColor("663931");
+    private static Color _ropeColor = Calc.HexToColor("663931");
 
-    private static Color ropeLightColor = Calc.HexToColor("9b6157");
+    private static Color _ropeLightColor = Calc.HexToColor("9b6157");
 
     private class CircleMoverPathRenderer : Entity
     {
-        public CircleMover circleMover;
+        public CircleMover CircleMover;
 
         private MTexture cog;
 
@@ -42,10 +42,10 @@ public class CircleMover : Solid
         public CircleMoverPathRenderer(CircleMover zipMover)
         {
             base.Depth = 5000;
-            circleMover = zipMover;
+            CircleMover = zipMover;
 
-            from = circleMover.CenterNode - Calc.AngleToVector(circleMover.angleStart, circleMover.length) + new Vector2(circleMover.Width / 2f, circleMover.Height / 2f);
-            to = circleMover.CenterNode - Calc.AngleToVector(circleMover.angleEnd, circleMover.length) + new Vector2(circleMover.Width / 2f, circleMover.Height / 2f);
+            from = CircleMover.centerNode - Calc.AngleToVector(CircleMover.angleStart, CircleMover.length) + new Vector2(CircleMover.Width / 2f, CircleMover.Height / 2f);
+            to = CircleMover.centerNode - Calc.AngleToVector(CircleMover.angleEnd, CircleMover.length) + new Vector2(CircleMover.Width / 2f, CircleMover.Height / 2f);
 
             sparkAdd = (from - to).SafeNormalize(5f).Perpendicular();
             float num = (from - to).Angle();
@@ -53,8 +53,8 @@ public class CircleMover : Solid
             sparkDirFromB = num - MathF.PI / 8f;
             sparkDirToA = num + MathF.PI - MathF.PI / 8f;
             sparkDirToB = num + MathF.PI + MathF.PI / 8f;
-            cog = GFX.Game[circleMover.prefix + "cog" + (circleMover.behavior == Behaviors.NoReturn ? "NoReturn" : "")];
-            glob = GFX.Game.GetAtlasSubtextures(circleMover.prefix + "path" + (circleMover.behavior == Behaviors.NoReturn ? "NoReturn" : ""));
+            cog = GFX.Game[CircleMover.Prefix + "cog" + (CircleMover.behavior == Behaviors.NoReturn ? "NoReturn" : "")];
+            glob = GFX.Game.GetAtlasSubtextures(CircleMover.Prefix + "path" + (CircleMover.behavior == Behaviors.NoReturn ? "NoReturn" : ""));
         }
 
         public void CreateSparks()
@@ -68,23 +68,23 @@ public class CircleMover : Solid
         {
             DrawCogs(Vector2.UnitY, Color.Black);
             DrawCogs(Vector2.Zero);
-            Draw.Rect(new Rectangle((int)(circleMover.X + circleMover.Shake.X - 1f), (int)(circleMover.Y + circleMover.Shake.Y - 1f), (int)circleMover.Width + 2, (int)circleMover.Height + 2), Color.Black);
+            Draw.Rect(new Rectangle((int)(CircleMover.X + CircleMover.Shake.X - 1f), (int)(CircleMover.Y + CircleMover.Shake.Y - 1f), (int)CircleMover.Width + 2, (int)CircleMover.Height + 2), Color.Black);
         }
         private void DrawCogs(Vector2 offset, Color? colorOverride = null)
         {
-            float rotation = circleMover.percent * MathF.PI * 2f;
-            float degStart = circleMover.angleStart * Calc.RadToDeg;
-            float degEnd = circleMover.angleEnd * Calc.RadToDeg;
+            float rotation = CircleMover.percent * MathF.PI * 2f;
+            float degStart = CircleMover.angleStart * Calc.RadToDeg;
+            float degEnd = CircleMover.angleEnd * Calc.RadToDeg;
             float mult = 1;
             if (degEnd - degStart < 0)
             {
                 (degEnd, degStart) = (degStart, degEnd);
                 mult = -1;
             }
-            for (float deg = degStart; deg < degEnd; deg += 400 / circleMover.length)
+            for (float deg = degStart; deg < degEnd; deg += 400 / CircleMover.length)
             {
                 //Draw.Rect(new Vector2(circleMover.Width / 2, circleMover.Height / 2) + circleMover.CenterNode - Calc.AngleToVector(deg * Calc.DegToRad, circleMover.length), 1, 1, Color.Bisque);
-                glob[(int)mod(rotation * 5 * mult, glob.Count)].DrawCentered(offset + new Vector2(circleMover.Width / 2, circleMover.Height / 2) + circleMover.CenterNode - Calc.AngleToVector(deg * Calc.DegToRad, circleMover.length),colorOverride.HasValue ? colorOverride.Value : Color.White, 1, deg * Calc.DegToRad);
+                glob[(int)Mod(rotation * 5 * mult, glob.Count)].DrawCentered(offset + new Vector2(CircleMover.Width / 2, CircleMover.Height / 2) + CircleMover.centerNode - Calc.AngleToVector(deg * Calc.DegToRad, CircleMover.length),colorOverride.HasValue ? colorOverride.Value : Color.White, 1, deg * Calc.DegToRad);
             }
             cog.DrawCentered(from + offset, colorOverride.HasValue ? colorOverride.Value : Color.White, 1f, rotation);
             cog.DrawCentered(to + offset, colorOverride.HasValue ? colorOverride.Value : Color.White, 1f, rotation);
@@ -93,29 +93,29 @@ public class CircleMover : Solid
 
     public class DebugVisual : Entity
     {
-        public CircleMover parent;
-        public DebugVisual(CircleMover Parent) : base()
+        public CircleMover Parent;
+        public DebugVisual(CircleMover parent) : base()
         {
-            parent = Parent;
+            this.Parent = parent;
             AddTag(TagsExt.SubHUD);
         }
 
         public override void Render()
         {
             base.Render();
-            ActiveFont.Draw(Math.Abs(Calc.ToDeg(parent.angleEnd - parent.angleStart)).ToString() + "°", ((parent.Position + (new Vector2(parent.Width, parent.Height) / 2) - Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.Aquamarine, 4, Color.Black, 2, Color.Black);
-            if (parent.angleEnd - parent.angleStart < 0)
+            ActiveFont.Draw(Math.Abs(Calc.ToDeg(Parent.angleEnd - Parent.angleStart)).ToString() + "°", ((Parent.Position + (new Vector2(Parent.Width, Parent.Height) / 2) - Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.Aquamarine, 4, Color.Black, 2, Color.Black);
+            if (Parent.angleEnd - Parent.angleStart < 0)
             {
-                ActiveFont.Draw("CCW", ((parent.Position + (new Vector2(parent.Width, parent.Height) / 2) + Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.Pink, 4, Color.Black, 2, Color.Black);
+                ActiveFont.Draw("CCW", ((Parent.Position + (new Vector2(Parent.Width, Parent.Height) / 2) + Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.Pink, 4, Color.Black, 2, Color.Black);
             }
             else
             {
-                ActiveFont.Draw("CW", ((parent.Position + (new Vector2(parent.Width, parent.Height) / 2) + Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.GreenYellow, 4, Color.Black, 2, Color.Black);
+                ActiveFont.Draw("CW", ((Parent.Position + (new Vector2(Parent.Width, Parent.Height) / 2) + Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.GreenYellow, 4, Color.Black, 2, Color.Black);
             }
         }
     }
 
-    private readonly Vector2 CenterNode;
+    private readonly Vector2 centerNode;
 
     private readonly float length;
 
@@ -146,7 +146,7 @@ public class CircleMover : Solid
 
     private bool permanented = false;
 
-    private readonly bool ThreeSixtyLoop;
+    private readonly bool threeSixtyLoop;
 
     private readonly bool activateFallingBlocks;
 
@@ -159,20 +159,20 @@ public class CircleMover : Solid
 
     private Behaviors behavior;
 
-    public string prefix;
+    public string Prefix;
 
     public CircleMover(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
         SurfaceSoundIndex = 9;
 
-        CenterNode = data.Nodes[0] + offset;
+        centerNode = data.Nodes[0] + offset;
 
-        angleStart = Calc.Angle(data.Position + offset, CenterNode);
+        angleStart = Calc.Angle(data.Position + offset, centerNode);
         angleStart = Calc.WrapAngle(angleStart);
 
         angleEnd = angleStart + (data.Float("angle", 180) * Calc.DegToRad) * (data.Bool("counterClockwise", false) ? -1 : 1);
 
-        length = (Position - CenterNode).Length();
+        length = (Position - centerNode).Length();
 
         Add(new Coroutine(Sequence()));
 
@@ -181,13 +181,13 @@ public class CircleMover : Solid
 
         chainZipperFlag = data.Attr("chainZipperFlag", "");
         behavior = data.Enum("behavior", Behaviors.Default);
-        ThreeSixtyLoop = data.Bool("ThreeSixtyLoops", false);
+        threeSixtyLoop = data.Bool("ThreeSixtyLoops", false);
         activateFallingBlocks = data.Bool("activateFallingBlocks", false);
 
-        prefix = data.Attr("spritePath", "objects/FemtoHelper/circleMover/");
+        Prefix = data.Attr("spritePath", "objects/FemtoHelper/circleMover/");
 
-        string id = prefix + "block";
-        string chain = prefix + "chain";
+        string id = Prefix + "block";
+        string chain = Prefix + "chain";
 
         if (behavior == Behaviors.NoReturn)
         {
@@ -205,13 +205,13 @@ public class CircleMover : Solid
             }
         }
 
-        Add(centerGem = new Image(GFX.Game[prefix + "centerGem" + (behavior == Behaviors.NoReturn ? "NoReturn" : "")]) 
+        Add(centerGem = new Image(GFX.Game[Prefix + "centerGem" + (behavior == Behaviors.NoReturn ? "NoReturn" : "")]) 
         { 
             Position = new Vector2(Width, Height) / 2
         });
         centerGem.CenterOrigin();
 
-        Add(centerRing = new Image(GFX.Game[prefix + "centerRing" + (behavior == Behaviors.NoReturn ? "NoReturn" : "")])
+        Add(centerRing = new Image(GFX.Game[Prefix + "centerRing" + (behavior == Behaviors.NoReturn ? "NoReturn" : "")])
         {
             Position = new Vector2(Width, Height) / 2
         });
@@ -258,7 +258,7 @@ public class CircleMover : Solid
 
         for (int k = 0; (float)k + 1 < base.Width / 8f; k++)
         {
-            float offset = mod(4 - (k * 3) + (percent * ((k % 2) == 0 ? -1 : 1)) * 16, 8);
+            float offset = Mod(4 - (k * 3) + (percent * ((k % 2) == 0 ? -1 : 1)) * 16, 8);
             chainTex.GetSubtexture(0, (int)MathF.Round(8 - offset), 8, (int)MathF.Round(offset)).Draw(new Vector2(4 + X + (float)(k * 8), Y), Vector2.Zero, Calc.HexToColor("666262"));
             for (int l = 0; (float)l < (base.Height / 8f) - 1f; l++)
             {
@@ -269,7 +269,7 @@ public class CircleMover : Solid
 
         for (int k = 0; (float)k < base.Width / 8f; k++)
         {
-            float offset = mod((k * 3) + (percent * ((k % 2) == 0 ? 1 : -1)) * 32, 8);
+            float offset = Mod((k * 3) + (percent * ((k % 2) == 0 ? 1 : -1)) * 32, 8);
             chainTex.GetSubtexture(0, (int)MathF.Round(8 - offset), 8, (int)MathF.Round(offset)).Draw(new Vector2(X + (float)(k * 8), Y));
             for (int l = 0; (float)l < (base.Height / 8f) - 1f; l++)
             {
@@ -394,7 +394,7 @@ public class CircleMover : Solid
                 percent = Ease.SineIn(at);
                 centerRing.Rotation = 2 * -MathF.Tau * percent;
                 angle = Calc.LerpClamp(angleStart, angleEnd, percent);
-                Vector2 pos = CenterNode - Calc.AngleToVector(angle, length);
+                Vector2 pos = centerNode - Calc.AngleToVector(angle, length);
                 ScrapeParticlesCheck(pos);
                 MoveTo(pos);
                 if (Scene.OnInterval(0.1f))
@@ -438,7 +438,7 @@ public class CircleMover : Solid
             {
                 idle = true;
                 sfx.Stop();
-                if (ThreeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360) continue;
+                if (threeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360) continue;
                 activateSignal = false;
                 while (!(activateSignal || HasPlayerRider()))
                 {
@@ -460,7 +460,7 @@ public class CircleMover : Solid
                     percent = Ease.SineOut(at);
                     centerRing.Rotation = 2 * -MathF.Tau * percent;
                     angle = Calc.LerpClamp(angleStart, angleEnd, percent);
-                    Vector2 pos = CenterNode - Calc.AngleToVector(angle, length);
+                    Vector2 pos = centerNode - Calc.AngleToVector(angle, length);
                     ScrapeParticlesCheck(pos);
                     MoveTo(pos);
                     if (Scene.OnInterval(0.1f))
@@ -496,7 +496,7 @@ public class CircleMover : Solid
             }
             else
             {
-                if (ThreeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360)
+                if (threeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360)
                 {
                     sfx.Stop();
                     idle = true;
@@ -510,7 +510,7 @@ public class CircleMover : Solid
                     percent = 1f - Ease.SineIn(at);
                     centerRing.Rotation = 2 * -MathF.Tau * percent;
                     angle = Calc.LerpClamp(angleStart, angleEnd, percent);
-                    Vector2 pos = CenterNode - Calc.AngleToVector(angle, length);
+                    Vector2 pos = centerNode - Calc.AngleToVector(angle, length);
                     MoveTo(pos);
                 }
                 percent = 0;
@@ -522,7 +522,7 @@ public class CircleMover : Solid
         }
     }
 
-    private static float mod(float x, float m)
+    private static float Mod(float x, float m)
     {
         return (x % m + m) % m;
     }

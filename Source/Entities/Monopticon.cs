@@ -33,9 +33,9 @@ public class MonoBlocker : LookoutBlocker
 public class Monopticon : Lookout
 {
 
-    public class UnsociableTalkComponentUI : TalkComponent.TalkComponentUI // fish "thanks" underflow
+    public class UnsociableTalkComponentUi : TalkComponent.TalkComponentUI // fish "thanks" underflow
     {
-        public UnsociableTalkComponentUI(TalkComponent handler)
+        public UnsociableTalkComponentUi(TalkComponent handler)
             : base(handler)
         {
         }
@@ -46,27 +46,27 @@ public class Monopticon : Lookout
         }
     }
 
-    public bool blockJump;
-    public bool blockDash;
-    public string intflag;
-    public bool arbInteract;
-    public bool dashInputCancel;
+    public bool BlockJump;
+    public bool BlockDash;
+    public string Intflag;
+    public bool ArbInteract;
+    public bool DashInputCancel;
 
-    public bool blockWallKick;
+    public bool BlockWallKick;
     public bool WallKickCancel;
 
-    public static bool grabbing;
+    public static bool Grabbing;
 
     public bool JumpCancelCheck;
 
     public bool DashCancelCheck;
 
     public float DashDelayConfig;
-    public float preOpenFrames;
-    public float openFrames;
-    public float closeFrames;
-    public float cooldownFrames;
-    public bool canDashCoroutine;
+    public float PreOpenFrames;
+    public float OpenFrames;
+    public float CloseFrames;
+    public float CooldownFrames;
+    public bool CanDashCoroutine;
 
     private readonly bool strictStateReset;
 
@@ -107,17 +107,17 @@ public class Monopticon : Lookout
         {
             nodes = [.. array];
         }
-        blockJump = data.Bool("blockJump", true);
-        blockDash = data.Bool("blockDash", true);
-        blockWallKick = data.Bool("blockWallKicks", true);
+        BlockJump = data.Bool("blockJump", true);
+        BlockDash = data.Bool("blockDash", true);
+        BlockWallKick = data.Bool("blockWallKicks", true);
         WallKickCancel = data.Bool("wallkicksCancelBino", true);
-        dashInputCancel = data.Bool("dashInputCancel", false);
-        intflag = data.Attr("interactFlag", "lookout_interacting");
+        DashInputCancel = data.Bool("dashInputCancel", false);
+        Intflag = data.Attr("interactFlag", "lookout_interacting");
         DashDelayConfig = data.Float("dashCancelDelay", 0.15f);
-        preOpenFrames = data.Float("preOpenFrames", 12f);
-        openFrames = data.Float("openFrames", 20f);
-        closeFrames = data.Float("closeFrames", 20f);
-        cooldownFrames = data.Float("cooldownFrames", 6f);
+        PreOpenFrames = data.Float("preOpenFrames", 12f);
+        OpenFrames = data.Float("openFrames", 20f);
+        CloseFrames = data.Float("closeFrames", 20f);
+        CooldownFrames = data.Float("cooldownFrames", 6f);
         strictStateReset = data.Bool("strictStateReset", false);
 
         binoAccel = data.Float("binoAcceleration", 800f);
@@ -154,7 +154,7 @@ public class Monopticon : Lookout
         Monopticon mono = player.Scene.Tracker.GetEntity<Monopticon>();
         if (mono != null)
         {
-            if (!mono.arbInteract && mono.blockJump)
+            if (!mono.ArbInteract && mono.BlockJump)
             {
                 return false;
             }
@@ -219,7 +219,7 @@ public class Monopticon : Lookout
 
     public IEnumerator DashCheckDelay(Monopticon mono, Player player)
     {
-        if (!mono.canDashCoroutine) yield break;
+        if (!mono.CanDashCoroutine) yield break;
         yield return mono.DashDelayConfig / 60f;
         DashCancelCheck = true;
     }
@@ -227,10 +227,10 @@ public class Monopticon : Lookout
     public static void Player_Jump(On.Celeste.Player.orig_Jump orig, Player self, bool particles, bool playSfx)
     {
         Monopticon mono = self.Scene.Tracker.GetEntity<Monopticon>();
-        grabbing = self.CollideCheck<Solid>(self.Position + Vector2.UnitX * (float)self.Facing) && Input.Grab.Check;
+        Grabbing = self.CollideCheck<Solid>(self.Position + Vector2.UnitX * (float)self.Facing) && Input.Grab.Check;
         if (mono != null)
         {
-            if (mono.arbInteract || grabbing || !mono.blockJump)
+            if (mono.ArbInteract || Grabbing || !mono.BlockJump)
             {
                 orig(self, particles, playSfx);
                 mono.JumpCancelCheck = true;
@@ -251,7 +251,7 @@ public class Monopticon : Lookout
         Monopticon mono = self.Scene.Tracker.GetEntity<Monopticon>();
         if (mono != null)
         {
-            if (mono.arbInteract || !mono.blockJump)
+            if (mono.ArbInteract || !mono.BlockJump)
             {
                 orig(self);
                 mono.JumpCancelCheck = true;
@@ -272,7 +272,7 @@ public class Monopticon : Lookout
         Monopticon mono = self.Scene.Tracker.GetEntity<Monopticon>();
         if (mono != null)
         {
-            if (mono.arbInteract || !mono.blockJump)
+            if (mono.ArbInteract || !mono.BlockJump)
             {
                 orig(self, dir);
                 mono.JumpCancelCheck = true;
@@ -293,7 +293,7 @@ public class Monopticon : Lookout
         Monopticon mono = self.Scene.Tracker.GetEntity<Monopticon>();
         if (mono != null)
         {
-            if (mono.arbInteract || !mono.blockJump)
+            if (mono.ArbInteract || !mono.BlockJump)
             {
                 orig(self);
                 mono.JumpCancelCheck = true;
@@ -317,7 +317,7 @@ public class Monopticon : Lookout
             orig(self, player);
             return;
         }
-        if (!mono.arbInteract)
+        if (!mono.ArbInteract)
         {
             if (player.Holding == null)
             {
@@ -337,7 +337,7 @@ public class Monopticon : Lookout
                 coroutine.RemoveOnComplete = true;
                 mono.Add(coroutine);
                 mono.interacting = true;
-                mono.talk.cooldown = mono.cooldownFrames / 60f;
+                mono.talk.cooldown = mono.CooldownFrames / 60f;
             }
         }
 
@@ -352,10 +352,10 @@ public class Monopticon : Lookout
             OnInBegin = () =>
             {
                 (scene as Level).Session.SetFlag("binoState", false);
-                (Scene as Level).Session.SetFlag(intflag, false);
+                (Scene as Level).Session.SetFlag(Intflag, false);
             }
         });
-        talk.UI = new UnsociableTalkComponentUI(talk);
+        talk.UI = new UnsociableTalkComponentUi(talk);
         (scene as Level).Session.SetFlag("binoState", false);
     }
 
@@ -392,11 +392,11 @@ public class Monopticon : Lookout
             sprite.Scale.Y = 1;
         }
 
-        if (!arbInteract)
+        if (!ArbInteract)
         {
             if (player != null)
             {
-                if (!arbInteract && blockDash)
+                if (!ArbInteract && BlockDash)
                 {
                     player.dashCooldownTimer = Engine.DeltaTime + 1E-06f;
                 }
@@ -454,8 +454,8 @@ public class Monopticon : Lookout
             }
             yield break;
         }
-        (Scene as Level).Session.SetFlag(intflag, true);
-        arbInteract = true;
+        (Scene as Level).Session.SetFlag(Intflag, true);
+        ArbInteract = true;
 
         Audio.Play("event:/game/general/lookout_use", Position);
         if (player.Facing == Facings.Right)
@@ -467,21 +467,21 @@ public class Monopticon : Lookout
             sprite.Play(animPrefix + "lookLeft");
         }
         player.Sprite.Visible = (player.Hair.Visible = false);
-        yield return preOpenFrames / 60;
+        yield return PreOpenFrames / 60;
 
         nodePercent = 0f;
         node = 0;
         Audio.Play("event:/ui/game/lookout_on");
-        yield return openFrames / 60f;
+        yield return OpenFrames / 60f;
         JumpCancelCheck = false;
         DashCancelCheck = false;
-        canDashCoroutine = true;
+        CanDashCoroutine = true;
         Vector2 cam = level.Camera.Position;
         Vector2 speed = Vector2.Zero;
         Vector2 lastDir = Vector2.Zero;
         Vector2 camStart = level.Camera.Position;
         Vector2 camStartCenter = camStart + new Vector2(160f, 90f);
-        while (!(Input.MenuCancel || (dashInputCancel && Input.Dash)) && !DashCancelCheck && !JumpCancelCheck && interacting && !player.Dead)
+        while (!(Input.MenuCancel || (DashInputCancel && Input.Dash)) && !DashCancelCheck && !JumpCancelCheck && interacting && !player.Dead)
         {
 
             Vector2 value = Input.Aim.Value;
@@ -680,12 +680,12 @@ public class Monopticon : Lookout
         sprite.Play(animPrefix + "idle");
         Audio.Play("event:/ui/game/lookout_off");
 
-        (Scene as Level).Session.SetFlag(intflag, false);
-        arbInteract = false;
+        (Scene as Level).Session.SetFlag(Intflag, false);
+        ArbInteract = false;
         interacting = false;
-        yield return closeFrames / 60f;
-        canDashCoroutine = false;
-        if (dashInputCancel)
+        yield return CloseFrames / 60f;
+        CanDashCoroutine = false;
+        if (DashInputCancel)
         {
             player.StateMachine.State = 0;
         }

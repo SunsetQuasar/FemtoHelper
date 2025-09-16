@@ -524,7 +524,7 @@ public class EvilTheoCrystal : Actor
     }
     private static float Upthrowcheck(Player player)
     {
-        if (player is { Holding.Entity: EvilTheoCrystal } || player is {Holding: SMWHoldable} && Input.Aim.Value.Y < 0f)
+        if (player is { Holding.Entity: EvilTheoCrystal } || player is {Holding: SmwHoldable} && Input.Aim.Value.Y < 0f)
         {
             return 0f;
         }

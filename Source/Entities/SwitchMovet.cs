@@ -12,31 +12,31 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 
 public class SwitchMovetBeam : Entity
 {
-    public SwitchMovet target;
-    public SwitchMovetBox parent;
-    public float generalPercent = 0;
-    public float flashPercent = 0;
-    public bool flash = false;
+    public SwitchMovet Target;
+    public SwitchMovetBox Parent;
+    public float GeneralPercent = 0;
+    public float FlashPercent = 0;
+    public bool Flash = false;
     public SwitchMovetBeam(SwitchMovet target, SwitchMovetBox parent) : base(Vector2.Zero)
     {
         Depth = -500;
-        this.target = target;
-        this.parent = parent;
+        this.Target = target;
+        this.Parent = parent;
         Add(new Coroutine(Sequence()));
     }
     public IEnumerator Sequence()
     {
         Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.Linear, 0.15f, true);
-        tween.OnUpdate += t => generalPercent = t.Percent;
+        tween.OnUpdate += t => GeneralPercent = t.Percent;
         Add(tween);
         yield return 0.15f;
         Remove(tween);
         tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.Linear, 0.15f, true);
-        tween.OnUpdate += t => generalPercent = 1 + t.Percent;
+        tween.OnUpdate += t => GeneralPercent = 1 + t.Percent;
         Add(tween);
         Tween tween2 = Tween.Create(Tween.TweenMode.Oneshot, Ease.Linear, 0.3f, true);
-        flash = true;
-        tween2.OnUpdate += t => flashPercent = t.Percent;
+        Flash = true;
+        tween2.OnUpdate += t => FlashPercent = t.Percent;
         Add(tween2);
         yield return 0.15f;
         Remove(tween);
@@ -48,22 +48,22 @@ public class SwitchMovetBeam : Entity
     public override void Render()
     {
         base.Render();
-        Color color = Calc.HexToColor(parent.color);
+        Color color = Calc.HexToColor(Parent.Color);
         color.A = (byte)(color.A / 2);
-        float thick = 1 + Ease.CubeInOut(generalPercent > 1 ? 1 - (generalPercent - 1) : generalPercent) * 4;
-        if (generalPercent > 0 && generalPercent < 1)
+        float thick = 1 + Ease.CubeInOut(GeneralPercent > 1 ? 1 - (GeneralPercent - 1) : GeneralPercent) * 4;
+        if (GeneralPercent > 0 && GeneralPercent < 1)
         {
-            Draw.Line(parent.Center, Vector2.Lerp(parent.Center, target.Center, Ease.CubeIn(generalPercent)), color * 0.5f, thick);
+            Draw.Line(Parent.Center, Vector2.Lerp(Parent.Center, Target.Center, Ease.CubeIn(GeneralPercent)), color * 0.5f, thick);
         }
-        else if (generalPercent >= 1)
+        else if (GeneralPercent >= 1)
         {
-            Draw.Line(target.Center, Vector2.Lerp(target.Center, parent.Center, Ease.CubeOut(1 - (generalPercent - 1))), color * 0.5f, thick);
+            Draw.Line(Target.Center, Vector2.Lerp(Target.Center, Parent.Center, Ease.CubeOut(1 - (GeneralPercent - 1))), color * 0.5f, thick);
         }
-        if (flash)
+        if (Flash)
         {
-            float p = Ease.QuadOut(1 - flashPercent);
-            Draw.Rect(target.Position + target.Shake, target.Width, (1 + target.Height / 2) * p, color * p);
-            Draw.Rect(target.Position + target.Shake + Vector2.UnitY * (target.Height - (1 + target.Height / 2) * p), target.Width, (1 + target.Height / 2) * p, color * p);
+            float p = Ease.QuadOut(1 - FlashPercent);
+            Draw.Rect(Target.Position + Target.Shake, Target.Width, (1 + Target.Height / 2) * p, color * p);
+            Draw.Rect(Target.Position + Target.Shake + Vector2.UnitY * (Target.Height - (1 + Target.Height / 2) * p), Target.Width, (1 + Target.Height / 2) * p, color * p);
         }
     }
 }
@@ -72,27 +72,27 @@ public class SwitchMovetBeam : Entity
 [CustomEntity("FemtoHelper/SwitchMovetBox")]
 public class SwitchMovetBox : Solid
 {
-    public string color;
+    public string Color;
     private SineWave sine;
     private SineWave sine2;
     private float sink;
     private Vector2 bounceDir;
     private Wiggler bounce;
-    public Vector2 start;
-    public Sprite cover;
-    public Image back;
-    public Image crystal;
-    public Image glow;
-    public bool smashParticles;
-    public ParticleType P_Smash;
+    public Vector2 Start;
+    public Sprite Cover;
+    public Image Back;
+    public Image Crystal;
+    public Image Glow;
+    public bool DoSmashParticles;
+    public ParticleType PSmash;
     public Vector2 halfSize => new Vector2(Width, Height) / 2f;
     public SwitchMovetBox(EntityData data, Vector2 offset) : base(data.Position + offset, 32, 32, false)
     {
         Depth = -450;
         SurfaceSoundIndex = 9;
-        start = Position;
+        Start = Position;
         OnDashCollide = OnDash;
-        color = data.Attr("color", "FF0000");
+        Color = data.Attr("color", "FF0000");
         sine = new SineWave(0.5f, 0f);
         Add(sine);
         sine2 = new SineWave(0.5f, -1f);
@@ -101,30 +101,30 @@ public class SwitchMovetBox : Solid
         bounce.StartZero = false;
         Add(bounce);
         string path = data.Attr("path", "objects/FemtoHelper/switchMovetBox/");
-        Add(back = new Image(GFX.Game[path + "back"]));
-        Add(crystal = new Image(GFX.Game[path + "crystal"]));
-        Add(glow = new Image(GFX.Game[path + "glow"]));
-        Add(cover = new Sprite(GFX.Game, path + "cover"));
-        cover.AddLoop("idle", "", 0.1f, [0]);
-        cover.Play("idle");
-        cover.Add("hit", "", 0.05f, "idle", [0, 1, 2, 3, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0]);
+        Add(Back = new Image(GFX.Game[path + "back"]));
+        Add(Crystal = new Image(GFX.Game[path + "crystal"]));
+        Add(Glow = new Image(GFX.Game[path + "glow"]));
+        Add(Cover = new Sprite(GFX.Game, path + "cover"));
+        Cover.AddLoop("idle", "", 0.1f, [0]);
+        Cover.Play("idle");
+        Cover.Add("hit", "", 0.05f, "idle", [0, 1, 2, 3, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0]);
 
-        back.CenterOrigin();
-        crystal.CenterOrigin();
-        glow.CenterOrigin();
-        cover.CenterOrigin();
+        Back.CenterOrigin();
+        Crystal.CenterOrigin();
+        Glow.CenterOrigin();
+        Cover.CenterOrigin();
 
-        cover.Position = back.Position = crystal.Position = glow.Position = halfSize;
+        Cover.Position = Back.Position = Crystal.Position = Glow.Position = halfSize;
 
-        Color glowColor = Color.Lerp(Calc.HexToColor(color), Color.DarkGray * 0.2f, 0.8f);
-        glow.Color = glowColor;
-        crystal.Color = Calc.HexToColor(color);
+        Color glowColor = Microsoft.Xna.Framework.Color.Lerp(Calc.HexToColor(Color), Microsoft.Xna.Framework.Color.DarkGray * 0.2f, 0.8f);
+        Glow.Color = glowColor;
+        Crystal.Color = Calc.HexToColor(Color);
         Add(new LightOcclude(0.8f));
 
-        P_Smash = new ParticleType(LightningBreakerBox.P_Smash)
+        PSmash = new ParticleType(LightningBreakerBox.P_Smash)
         {
-            Color = Calc.HexToColor(color),
-            Color2 = Color.White,
+            Color = Calc.HexToColor(Color),
+            Color2 = Microsoft.Xna.Framework.Color.White,
             SpeedMin = 70,
             SpeedMax = 80
         };
@@ -165,7 +165,7 @@ public class SwitchMovetBox : Solid
             num = (int)(base.Width / 8f) * 4;
         }
         num += 2;
-        SceneAs<Level>().ParticlesBG.Emit(P_Smash, num, position, positionRange, -direction);
+        SceneAs<Level>().ParticlesBG.Emit(PSmash, num, position, positionRange, -direction);
     }
 
     public DashCollisionResults OnDash(Player player, Vector2 dir)
@@ -173,9 +173,9 @@ public class SwitchMovetBox : Solid
         bool flag = false;
         foreach (SwitchMovet s in Scene.Tracker.GetEntities<SwitchMovet>())
         {
-            if (s.color == this.color)
+            if (s.Color == this.Color)
             {
-                if (!s.activated)
+                if (!s.Activated)
                 {
                     flag = true;
                     Scene.Add(new SwitchMovetBeam(s, this));
@@ -185,19 +185,19 @@ public class SwitchMovetBox : Solid
         }
         if (flag)
         {
-            cover.Play("hit");
+            Cover.Play("hit");
             (Scene as Level).DirectionalShake(dir);
-            cover.Scale = back.Scale = new Vector2(1f + Math.Abs(dir.Y) * 0.4f - Math.Abs(dir.X) * 0.4f, 1f + Math.Abs(dir.X) * 0.4f - Math.Abs(dir.Y) * 0.4f);
+            Cover.Scale = Back.Scale = new Vector2(1f + Math.Abs(dir.Y) * 0.4f - Math.Abs(dir.X) * 0.4f, 1f + Math.Abs(dir.X) * 0.4f - Math.Abs(dir.Y) * 0.4f);
             bounceDir = dir;
             bounce.Start();
-            smashParticles = true;
+            DoSmashParticles = true;
             Audio.Play("event:/FemtoHelper/switch_movet_box_hit", Position);
             Celeste.Freeze(0.1f);
         }
         else
         {
             (Scene as Level).DirectionalShake(dir);
-            cover.Scale = back.Scale = new Vector2(1f + Math.Abs(dir.Y) * 0.2f - Math.Abs(dir.X) * 0.2f, 1f + Math.Abs(dir.X) * 0.2f - Math.Abs(dir.Y) * 0.2f);
+            Cover.Scale = Back.Scale = new Vector2(1f + Math.Abs(dir.Y) * 0.2f - Math.Abs(dir.X) * 0.2f, 1f + Math.Abs(dir.X) * 0.2f - Math.Abs(dir.Y) * 0.2f);
             bounceDir = dir;
             bounce.Start();
             Audio.Play("event:/FemtoHelper/switch_movet_box_hitfail", Position);
@@ -215,25 +215,25 @@ public class SwitchMovetBox : Solid
             sink = Calc.Approach(sink, flag ? 1 : 0, 2f * Engine.DeltaTime);
             sine.Rate = MathHelper.Lerp(1f, 0.5f, sink);
             sine2.Rate = MathHelper.Lerp(1f, 0.5f, sink);
-            Vector2 vector = start;
+            Vector2 vector = Start;
             vector.Y += sink * 6f + sine.Value * MathHelper.Lerp(4f, 2f, sink);
             vector += bounce.Value * bounceDir * 12f;
             MoveToX(vector.X);
             MoveToY(vector.Y);
-            Vector2 vector2 = start;
+            Vector2 vector2 = Start;
             vector2.Y += sink * 6f + sine2.Value * MathHelper.Lerp(4f, 2f, sink);
             vector2 += bounce.Value * bounceDir * 12f;
-            crystal.Position = halfSize + vector2 - Position;
-            glow.Position = halfSize + vector2 - Position;
-            if (smashParticles)
+            Crystal.Position = halfSize + vector2 - Position;
+            Glow.Position = halfSize + vector2 - Position;
+            if (DoSmashParticles)
             {
-                smashParticles = false;
+                DoSmashParticles = false;
                 SmashParticles(bounceDir.Perpendicular());
                 SmashParticles(-bounceDir.Perpendicular());
             }
         }
-        cover.Scale.X = back.Scale.X = Calc.Approach(cover.Scale.X, 1f, Engine.DeltaTime * 4f);
-        cover.Scale.Y = back.Scale.Y = Calc.Approach(cover.Scale.Y, 1f, Engine.DeltaTime * 4f);
+        Cover.Scale.X = Back.Scale.X = Calc.Approach(Cover.Scale.X, 1f, Engine.DeltaTime * 4f);
+        Cover.Scale.Y = Back.Scale.Y = Calc.Approach(Cover.Scale.Y, 1f, Engine.DeltaTime * 4f);
     }
 
     public override void Render()
@@ -244,40 +244,40 @@ public class SwitchMovetBox : Solid
 
 public class SwitchMovetPathRenderer : Entity
 {
-    public SwitchMovet parent;
-    public float timer;
-    public Player player;
+    public SwitchMovet Parent;
+    public float Timer;
+    public Player Player;
     public SwitchMovetPathRenderer(SwitchMovet parent) : base()
     {
         base.Depth = 5000;
-        this.parent = parent;
-        timer = Calc.Random.NextFloat(MathF.Tau);
+        this.Parent = parent;
+        Timer = Calc.Random.NextFloat(MathF.Tau);
     }
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        player = Scene.Tracker.GetEntity<Player>();
+        Player = Scene.Tracker.GetEntity<Player>();
     }
 
     public override void Update()
     {
         base.Update();
-        timer += Engine.DeltaTime * (3 * parent.gemActivation + 1);
+        Timer += Engine.DeltaTime * (3 * Parent.GemActivation + 1);
     }
 
     public override void Render()
     {
-        Color col = Calc.HexToColor(parent.color);
+        Color col = Calc.HexToColor(Parent.Color);
         col.A = 0;
-        float count = MathF.Round(Vector2.Distance(parent.anchor + parent.halfSize, parent.node + parent.halfSize) / 16f);
+        float count = MathF.Round(Vector2.Distance(Parent.Anchor + Parent.halfSize, Parent.Node + Parent.halfSize) / 16f);
         for (float j = 0; j < count; j++)
         {
             float percent = j / count;
             float percentNext = (j + 1) / count;
-            Vector2 perp = (parent.node + parent.halfSize - parent.anchor + parent.halfSize).Perpendicular().SafeNormalize(2f);
-            Draw.Line(Vector2.Lerp(parent.anchor + parent.halfSize, parent.node + parent.halfSize, percent) + perp * MathF.Sin((timer * -3) + (j * 1.7f)), Vector2.Lerp(parent.anchor + parent.halfSize, parent.node + parent.halfSize, percentNext) + perp * MathF.Sin((timer * -3) + ((j + 1) * 1.7f)), col * 0.2f * (0.6f + 0.4f * MathF.Cos((timer * 2.5f) + (j * 0.2f))), 4);
-            Draw.Line(Vector2.Lerp(parent.anchor + parent.halfSize, parent.node + parent.halfSize, percent) - perp * MathF.Sin((timer * -3) + (j * 1.7f)), Vector2.Lerp(parent.anchor + parent.halfSize, parent.node + parent.halfSize, percentNext) + perp * MathF.Sin((timer * -3) + ((j - 1) * 1.7f)), col * 0.2f * (0.6f + 0.4f * MathF.Cos((timer * 2.5f) + (j * 0.2f))), 4);
+            Vector2 perp = (Parent.Node + Parent.halfSize - Parent.Anchor + Parent.halfSize).Perpendicular().SafeNormalize(2f);
+            Draw.Line(Vector2.Lerp(Parent.Anchor + Parent.halfSize, Parent.Node + Parent.halfSize, percent) + perp * MathF.Sin((Timer * -3) + (j * 1.7f)), Vector2.Lerp(Parent.Anchor + Parent.halfSize, Parent.Node + Parent.halfSize, percentNext) + perp * MathF.Sin((Timer * -3) + ((j + 1) * 1.7f)), col * 0.2f * (0.6f + 0.4f * MathF.Cos((Timer * 2.5f) + (j * 0.2f))), 4);
+            Draw.Line(Vector2.Lerp(Parent.Anchor + Parent.halfSize, Parent.Node + Parent.halfSize, percent) - perp * MathF.Sin((Timer * -3) + (j * 1.7f)), Vector2.Lerp(Parent.Anchor + Parent.halfSize, Parent.Node + Parent.halfSize, percentNext) + perp * MathF.Sin((Timer * -3) + ((j - 1) * 1.7f)), col * 0.2f * (0.6f + 0.4f * MathF.Cos((Timer * 2.5f) + (j * 0.2f))), 4);
         }
 
         //Vector2 pos = parent.anchor + parent.halfSize;
@@ -297,18 +297,18 @@ public class SwitchMovetPathRenderer : Entity
         //color.A = 0;
         //Draw.Line(parent.anchor + parent.halfSize, parent.node + parent.halfSize, color, 4);
 
-        Color trueGemColor = parent.gemColor;
+        Color trueGemColor = Parent.gemColor;
         trueGemColor.A = 0;
 
-        parent.smallcog.DrawCentered(parent.node + parent.halfSize + Vector2.UnitY, Color.Black, 1, parent.cogWinding);
-        parent.smallcog.DrawCentered(parent.anchor + parent.halfSize, parent.cogColor, 1, parent.cogWinding);
-        parent.cogGem.DrawCentered(parent.anchor + parent.halfSize, trueGemColor);
+        Parent.Smallcog.DrawCentered(Parent.Node + Parent.halfSize + Vector2.UnitY, Color.Black, 1, Parent.CogWinding);
+        Parent.Smallcog.DrawCentered(Parent.Anchor + Parent.halfSize, Parent.cogColor, 1, Parent.CogWinding);
+        Parent.CogGem.DrawCentered(Parent.Anchor + Parent.halfSize, trueGemColor);
 
-        parent.smallcog.DrawCentered(parent.node + parent.halfSize + Vector2.UnitY, Color.Black, 1, parent.cogWinding);
-        parent.smallcog.DrawCentered(parent.node + parent.halfSize, parent.cogColor, 1, parent.cogWinding);
-        parent.cogGem.DrawCentered(parent.node + parent.halfSize, trueGemColor);
+        Parent.Smallcog.DrawCentered(Parent.Node + Parent.halfSize + Vector2.UnitY, Color.Black, 1, Parent.CogWinding);
+        Parent.Smallcog.DrawCentered(Parent.Node + Parent.halfSize, Parent.cogColor, 1, Parent.CogWinding);
+        Parent.CogGem.DrawCentered(Parent.Node + Parent.halfSize, trueGemColor);
 
-        Draw.Rect(new Rectangle((int)(parent.X + parent.Shake.X - 1f), (int)(parent.Y + parent.Shake.Y - 1f), (int)parent.Width + 2, (int)parent.Height + 2), Color.Black);
+        Draw.Rect(new Rectangle((int)(Parent.X + Parent.Shake.X - 1f), (int)(Parent.Y + Parent.Shake.Y - 1f), (int)Parent.Width + 2, (int)Parent.Height + 2), Color.Black);
         base.Render();
     }
 }
@@ -317,45 +317,45 @@ public class SwitchMovetPathRenderer : Entity
 [CustomEntity("FemtoHelper/SwitchMovet")]
 public class SwitchMovet : Solid
 {
-    public static ParticleType P_Scrape = new ParticleType(ZipMover.P_Scrape);
-    public string color = "ffffff";
-    public Vector2 node = Vector2.Zero;
-    public Vector2 anchor = Vector2.Zero;
-    public bool activated = false;
-    public bool state = false;
-    public float cogWinding = 0;
-    public float distance;
-    public Vector2 step;
-    public Vector2 perp;
-    public MTexture cog;
-    public MTexture cogGem;
-    public MTexture smallcog;
-    public List<Image> block;
-    public Color cogColor => Color.Lerp(Calc.HexToColor(color), Color.White, 0.65f);
-    public Color gemColor => Color.Lerp(Color.Black, Calc.HexToColor(color), gemActivation);
-    public float gemActivation = 0;
+    public static ParticleType PScrape = new ParticleType(ZipMover.P_Scrape);
+    public string Color = "ffffff";
+    public Vector2 Node = Vector2.Zero;
+    public Vector2 Anchor = Vector2.Zero;
+    public bool Activated = false;
+    public bool State = false;
+    public float CogWinding = 0;
+    public float Distance;
+    public Vector2 Step;
+    public Vector2 Perp;
+    public MTexture Cog;
+    public MTexture CogGem;
+    public MTexture Smallcog;
+    public List<Image> Block;
+    public Color cogColor => Microsoft.Xna.Framework.Color.Lerp(Calc.HexToColor(Color), Microsoft.Xna.Framework.Color.White, 0.65f);
+    public Color gemColor => Microsoft.Xna.Framework.Color.Lerp(Microsoft.Xna.Framework.Color.Black, Calc.HexToColor(Color), GemActivation);
+    public float GemActivation = 0;
     public Vector2 halfSize => new Vector2(Width, Height) / 2;
-    public BloomPoint bloom;
-    public BloomPoint nodebloom;
-    public BloomPoint nodebloom2;
+    public BloomPoint Bloom;
+    public BloomPoint Nodebloom;
+    public BloomPoint Nodebloom2;
     public SwitchMovet(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
         Depth = -400;
         SurfaceSoundIndex = 42;
-        node = data.NodesOffset(offset)[0];
-        anchor = Position;
-        distance = Vector2.Distance(Position, node);
-        step = (node - Position).SafeNormalize();
-        perp = step.Perpendicular();
-        step *= 8;
-        color = data.Attr("color", "FF0000");
+        Node = data.NodesOffset(offset)[0];
+        Anchor = Position;
+        Distance = Vector2.Distance(Position, Node);
+        Step = (Node - Position).SafeNormalize();
+        Perp = Step.Perpendicular();
+        Step *= 8;
+        Color = data.Attr("color", "FF0000");
         string path = data.Attr("path", "objects/FemtoHelper/switchMovet/");
-        cog = GFX.Game[path + "gear"];
-        cogGem = GFX.Game[path + "geargem"];
-        smallcog = GFX.Game[path + "gearsmall"];
+        Cog = GFX.Game[path + "gear"];
+        CogGem = GFX.Game[path + "geargem"];
+        Smallcog = GFX.Game[path + "gearsmall"];
         MTexture mainTexture = GFX.Game[path + "block"];
         MTexture mainTextureRust = GFX.Game[path + "rust"];
-        block = new List<Image>();
+        Block = new List<Image>();
         for (int i = 0; i < Width; i += 8)
         {
             for (int j = 0; j < Height; j += 8)
@@ -408,12 +408,12 @@ public class SwitchMovet : Solid
                 }
                 Image image = new Image((Calc.Random.Chance(0.5f) ? mainTexture : mainTextureRust).GetSubtexture(cutout.X, cutout.Y, 8, 8)) { Position = new Vector2(i, j) };
                 Add(image);
-                block.Add(image);
+                Block.Add(image);
             }
         }
-        Add(bloom = new BloomPoint(0, 0) { Position = halfSize });
-        Add(nodebloom = new BloomPoint(0, 0) { Position = (node - Position) + halfSize });
-        Add(nodebloom2 = new BloomPoint(0, 0) { Position = (anchor - Position) + halfSize });
+        Add(Bloom = new BloomPoint(0, 0) { Position = halfSize });
+        Add(Nodebloom = new BloomPoint(0, 0) { Position = (Node - Position) + halfSize });
+        Add(Nodebloom2 = new BloomPoint(0, 0) { Position = (Anchor - Position) + halfSize });
         Add(new LightOcclude(0.8f));
     }
 
@@ -426,8 +426,8 @@ public class SwitchMovet : Solid
     public override void Update()
     {
         base.Update();
-        nodebloom.Position = (node - Position) + halfSize;
-        nodebloom2.Position = (anchor - Position) + halfSize;
+        Nodebloom.Position = (Node - Position) + halfSize;
+        Nodebloom2.Position = (Anchor - Position) + halfSize;
     }
 
     public override void Render()
@@ -439,37 +439,37 @@ public class SwitchMovet : Solid
         Color trueGemColor = gemColor;
         trueGemColor.A = 0;
 
-        cog.DrawCentered(Center + Vector2.UnitX, Color.Lerp(cogColor, Color.Black, 0.6f), 1, cogWinding);
-        cog.DrawCentered(Center - Vector2.UnitX, Color.Lerp(cogColor, Color.Black, 0.6f), 1, cogWinding);
-        cog.DrawCentered(Center + Vector2.UnitY, Color.Lerp(cogColor, Color.Black, 0.6f), 1, cogWinding);
-        cog.DrawCentered(Center - Vector2.UnitY, Color.Lerp(cogColor, Color.Black, 0.6f), 1, cogWinding);
+        Cog.DrawCentered(Center + Vector2.UnitX, Microsoft.Xna.Framework.Color.Lerp(cogColor, Microsoft.Xna.Framework.Color.Black, 0.6f), 1, CogWinding);
+        Cog.DrawCentered(Center - Vector2.UnitX, Microsoft.Xna.Framework.Color.Lerp(cogColor, Microsoft.Xna.Framework.Color.Black, 0.6f), 1, CogWinding);
+        Cog.DrawCentered(Center + Vector2.UnitY, Microsoft.Xna.Framework.Color.Lerp(cogColor, Microsoft.Xna.Framework.Color.Black, 0.6f), 1, CogWinding);
+        Cog.DrawCentered(Center - Vector2.UnitY, Microsoft.Xna.Framework.Color.Lerp(cogColor, Microsoft.Xna.Framework.Color.Black, 0.6f), 1, CogWinding);
 
-        cog.DrawCentered(Center, cogColor, 1, cogWinding);
-        cogGem.DrawCentered(Center, trueGemColor);
+        Cog.DrawCentered(Center, cogColor, 1, CogWinding);
+        CogGem.DrawCentered(Center, trueGemColor);
         Position = position;
     }
     public IEnumerator Sequence()
     {
-        Vector2 start = state ? node : anchor;
-        Vector2 end = state ? anchor : node;
-        activated = true;
-        state = !state;
+        Vector2 start = State ? Node : Anchor;
+        Vector2 end = State ? Anchor : Node;
+        Activated = true;
+        State = !State;
         StartShaking(0.3f);
         for (float i = 0; i < 1; i += Engine.DeltaTime / 0.3f)
         {
             float eased = Ease.SineInOut(i);
-            bloom.Alpha = eased * 0.7f;
-            bloom.Radius = eased * 12;
-            nodebloom.Alpha = nodebloom2.Alpha = eased * 0.7f;
-            nodebloom.Radius = nodebloom2.Alpha = eased * 8;
-            gemActivation = eased;
+            Bloom.Alpha = eased * 0.7f;
+            Bloom.Radius = eased * 12;
+            Nodebloom.Alpha = Nodebloom2.Alpha = eased * 0.7f;
+            Nodebloom.Radius = Nodebloom2.Alpha = eased * 8;
+            GemActivation = eased;
             yield return null;
         }
         Audio.Play("event:/FemtoHelper/switch_movet_accelerate", Position);
         Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeIn, 0.7f, true);
         tween.OnUpdate += delegate (Tween t)
         {
-            cogWinding = state ? Calc.LerpClamp(0, 2 * MathF.Tau, t.Eased) : Calc.LerpClamp(2 * MathF.Tau, 0, t.Eased);
+            CogWinding = State ? Calc.LerpClamp(0, 2 * MathF.Tau, t.Eased) : Calc.LerpClamp(2 * MathF.Tau, 0, t.Eased);
             Vector2 vector = Vector2.Lerp(start, end, t.Eased);
             ScrapeParticlesCheck(vector);
             MoveTo(vector);
@@ -481,14 +481,14 @@ public class SwitchMovet : Solid
         for (float i = 0; i < 1; i += Engine.DeltaTime / 0.3f)
         {
             float eased = Ease.SineInOut(1 - i);
-            bloom.Alpha = eased * 0.7f;
-            bloom.Radius = eased * 12;
-            nodebloom.Alpha = nodebloom2.Alpha = eased * 0.7f;
-            nodebloom.Radius = nodebloom2.Alpha = eased * 8;
-            gemActivation = eased;
+            Bloom.Alpha = eased * 0.7f;
+            Bloom.Radius = eased * 12;
+            Nodebloom.Alpha = Nodebloom2.Alpha = eased * 0.7f;
+            Nodebloom.Radius = Nodebloom2.Alpha = eased * 8;
+            GemActivation = eased;
             yield return null;
         }
-        activated = false;
+        Activated = false;
     }
     private void ScrapeParticlesCheck(Vector2 to)
     {
@@ -516,14 +516,14 @@ public class SwitchMovet : Solid
             {
                 for (int i = num2; i < num3; i += 8)
                 {
-                    SceneAs<Level>().ParticlesFG.Emit(P_Scrape, base.TopLeft + new Vector2(0f, (float)i + (float)num * 2f), (num == 1) ? (-MathF.PI / 4f) : (MathF.PI / 4f));
+                    SceneAs<Level>().ParticlesFG.Emit(PScrape, base.TopLeft + new Vector2(0f, (float)i + (float)num * 2f), (num == 1) ? (-MathF.PI / 4f) : (MathF.PI / 4f));
                 }
             }
             if (base.Scene.CollideCheck<Solid>(vector + new Vector2(base.Width + 2f, num * -2)))
             {
                 for (int j = num2; j < num3; j += 8)
                 {
-                    SceneAs<Level>().ParticlesFG.Emit(P_Scrape, base.TopRight + new Vector2(-1f, (float)j + (float)num * 2f), (num == 1) ? (MathF.PI * -3f / 4f) : (MathF.PI * 3f / 4f));
+                    SceneAs<Level>().ParticlesFG.Emit(PScrape, base.TopRight + new Vector2(-1f, (float)j + (float)num * 2f), (num == 1) ? (MathF.PI * -3f / 4f) : (MathF.PI * 3f / 4f));
                 }
             }
         }
@@ -549,14 +549,14 @@ public class SwitchMovet : Solid
             {
                 for (int k = num5; k < num6; k += 8)
                 {
-                    SceneAs<Level>().ParticlesFG.Emit(P_Scrape, base.TopLeft + new Vector2((float)k + (float)num4 * 2f, -1f), (num4 == 1) ? (MathF.PI * 3f / 4f) : (MathF.PI / 4f));
+                    SceneAs<Level>().ParticlesFG.Emit(PScrape, base.TopLeft + new Vector2((float)k + (float)num4 * 2f, -1f), (num4 == 1) ? (MathF.PI * 3f / 4f) : (MathF.PI / 4f));
                 }
             }
             if (base.Scene.CollideCheck<Solid>(vector2 + new Vector2(num4 * -2, base.Height + 2f)))
             {
                 for (int l = num5; l < num6; l += 8)
                 {
-                    SceneAs<Level>().ParticlesFG.Emit(P_Scrape, base.BottomLeft + new Vector2((float)l + (float)num4 * 2f, 0f), (num4 == 1) ? (MathF.PI * -3f / 4f) : (-MathF.PI / 4f));
+                    SceneAs<Level>().ParticlesFG.Emit(PScrape, base.BottomLeft + new Vector2((float)l + (float)num4 * 2f, 0f), (num4 == 1) ? (MathF.PI * -3f / 4f) : (-MathF.PI / 4f));
                 }
             }
         }

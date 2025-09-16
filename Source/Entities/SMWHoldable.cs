@@ -11,19 +11,19 @@ using static Celeste.TrackSpinner;
 namespace Celeste.Mod.FemtoHelper.Entities;
 
 [TrackedAs(typeof(Holdable))]
-public class SMWHoldable : Holdable
+public class SmwHoldable : Holdable
 {
     public Action<Vector2> OnClipDeath;
     public Action<Vector2> OnClipWiggleSuccess;
 
     public float TurnPercent;
-    public int yOffset;
-    public int crouchYOffset;
+    public int YOffset;
+    public int CrouchYOffset;
 
-    public SMWHoldable(int yOffset = 0, int crouchYOffset = 0) : base(0f)
+    public SmwHoldable(int yOffset = 0, int crouchYOffset = 0) : base(0f)
     {
-        this.yOffset = yOffset;
-        this.crouchYOffset = crouchYOffset;
+        this.YOffset = yOffset;
+        this.CrouchYOffset = crouchYOffset;
     }
 
     private static ILHook _hookPickupCoroutine;
@@ -46,7 +46,7 @@ public class SMWHoldable : Holdable
 
     private static bool Holdable_Pickup(On.Celeste.Holdable.orig_Pickup orig, Holdable self, Player player)
     {
-        if(self is SMWHoldable smwholdable)
+        if(self is SmwHoldable smwholdable)
         {
             //smwholdable.TurnPercent = smwholdable.TurnPercent = player.Facing == Facings.Left ? 0 : 1;
             smwholdable.TurnPercent = Calc.Map(player.CenterX - smwholdable.Entity.CenterX, self.Entity.Width / 2, -self.Entity.Width / 2);
@@ -66,7 +66,7 @@ public class SMWHoldable : Holdable
 
     private static void hook_Release(On.Celeste.Holdable.orig_Release orig, Holdable self, Vector2 force)
     {
-        if (self is SMWHoldable smwholdable)
+        if (self is SmwHoldable smwholdable)
         {
             if(self.Holder is {} p)
             {
@@ -120,7 +120,7 @@ public class SMWHoldable : Holdable
 
     private static bool CanUnDuckHack(bool orig, Player p)
     {
-        if (p.Holding is not SMWHoldable) return orig;
+        if (p.Holding is not SmwHoldable) return orig;
         if (Input.MoveY != 1)
         {
             if(orig) p.Sprite.Scale = new Vector2(0.8f, 1.2f);
@@ -133,12 +133,12 @@ public class SMWHoldable : Holdable
 
     private static bool DontDropCheck(Player p)
     {
-        return p.Holding is SMWHoldable;
+        return p.Holding is SmwHoldable;
     }
 
     private static void hook_UpdateCarry(On.Celeste.Player.orig_UpdateCarry orig, Player self)
     {
-        if (self.Holding is SMWHoldable smwholdable)
+        if (self.Holding is SmwHoldable smwholdable)
         {
             if(self.Facing == Facings.Left)
             {
@@ -150,7 +150,7 @@ public class SMWHoldable : Holdable
             }
 
             float x = Calc.LerpClamp(-12, 12, Ease.CubeInOut(smwholdable.TurnPercent));
-            float y = self.Ducking ? smwholdable.crouchYOffset : smwholdable.yOffset;
+            float y = self.Ducking ? smwholdable.CrouchYOffset : smwholdable.YOffset;
             self.carryOffset = new(x, y);
         }
 
@@ -171,7 +171,7 @@ public class SMWHoldable : Holdable
     private static float ModPickupSpeed(float orig, Player player)
     {
         //Logger.Log(LogLevel.Warn, "FemtoHelper/SMWHoldable", player.Holding.GetType().FullName);
-        return player.Holding is SMWHoldable ? 0f : orig;
+        return player.Holding is SmwHoldable ? 0f : orig;
     }
 
     public static void Unload()

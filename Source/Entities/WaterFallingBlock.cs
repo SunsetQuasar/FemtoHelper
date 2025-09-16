@@ -25,7 +25,7 @@ public class WaterFallingBlock : GenericWaterBlock
 
     private readonly List<Tuple<Image, int>> arrows;
 
-    private readonly Wiggler Wiggle;
+    private readonly Wiggler wiggle;
 
     public WaterFallingBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
@@ -71,7 +71,7 @@ public class WaterFallingBlock : GenericWaterBlock
         };
         Add(tween);
 
-        Add(Wiggle = Wiggler.Create(0.5f, 3f, (t) =>
+        Add(wiggle = Wiggler.Create(0.5f, 3f, (t) =>
         {
             for (float i = 0; i < arrows.Count; i++)
             {
@@ -83,7 +83,7 @@ public class WaterFallingBlock : GenericWaterBlock
     private void WiggleEverything()
     {
         StartShaking();
-        Wiggle.Start();
+        wiggle.Start();
         waterSprite.Wiggle.Start();
     }
 

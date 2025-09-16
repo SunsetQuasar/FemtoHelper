@@ -27,19 +27,19 @@ public class UpendRefill : Entity
 
     private bool oneUse;
 
-    private static ParticleType p_shatter = new(Refill.P_Shatter)
+    private static ParticleType _pShatter = new(Refill.P_Shatter)
     {
         Color = Calc.HexToColor("ffbdb0"),
         Color2 = Calc.HexToColor("ffbdb0")
     };
 
-    private static ParticleType p_regen = new(Refill.P_Regen)
+    private static ParticleType _pRegen = new(Refill.P_Regen)
     {
         Color = Calc.HexToColor("ff8770"),
         Color2 = Calc.HexToColor("ff8770")
     };
 
-    private static ParticleType p_glow = new(Refill.P_Glow)
+    private static ParticleType _pGlow = new(Refill.P_Glow)
     {
         Color = Calc.HexToColor("ff8770"),
         Color2 = Calc.HexToColor("ff8770")
@@ -121,7 +121,7 @@ public class UpendRefill : Entity
         }
         else if (base.Scene.OnInterval(0.1f))
         {
-            level.ParticlesFG.Emit(p_glow, 1, Position, Vector2.One * 5f);
+            level.ParticlesFG.Emit(_pGlow, 1, Position, Vector2.One * 5f);
         }
         UpdateY();
         light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
@@ -144,7 +144,7 @@ public class UpendRefill : Entity
             base.Depth = -100;
             wiggler.Start();
             Audio.Play("event:/game/general/diamond_return", Position);
-            level.ParticlesFG.Emit(p_regen, 16, Position, Vector2.One * 2f);
+            level.ParticlesFG.Emit(_pRegen, 16, Position, Vector2.One * 2f);
         }
     }
 
@@ -205,8 +205,8 @@ public class UpendRefill : Entity
         Depth = 8999;
         yield return 0.05f;
         float num = player.Speed.Angle();
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
+        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
+        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
         SlashFx.Burst(Position, num);
         if (oneUse)
         {

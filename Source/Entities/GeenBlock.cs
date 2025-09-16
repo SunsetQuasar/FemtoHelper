@@ -14,22 +14,22 @@ public class GeenBlock : Solid
 
     public class AfterImages : Entity
     {
-        public GeenBlock parent;
+        public GeenBlock Parent;
         public AfterImages(GeenBlock parent)
         {
-            this.parent = parent;
+            this.Parent = parent;
             Active = false;
             Depth = 5000;
         }
 
         public override void Render()
         {
-            Position += parent.Shake;
-            float angle = parent.angleTarget - parent.arrowWiggle.Value / 5;
-            parent.DrawBlock(Calc.AngleToVector(angle, 8) * Mod(parent.awesomei, 1), Color.White * (1 - Mod(parent.awesomei, 1)));
-            parent.DrawBlock(Calc.AngleToVector(angle, 8) * Mod(parent.awesomei + 0.5f, 1), Color.White * (1 - Mod(parent.awesomei + 0.5f, 1)));
+            Position += Parent.Shake;
+            float angle = Parent.angleTarget - Parent.arrowWiggle.Value / 5;
+            Parent.DrawBlock(Calc.AngleToVector(angle, 8) * Mod(Parent.awesomei, 1), Color.White * (1 - Mod(Parent.awesomei, 1)));
+            Parent.DrawBlock(Calc.AngleToVector(angle, 8) * Mod(Parent.awesomei + 0.5f, 1), Color.White * (1 - Mod(Parent.awesomei + 0.5f, 1)));
             base.Render();
-            Position -= parent.Shake;
+            Position -= Parent.Shake;
         }
     }
 

@@ -291,7 +291,7 @@ public class DelayedCameraRequest(Player player, bool error) : Entity(Vector2.Ze
         base.Awake(scene);
         (Scene as Level)?.DoScreenWipe(wipeIn: true);
         (Scene as Level).Camera.Position = Player.CameraTarget;
-        Add(new Coroutine(TASHelperCameraPatch()));
+        Add(new Coroutine(TasHelperCameraPatch()));
         Player.StateMachine.State = 0;
         if (Error)
         {
@@ -299,7 +299,7 @@ public class DelayedCameraRequest(Player player, bool error) : Entity(Vector2.Ze
         }
     }
 
-    public IEnumerator TASHelperCameraPatch()
+    public IEnumerator TasHelperCameraPatch()
     {
         (Scene as Level).Camera.Position = Player.CameraTarget;
         yield return null;

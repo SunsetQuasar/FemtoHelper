@@ -15,7 +15,7 @@ public class WaterCircleMover : GenericWaterBlock
 {
     private class WaterCircleMoverPathRenderer : Entity
     {
-        public WaterCircleMover circleMover;
+        public WaterCircleMover CircleMover;
 
         private MTexture cog;
 
@@ -35,16 +35,16 @@ public class WaterCircleMover : GenericWaterBlock
 
         private float sparkDirToB;
 
-        public Wiggler cogWiggler;
-        public Vector2 cogScale = Vector2.One;
+        public Wiggler CogWiggler;
+        public Vector2 CogScale = Vector2.One;
 
         public WaterCircleMoverPathRenderer(WaterCircleMover zipMover)
         {
             base.Depth = 5000;
-            circleMover = zipMover;
+            CircleMover = zipMover;
 
-            from = circleMover.CenterNode - Calc.AngleToVector(circleMover.angleStart, circleMover.length) + new Vector2(circleMover.Width / 2f, circleMover.Height / 2f);
-            to = circleMover.CenterNode - Calc.AngleToVector(circleMover.angleEnd, circleMover.length) + new Vector2(circleMover.Width / 2f, circleMover.Height / 2f);
+            from = CircleMover.centerNode - Calc.AngleToVector(CircleMover.angleStart, CircleMover.length) + new Vector2(CircleMover.Width / 2f, CircleMover.Height / 2f);
+            to = CircleMover.centerNode - Calc.AngleToVector(CircleMover.angleEnd, CircleMover.length) + new Vector2(CircleMover.Width / 2f, CircleMover.Height / 2f);
 
             sparkAdd = (from - to).SafeNormalize(5f).Perpendicular();
             float num = (from - to).Angle();
@@ -52,12 +52,12 @@ public class WaterCircleMover : GenericWaterBlock
             sparkDirFromB = num - MathF.PI / 8f;
             sparkDirToA = num + MathF.PI - MathF.PI / 8f;
             sparkDirToB = num + MathF.PI + MathF.PI / 8f;
-            cog = GFX.Game[circleMover.prefix + "cog" + (circleMover.behavior == Behaviors.NoReturn ? "NoReturn" : "")];
-            glob = GFX.Game.GetAtlasSubtextures(circleMover.prefix + "path" + (circleMover.behavior == Behaviors.NoReturn ? "NoReturn" : ""));
+            cog = GFX.Game[CircleMover.Prefix + "cog" + (CircleMover.behavior == Behaviors.NoReturn ? "NoReturn" : "")];
+            glob = GFX.Game.GetAtlasSubtextures(CircleMover.Prefix + "path" + (CircleMover.behavior == Behaviors.NoReturn ? "NoReturn" : ""));
 
-            Add(cogWiggler = Wiggler.Create(0.6f, 4f, (t) =>
+            Add(CogWiggler = Wiggler.Create(0.6f, 4f, (t) =>
             {
-                cogScale = Vector2.One + new Vector2(t, -t) * 0.5f;
+                CogScale = Vector2.One + new Vector2(t, -t) * 0.5f;
             }));
         }
         public override void Render()
@@ -66,50 +66,50 @@ public class WaterCircleMover : GenericWaterBlock
         }
         private void DrawCogs(Vector2 offset, Color? colorOverride = null)
         {
-            float rotation = circleMover.percent * MathF.PI * 2f;
-            float degStart = circleMover.angleStart * Calc.RadToDeg;
-            float degEnd = circleMover.angleEnd * Calc.RadToDeg;
+            float rotation = CircleMover.percent * MathF.PI * 2f;
+            float degStart = CircleMover.angleStart * Calc.RadToDeg;
+            float degEnd = CircleMover.angleEnd * Calc.RadToDeg;
             float mult = 1;
             if (degEnd - degStart < 0)
             {
                 (degEnd, degStart) = (degStart, degEnd);
                 mult = -1;
             }
-            for (float deg = degStart; deg < degEnd; deg += 400 / circleMover.length)
+            for (float deg = degStart; deg < degEnd; deg += 400 / CircleMover.length)
             {
                 //Draw.Rect(new Vector2(circleMover.Width / 2, circleMover.Height / 2) + circleMover.CenterNode - Calc.AngleToVector(deg * Calc.DegToRad, circleMover.length), 1, 1, Color.Bisque);
-                glob[(int)mod(rotation * 5 * mult, glob.Count)].DrawCentered(offset + new Vector2(circleMover.Width / 2, circleMover.Height / 2) + circleMover.CenterNode - Calc.AngleToVector(deg * Calc.DegToRad, circleMover.length), colorOverride.HasValue ? colorOverride.Value : Color.White, 1, deg * Calc.DegToRad);
+                glob[(int)Mod(rotation * 5 * mult, glob.Count)].DrawCentered(offset + new Vector2(CircleMover.Width / 2, CircleMover.Height / 2) + CircleMover.centerNode - Calc.AngleToVector(deg * Calc.DegToRad, CircleMover.length), colorOverride.HasValue ? colorOverride.Value : Color.White, 1, deg * Calc.DegToRad);
             }
-            cog.DrawCentered(from + offset, colorOverride.HasValue ? colorOverride.Value : Color.White, cogScale, rotation);
-            cog.DrawCentered(to + offset, colorOverride.HasValue ? colorOverride.Value : Color.White, cogScale, rotation);
+            cog.DrawCentered(from + offset, colorOverride.HasValue ? colorOverride.Value : Color.White, CogScale, rotation);
+            cog.DrawCentered(to + offset, colorOverride.HasValue ? colorOverride.Value : Color.White, CogScale, rotation);
         }
     }
 
     public class DebugVisual : Entity
     {
-        public WaterCircleMover parent;
-        public DebugVisual(WaterCircleMover Parent) : base()
+        public WaterCircleMover Parent;
+        public DebugVisual(WaterCircleMover parent) : base()
         {
-            parent = Parent;
+            this.Parent = parent;
             AddTag(TagsExt.SubHUD);
         }
 
         public override void Render()
         {
             base.Render();
-            ActiveFont.Draw(Math.Abs(Calc.ToDeg(parent.angleEnd - parent.angleStart)).ToString() + "°", ((parent.Position + (new Vector2(parent.Width, parent.Height) / 2) - Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.Aquamarine, 4, Color.Black, 2, Color.Black);
-            if (parent.angleEnd - parent.angleStart < 0)
+            ActiveFont.Draw(Math.Abs(Calc.ToDeg(Parent.angleEnd - Parent.angleStart)).ToString() + "°", ((Parent.Position + (new Vector2(Parent.Width, Parent.Height) / 2) - Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.Aquamarine, 4, Color.Black, 2, Color.Black);
+            if (Parent.angleEnd - Parent.angleStart < 0)
             {
-                ActiveFont.Draw("CCW", ((parent.Position + (new Vector2(parent.Width, parent.Height) / 2) + Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.Pink, 4, Color.Black, 2, Color.Black);
+                ActiveFont.Draw("CCW", ((Parent.Position + (new Vector2(Parent.Width, Parent.Height) / 2) + Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.Pink, 4, Color.Black, 2, Color.Black);
             }
             else
             {
-                ActiveFont.Draw("CW", ((parent.Position + (new Vector2(parent.Width, parent.Height) / 2) + Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.GreenYellow, 4, Color.Black, 2, Color.Black);
+                ActiveFont.Draw("CW", ((Parent.Position + (new Vector2(Parent.Width, Parent.Height) / 2) + Vector2.UnitY * 6) - (Scene as Level).Camera.Position) * 6, Vector2.One * 0.5f, Vector2.One, Color.GreenYellow, 4, Color.Black, 2, Color.Black);
             }
         }
     }
 
-    private readonly Vector2 CenterNode;
+    private readonly Vector2 centerNode;
 
     private readonly float length;
 
@@ -137,7 +137,7 @@ public class WaterCircleMover : GenericWaterBlock
 
     private bool permanented = false;
 
-    private readonly bool ThreeSixtyLoop;
+    private readonly bool threeSixtyLoop;
 
     private readonly bool activateFallingBlocks;
     private readonly WaterSprite waterSprite;
@@ -146,7 +146,7 @@ public class WaterCircleMover : GenericWaterBlock
 
     private BloomPoint bloomStart, bloomTarget;
 
-    public string prefix;
+    public string Prefix;
 
     private enum Behaviors
     {
@@ -159,18 +159,18 @@ public class WaterCircleMover : GenericWaterBlock
 
     public WaterCircleMover(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
-        prefix = data.Attr("spritePath", "objects/FemtoHelper/circleMover/water/");
+        Prefix = data.Attr("spritePath", "objects/FemtoHelper/circleMover/water/");
 
-        CenterNode = data.Nodes[0] + offset;
+        centerNode = data.Nodes[0] + offset;
 
-        angleStart = Calc.Angle(data.Position + offset, CenterNode);
+        angleStart = Calc.Angle(data.Position + offset, centerNode);
         angleStart = Calc.WrapAngle(angleStart);
 
         angleEnd = angleStart + (data.Float("angle", 180) * Calc.DegToRad) * (data.Bool("counterClockwise", false) ? -1 : 1);
 
-        length = (Position - CenterNode).Length();
+        length = (Position - centerNode).Length();
 
-        Add(waterSprite = new WaterSprite(prefix + "nineSlice"));
+        Add(waterSprite = new WaterSprite(Prefix + "nineSlice"));
 
         Add(new Coroutine(Sequence()));
 
@@ -179,16 +179,16 @@ public class WaterCircleMover : GenericWaterBlock
 
         chainZipperFlag = data.Attr("chainZipperFlag", "");
         behavior = data.Enum("behavior", Behaviors.Default);
-        ThreeSixtyLoop = data.Bool("ThreeSixtyLoops", false);
+        threeSixtyLoop = data.Bool("ThreeSixtyLoops", false);
         activateFallingBlocks = data.Bool("activateFallingBlocks", false);
 
-        Add(centerGem = new Image(GFX.Game[prefix + "centerGem" + (behavior == Behaviors.NoReturn ? "NoReturn" : "")])
+        Add(centerGem = new Image(GFX.Game[Prefix + "centerGem" + (behavior == Behaviors.NoReturn ? "NoReturn" : "")])
         {
             Position = new Vector2(Width, Height) / 2
         });
         centerGem.CenterOrigin();
 
-        Add(centerRing = new Image(GFX.Game[prefix + "centerRing" + (behavior == Behaviors.NoReturn ? "NoReturn" : "")])
+        Add(centerRing = new Image(GFX.Game[Prefix + "centerRing" + (behavior == Behaviors.NoReturn ? "NoReturn" : "")])
         {
             Position = new Vector2(Width, Height) / 2
         });
@@ -206,11 +206,11 @@ public class WaterCircleMover : GenericWaterBlock
 
         Add(bloomStart = new BloomPoint(0.5f, 12f)
         {
-            Position = ((CenterNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position
+            Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position
         });
         Add(bloomTarget = new BloomPoint(0.5f, 12f)
         {
-            Position = ((CenterNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position
+            Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position
         });
     }
 
@@ -225,9 +225,9 @@ public class WaterCircleMover : GenericWaterBlock
     {
         StartShaking(0.2f);
         waterSprite.Wiggle.Start();
-        pathRenderer.cogWiggler.increment = 1f / dur;
-        pathRenderer.cogWiggler.sineAdd = MathF.PI * 2f * freq;
-        pathRenderer.cogWiggler.Start();
+        pathRenderer.CogWiggler.increment = 1f / dur;
+        pathRenderer.CogWiggler.sineAdd = MathF.PI * 2f * freq;
+        pathRenderer.CogWiggler.Start();
 
         bubbleWiggler.increment = 1f / dur;
         bubbleWiggler.sineAdd = MathF.PI * 2f * freq;
@@ -289,10 +289,10 @@ public class WaterCircleMover : GenericWaterBlock
                     Vector2 pos2 = Position + new Vector2(Calc.Random.NextFloat(Width), Calc.Random.NextFloat(Height));
                     SceneAs<Level>().ParticlesFG.Emit(Tinydrops, pos2, (pos2 - Center).Angle());
                 }
-                Vector2 pos = CenterNode - Calc.AngleToVector(angle, length);
+                Vector2 pos = centerNode - Calc.AngleToVector(angle, length);
                 MoveTo(pos);
-                bloomStart.Position = ((CenterNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position;
-                bloomTarget.Position = ((CenterNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position;
+                bloomStart.Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position;
+                bloomTarget.Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position;
             }
             percent = 1;
             Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
@@ -330,7 +330,7 @@ public class WaterCircleMover : GenericWaterBlock
             {
                 idle = true;
                 sfx.Stop();
-                if (ThreeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360) continue;
+                if (threeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360) continue;
                 activateSignal = false;
                 while (!(activateSignal || CollideCheck<Player>()))
                 {
@@ -356,10 +356,10 @@ public class WaterCircleMover : GenericWaterBlock
                         Vector2 pos2 = Position + new Vector2(Calc.Random.NextFloat(Width), Calc.Random.NextFloat(Height));
                         SceneAs<Level>().ParticlesFG.Emit(Tinydrops, pos2, (pos2 - Center).Angle());
                     }
-                    Vector2 pos = CenterNode - Calc.AngleToVector(angle, length);
+                    Vector2 pos = centerNode - Calc.AngleToVector(angle, length);
                     MoveTo(pos);
-                    bloomStart.Position = ((CenterNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position;
-                    bloomTarget.Position = ((CenterNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position;
+                    bloomStart.Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position;
+                    bloomTarget.Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position;
                 }
                 percent = 0;
                 Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
@@ -389,7 +389,7 @@ public class WaterCircleMover : GenericWaterBlock
             }
             else
             {
-                if (ThreeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360)
+                if (threeSixtyLoop && Math.Abs(angleEnd - angleStart) == 360)
                 {
                     sfx.Stop();
                     idle = true;
@@ -402,10 +402,10 @@ public class WaterCircleMover : GenericWaterBlock
                     at = Calc.Approach(at, 1f, 0.5f * Engine.DeltaTime);
                     percent = 1f - Ease.SineIn(at);
                     angle = Calc.LerpClamp(angleStart, angleEnd, percent);
-                    Vector2 pos = CenterNode - Calc.AngleToVector(angle, length);
+                    Vector2 pos = centerNode - Calc.AngleToVector(angle, length);
                     MoveTo(pos);
-                    bloomStart.Position = ((CenterNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position;
-                    bloomTarget.Position = ((CenterNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position;
+                    bloomStart.Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position;
+                    bloomTarget.Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position;
                 }
                 percent = 0;
                 WiggleEverything(0.4f, 2f);
@@ -416,7 +416,7 @@ public class WaterCircleMover : GenericWaterBlock
         }
     }
 
-    private static float mod(float x, float m)
+    private static float Mod(float x, float m)
     {
         return (x % m + m) % m;
     }

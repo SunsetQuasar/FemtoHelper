@@ -33,17 +33,17 @@ public class PopRefill : Entity
 
     private bool oneUse;
 
-    private ParticleType p_shatter;
+    private ParticleType pShatter;
 
-    private ParticleType p_regen;
+    private ParticleType pRegen;
 
-    private ParticleType p_glow;
+    private ParticleType pGlow;
 
     private float respawnTimer;
 
-    public bool doRespawn = false;
+    public bool DoRespawn = false;
 
-    public float spawnTime = 2.5f;
+    public float SpawnTime = 2.5f;
 
     
     public PopRefill(Vector2 position, bool twoDashes, bool oneUse, float spawnTime)
@@ -57,16 +57,16 @@ public class PopRefill : Entity
         if (twoDashes)
         {
             text = "objects/refillTwo/";
-            p_shatter = Refill.P_ShatterTwo;
-            p_regen = Refill.P_RegenTwo;
-            p_glow = Refill.P_GlowTwo;
+            pShatter = Refill.P_ShatterTwo;
+            pRegen = Refill.P_RegenTwo;
+            pGlow = Refill.P_GlowTwo;
         }
         else
         {
             text = "objects/refill/";
-            p_shatter = Refill.P_Shatter;
-            p_regen = Refill.P_Regen;
-            p_glow = Refill.P_Glow;
+            pShatter = Refill.P_Shatter;
+            pRegen = Refill.P_Regen;
+            pGlow = Refill.P_Glow;
         }
         Add(outline = new Image(GFX.Game[text + "outline"]));
         outline.CenterOrigin();
@@ -93,7 +93,7 @@ public class PopRefill : Entity
         sine.Randomize();
         UpdateY();
         base.Depth = -100;
-        this.spawnTime = spawnTime;
+        this.SpawnTime = spawnTime;
     }
 
     
@@ -138,15 +138,15 @@ public class PopRefill : Entity
             }
             yield return null;
         }
-        doRespawn = true;
-        respawnTimer = spawnTime;
+        DoRespawn = true;
+        respawnTimer = SpawnTime;
     }
 
     
     public override void Update()
     {
         base.Update();
-        if (respawnTimer > 0f && doRespawn)
+        if (respawnTimer > 0f && DoRespawn)
         {
             respawnTimer -= Engine.DeltaTime;
             if (respawnTimer <= 0f)
@@ -156,7 +156,7 @@ public class PopRefill : Entity
         }
         else if (base.Scene.OnInterval(0.1f))
         {
-            level.ParticlesFG.Emit(p_glow, 1, Position, Vector2.One * 5f);
+            level.ParticlesFG.Emit(pGlow, 1, Position, Vector2.One * 5f);
         }
         UpdateY();
         light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
@@ -180,7 +180,7 @@ public class PopRefill : Entity
             base.Depth = -100;
             wiggler.Start();
             Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_return" : "event:/game/general/diamond_return", Position);
-            level.ParticlesFG.Emit(p_regen, 16, Position, Vector2.One * 2f);
+            level.ParticlesFG.Emit(pRegen, 16, Position, Vector2.One * 2f);
         }
     }
 
@@ -235,8 +235,8 @@ public class PopRefill : Entity
         Depth = 8999;
         yield return 0.05f;
         float num = player.Speed.Angle();
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
-        level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
+        level.ParticlesFG.Emit(pShatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
+        level.ParticlesFG.Emit(pShatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
         SlashFx.Burst(Position, num);
         if (oneUse)
         {

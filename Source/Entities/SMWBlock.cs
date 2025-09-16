@@ -8,7 +8,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 
 [Tracked]
 [CustomEntity("FemtoHelper/SMWBlock")]
-public class Generic_SMWBlock : Solid
+public class GenericSmwBlock : Solid
 {
     public class Coin : Entity
     {
@@ -135,17 +135,17 @@ public class Generic_SMWBlock : Solid
     public readonly bool InactiveReward;
     public readonly bool UncollidableReward;
 
-    private readonly bool DashableKaizo;
+    private readonly bool dashableKaizo;
 
-    private readonly HashSet<string> Whitelist;
-    private readonly HashSet<string> Blacklist;
+    private readonly HashSet<string> whitelist;
+    private readonly HashSet<string> blacklist;
 
-    public Generic_SMWBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
+    public GenericSmwBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
-        Whitelist = [.. data.String("whitelist", "").Split(',')];
-        Blacklist = [.. data.String("blacklist", "").Split(',')];
-        Whitelist.Remove("");
-        Blacklist.Remove("");
+        whitelist = [.. data.String("whitelist", "").Split(',')];
+        blacklist = [.. data.String("blacklist", "").Split(',')];
+        whitelist.Remove("");
+        blacklist.Remove("");
 
         Depth = data.Int("depth", -15000);
         SpecialHandling = data.Bool("specialEntityHandling", true);
@@ -167,7 +167,7 @@ public class Generic_SMWBlock : Solid
         HasIndicator = data.Bool("indicate", false);
         Bouncetimer = 0;
         Collidable = Solidbeforehit = data.Bool("solidBeforeHit", false);
-        DashableKaizo = data.Bool("dashableKaizo", false);
+        dashableKaizo = data.Bool("dashableKaizo", false);
         if (!Collidable) DisableStaticMovers();
         PlCol = new Hitbox(Width - 2, 2, 1, Height);
 
@@ -232,10 +232,10 @@ public class Generic_SMWBlock : Solid
                 if (!Collide.CheckRect(entity, Rewardcatcher) && !Rewardcatcher.Contains((int)entity.X, (int)entity.Y)) continue;
                 if (entity == (Scene as Level).SolidTiles) continue;
                 
-                if(Whitelist.Count > 0)
+                if(whitelist.Count > 0)
                 {
                     bool whitelisted = false;
-                    foreach(string str in Whitelist)
+                    foreach(string str in whitelist)
                     {
                         if (entity.GetType().FullName == str)
                         {
@@ -248,7 +248,7 @@ public class Generic_SMWBlock : Solid
                 else
                 {
                     bool blacklisted = false;
-                    foreach(string str in Blacklist)
+                    foreach(string str in blacklist)
                     {
                         if (entity.GetType().FullName == str)
                         {
@@ -297,7 +297,7 @@ public class Generic_SMWBlock : Solid
                 }
             }
 
-            if (DashableKaizo && player.DashAttacking)
+            if (dashableKaizo && player.DashAttacking)
             {
                 //top (bottom in inverted gravity)
 
@@ -426,18 +426,18 @@ public class Generic_SMWBlock : Solid
                     player.Position.Y += Bottom - player.Top;
                     player.Speed = Vector2.Zero;
                     break;
-                case 1 when DashableKaizo:
+                case 1 when dashableKaizo:
                     player.MoveToX(Left - (player.Width / 2));
                     player.Rebound(-1);
                     break;
-                case 2 when DashableKaizo:
+                case 2 when dashableKaizo:
                     player.MoveToX(Right + (player.Width / 2));
                     player.Rebound(1);
                     break;
-                case 3 when FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1 || DashableKaizo:
+                case 3 when FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1 || dashableKaizo:
                     player.Position.Y += Top - player.Bottom;
                     player.Speed = Vector2.Zero;
-                    if (DashableKaizo)
+                    if (dashableKaizo)
                     {
                         player.Rebound(0);
                     }
