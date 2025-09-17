@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 using System.Collections;
+using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -10,28 +11,37 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/VitalDrainController")]
 public class VitalDrainController : Entity
 {
-    public float Oxygen;
-    public readonly bool FastDeath;
-    public readonly float DrainRate;
-    public readonly float RecoverRate;
-    public readonly string DrainingFlag;
-    public readonly string StyleTagIn;
-    public readonly string StyleTagOut;
-    public readonly string ColorgradeA;
-    public readonly string ColorgradeB;
-    public readonly string MusicParamName;
-    public readonly float MusicParamMin;
-    public readonly float MusicParamMax;
-    public float Anxiety;
-    public readonly float CameraZoomTarget;
+    private float oxygen;
 
-    public readonly bool DebugView;
+    public float Oxygen
+    {
+        get { return oxygen; }
+        set
+        {
+            oxygen = value;
+        }
+    }
 
-    public Vector2 CameraPreviousDiff;
+    private readonly bool fastDeath;
+    private readonly float drainRate;
+    private readonly float recoverRate;
+    private readonly string drainingFlag;
+    private readonly string styleTagIn;
+    private readonly string styleTagOut;
+    private readonly string colorgradeA;
+    private readonly string colorgradeB;
+    private readonly string musicParamName;
+    private readonly float musicParamMin;
+    private readonly float musicParamMax;
+    private readonly float cameraZoomTarget;
 
-    public readonly string RequireFlag;
-    public readonly bool UsingFlag;
-    public readonly bool InvertFlag;
+    private float anxiety;
+
+    private readonly bool debugView;
+
+    private readonly string requireFlag;
+    private readonly bool usingFlag;
+    private readonly bool invertFlag;
 
     public VitalDrainController(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
@@ -40,37 +50,36 @@ public class VitalDrainController : Entity
         Depth = Depths.Top - 1000;
 
 
-        DebugView = data.Bool("debugView", false);
+        debugView = data.Bool("debugView", false);
 
-        FastDeath = data.Bool("fastDeath", true);
-        DrainRate = data.Float("drainRate", 150f);
-        RecoverRate = data.Float("recoverRate", 1000f);
-        DrainingFlag = data.Attr("flag", "o2_flag");
-        StyleTagIn = data.Attr("fadeInTag", "o2_in_tag");
-        StyleTagOut = data.Attr("fadeOutTag", "o2_out_tag");
-        ColorgradeA = data.Attr("colorgradeA", "none");
-        ColorgradeB = data.Attr("colorgradeB", "none");
-        MusicParamName = data.Attr("musicParamName", "param_here");
-        MusicParamMin = data.Float("musicParamMin", 0f);
-        MusicParamMax = data.Float("musicParamMax", 1f);
-        Anxiety = data.Float("anxiety", 0.3f);
-        CameraZoomTarget = data.Float("cameraZoomTarget", 1f);
+        fastDeath = data.Bool("fastDeath", true);
+        drainRate = data.Float("drainRate", 150f);
+        recoverRate = data.Float("recoverRate", 1000f);
+        drainingFlag = data.Attr("flag", "o2_flag");
+        styleTagIn = data.Attr("fadeInTag", "o2_in_tag");
+        styleTagOut = data.Attr("fadeOutTag", "o2_out_tag");
+        colorgradeA = data.Attr("colorgradeA", "none");
+        colorgradeB = data.Attr("colorgradeB", "none");
+        musicParamName = data.Attr("musicParamName", "param_here");
+        musicParamMin = data.Float("musicParamMin", 0f);
+        musicParamMax = data.Float("musicParamMax", 1f);
+        anxiety = data.Float("anxiety", 0.3f);
+        cameraZoomTarget = data.Float("cameraZoomTarget", 1f);
 
-        RequireFlag = data.Attr("useFlag", "");
-        UsingFlag = string.IsNullOrWhiteSpace(RequireFlag);
+        requireFlag = data.Attr("useFlag", "");
+        usingFlag = string.IsNullOrWhiteSpace(requireFlag);
 
-        InvertFlag = data.Bool("invertFlag", false);
+        invertFlag = data.Bool("invertFlag", false);
 
-        Oxygen = 500f;
+        oxygen = 500f;
     }
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
 
-        foreach (VitalDrainController gas in scene.Tracker.GetEntities<VitalDrainController>())
+        foreach (var gas in scene.Tracker.GetEntities<VitalDrainController>().Cast<VitalDrainController>().Where(gas => gas != this))
         {
-            if (gas == this) continue;
-            Oxygen = gas.Oxygen;
+            oxygen = gas.oxygen;
             gas.RemoveSelf();
         }
         Add(new Coroutine(StylegroundRoutine()));
@@ -92,17 +101,17 @@ public class VitalDrainController : Entity
         VitalDrainController gas = self.Tracker.GetEntity<VitalDrainController>();
         if (gas == null) return;
         
-        float lerp = Calc.Clamp(gas.Oxygen, 0f, 500f) / 500f;
+        float lerp = Calc.Clamp(gas.oxygen, 0f, 500f) / 500f;
         if (lerp > 0.5f)
         {
-            self.lastColorGrade = gas.ColorgradeB;
-            self.Session.ColorGrade = gas.ColorgradeA;
+            self.lastColorGrade = gas.colorgradeB;
+            self.Session.ColorGrade = gas.colorgradeA;
             self.colorGradeEase = lerp;
         }
         else
         {
-            self.lastColorGrade = gas.ColorgradeA;
-            self.Session.ColorGrade = gas.ColorgradeB;
+            self.lastColorGrade = gas.colorgradeA;
+            self.Session.ColorGrade = gas.colorgradeB;
             self.colorGradeEase = 1f - lerp;
         }
         self.colorGradeEaseSpeed = 1f;
@@ -114,73 +123,73 @@ public class VitalDrainController : Entity
     {
         base.Update();
         Player player = Scene.Tracker.GetEntity<Player>();
-        Level level = Scene as Level;
-        bool flg = (Scene as Level).Session.GetFlag(RequireFlag);
-        if (InvertFlag) flg = !flg;
+        Level level = SceneAs<Level>();
+        bool flg = level.Session.GetFlag(requireFlag);
+        if (invertFlag) flg = !flg;
         if (player == null) return;
         
-        if (UsingFlag ? !player.CollideCheck<VitalSafetyTrigger>() : !flg)
+        if (usingFlag ? !player.CollideCheck<VitalSafetyTrigger>() : !flg)
         {
-            level.Session.SetFlag(DrainingFlag, true);
-            Oxygen = Math.Max(Oxygen - DrainRate * Engine.DeltaTime, 0f);
+            level.Session.SetFlag(drainingFlag, true);
+            oxygen = Math.Max(oxygen - drainRate * Engine.DeltaTime, 0f);
         }
         else
         {
-            level.Session.SetFlag(DrainingFlag, false);
-            Oxygen = Calc.Clamp(Oxygen + RecoverRate * Engine.DeltaTime, 0f, 500f);
+            level.Session.SetFlag(drainingFlag, false);
+            oxygen = Calc.Clamp(oxygen + recoverRate * Engine.DeltaTime, 0f, 500f);
         }
 
 
-        float lerp = Calc.Clamp(Oxygen, 0f, 500f) / 500f;
+        float lerp = Calc.Clamp(oxygen, 0f, 500f) / 500f;
 
         Distort.AnxietyOrigin = new Vector2((player.Center.X - level.Camera.X) / 320f, (player.Center.Y - level.Camera.Y) / 180f);
         Distort.anxiety = 1 - lerp;
 
-        Audio.SetMusicParam(MusicParamName, Calc.ClampedMap(lerp, 1, 0, MusicParamMin, MusicParamMax));
+        Audio.SetMusicParam(musicParamName, Calc.ClampedMap(lerp, 1, 0, musicParamMin, musicParamMax));
 
-        level.ZoomSnap(new Vector2(160f, 90f), Calc.ClampedMap(Ease.SineInOut(lerp), 1, 0, 1, CameraZoomTarget));
+        level.ZoomSnap(new Vector2(160f, 90f), Calc.ClampedMap(Ease.SineInOut(lerp), 1, 0, 1, cameraZoomTarget));
 
 
-        if (Oxygen <= 0f)
+        if (oxygen <= 0f)
         {
-            player.Die(FastDeath ? Vector2.Zero : Calc.AngleToVector(Calc.Random.NextFloat((float)Math.PI * 2f), 1), false, true);
+            player.Die(fastDeath ? Vector2.Zero : Calc.AngleToVector(Calc.Random.NextFloat((float)Math.PI * 2f), 1), false, true);
         }
 
-        level.Session.SetFlag("o2_flag_hcd", !(Oxygen >= 500));
+        level.Session.SetFlag("o2_flag_hcd", !(oxygen >= 500));
     }
 
     public override void Render()
     {
         base.Render();
 
-        if (!DebugView) return;
+        if (!debugView) return;
         
         Draw.Rect(Vector2.One * 12, 256, 24, Color.Red);
-        Draw.Rect(Vector2.One * 12, 256 * (Calc.Clamp(Oxygen, 0f, 500f) / 500f), 24, Color.Green);
+        Draw.Rect(Vector2.One * 12, 256 * (Calc.Clamp(oxygen, 0f, 500f) / 500f), 24, Color.Green);
     }
 
     public IEnumerator StylegroundRoutine()
     {
         while (true)
         {
-            float fade = Calc.Clamp(Oxygen, 0f, 500f) / 500f;
+            float fade = Calc.Clamp(oxygen, 0f, 500f) / 500f;
             float fadeInv = 1 - fade;
-            foreach (Backdrop item in (Scene as Level).Background.GetEach<Backdrop>(StyleTagIn))
+            foreach (Backdrop item in SceneAs<Level>().Background.GetEach<Backdrop>(styleTagIn))
             {
                 item.ForceVisible = true;
                 item.FadeAlphaMultiplier = fadeInv;
             }
-            foreach (Backdrop item in (Scene as Level).Background.GetEach<Backdrop>(StyleTagOut))
+            foreach (Backdrop item in SceneAs<Level>().Background.GetEach<Backdrop>(styleTagOut))
             {
                 item.ForceVisible = true;
                 item.FadeAlphaMultiplier = fade;
             }
-            foreach (Backdrop item in (Scene as Level).Foreground.GetEach<Backdrop>(StyleTagIn))
+            foreach (Backdrop item in SceneAs<Level>().Foreground.GetEach<Backdrop>(styleTagIn))
             {
                 item.ForceVisible = true;
                 item.FadeAlphaMultiplier = fadeInv;
             }
-            foreach (Backdrop item in (Scene as Level).Foreground.GetEach<Backdrop>(StyleTagOut))
+            foreach (Backdrop item in SceneAs<Level>().Foreground.GetEach<Backdrop>(styleTagOut))
             {
                 item.ForceVisible = true;
                 item.FadeAlphaMultiplier = fade;
