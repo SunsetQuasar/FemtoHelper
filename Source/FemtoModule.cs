@@ -192,7 +192,7 @@ public class FemtoModule : EverestModule
         return 1f;
     }
 
-    private void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
+    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
     {
         orig(self);
         if (self.Get<SparkDash>() is { } s) s.ThisDashHasStarted = true;
@@ -206,7 +206,7 @@ public class FemtoModule : EverestModule
 
     public override void Load()
     {
-        CanDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(FemtoModule).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Instance), this);
+        CanDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(FemtoModule).GetMethod("ModCanDash", BindingFlags.NonPublic | BindingFlags.Instance), this);
 
         _dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);
         _redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);

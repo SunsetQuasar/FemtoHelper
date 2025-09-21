@@ -4,6 +4,7 @@ using Monocle;
 using System;
 using System.Collections;
 using System.Linq;
+using Celeste.Mod.FemtoHelper.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -42,6 +43,7 @@ public class VitalDrainController : Entity
     private readonly string requireFlag;
     private readonly bool usingFlag;
     private readonly bool invertFlag;
+    private readonly string pauseFlag;
 
     public VitalDrainController(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
@@ -67,9 +69,11 @@ public class VitalDrainController : Entity
         cameraZoomTarget = data.Float("cameraZoomTarget", 1f);
 
         requireFlag = data.Attr("useFlag", "");
-        usingFlag = string.IsNullOrWhiteSpace(requireFlag);
+        usingFlag = !string.IsNullOrWhiteSpace(requireFlag);
 
         invertFlag = data.Bool("invertFlag", false);
+        
+        pauseFlag = data.String("pauseFlag", "");
 
         oxygen = 500f;
     }
@@ -123,23 +127,39 @@ public class VitalDrainController : Entity
     {
         base.Update();
         Player player = Scene.Tracker.GetEntity<Player>();
-        Level level = SceneAs<Level>();
-        bool flg = level.Session.GetFlag(requireFlag);
-        if (invertFlag) flg = !flg;
         if (player == null) return;
+        Level level = SceneAs<Level>();
+        bool flg = Util.EvaluateExpressionAsBoolOrFancyFlag(requireFlag, level.Session);
+        if (invertFlag) flg = !flg;
+
+        if (!Util.EvaluateExpressionAsBoolOrFancyFlag(pauseFlag, level.Session))
+        {
+            bool overrideDrain = false;
+            foreach (Entity e in player.CollideAll<VitalSafetyTrigger>())
+            {
+                if (e is VitalSafetyTrigger {Override: true} v && Util.EvaluateExpressionAsBoolOrFancyFlag(v.FlagToggle, level.Session))
+                {
+                    overrideDrain = true;
+                    oxygen = Calc.Clamp(oxygen + v.OverrideValue * Engine.DeltaTime, 0f, 500f);
+                }
+            }
+            
+            if (!overrideDrain) {
+                if (usingFlag ? !flg : !player.CollideCheck<VitalSafetyTrigger>())
+                {
+                    level.Session.SetFlag(drainingFlag, true);
+                    oxygen = Calc.Approach(oxygen, 0f, drainRate * Engine.DeltaTime);
+                    //oxygen = Math.Max(oxygen - drainRate * Engine.DeltaTime, 0f);
+                }
+                else
+                {
+                    level.Session.SetFlag(drainingFlag, false);
+                    oxygen = Calc.Approach(oxygen, 500f, recoverRate * Engine.DeltaTime);
+                    //oxygen = Calc.Clamp(oxygen + recoverRate * Engine.DeltaTime, 0f, 500f);
+                }
+            }
+        } 
         
-        if (usingFlag ? !player.CollideCheck<VitalSafetyTrigger>() : !flg)
-        {
-            level.Session.SetFlag(drainingFlag, true);
-            oxygen = Math.Max(oxygen - drainRate * Engine.DeltaTime, 0f);
-        }
-        else
-        {
-            level.Session.SetFlag(drainingFlag, false);
-            oxygen = Calc.Clamp(oxygen + recoverRate * Engine.DeltaTime, 0f, 500f);
-        }
-
-
         float lerp = Calc.Clamp(oxygen, 0f, 500f) / 500f;
 
         Distort.AnxietyOrigin = new Vector2((player.Center.X - level.Camera.X) / 320f, (player.Center.Y - level.Camera.Y) / 180f);
