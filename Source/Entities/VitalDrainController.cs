@@ -85,7 +85,7 @@ public class VitalDrainController : Entity
 
         flashThreshold = data.Float("flashThreshold", 0f);
 
-        oxygenSlider = data.String("oxygenSliderName", "");
+        oxygenSlider = data.String("sliderName", "");
         
         oxygen = 500f;
     }
@@ -182,6 +182,7 @@ public class VitalDrainController : Entity
                 if (e is not VitalSafetyTrigger { Override: true } v ||
                     !Util.EvaluateExpressionAsBoolOrFancyFlag(v.FlagToggle, level.Session)) continue;
                 overrideDrain = true;
+                level.Session.SetFlag(drainingFlag, Math.Sign(v.OverrideValue) == -1);
                 Oxygen = Calc.Clamp(Oxygen + v.OverrideValue * Engine.DeltaTime, 0f, 500f);
             }
 
@@ -189,13 +190,13 @@ public class VitalDrainController : Entity
             {
                 if (usingFlag ? !flg : !player.CollideCheck<VitalSafetyTrigger>())
                 {
-                    level.Session.SetFlag(drainingFlag, true);
+                    level.Session.SetFlag(drainingFlag, Math.Sign(drainRate) == 1);
                     Oxygen = Calc.Clamp(Oxygen - drainRate * Engine.DeltaTime, 0f, 500f);
                     //oxygen = Math.Max(oxygen - drainRate * Engine.DeltaTime, 0f);
                 }
                 else
                 {
-                    level.Session.SetFlag(drainingFlag, false);
+                    level.Session.SetFlag(drainingFlag, Math.Sign(recoverRate) == -1);
                     Oxygen = Calc.Clamp(Oxygen + recoverRate * Engine.DeltaTime, 0f, 500f);
                     //oxygen = Calc.Clamp(oxygen + recoverRate * Engine.DeltaTime, 0f, 500f);
                 }

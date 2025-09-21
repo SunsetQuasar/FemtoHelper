@@ -16,7 +16,6 @@ FemtoHelperVitalDrainController.placements = {
         fastDeath = true,
         flag = "o2_flag",
         recoverRate = 1000,
-        anxiety = 0.3,
         musicParamName = "param_here",
         musicParamMin = 0,
         musicParamMax = 1,
@@ -24,7 +23,7 @@ FemtoHelperVitalDrainController.placements = {
         useFlag = "",
         pauseFlag = "",
         flashThreshold = 0,
-        oxygenSliderName = "slider",
+        sliderName = "vitality",
     }
 }
 
