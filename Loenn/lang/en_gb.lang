@@ -415,8 +415,23 @@ entities.FemtoHelper/SMWFish.attributes.description.harmless=Removes the fish's 
 # Vital Drain Controller
 
 entities.FemtoHelper/VitalDrainController.placements.name.gaseous=Vital Drain Controller
-entities.FemtoHelper/VitalDrainController.attributes.description.colorgradeA=The colorgrade that is set when you're safe (maximum vitality value)
-entities.FemtoHelper/VitalDrainController.attributes.description.colorgradeB=The colorgrade that is faded to as your vitality is drained
+entities.FemtoHelper/VitalDrainController.attributes.description.colorgradeA=The colorgrade that is set when you're safe (maximum vitality value).
+entities.FemtoHelper/VitalDrainController.attributes.description.colorgradeB=The colorgrade that is faded to as your vitality is drained.
+entities.FemtoHelper/VitalDrainController.attributes.description.debugView=Enables a simple debug vitality bar.
+entities.FemtoHelper/VitalDrainController.attributes.description.drainRate=The rate at which vitality drains per second.\nVitality value ranges from 0 - 500.
+entities.FemtoHelper/VitalDrainController.attributes.description.fadeInTag=The styleground tag for stylegrounds that fade in as the vitality is drained.
+entities.FemtoHelper/VitalDrainController.attributes.description.fadeOutTag=The styleground tag for stylegrounds that fade out as the vitality is drained.
+entities.FemtoHelper/VitalDrainController.attributes.description.fastDeath=Uses the fast death (i.e. falling out of bounds).
+entities.FemtoHelper/VitalDrainController.attributes.description.flag=The flag that is turned on when the vitality value is draining.
+entities.FemtoHelper/VitalDrainController.attributes.description.recoverRate=The rate at which vitality recovers per second.\nVitality value ranges from 0 - 500.
+entities.FemtoHelper/VitalDrainController.attributes.description.musicParamName=The music parameter name that is changed as vitality is drained.
+entities.FemtoHelper/VitalDrainController.attributes.description.musicParamMin=The minimum music parameter value (when vitality is full).
+entities.FemtoHelper/VitalDrainController.attributes.description.musicParamMax=The maximum music parameter value (when vitality is drained).
+entities.FemtoHelper/VitalDrainController.attributes.description.cameraZoomTarget=The zoom value approached as vitality is drained.
+entities.FemtoHelper/VitalDrainController.attributes.description.useFlag=Uses this flag instead of vital safety triggers;\nDrains vitality if it evaluates as true.\nSupports session expressions if Frost Helper is enabled.
+entities.FemtoHelper/VitalDrainController.attributes.description.pauseFlag=Pauses all draining or recovery if this flag is set.\nSupports session expressions if Frost Helper is enabled.
+entities.FemtoHelper/VitalDrainController.attributes.description.flashThreshold=At which vitality value (from 500 - 0) the player should flash red in warning.
+entities.FemtoHelper/VitalDrainController.attributes.description.sliderName=Ties the vitality value to a session slider.\nChanging this slider changes the vitality value.\nNote: The slider value ranges from 0 to 1 rather than 0 to 500.
 
 # Simple Text
 
@@ -680,6 +695,9 @@ triggers.FemtoHelper/CinematicTextTrigger.attributes.description.stopImmediately
 # Vital Safety Trigger
 
 triggers.FemtoHelper/VitalSafetyTrigger.placements.name.default=Vital Safety Trigger
+triggers.FemtoHelper/VitalSafetyTrigger.attributes.description.flagToggle=Flag that toggles the trigger.\nSupports session expressions if Frost Helper is enabled.
+triggers.FemtoHelper/VitalSafetyTrigger.attributes.description.override=Overrides the Vital Drain Controller's drain/recovery rates while inside the trigger.
+triggers.FemtoHelper/VitalSafetyTrigger.attributes.description.overrideValue=The overriden drain/recovery rate.\nVitality value ranges from 0 - 500.
 
 # ---------- Effects ----------
 
