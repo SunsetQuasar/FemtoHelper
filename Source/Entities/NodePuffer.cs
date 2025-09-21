@@ -1,7 +1,4 @@
 ﻿
-
-// Celeste, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// Celeste.Puffer
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -68,7 +65,7 @@ public class NodePuffer : Entity
 
     private Vector2 scale;
 
-    private SimpleCurve returnCurve;
+    //private SimpleCurve returnCurve;
 
     private float cantExplodeTimer;
 

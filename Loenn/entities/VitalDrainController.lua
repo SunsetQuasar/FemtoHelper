@@ -22,7 +22,9 @@ FemtoHelperVitalDrainController.placements = {
         musicParamMax = 1,
         cameraZoomTarget = 1,
         useFlag = "",
-        invertFlag = false,
+        pauseFlag = "",
+        flashThreshold = 0,
+        oxygenSliderName = "slider",
     }
 }
 
