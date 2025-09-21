@@ -9,6 +9,7 @@ public class FemtoHelperSession : EverestModuleSession
     public float RotateDashScalar { get; set; } = 1;
     public bool HasStartedRotateDashing { get; set; } = false;
     public Color[] RotateDashColors { get; set; } = [Calc.HexToColor("7958ad"), Calc.HexToColor("cbace6"), Calc.HexToColor("634691")];
+    
     /*
     public Dictionary<string, object> CustomWipeData;
 
