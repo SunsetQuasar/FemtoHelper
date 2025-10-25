@@ -3,7 +3,7 @@
   DLL: bin/FemtoHelper.dll
   Dependencies:
     - Name: Everest
-      Version: 1.5105.0
+      Version: 1.5935.0
   OptionalDependencies:
     - Name: GravityHelper
       Version: 1.1.38

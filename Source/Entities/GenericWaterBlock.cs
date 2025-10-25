@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.FemtoHelper.Utils;
 using Celeste.Mod.Helpers;
+using Mono.Cecil.Cil;
 using MonoMod;
 using MonoMod.Cil;
 using System;
@@ -61,6 +62,9 @@ public abstract class GenericWaterBlock : Water
 
         RemoveTag(Tags.TransitionUpdate);
         this.canCarry = canCarry;
+
+        //needed to avoid a crash
+        TopSurface = new Surface(Position + new Vector2(wid / 2f, 8), new Vector2(0f, -1f), wid, hei);
     }
 
     public override void Update()
@@ -121,6 +125,7 @@ public abstract class GenericWaterBlock : Water
     private static void Player_NormalUpdate(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
+
         while (cursor.TryGotoNextBestFit(MoveType.After, instr => instr.MatchLdcR4(1), instr => instr.MatchCallOrCallvirt<Water.Surface>("DoRipple"), instr => instr.MatchLdcI4(0)))
         {
             ILLabel label = cursor.DefineLabel();
@@ -139,6 +144,16 @@ public abstract class GenericWaterBlock : Water
     public static void DoSomeWaterStuff(Player player, bool canUnDuck)
     {
         if (player == null) return;
+        bool flag = false;
+        player.CollideDo<Water>((w) =>
+        {
+            if(w is GenericWaterBlock gw)
+            {
+                if (player.CollideCheck(gw, player.Position - Vector2.UnitX * 4) && player.CollideCheck(gw, player.Position + Vector2.UnitX * 4)) flag = true;
+            }
+        });
+
+        if (flag) return;
         if (canUnDuck && player.WaterWallJumpCheck(1))
         {
             if (player.DashAttacking && player.SuperWallJumpAngleCheck)
