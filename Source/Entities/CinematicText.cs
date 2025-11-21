@@ -49,6 +49,7 @@ public partial class CinematicText : Entity
     public readonly bool Hud;
 
     public readonly bool TruncateSliders;
+    public readonly int Decimals;
     public readonly bool IgnoreRegex;
 
     public readonly bool OnlyOnce;
@@ -77,6 +78,7 @@ public partial class CinematicText : Entity
     {
 
         TruncateSliders = data.Bool("truncateSliderValues", false);
+        Decimals = data.Int("decimals", -1);
 
         if (data.NodesOffset(offset).Length > 0) Position = data.NodesOffset(offset)[0];
         if (data.NodesOffset(offset).Length > 1)
@@ -94,7 +96,7 @@ public partial class CinematicText : Entity
         } 
         else
         {
-            Nodes = PlutoniumTextNodes.Parse(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"), TruncateSliders);
+            Nodes = PlutoniumTextNodes.Parse(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"), TruncateSliders, Decimals);
         }
 
         Color1 = Calc.HexToColorWithAlpha(data.Attr("mainColor", "ffffffff"));

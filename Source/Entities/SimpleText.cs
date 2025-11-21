@@ -19,6 +19,7 @@ public partial class SimpleText : Entity
     public readonly bool Hud;
 
     public readonly bool TruncateSliders;
+    public readonly int Decimals;
     public readonly float Scale;
     public readonly string VisibilityFlag;
 
@@ -26,7 +27,8 @@ public partial class SimpleText : Entity
     public SimpleText(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         TruncateSliders = data.Bool("truncateSliderValues", false);
-        
+        Decimals = data.Int("decimals", -1);
+
         Nodes = [];
         if(!Dialog.Has(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")))
         {
@@ -34,7 +36,7 @@ public partial class SimpleText : Entity
         } 
         else
         {
-            Nodes = PlutoniumTextNodes.Parse(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"), TruncateSliders);
+            Nodes = PlutoniumTextNodes.Parse(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"), TruncateSliders, Decimals);
         }
 
         Color1 = Calc.HexToColorWithAlpha(data.Attr("mainColor", "ffffffff"));

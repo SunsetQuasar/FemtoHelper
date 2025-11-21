@@ -26,10 +26,11 @@ public static class PlutoniumTextNodes
         public readonly string Key = k;
     }
 
-    public class Slider(string k, bool t) : Node 
+    public class Slider(string k, bool t, int d) : Node 
     {
         public readonly string Key = k;
         public readonly bool Truncate = t;
+        public readonly int Decimals = d;
     }
     public class Flag(string k, string on, string off) : Node
     {
@@ -51,6 +52,13 @@ public static class PlutoniumTextNodes
 
     private static readonly string[] BigNumberNames = ["", "", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion", "undecillion"];
 
+    private static string LimitedDecimals(float f, int decimals)
+    {
+        if (decimals < 0) return f.ToString();
+        float powerOfTen = MathF.Pow(10, decimals);
+        return (MathF.Floor(f * powerOfTen) / powerOfTen).ToString();
+    }
+
     private static string GetShorthandNumber(float f) {
         if (f < 1000000) return f.ToString();
         int orderOfMagnitudeTriplets = (int) (MathF.Log10(f) / 3);
@@ -60,7 +68,7 @@ public static class PlutoniumTextNodes
         else return f.ToString();
     }
 
-    public static List<Node> Parse(string dialogId, bool truncateSliders)
+    public static List<Node> Parse(string dialogId, bool truncateSliders, int decimals)
     {
         List<Node> nodes = [];
 
@@ -102,7 +110,7 @@ public static class PlutoniumTextNodes
                     {
                         if (splitStr2[i][0] == '@')
                         {
-                            nodes.Add(new Slider(splitStr2[i].Remove(0, 1), truncateSliders));
+                            nodes.Add(new Slider(splitStr2[i].Remove(0, 1), truncateSliders, decimals));
                         }
                         else
                         {
@@ -134,7 +142,7 @@ public static class PlutoniumTextNodes
                     result += level.Session.GetCounter(c.Key).ToString();
                     break;
                 case Slider s:              
-                    result += s.Truncate ? GetShorthandNumber(level.Session.GetSlider(s.Key)) : level.Session.GetSlider(s.Key);;  
+                    result += s.Truncate ? GetShorthandNumber(level.Session.GetSlider(s.Key)) : LimitedDecimals(level.Session.GetSlider(s.Key), s.Decimals);
                     break;
                 case Flag f:
                     result += level.Session.GetFlag(f.Key) ? f.StrIfOn : f.StrIfOff;
