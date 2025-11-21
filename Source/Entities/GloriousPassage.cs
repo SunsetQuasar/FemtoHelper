@@ -28,6 +28,7 @@ public class GloriousPassage : Entity
     public readonly bool SameRoom;
     public bool CarryHoldablesOver;
     public readonly TalkComponent Talk;
+    private readonly TimeRateModifier timeRateModifier;
     private readonly string enableFlag;
     private readonly string visibilityFlag;
     public GloriousPassage(EntityData data, Vector2 offset) : base(data.Position + offset)
@@ -52,6 +53,7 @@ public class GloriousPassage : Entity
         visibilityFlag = data.String("visibilityFlag", "");
         if (!InteractToOpen) return;
         Add(Talk = new TalkComponent(new Rectangle(0, 0, (int)Collider.Width, (int)Collider.Height), new Vector2(Width / 2, -8), OnTalk));
+        Add(timeRateModifier = new TimeRateModifier(1f));
         Talk.PlayerMustBeFacing = false;
     }
 
@@ -71,7 +73,7 @@ public class GloriousPassage : Entity
 
     public void OnPlayer(Player player)
     {
-        if (Simple && !Done)
+        if (Simple && !Done && Util.EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
         {
             Add(new Coroutine(Routine(player)));
             return;
@@ -115,7 +117,7 @@ public class GloriousPassage : Entity
 
         for (float i = 0; i < 1; i += Engine.RawDeltaTime * 4)
         {
-            Engine.TimeRate = Calc.Approach(Engine.TimeRate, 0, Engine.RawDeltaTime * 4);
+            timeRateModifier.Multiplier = Calc.Approach(timeRateModifier.Multiplier, 0, Engine.RawDeltaTime * 4);
             yield return null;
         }
         level.DoScreenWipe(wipeIn: false, new Action(Tp));
@@ -126,7 +128,7 @@ public class GloriousPassage : Entity
     public void Tp()
     {
         if (Player == null || Scene == null) return;
-        Engine.TimeRate = 1;
+        timeRateModifier.Multiplier = 1;
         Level level = Scene as Level;
         level.Session.SetFlag("transition_assist", false);
         Player player = Scene.Tracker.GetEntity<Player>();

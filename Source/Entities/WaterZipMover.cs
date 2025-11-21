@@ -137,7 +137,7 @@ public class WaterZipMover : GenericWaterBlock
 
     public WaterZipMover(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
-        texturePath = data.Attr("texturePath", "objects/FemtoHelper/waterZipMover/");
+        texturePath = data.Attr("spritePath", "objects/FemtoHelper/waterZipMover/");
 
         Add(waterSprite = new WaterSprite(texturePath + "nineSlice"));
         start = data.Position + offset;
