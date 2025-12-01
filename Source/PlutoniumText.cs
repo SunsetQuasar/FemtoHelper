@@ -55,8 +55,15 @@ public static class PlutoniumTextNodes
     private static string LimitedDecimals(float f, int decimals)
     {
         if (decimals < 0) return f.ToString();
-        float powerOfTen = MathF.Pow(10, decimals);
-        return (MathF.Floor(f * powerOfTen) / powerOfTen).ToString();
+
+        string format = "0.";
+
+        for(int i = 0; i < decimals; i++)
+        {
+            format += "0";
+        }
+        
+        return f.ToString(format);
     }
 
     private static string GetShorthandNumber(float f) {

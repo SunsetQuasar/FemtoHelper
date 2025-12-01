@@ -64,7 +64,8 @@ FemtoHelperCinematicText.placements = {
         waveX = 0,
         waveY = 1,
         retriggerable = false,
-        visibilityFlag = ""
+        visibilityFlag = "",
+        decimals = -1,
     }
 }
 

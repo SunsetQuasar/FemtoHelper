@@ -450,6 +450,7 @@ entities.FemtoHelper/SimpleText.attributes.description.scale=Text scale factor. 
 entities.FemtoHelper/SimpleText.attributes.description.shadow=Draws a small shadow instead of an outline.
 entities.FemtoHelper/SimpleText.attributes.description.spacing=Spacing between characters.
 entities.FemtoHelper/SimpleText.attributes.description.visibilityFlag=The flag that determines if the text should be visible or not;\nPrecede with "!" to invert the flag.
+entities.FemtoHelper/SimpleText.attributes.description.decimals=How many decimals displayed slider values should have.\nLeave -1 for no truncating.
 
 # Cinematic Text
 
@@ -493,6 +494,7 @@ entities.FemtoHelper/CinematicText.attributes.description.waveX=(Wave) The horiz
 entities.FemtoHelper/CinematicText.attributes.description.waveY=(Wave) The vertical wave amplitude, in pixels.
 entities.FemtoHelper/CinematicText.attributes.description.retriggerable=Allows the text to be triggered again after it fades out.
 entities.FemtoHelper/CinematicText.attributes.description.visibilityFlag=The flag that determines if the text should be visible or not;\nPrecede with "!" to invert the flag.
+entities.FemtoHelper/CinematicText.attributes.description.decimals=How many decimals displayed slider values should have.\nLeave -1 for no truncating.
 
 # Boosting Booster
 
