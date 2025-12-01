@@ -1,5 +1,5 @@
 - Name: FemtoHelper
-  Version: 1.14.9
+  Version: 1.14.10
   DLL: bin/FemtoHelper.dll
   Dependencies:
     - Name: Everest
