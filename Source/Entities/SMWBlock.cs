@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using Celeste.Mod.FemtoHelper.Utils;
+using MonoMod.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -532,6 +533,12 @@ public class GenericSmwBlock : Solid
             "Celeste.SwitchGate" => (entity as SwitchGate).node - (entity as SwitchGate).Position,
             _ => Vector2.Zero
         };
+
+        //necessary because aqua does some funny business, only do it once because dynamicdata moment
+        if (SpecialHandling && entity is Refill refill)
+        {
+            DynamicData.For(refill).Set("respawn_position", to + offsetEnd);
+        }
 
         Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeOut, EjectDuration, start: true);
         tween.OnUpdate = delegate (Tween t)
