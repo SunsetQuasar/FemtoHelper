@@ -73,18 +73,18 @@ public class FemtoModule : EverestModule
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            if (data.Hit is GenericSmwBlock { Active: false } block)
+            if (data.Hit is GenericSmwBlock { Activated: false } block)
             {
                 switch (self.hitSpeed.X)
                 {
                     case > 0:
                     {
-                        if (block.CanHitLeft) block.Hit(null, 1);
+                        if (block.CanHitLeft) block.Hit(null, GenericSmwBlock.Direction.Right);
                         break;
                     }
                     case < 0:
                     {
-                        if (block.CanHitRight) block.Hit(null, 2);
+                        if (block.CanHitRight) block.Hit(null, GenericSmwBlock.Direction.Left);
                         break;
                     }
                 }
@@ -96,18 +96,18 @@ public class FemtoModule : EverestModule
     {
         if (self.ToString() == "Celeste.Puffer")
         {
-            if (data.Hit is GenericSmwBlock { Active: false } block)
+            if (data.Hit is GenericSmwBlock { Activated: false } block)
             {
                 switch (self.hitSpeed.Y)
                 {
                     case > 0:
                     {
-                        if (block.CanHitTop) block.Hit(null, 3);
+                        if (block.CanHitTop) block.Hit(null, GenericSmwBlock.Direction.Down);
                         break;
                     }
                     case < 0:
                     {
-                        if (block.CanHitBottom) block.Hit(null, 0);
+                        if (block.CanHitBottom) block.Hit(null, GenericSmwBlock.Direction.Up);
                         break;
                     }
                 }
@@ -121,7 +121,7 @@ public class FemtoModule : EverestModule
         orig(self);
         Collider collider = self.Collider;
         self.Collider = new Circle(40f);
-        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
+        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Activated select entity)
         {
             entity.Hit(null, 0);
         }
@@ -132,7 +132,7 @@ public class FemtoModule : EverestModule
         IEnumerator origEnum = orig(self);
         while (origEnum.MoveNext()) yield return origEnum.Current;
         self.Collider = new Circle(40f);
-        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Active select entity)
+        foreach (var entity in from GenericSmwBlock entity in self.Scene.Tracker.GetEntities<GenericSmwBlock>() where entity != null where self.CollideCheck(entity) && !entity.Activated select entity)
         {
             entity.Hit(null, 0);
         }
@@ -380,15 +380,15 @@ public class FemtoModule : EverestModule
             }
         }
 
-        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Active) return data;
+        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Activated) return data;
         
         if (h.GetSpeed().X > 20)
         {
-            if (smwblock.CanHitLeft) smwblock.Hit(null, 1);
+            if (smwblock.CanHitLeft) smwblock.Hit(null, GenericSmwBlock.Direction.Right);
         }
         if (h.GetSpeed().X < -20)
         {
-            if (smwblock.CanHitRight) smwblock.Hit(null, 2);
+            if (smwblock.CanHitRight) smwblock.Hit(null, GenericSmwBlock.Direction.Left);
         }
 
         return data;
@@ -495,15 +495,15 @@ public class FemtoModule : EverestModule
         
         //smw block handling
 
-        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Active) return data;
+        if (data.Hit is not GenericSmwBlock smwblock || smwblock.Activated) return data;
         
         if (h.GetSpeed().Y > 80)
         {
-            if (smwblock.CanHitTop) smwblock.Hit(null, 3);
+            if (smwblock.CanHitTop) smwblock.Hit(null, GenericSmwBlock.Direction.Down);
         }
         if (h.GetSpeed().Y < 0)
         {
-            if (smwblock.CanHitBottom) smwblock.Hit(null, 0);
+            if (smwblock.CanHitBottom) smwblock.Hit(null, GenericSmwBlock.Direction.Up);
         }
 
         return data;

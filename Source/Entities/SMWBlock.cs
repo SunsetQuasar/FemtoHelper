@@ -41,7 +41,7 @@ public class GenericSmwBlock : Solid
             Life -= Engine.DeltaTime;
             if (!(Life < 0)) return;
             RemoveSelf();
-            for(int i = 0; i< 6; i++)
+            for (int i = 0; i < 6; i++)
             {
                 Dust.Burst(Position + new Vector2(Calc.Random.Range(-4, 4), Calc.Random.Range(-4, 4)), Calc.Random.NextFloat((float)Math.PI * 2), 1);
             }
@@ -55,7 +55,7 @@ public class GenericSmwBlock : Solid
         }
     }
 
-    public bool Active;
+    public bool Activated;
 
     public readonly bool HasIndicator;
 
@@ -91,7 +91,7 @@ public class GenericSmwBlock : Solid
 
     public bool Caught;
 
-    public int Bumpdir;
+    public Direction Bumpdir;
 
     public readonly float Distance;
 
@@ -101,7 +101,7 @@ public class GenericSmwBlock : Solid
 
     public readonly float EjectDuration;
 
-    public readonly int EjectDirection;
+    public readonly Direction EjectDirection;
 
     public readonly bool CanHitTop;
     public readonly bool CanHitBottom;
@@ -131,6 +131,7 @@ public class GenericSmwBlock : Solid
     public bool HasBeenHitOnce;
 
     public readonly bool SpecialHandling;
+    public readonly float LaunchMultiplier;
 
     public readonly bool InvisibleReward;
     public readonly bool InactiveReward;
@@ -140,6 +141,14 @@ public class GenericSmwBlock : Solid
 
     private readonly HashSet<string> whitelist;
     private readonly HashSet<string> blacklist;
+    public enum Direction
+    {
+        Up,
+        Right,
+        Left,
+        Down,
+        Opposite,
+    }
 
     public GenericSmwBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
@@ -150,9 +159,10 @@ public class GenericSmwBlock : Solid
 
         Depth = data.Int("depth", -15000);
         SpecialHandling = data.Bool("specialEntityHandling", true);
+        LaunchMultiplier = data.Float("launchMultiplier", 0f);
         Caught = false;
         EjectDuration = data.Float("ejectDuration", 0.5f);
-        EjectDirection = data.Int("ejectDirection", 4);
+        EjectDirection = (Direction)data.Int("ejectDirection", 4);
         Path = data.Attr("path", "objects/FemtoHelper/SMWBlock/solid/");
         AnimationRate = data.Float("animationRate", 8f);
         Indicator = GFX.Game[Path + "indicator"];
@@ -164,7 +174,7 @@ public class GenericSmwBlock : Solid
         Used2 = Used.GetSubtexture(0, 0, Used.Height, Used.Height);
         Usedframes = Used.Width / Used.Height;
         Usedtimer = 0;
-        Active = false;
+        Activated = false;
         HasIndicator = data.Bool("indicate", false);
         Bouncetimer = 0;
         Collidable = Solidbeforehit = data.Bool("solidBeforeHit", false);
@@ -219,9 +229,9 @@ public class GenericSmwBlock : Solid
         Component crystalCollider = FemtoModule.CavernHelperSupport.GetCrystalBombExplosionCollider?.Invoke(OnCrystalExplosion, Collider);
 
 
-        if(crystalCollider != null) Add(crystalCollider);
+        if (crystalCollider != null) Add(crystalCollider);
     }
-    
+
     public override void Update()
     {
         Player player = Scene.Tracker.GetEntity<Player>();
@@ -232,11 +242,11 @@ public class GenericSmwBlock : Solid
             {
                 if (!Collide.CheckRect(entity, Rewardcatcher) && !Rewardcatcher.Contains((int)entity.X, (int)entity.Y)) continue;
                 if (entity == (Scene as Level).SolidTiles) continue;
-                
-                if(whitelist.Count > 0)
+
+                if (whitelist.Count > 0)
                 {
                     bool whitelisted = false;
-                    foreach(string str in whitelist)
+                    foreach (string str in whitelist)
                     {
                         if (entity.GetType().FullName == str)
                         {
@@ -245,11 +255,11 @@ public class GenericSmwBlock : Solid
                         }
                     }
                     if (!whitelisted) continue;
-                } 
+                }
                 else
                 {
                     bool blacklisted = false;
-                    foreach(string str in blacklist)
+                    foreach (string str in blacklist)
                     {
                         if (entity.GetType().FullName == str)
                         {
@@ -262,9 +272,9 @@ public class GenericSmwBlock : Solid
 
                 Offsets.Add(entity.Position - new Vector2(Rewardcatcher.Center.X, Rewardcatcher.Center.Y));
                 Rewards.Add(entity);
-                if(InactiveReward) entity.Active = false;
-                if(InvisibleReward) entity.Visible = false;
-                if(UncollidableReward) entity.Collidable = false;
+                if (InactiveReward) entity.Active = false;
+                if (InvisibleReward) entity.Visible = false;
+                if (UncollidableReward) entity.Collidable = false;
             }
             Caught = true;
         }
@@ -286,15 +296,16 @@ public class GenericSmwBlock : Solid
 
             if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
             {
-                if (CollideCheck<Player>(Position - Vector2.UnitY) && player.Bottom - 4 <= Top && player.Speed.Y < 0 && !(Active || Bouncetimer > 0))
+                if (CollideCheck<Player>(Position - Vector2.UnitY) && player.Bottom - 4 <= Top && player.Speed.Y < 0 && !(Activated || Bouncetimer > 0))
                 {
-                    if (CanHitBottom) Hit(player, 3);
+                    if (CanHitBottom) Hit(player, Direction.Down);
                 }
-            } else
+            }
+            else
             {
-                if (CollideCheck<Player>(Position + Vector2.UnitY) && player.Top + 4 >= Bottom && player.Speed.Y < 0 && !(Active || Bouncetimer > 0))
+                if (CollideCheck<Player>(Position + Vector2.UnitY) && player.Top + 4 >= Bottom && player.Speed.Y < 0 && !(Activated || Bouncetimer > 0))
                 {
-                    if (CanHitBottom) Hit(player, 0);
+                    if (CanHitBottom) Hit(player, Direction.Up);
                 }
             }
 
@@ -304,31 +315,31 @@ public class GenericSmwBlock : Solid
 
                 if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
                 {
-                    if (CollideCheck<Player>(Position + Vector2.UnitY) && player.Top + 4 >= Bottom && player.Speed.Y > 0 && !(Active || Bouncetimer > 0))
+                    if (CollideCheck<Player>(Position + Vector2.UnitY) && player.Top + 4 >= Bottom && player.Speed.Y > 0 && !(Activated || Bouncetimer > 0))
                     {
-                        if (CanHitTop) Hit(player, 0);
+                        if (CanHitTop) Hit(player, Direction.Up);
                     }
                 }
                 else
                 {
-                    if (CollideCheck<Player>(Position - Vector2.UnitY) && player.Bottom - 4 <= Top && player.Speed.Y > 0 && !(Active || Bouncetimer > 0))
+                    if (CollideCheck<Player>(Position - Vector2.UnitY) && player.Bottom - 4 <= Top && player.Speed.Y > 0 && !(Activated || Bouncetimer > 0))
                     {
-                        if (CanHitTop) Hit(player, 3);
+                        if (CanHitTop) Hit(player, Direction.Down);
                     }
                 }
 
                 // to the right (left wall)
 
-                if (CollideCheck<Player>(Position - Vector2.UnitX) && player.Right - 4 <= Left && player.Speed.X > 0 && !(Active || Bouncetimer > 0))
+                if (CollideCheck<Player>(Position - Vector2.UnitX) && player.Right - 4 <= Left && player.Speed.X > 0 && !(Activated || Bouncetimer > 0))
                 {
-                    if (CanHitLeft) Hit(player, 1);
+                    if (CanHitLeft) Hit(player, Direction.Right);
                 }
 
                 // to the left (right wall)
 
-                if (CollideCheck<Player>(Position + Vector2.UnitX) && player.Left + 4 >= Right && player.Speed.X < 0 && !(Active || Bouncetimer > 0))
+                if (CollideCheck<Player>(Position + Vector2.UnitX) && player.Left + 4 >= Right && player.Speed.X < 0 && !(Activated || Bouncetimer > 0))
                 {
-                    if (CanHitRight) Hit(player, 2);
+                    if (CanHitRight) Hit(player, Direction.Left);
                 }
             }
         }
@@ -347,14 +358,12 @@ public class GenericSmwBlock : Solid
     {
         base.Render();
 
-        Color color = Color.White;
-
-        color = Neededflagplus ? Color.White : Calc.HexToColor("808080");
+        Color color = Neededflagplus ? Color.White : Calc.HexToColor("808080");
 
         Used2 = Used.GetSubtexture((int)Math.Floor(Usedtimer) % Usedframes * Used.Height, 0, Used.Height, Used.Height);
         Indicator2 = Indicator.GetSubtexture((int)Math.Floor(Inditimer) % Indiframes * Indicator.Height, 0, Indicator.Height, Indicator.Height);
 
-        if (Active || SwitchMode)
+        if (Activated || SwitchMode)
         {
             if (Bouncetimer <= 0)
             {
@@ -364,7 +373,7 @@ public class GenericSmwBlock : Solid
                 }
                 else
                 {
-                    if(HasIndicator || HasBeenHitOnce)
+                    if (HasIndicator || HasBeenHitOnce)
                     {
                         if (string.IsNullOrEmpty(SwitchModeRenderFlag) ? (Scene as Level).Session.GetFlag(HitFlag) : (Scene as Level).Session.GetFlag(SwitchModeRenderFlag))
                         {
@@ -382,20 +391,21 @@ public class GenericSmwBlock : Solid
             {
                 switch (Bumpdir)
                 {
-                    case 0:
+                    default:
+                    case Direction.Up:
                         Kaizo.Draw(Position + SpriteOffset - Vector2.UnitY * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
                         break;
-                    case 1:
+                    case Direction.Right:
                         Kaizo.Draw(Position + SpriteOffset + Vector2.UnitX * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
                         break;
-                    case 2:
+                    case Direction.Left:
                         Kaizo.Draw(Position + SpriteOffset - Vector2.UnitX * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
                         break;
-                    case 3:
+                    case Direction.Down:
                         Kaizo.Draw(Position + SpriteOffset + Vector2.UnitY * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
                         break;
                 }
-                
+
             }
         }
         else
@@ -403,39 +413,35 @@ public class GenericSmwBlock : Solid
             if (HasIndicator) Indicator2.Draw(Position + SpriteOffset, Vector2.Zero, color);
         }
     }
-    public void Hit(Player player, int dir)
+    public void Hit(Player player, Direction dir)
     {
         if (!Neededflagplus) return;
 
         Bumpdir = dir;
 
-        int dir2 = EjectDirection == 4 ? dir : EjectDirection;
+        Direction dir2 = EjectDirection == Direction.Opposite ? dir : EjectDirection;
 
         Audio.Play(AudioPath + "blockhit");
 
-        if(HitFlag != "")(Scene as Level).Session.SetFlag(HitFlag, HitFlagBehavior == 0 ? true : HitFlagBehavior == 1 ? false : !(Scene as Level).Session.GetFlag(HitFlag));
-        
+        if (HitFlag != "") (Scene as Level).Session.SetFlag(HitFlag, HitFlagBehavior == 0 ? true : HitFlagBehavior == 1 ? false : !(Scene as Level).Session.GetFlag(HitFlag));
+
         HasBeenHitOnce = true;
-        if(!SwitchMode) Active = true;
+        if (!SwitchMode) Activated = true;
         EnableStaticMovers();
         Bouncetimer = 8;
         if (player != null)
         {
             switch (dir)
             {
-                case 0:
-                    player.Position.Y += Bottom - player.Top;
-                    player.Speed = Vector2.Zero;
-                    break;
-                case 1 when dashableKaizo:
+                case Direction.Right when dashableKaizo:
                     player.MoveToX(Left - (player.Width / 2));
                     player.Rebound(-1);
                     break;
-                case 2 when dashableKaizo:
+                case Direction.Left when dashableKaizo:
                     player.MoveToX(Right + (player.Width / 2));
                     player.Rebound(1);
                     break;
-                case 3 when FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1 || dashableKaizo:
+                case Direction.Down when FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1 || dashableKaizo:
                     player.Position.Y += Top - player.Bottom;
                     player.Speed = Vector2.Zero;
                     if (dashableKaizo)
@@ -443,12 +449,27 @@ public class GenericSmwBlock : Solid
                         player.Rebound(0);
                     }
                     break;
+                case Direction.Up:
+                    player.Position.Y += Bottom - player.Top;
+                    player.Speed = Vector2.Zero;
+                    break;
             }
 
             if (!(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || FemtoModule.CommunalHelperSupport.HasDreamTunnelDash?.Invoke() == true)) player.StateMachine.State = 0;
-            if (player.Ducking && dir == 0) { player.Ducking = false; player.Position.Y += 5; };
-            if (player.Ducking && dir == 3 && FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1) { player.Ducking = false; player.Position.Y -= 5; };
-            if (GiveCoyoteFramesOnHit)player.StartJumpGraceTime();
+
+            if (player.Ducking && dir == Direction.Up)
+            {
+                player.Ducking = false;
+                player.Position.Y += 5;
+            }
+
+            if (player.Ducking && dir == Direction.Down && FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
+            {
+                player.Ducking = false;
+                player.Position.Y -= 5;
+            }
+
+            if (GiveCoyoteFramesOnHit) player.StartJumpGraceTime();
         }
         Collidable = true;
         Celeste.Freeze(0.05f);
@@ -480,27 +501,28 @@ public class GenericSmwBlock : Solid
             {
                 switch (dir2)
                 {
-                    case 0:
-                        Add(new Coroutine(PopupRoutine(reward, new Vector2(Center.X, Top + 8) + EjectOffset2 + new Vector2(0, -Distance), dir2, offset)));
-                        break;
-                    case 1:
+                    case Direction.Right:
                         Add(new Coroutine(PopupRoutine(reward, new Vector2(Right - 8, Center.Y) + EjectOffset2 + new Vector2(Distance, 0), dir2, offset)));
                         break;
-                    case 2:
+                    case Direction.Left:
                         Add(new Coroutine(PopupRoutine(reward, new Vector2(Left + 8, Center.Y) + EjectOffset2 + new Vector2(-Distance, 0), dir2, offset)));
                         break;
-                    case 3:
+                    case Direction.Down:
                         Add(new Coroutine(PopupRoutine(reward, new Vector2(Center.X, Bottom - 8) + EjectOffset2 + new Vector2(0, Distance), dir2, offset)));
                         break;
+                    default:
+                    case Direction.Up:
+                        Add(new Coroutine(PopupRoutine(reward, new Vector2(Center.X, Top + 8) + EjectOffset2 + new Vector2(0, -Distance), dir2, offset)));
+                        break;
                 }
-                
+
             }
         }
     }
 
     public void OnCrystalExplosion(Vector2 dir)
     {
-        if(!Active) Hit(null, 0);
+        if (!Activated) Hit(null, 0);
     }
 
     public void OnPlayerCollide(Player player)
@@ -508,17 +530,23 @@ public class GenericSmwBlock : Solid
         if (!Solidbeforehit) return;
         if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
         {
-            if (!(player.Bottom - 2 <= Top) || Active || Bouncetimer > 0) return;
-            if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || (FemtoModule.CommunalHelperSupport.HasDreamTunnelDash?.Invoke() ?? false))) Hit(player, 3);
-        } else
+            if (!(player.Bottom - 2 <= Top) || Activated || Bouncetimer > 0) return;
+            if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || (FemtoModule.CommunalHelperSupport.HasDreamTunnelDash?.Invoke() ?? false))) Hit(player, Direction.Down);
+        }
+        else
         {
-            if (!(player.Top + 2 >= Bottom) || Active || Bouncetimer > 0) return;
-            if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || (FemtoModule.CommunalHelperSupport.HasDreamTunnelDash?.Invoke() ?? false))) Hit(player, 0);
-        }      
+            if (!(player.Top + 2 >= Bottom) || Activated || Bouncetimer > 0) return;
+            if (CanHitBottom && !(FemtoModule.CommunalHelperSupport.GetDreamTunnelDashState?.Invoke() == 1 || (FemtoModule.CommunalHelperSupport.HasDreamTunnelDash?.Invoke() ?? false))) Hit(player, Direction.Up);
+        }
     }
 
-    public IEnumerator PopupRoutine(Entity entity, Vector2 to, int dir, Vector2 offset)
+    public IEnumerator PopupRoutine(Entity entity, Vector2 to, Direction dir, Vector2 offset)
     {
+
+        int intdir = (int)dir;
+
+        bool inactiveActor = false;
+
         float[,] stupid = new float[2, 4] {
             { Center.X, Right - 8, Left + 8, Center.X },
             { Top + 8, Center.Y, Center.Y, Bottom - 8 }
@@ -534,166 +562,252 @@ public class GenericSmwBlock : Solid
             _ => Vector2.Zero
         };
 
-        //necessary because aqua does some funny business, only do it once because dynamicdata moment
-        if (SpecialHandling && entity is Refill refill)
+        if (((entity is Actor && entity.Get<Holdable>() is not null) || entity is Player) && LaunchMultiplier > 0f)
         {
-            DynamicData.For(refill).Set("respawn_position", to + offsetEnd);
-        }
+            switch (dir)
+            {
+                case Direction.Right:
+                    entity.CenterY = CenterY;
+                    entity.Left = Right;
+                    break;
+                case Direction.Left:
+                    entity.CenterY = CenterY;
+                    entity.Right = Left;
+                    break;
+                case Direction.Down:
+                    entity.CenterX = CenterX;
+                    entity.Top = Bottom;
+                    break;
+                case Direction.Up:
+                    entity.CenterX = CenterX;
+                    entity.Bottom = Top;
+                    break;
+            }
 
-        Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeOut, EjectDuration, start: true);
-        tween.OnUpdate = delegate (Tween t)
+            entity.Position += EjectOffset;
+
+            Vector2 go = dir switch
+            {
+                Direction.Up => new(0, -1),
+                Direction.Right => new(1, 0),
+                Direction.Left => new(-1, 0),
+                Direction.Down => new(0, 1),
+                _ => new()
+            };
+
+            if (entity is Player p)
+            {
+                p.ExplodeLaunch(entity.Center - go, true, false);
+                p.Speed *= LaunchMultiplier;
+            }
+            else if (entity.Get<Holdable>() is { } h)
+            {
+                h.ExplodeLaunch(entity.Center - go, true, false);
+                h.SetSpeed(h.GetSpeed() * LaunchMultiplier);
+            }
+        }
+        else
         {
             if (SpecialHandling)
             {
-                if (entity is Platform platform)
+                //necessary because aqua does some funny business, only do it once because dynamicdata moment
+                if (entity is Refill refill)
                 {
-                    platform.MoveTo(new Vector2(MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased)));
+                    DynamicData.For(refill).Set("respawn_position", to + offsetEnd);
                 }
-                switch (entity.ToString())
+
+                if (!InactiveReward)
                 {
-                    case "Celeste.Cloud":
-                        (entity as Cloud).startY = entity.Position.Y;
-                        break;
-                    case "Celeste.BounceBlock":
-                        (entity as BounceBlock).startPos = entity.Position;
-                        break;
-                    case "Celeste.Booster":
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-                        (entity as Booster).outline.Position = entity.Position;
-                        break;
-                    case "Celeste.Bumper":
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-                        (entity as Bumper).anchor = entity.Position;
-                        break;
-                    case "Celeste.FloatingDebris":
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-                        (entity as FloatingDebris).start = entity.Position;
-                        break;
-                    case "Celeste.IntroCar":
-                        (entity as IntroCar).startY = entity.Position.Y;
-                        (entity as IntroCar).wheels.Position = entity.Position;
-                        break;
-                    case "Celeste.LightningBreakerBox":
-                        (entity as LightningBreakerBox).start = entity.Position;
-                        break;
-                    case "Celeste.MoonCreature":
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-                        (entity as MoonCreature).start = (entity as MoonCreature).target = entity.Position;
-                        break;
-                    case "CustomMoonCreature":
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-                        (entity as CustomMoonCreature).Start = (entity as CustomMoonCreature).Target = entity.Position;
-                        for (int i = 0; i < (entity as CustomMoonCreature).Trail.Length; i++)
-                        {
-                            (entity as CustomMoonCreature).Trail[i].Position = new Vector2(MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased));
-                        }
-                        break;
-                    case "Celeste.MoveBlock":
-                        (entity as MoveBlock).startPosition = entity.Position;
-                        break;
-                    case "Celeste.MovingPlatform":
-                        (entity as MovingPlatform).start = new Vector2(MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased));
-                        (entity as MovingPlatform).end = new Vector2(MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X + platformOffset.X, to.X + offsetEnd.X + platformOffset.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y + platformOffset.Y, to.Y + offsetEnd.Y + platformOffset.Y, t.Eased));
-                        break;
-                    case "Celeste.MovingPlatformLine":
-                        (entity as MovingPlatformLine).end = new Vector2(MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X + platformOffset.X, to.X + offsetEnd.X + platformOffset.X, t.Eased), MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y + platformOffset.Y, to.Y + offsetEnd.Y + platformOffset.Y, t.Eased));
-                        break;
-                    case "Celeste.SinkingPlatform":
-                        (entity as SinkingPlatform).startY = entity.Position.Y;
-                        break;
-                    case "Celeste.StarJumpBlock":
-                        (entity as StarJumpBlock).startY = entity.Position.Y;
-                        break;
-                    case "Celeste.Puffer":
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-                        (entity as Puffer).anchorPosition = (entity as Puffer).startPosition = entity.Position;
-                        break;
-                    case "Celeste.DashSwitch":
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-                        (entity as DashSwitch).pressedTarget = (entity as DashSwitch).side switch
-                        {
-                            DashSwitch.Sides.Down => entity.Position + Vector2.UnitY * 8f,
-                            DashSwitch.Sides.Up => entity.Position + Vector2.UnitY * -8f,
-                            DashSwitch.Sides.Right => entity.Position + Position + Vector2.UnitX * 8f,
-                            DashSwitch.Sides.Left => entity.Position + Vector2.UnitX * -8f,
-                            _ => Position
-                        };
-                        break;
-                    case "Celeste.CrystalStaticSpinner":
-                        CrystalStaticSpinner spinner = entity as CrystalStaticSpinner;
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-                        if (spinner.filler != null)
-                        {
-                            spinner.filler.RemoveSelf();
-                        }
-                        spinner.filler = null;
-                        if (spinner.border != null)
-                        {
-                            spinner.border.RemoveSelf();
-                        }
-                        spinner.border = null;
-                        List<Image> list = spinner.Components.GetAll<Image>().ToList();
-                        for (int i = 0; i < list.Count; i++)
-                        {
-                            list[i].RemoveSelf();
-                        }
-                        spinner.expanded = false;
-                        (entity as CrystalStaticSpinner).CreateSprites();
-                        break;
-                    case "Celeste.SwitchGate":
-                        (entity as SwitchGate).node = entity.Position + platformOffset;
-                        (entity as SwitchGate).Get<Coroutine>().RemoveSelf();
-                        (entity as SwitchGate).Add(new Coroutine((entity as SwitchGate).Sequence((entity as SwitchGate).node)));
-                        break;
-                    default:
-                        entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                        entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-                        break;
+                    if (entity is Player p)
+                    {
+                        p.Active = false;
+                        inactiveActor = true;
+                    }
+                    if (entity.Get<Holdable>() is { } h)
+                    {
+                        h.Holder?.Drop();
+                        entity.Active = false;
+                        inactiveActor = true;
+                    }
                 }
             }
-            else
+
+            Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeOut, EjectDuration, start: true);
+            tween.OnUpdate = delegate (Tween t)
             {
-                entity.Position.X = MathHelper.Lerp(stupid[0, dir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                entity.Position.Y = MathHelper.Lerp(stupid[1, dir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
-            }
-        };
-        Add(tween);
-        if (InactiveReward) entity.Active = true;
+                if (SpecialHandling)
+                {
+                    if (entity is Platform platform)
+                    {
+                        platform.MoveTo(new Vector2(MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased), MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased)));
+                    }
+
+                    if (entity.Get<Holdable>() is { } h)
+                    {
+                        if (InactiveReward)
+                        {
+                            h.SetSpeed(Vector2.Zero);
+                        }
+                        h.cannotHoldTimer = (2 * Engine.DeltaTime);
+                        if (h.Holder is not null)
+                        {
+                            t.RemoveSelf();
+                        }
+                    }
+
+                    if (entity is Player p && InactiveReward)
+                    {
+                        p.Speed = Vector2.Zero;
+                    }
+
+                    switch (entity.ToString())
+                    {
+                        case "Celeste.Cloud":
+                            (entity as Cloud).startY = entity.Position.Y;
+                            break;
+                        case "Celeste.BounceBlock":
+                            (entity as BounceBlock).startPos = entity.Position;
+                            break;
+                        case "Celeste.Booster":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            (entity as Booster).outline.Position = entity.Position;
+                            break;
+                        case "Celeste.Bumper":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            (entity as Bumper).anchor = entity.Position;
+                            break;
+                        case "Celeste.FloatingDebris":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            (entity as FloatingDebris).start = entity.Position;
+                            break;
+                        case "Celeste.IntroCar":
+                            (entity as IntroCar).startY = entity.Position.Y;
+                            (entity as IntroCar).wheels.Position = entity.Position;
+                            break;
+                        case "Celeste.LightningBreakerBox":
+                            (entity as LightningBreakerBox).start = entity.Position;
+                            break;
+                        case "Celeste.MoonCreature":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            (entity as MoonCreature).start = (entity as MoonCreature).target = entity.Position;
+                            break;
+                        case "CustomMoonCreature":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            (entity as CustomMoonCreature).Start = (entity as CustomMoonCreature).Target = entity.Position;
+                            for (int i = 0; i < (entity as CustomMoonCreature).Trail.Length; i++)
+                            {
+                                (entity as CustomMoonCreature).Trail[i].Position = new Vector2(MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased), MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased));
+                            }
+                            break;
+                        case "Celeste.MoveBlock":
+                            (entity as MoveBlock).startPosition = entity.Position;
+                            break;
+                        case "Celeste.MovingPlatform":
+                            (entity as MovingPlatform).start = new Vector2(MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased), MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased));
+                            (entity as MovingPlatform).end = new Vector2(MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X + platformOffset.X, to.X + offsetEnd.X + platformOffset.X, t.Eased), MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y + platformOffset.Y, to.Y + offsetEnd.Y + platformOffset.Y, t.Eased));
+                            break;
+                        case "Celeste.MovingPlatformLine":
+                            (entity as MovingPlatformLine).end = new Vector2(MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X + platformOffset.X, to.X + offsetEnd.X + platformOffset.X, t.Eased), MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y + platformOffset.Y, to.Y + offsetEnd.Y + platformOffset.Y, t.Eased));
+                            break;
+                        case "Celeste.SinkingPlatform":
+                            (entity as SinkingPlatform).startY = entity.Position.Y;
+                            break;
+                        case "Celeste.StarJumpBlock":
+                            (entity as StarJumpBlock).startY = entity.Position.Y;
+                            break;
+                        case "Celeste.Puffer":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            (entity as Puffer).anchorPosition = (entity as Puffer).startPosition = entity.Position;
+                            break;
+                        case "Celeste.DashSwitch":
+                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            (entity as DashSwitch).pressedTarget = (entity as DashSwitch).side switch
+                            {
+                                DashSwitch.Sides.Down => entity.Position + Vector2.UnitY * 8f,
+                                DashSwitch.Sides.Up => entity.Position + Vector2.UnitY * -8f,
+                                DashSwitch.Sides.Right => entity.Position + Position + Vector2.UnitX * 8f,
+                                DashSwitch.Sides.Left => entity.Position + Vector2.UnitX * -8f,
+                                _ => Position
+                            };
+                            break;
+                        case "Celeste.CrystalStaticSpinner":
+                            CrystalStaticSpinner spinner = entity as CrystalStaticSpinner;
+                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            if (spinner.filler != null)
+                            {
+                                spinner.filler.RemoveSelf();
+                            }
+                            spinner.filler = null;
+                            if (spinner.border != null)
+                            {
+                                spinner.border.RemoveSelf();
+                            }
+                            spinner.border = null;
+                            List<Image> list = spinner.Components.GetAll<Image>().ToList();
+                            for (int i = 0; i < list.Count; i++)
+                            {
+                                list[i].RemoveSelf();
+                            }
+                            spinner.expanded = false;
+                            (entity as CrystalStaticSpinner).CreateSprites();
+                            break;
+                        case "Celeste.SwitchGate":
+                            (entity as SwitchGate).node = entity.Position + platformOffset;
+                            (entity as SwitchGate).Get<Coroutine>().RemoveSelf();
+                            (entity as SwitchGate).Add(new Coroutine((entity as SwitchGate).Sequence((entity as SwitchGate).node)));
+                            break;
+                        default:
+                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            break;
+                    }
+                }
+                else
+                {
+                    entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                    entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                }
+            };
+            Add(tween);
+        }
+
+        if (InactiveReward && !inactiveActor) entity.Active = true;
         if (InvisibleReward) entity.Visible = true;
         if (UncollidableReward) entity.Collidable = true;
         yield return EjectDuration;
+        if (inactiveActor) entity.Active = true;
     }
 
-    
+
 
     public DashCollisionResults OnDashed(Player player, Vector2 direction)
     {
-        if(((FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1 ? direction.Y > 0 : direction.Y < 0) && direction.X == 0) || !Neededflagplus)
+        if (((FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1 ? direction.Y > 0 : direction.Y < 0) && direction.X == 0) || !Neededflagplus)
         {
             return DashCollisionResults.NormalCollision;
-                
+
         }
 
         if (!Solidbeforehit) return DashCollisionResults.NormalCollision;
 
-        if (Active || Bouncetimer > 0) return DashCollisionResults.NormalCollision;
+        if (Activated || Bouncetimer > 0) return DashCollisionResults.NormalCollision;
         switch (direction.X)
         {
             case > 0 when CanHitLeft:
-                Hit(player, 1);
+                Hit(player, Direction.Right);
                 break;
             case > 0:
                 return DashCollisionResults.NormalCollision;
             case < 0 when CanHitRight:
-                Hit(player, 2);
+                Hit(player, Direction.Left);
                 break;
             case < 0:
                 return DashCollisionResults.NormalCollision;
@@ -703,15 +817,16 @@ public class GenericSmwBlock : Solid
             if (!(direction.Y < 0)) return DashCollisionResults.Rebound;
             if (CanHitBottom)
             {
-                Hit(player, 0);
+                Hit(player, Direction.Up);
             }
             else return DashCollisionResults.NormalCollision;
-        } else
+        }
+        else
         {
             if (!(direction.Y > 0)) return DashCollisionResults.Rebound;
             if (CanHitTop)
             {
-                Hit(player, 3);
+                Hit(player, Direction.Down);
             }
             else return DashCollisionResults.NormalCollision;
         }

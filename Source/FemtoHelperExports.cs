@@ -9,11 +9,11 @@ namespace Celeste.Mod.FemtoHelper;
 public static class FemtoHelperExports
 {
 
-    public static void GetHitMethod(Entity block, Player player, int dir) => (block as GenericSmwBlock)?.Hit(player, dir);
+    public static void GetHitMethod(Entity block, Player player, int dir) => (block as GenericSmwBlock)?.Hit(player, (GenericSmwBlock.Direction)dir);
 
     public static bool IsActive(Entity block)
     {
-        return (block as GenericSmwBlock)?.Active ?? false;
+        return (block as GenericSmwBlock)?.Activated ?? false;
     }
     public static bool CanHitTop(Entity block)
     {

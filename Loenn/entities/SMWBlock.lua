@@ -72,7 +72,8 @@ FemtoHelperSMWBlock.placements = {
         affectCollidable = false,
         dashableKaizo = false,
         whitelist = "",
-        blacklist = ""
+        blacklist = "",
+        launchMultiplier = 0,
     },
 },
 {
@@ -115,7 +116,8 @@ FemtoHelperSMWBlock.placements = {
         affectCollidable = false,
         dashableKaizo = false,
         whitelist = "",
-        blacklist = ""
+        blacklist = "",
+        launchMultiplier = 0,
     }
 },
 {
@@ -158,7 +160,8 @@ FemtoHelperSMWBlock.placements = {
         affectCollidable = false,
         dashableKaizo = false,
         whitelist = "",
-        blacklist = ""
+        blacklist = "",
+        launchMultiplier = false,
     }
 }
 }

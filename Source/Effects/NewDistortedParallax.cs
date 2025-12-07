@@ -61,7 +61,7 @@ public class NewDistortedParallax : Backdrop
     public Vector4 ScaleInfo;
     public Vector2 RotationInfo;
 
-    public readonly BlendState Blend;
+    public readonly BlendState Blend = BlendState.AlphaBlend;
     public readonly SamplerState Filter;
 
     public readonly bool WaveFix;
@@ -211,7 +211,7 @@ public class NewDistortedParallax : Backdrop
 
         GraphicsDevice graphicsDevice = Draw.SpriteBatch.GraphicsDevice;
 
-        BlendState blend = graphicsDevice.BlendState;
+        //BlendState blend = graphicsDevice.BlendState;
 
         Buffer = EnsureValidBuffer();
 
@@ -249,8 +249,7 @@ public class NewDistortedParallax : Backdrop
     public override void Render(Scene scene)
     {
         GraphicsDevice graphicsDevice = Draw.SpriteBatch.GraphicsDevice;
-
-        BlendState prevBlendState = graphicsDevice.BlendState;
+        //BlendState prevBlendState = graphicsDevice.BlendState;
 
         Renderer.EndSpritebatch();
 
@@ -266,7 +265,7 @@ public class NewDistortedParallax : Backdrop
         Draw.SpriteBatch.Draw((RenderTarget2D)Buffer, Vector2.Zero, Color.White);
 
         Draw.SpriteBatch.End();
-        Renderer.StartSpritebatch(prevBlendState);
+        Renderer.StartSpritebatch(Blend);
 
         graphicsDevice.Textures[2] = t;
         graphicsDevice.SamplerStates[2] = s;
