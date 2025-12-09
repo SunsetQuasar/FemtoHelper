@@ -343,7 +343,10 @@ public class GenericSmwBlock : Solid
                 }
             }
         }
-        if (Bouncetimer > 0) Bouncetimer -= Engine.DeltaTime * 60;
+        if (Bouncetimer > 0)
+        {
+            Bouncetimer -= Engine.DeltaTime * 60;
+        }
 
         if (!Collidable)
         {
@@ -540,8 +543,43 @@ public class GenericSmwBlock : Solid
         }
     }
 
+    public void UpdateCameraForPlayer(Player player)
+    {
+        if (player.Scene == null) return;
+        Level level = Scene as Level;
+        Vector2 position = level.Camera.Position;
+        Vector2 cameraTarget = player?.CameraTarget ?? position;
+        float num = (player.StateMachine.State == 20) ? 8f : 1f;
+        level.Camera.Position = position + (cameraTarget - position) * (1f - (float)Math.Pow(0.01f / num, Engine.DeltaTime));
+    }
+
+    public void CheckTriggersForPlayer(Player player)
+    {
+        foreach (Trigger entity in base.Scene.Tracker.GetEntities<Trigger>())
+        {
+            if (CollideCheck(entity))
+            {
+                if (!entity.Triggered)
+                {
+                    entity.Triggered = true;
+                    player.triggersInside.Add(entity);
+                    entity.OnEnter(player);
+                }
+                entity.OnStay(player);
+            }
+            else if (entity.Triggered)
+            {
+                player.triggersInside.Remove(entity);
+                entity.Triggered = false;
+                entity.OnLeave(player);
+            }
+        }
+    }
+
     public IEnumerator PopupRoutine(Entity entity, Vector2 to, Direction dir, Vector2 offset)
     {
+
+        if (entity is null) yield break;
 
         int intdir = (int)dir;
 
@@ -635,11 +673,16 @@ public class GenericSmwBlock : Solid
             Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeOut, EjectDuration, start: true);
             tween.OnUpdate = delegate (Tween t)
             {
+                if (entity is null) return;
+
+                float lerpx = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
+                float lerpy = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+
                 if (SpecialHandling)
                 {
                     if (entity is Platform platform)
                     {
-                        platform.MoveTo(new Vector2(MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased), MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased)));
+                        platform.MoveTo(new Vector2(lerpx, lerpy));
                     }
 
                     if (entity.Get<Holdable>() is { } h)
@@ -655,9 +698,19 @@ public class GenericSmwBlock : Solid
                         }
                     }
 
-                    if (entity is Player p && InactiveReward)
+                    if (entity is Player p)
                     {
-                        p.Speed = Vector2.Zero;
+                        CheckTriggersForPlayer(p);
+                        UpdateHairForPlayer(p);
+                        UpdateCameraForPlayer(p);
+                        p.UpdateHair(true);
+                        p.Hair.Update();
+                        p.Hair.AfterUpdate();
+                        p.UpdateCarry();
+                        if (InactiveReward)
+                        {
+                            p.Speed = Vector2.Zero;
+                        }
                     }
 
                     switch (entity.ToString())
@@ -669,18 +722,18 @@ public class GenericSmwBlock : Solid
                             (entity as BounceBlock).startPos = entity.Position;
                             break;
                         case "Celeste.Booster":
-                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            entity.Position.X = lerpx;
+                            entity.Position.Y = lerpy;
                             (entity as Booster).outline.Position = entity.Position;
                             break;
                         case "Celeste.Bumper":
-                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            entity.Position.X = lerpx;
+                            entity.Position.Y = lerpy;
                             (entity as Bumper).anchor = entity.Position;
                             break;
                         case "Celeste.FloatingDebris":
-                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            entity.Position.X = lerpx;
+                            entity.Position.Y = lerpy;
                             (entity as FloatingDebris).start = entity.Position;
                             break;
                         case "Celeste.IntroCar":
@@ -691,24 +744,24 @@ public class GenericSmwBlock : Solid
                             (entity as LightningBreakerBox).start = entity.Position;
                             break;
                         case "Celeste.MoonCreature":
-                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            entity.Position.X = lerpx;
+                            entity.Position.Y = lerpy;
                             (entity as MoonCreature).start = (entity as MoonCreature).target = entity.Position;
                             break;
                         case "CustomMoonCreature":
-                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            entity.Position.X = lerpx;
+                            entity.Position.Y = lerpy;
                             (entity as CustomMoonCreature).Start = (entity as CustomMoonCreature).Target = entity.Position;
                             for (int i = 0; i < (entity as CustomMoonCreature).Trail.Length; i++)
                             {
-                                (entity as CustomMoonCreature).Trail[i].Position = new Vector2(MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased), MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased));
+                                (entity as CustomMoonCreature).Trail[i].Position = new Vector2(lerpx, lerpy);
                             }
                             break;
                         case "Celeste.MoveBlock":
                             (entity as MoveBlock).startPosition = entity.Position;
                             break;
                         case "Celeste.MovingPlatform":
-                            (entity as MovingPlatform).start = new Vector2(MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased), MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased));
+                            (entity as MovingPlatform).start = new Vector2(lerpx, lerpy);
                             (entity as MovingPlatform).end = new Vector2(MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X + platformOffset.X, to.X + offsetEnd.X + platformOffset.X, t.Eased), MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y + platformOffset.Y, to.Y + offsetEnd.Y + platformOffset.Y, t.Eased));
                             break;
                         case "Celeste.MovingPlatformLine":
@@ -721,13 +774,13 @@ public class GenericSmwBlock : Solid
                             (entity as StarJumpBlock).startY = entity.Position.Y;
                             break;
                         case "Celeste.Puffer":
-                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            entity.Position.X = lerpx;
+                            entity.Position.Y = lerpy;
                             (entity as Puffer).anchorPosition = (entity as Puffer).startPosition = entity.Position;
                             break;
                         case "Celeste.DashSwitch":
-                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            entity.Position.X = lerpx;
+                            entity.Position.Y = lerpy;
                             (entity as DashSwitch).pressedTarget = (entity as DashSwitch).side switch
                             {
                                 DashSwitch.Sides.Down => entity.Position + Vector2.UnitY * 8f,
@@ -739,8 +792,8 @@ public class GenericSmwBlock : Solid
                             break;
                         case "Celeste.CrystalStaticSpinner":
                             CrystalStaticSpinner spinner = entity as CrystalStaticSpinner;
-                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            entity.Position.X = lerpx;
+                            entity.Position.Y = lerpy;
                             if (spinner.filler != null)
                             {
                                 spinner.filler.RemoveSelf();
@@ -765,15 +818,15 @@ public class GenericSmwBlock : Solid
                             (entity as SwitchGate).Add(new Coroutine((entity as SwitchGate).Sequence((entity as SwitchGate).node)));
                             break;
                         default:
-                            entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                            entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                            entity.Position.X = lerpx;
+                            entity.Position.Y = lerpy;
                             break;
                     }
                 }
                 else
                 {
-                    entity.Position.X = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
-                    entity.Position.Y = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
+                    entity.Position.X = lerpx;
+                    entity.Position.Y = lerpy;
                 }
             };
             Add(tween);
@@ -783,10 +836,42 @@ public class GenericSmwBlock : Solid
         if (InvisibleReward) entity.Visible = true;
         if (UncollidableReward) entity.Collidable = true;
         yield return EjectDuration;
+        if (entity is null) yield break;
         if (inactiveActor) entity.Active = true;
     }
 
-
+    private void UpdateHairForPlayer(Player p)
+    {
+        Vector2 forceStrongWindHair = p.windDirection;
+        if (p.ForceStrongWindHair.Length() > 0f)
+        {
+            forceStrongWindHair = p.ForceStrongWindHair;
+        }
+        if (p.windTimeout > 0f && forceStrongWindHair.X != 0f)
+        {
+            p.windHairTimer += Engine.DeltaTime * 8f;
+            p.Hair.StepPerSegment = new Vector2(forceStrongWindHair.X * 5f, (float)Math.Sin(p.windHairTimer));
+            p.Hair.StepInFacingPerSegment = 0f;
+            p.Hair.StepApproach = 128f;
+            p.Hair.StepYSinePerSegment = 0f;
+        }
+        else if (p.Dashes > 1)
+        {
+            p.Hair.StepPerSegment = new Vector2((float)Math.Sin(base.Scene.TimeActive * 2f) * 0.7f - (float)((int)p.Facing * 3), (float)Math.Sin(base.Scene.TimeActive * 1f));
+            p.Hair.StepInFacingPerSegment = 0f;
+            p.Hair.StepApproach = 90f;
+            p.Hair.StepYSinePerSegment = 1f;
+            p.Hair.StepPerSegment.Y += forceStrongWindHair.Y * 2f;
+        }
+        else
+        {
+            p.Hair.StepPerSegment = new Vector2(0f, 2f);
+            p.Hair.StepInFacingPerSegment = 0.5f;
+            p.Hair.StepApproach = 64f;
+            p.Hair.StepYSinePerSegment = 0f;
+            p.Hair.StepPerSegment.Y += forceStrongWindHair.Y * 0.5f;
+        }
+    }
 
     public DashCollisionResults OnDashed(Player player, Vector2 direction)
     {
@@ -832,5 +917,46 @@ public class GenericSmwBlock : Solid
         }
         return DashCollisionResults.Rebound;
 
+    }
+
+    public static void Load()
+    {
+        On.Monocle.Entity.Render += Entity_Render;
+    }
+
+    private static void Entity_Render(On.Monocle.Entity.orig_Render orig, Entity self)
+    {
+        bool yep = false;
+        Vector2 pos = self.Position;
+        if ((self.Get<StaticMover>() is { } sm) && sm.Platform is GenericSmwBlock block && block.Bouncetimer > 0)
+        {
+            yep = true;
+            switch (block.Bumpdir)
+            {
+                default:
+                case Direction.Up:
+                    self.Position -= Vector2.UnitY * (float)Math.Sin(block.Bouncetimer / 10 * Math.PI) * 6;
+                    break;
+                case Direction.Right:
+                    self.Position += Vector2.UnitX * (float)Math.Sin(block.Bouncetimer / 10 * Math.PI) * 6;
+                    break;
+                case Direction.Left:
+                    self.Position -= Vector2.UnitX * (float)Math.Sin(block.Bouncetimer / 10 * Math.PI) * 6;
+                    break;
+                case Direction.Down:
+                    self.Position += Vector2.UnitY * (float)Math.Sin(block.Bouncetimer / 10 * Math.PI) * 6;
+                    break;
+            }
+        }
+        orig(self);
+        if (yep)
+        {
+            self.Position = pos;
+        }
+    }
+
+    public static void Unload()
+    {
+        On.Monocle.Entity.Render -= Entity_Render;
     }
 }

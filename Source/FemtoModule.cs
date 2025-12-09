@@ -242,6 +242,7 @@ public class FemtoModule : EverestModule
         TheContraption.Load();
         LimitRefill.Load();
         BoundRefill.Load();
+        GenericSmwBlock.Load();
 
         Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
     }
@@ -279,6 +280,9 @@ public class FemtoModule : EverestModule
         TheContraption.Unload();
         LimitRefill.Unload();
         BoundRefill.Unload();
+        GenericSmwBlock.Unload();
+
+        Everest.Events.Player.OnSpawn -= ReloadDistortedParallax;
     }
 
 
