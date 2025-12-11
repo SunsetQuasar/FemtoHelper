@@ -7,7 +7,8 @@ FemtoHelperEvilTheoCrystal.depth = 100
 FemtoHelperEvilTheoCrystal.placements = {
     name = "evil_theo_crystal",
     data = {
-        spriteOverride = ''
+        spriteOverride = '',
+        preserveSpeedOnThrow = false,
     }
 }
 
