@@ -50,8 +50,8 @@ public class CustomCliffsideWindFlag : Entity
 		}
 		sine = Calc.Random.NextFloat((float)Math.PI * 2f);
 		random = Calc.Random.NextFloat();
-		Depth = 8999;
-		Tag = Tags.TransitionUpdate;
+		Depth = data.Int("depth", 8999);
+        Tag = Tags.TransitionUpdate;
 	}
 
 	public override void Added(Scene scene)

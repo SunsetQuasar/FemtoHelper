@@ -21,7 +21,8 @@ FemtoHelperCustomCliffsideFlag.placements = {
         spritesPath = "scenery/cliffside/flag",
         sineFrequency = 1,
         sineAmplitude = 1,
-        naturalDraft = 0
+        naturalDraft = 0,
+        depth = 8999,
     }
 }
 

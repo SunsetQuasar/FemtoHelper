@@ -183,6 +183,7 @@ entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.spritesPath=
 entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.sineFrequency=The frequency of the flag's wave.
 entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.sineAmplitude=The strength of the flag's wave.
 entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.naturalDraft=The wind speed to use when no level wind speed is set.
+entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.depth=The entity's depth value.
 
 # Custom Fake Heart
 entities.FemtoHelper/CustomFakeHeart.placements.name.default=Custom Fake Heart
