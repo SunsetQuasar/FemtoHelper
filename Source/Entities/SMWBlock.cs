@@ -55,20 +55,50 @@ public class GenericSmwBlock : Solid
         }
     }
 
+    public readonly struct SheetFrames
+    {
+        readonly List<MTexture> frames;
+        readonly int sourceWidth, sourceHeight, count;
+
+        public SheetFrames(MTexture tex)
+        {
+            frames = [];
+            sourceWidth = tex.Width;
+            sourceHeight = tex.Height;
+
+            for (int i = 0; i < tex.Width; i += tex.Height)
+            {
+                frames.Add(tex.GetSubtexture(i, 0, tex.Height, tex.Height));
+            }
+
+            count = frames.Count;
+        }
+
+        public MTexture this[int frame]
+        {
+            get
+            {
+                return frames[frame % count];
+            }
+        }
+    }
+
     public bool Activated;
 
     public readonly bool HasIndicator;
 
     public readonly float AnimationRate;
 
-    public readonly MTexture Indicator;
-    public readonly int Indiframes;
+    public readonly SheetFrames Indicator;
+    //public readonly MTexture Indicator;
+    //public readonly int Indiframes;
     public float Inditimer;
 
-    public readonly MTexture Kaizo;
+    public readonly MTexture HitSprite;
 
-    public readonly MTexture Used;
-    public readonly int Usedframes;
+    public readonly SheetFrames Used;
+    //public readonly MTexture Used;
+    //public readonly int Usedframes;
     public float Usedtimer;
 
     public float Bouncetimer;
@@ -79,7 +109,7 @@ public class GenericSmwBlock : Solid
 
     public readonly Collider PlCol;
 
-    public MTexture Used2, Indicator2;
+    //public MTexture Used2, Indicator2;
 
     public Vector2 Node;
 
@@ -158,26 +188,36 @@ public class GenericSmwBlock : Solid
         blacklist.Remove("");
 
         Depth = data.Int("depth", -15000);
+
         SpecialHandling = data.Bool("specialEntityHandling", true);
+
         LaunchMultiplier = data.Float("launchMultiplier", 0f);
+
         Caught = false;
+
         EjectDuration = data.Float("ejectDuration", 0.5f);
         EjectDirection = (Direction)data.Int("ejectDirection", 4);
+
         Path = data.Attr("path", "objects/FemtoHelper/SMWBlock/solid/");
+
         AnimationRate = data.Float("animationRate", 8f);
-        Indicator = GFX.Game[Path + "indicator"];
-        Indicator2 = Indicator.GetSubtexture(0, 0, Indicator.Height, Indicator.Height);
-        Indiframes = Indicator.Width / Indicator.Height;
+
+        Indicator = new(GFX.Game[Path + "indicator"]);
         Inditimer = 0;
-        Kaizo = GFX.Game[Path + "active"];
-        Used = GFX.Game[Path + "used"];
-        Used2 = Used.GetSubtexture(0, 0, Used.Height, Used.Height);
-        Usedframes = Used.Width / Used.Height;
+
+        Used = new(GFX.Game[Path + "used"]);
         Usedtimer = 0;
+
+        HitSprite = GFX.Game[Path + "active"];
+
         Activated = false;
+
         HasIndicator = data.Bool("indicate", false);
+
         Bouncetimer = 0;
+
         Collidable = Solidbeforehit = data.Bool("solidBeforeHit", false);
+
         dashableKaizo = data.Bool("dashableKaizo", false);
         if (!Collidable) DisableStaticMovers();
         PlCol = new Hitbox(Width - 2, 2, 1, Height);
@@ -186,8 +226,8 @@ public class GenericSmwBlock : Solid
 
         OnDashCollide = OnDashed;
 
-        Rewards = new List<Entity>();
-        Offsets = new List<Vector2>();
+        Rewards = [];
+        Offsets = [];
 
         Node = data.NodesOffset(offset)[0];
 
@@ -357,14 +397,22 @@ public class GenericSmwBlock : Solid
         Usedtimer += Engine.DeltaTime * AnimationRate * (Neededflagplus ? 1 : 0);
     }
 
+    public void TryDrawTiled(MTexture texture, Color color, Vector2 offset = default)
+    {
+        for(int i = 0; i < Width; i += texture.Width)
+        {
+            for (int j = 0; j < Height; j += texture.Height)
+            {
+                texture.Draw(Position + SpriteOffset + offset + new Vector2(i, j), Vector2.Zero, color);
+            }
+        }
+    }
+
     public override void Render()
     {
         base.Render();
 
         Color color = Neededflagplus ? Color.White : Calc.HexToColor("808080");
-
-        Used2 = Used.GetSubtexture((int)Math.Floor(Usedtimer) % Usedframes * Used.Height, 0, Used.Height, Used.Height);
-        Indicator2 = Indicator.GetSubtexture((int)Math.Floor(Inditimer) % Indiframes * Indicator.Height, 0, Indicator.Height, Indicator.Height);
 
         if (Activated || SwitchMode)
         {
@@ -372,7 +420,7 @@ public class GenericSmwBlock : Solid
             {
                 if (!SwitchMode)
                 {
-                    Used2.Draw(Position + SpriteOffset, Vector2.Zero, color);
+                    TryDrawTiled(Used[(int)Math.Floor(Usedtimer)], color);
                 }
                 else
                 {
@@ -380,11 +428,11 @@ public class GenericSmwBlock : Solid
                     {
                         if (string.IsNullOrEmpty(SwitchModeRenderFlag) ? (Scene as Level).Session.GetFlag(HitFlag) : (Scene as Level).Session.GetFlag(SwitchModeRenderFlag))
                         {
-                            Used2.Draw(Position + SpriteOffset, Vector2.Zero, color);
+                            TryDrawTiled(Used[(int)Math.Floor(Usedtimer)], color);
                         }
                         else
                         {
-                            Indicator2.Draw(Position + SpriteOffset, Vector2.Zero, color);
+                            TryDrawTiled(Indicator[(int)Math.Floor(Inditimer)], color);
                         }
                     }
                 }
@@ -392,20 +440,21 @@ public class GenericSmwBlock : Solid
             }
             else
             {
+                float distance = (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6;
                 switch (Bumpdir)
                 {
                     default:
                     case Direction.Up:
-                        Kaizo.Draw(Position + SpriteOffset - Vector2.UnitY * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
+                        TryDrawTiled(HitSprite, color, -Vector2.UnitY * distance);
                         break;
                     case Direction.Right:
-                        Kaizo.Draw(Position + SpriteOffset + Vector2.UnitX * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
+                        TryDrawTiled(HitSprite, color, Vector2.UnitX * distance);
                         break;
                     case Direction.Left:
-                        Kaizo.Draw(Position + SpriteOffset - Vector2.UnitX * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
+                        TryDrawTiled(HitSprite, color, -Vector2.UnitX * distance);
                         break;
                     case Direction.Down:
-                        Kaizo.Draw(Position + SpriteOffset + Vector2.UnitY * (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6, Vector2.Zero, color);
+                        TryDrawTiled(HitSprite, color, Vector2.UnitY * distance);
                         break;
                 }
 
@@ -413,7 +462,7 @@ public class GenericSmwBlock : Solid
         }
         else
         {
-            if (HasIndicator) Indicator2.Draw(Position + SpriteOffset, Vector2.Zero, color);
+            if (HasIndicator) TryDrawTiled(Indicator[(int)Math.Floor(Inditimer)], color);
         }
     }
     public void Hit(Player player, Direction dir)
