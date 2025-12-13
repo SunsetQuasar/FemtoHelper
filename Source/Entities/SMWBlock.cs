@@ -722,7 +722,7 @@ public class GenericSmwBlock : Solid
             Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeOut, EjectDuration, start: true);
             tween.OnUpdate = delegate (Tween t)
             {
-                if (entity is null) return;
+                if (entity is null || entity.Scene is null) return;
 
                 float lerpx = MathHelper.Lerp(stupid[0, intdir] + EjectOffset.X + offsetStart.X, to.X + offsetEnd.X, t.Eased);
                 float lerpy = MathHelper.Lerp(stupid[1, intdir] + EjectOffset.Y + offsetStart.Y, to.Y + offsetEnd.Y, t.Eased);
@@ -731,7 +731,9 @@ public class GenericSmwBlock : Solid
                 {
                     if (entity is Platform platform)
                     {
+                        Console.WriteLine("yo i'm " + entity.GetType().FullName);
                         platform.MoveTo(new Vector2(lerpx, lerpy));
+                        //platform.Position = new Vector2(lerpx, lerpy);
                     }
 
                     if (entity.Get<Holdable>() is { } h)
