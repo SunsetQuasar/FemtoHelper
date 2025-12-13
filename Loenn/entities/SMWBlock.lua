@@ -161,7 +161,7 @@ FemtoHelperSMWBlock.placements = {
         dashableKaizo = false,
         whitelist = "",
         blacklist = "",
-        launchMultiplier = false,
+        launchMultiplier = 0,
     }
 }
 }
