@@ -684,6 +684,10 @@ entities.FemtoHelper/SMWShell.attributes.description.outlineTextureType=The indi
 entities.FemtoHelper/SMWShell.attributes.description.upwardsThrowSpeed=The Shell's speed upon being thrown upwards.
 entities.FemtoHelper/SMWShell.attributes.description.dontRefill=Makes the Shell not refill the player's dash when bounced on.
 
+# Evil Theo Crystal
+entities.FemtoHelper/EvilTheoCrystal.placements.name.evil_theo_crystal=Evil Theo Crystal
+entities.FemtoHelper/EvilTheoCrystal.attributes.description.preserveSpeedOnThrow=If set, the player's horizontal speed is preserved when they are thrown by the Crystal.
+
 # ---------- Triggers ----------
 
 # Remote Particle Emitter Activator (please spare my soul its the best name i could come up with)
