@@ -58,7 +58,7 @@ public class FemtoStars : Backdrop
 	public readonly string Alpha;
 
 	private readonly float separation;
-	public FemtoStars(int blurCount, string colors3, float minXSpeed, float maxXSpeed, float minYSpeed, float maxYSpeed, float loopBorderX, float loopBorderY, int count, string backgroundColor, float backgroundAlpha, string sprite, float scrollX, float scrollY, float transparency, float trailSeparation, float animationRate, string transp2)
+	public FemtoStars(int blurCount, string colors3, float minXSpeed, float maxXSpeed, float minYSpeed, float maxYSpeed, float loopBorderX, float loopBorderY, int count, string backgroundColor, float backgroundAlpha, string sprite, float scrollX, float scrollY, float transparency, float trailSeparation, float animationRate, string transp2, float animationRateRandom)
 	{
 		trailCount = blurCount;
 		extraLoopBorderX = loopBorderX;
@@ -87,7 +87,7 @@ public class FemtoStars : Backdrop
 			{
 				Position = new Vector2(Calc.Random.NextFloat(320f + extraLoopBorderX) - extraLoopBorderX / 2, Calc.Random.NextFloat(180f + extraLoopBorderY) - extraLoopBorderY / 2),
 				Timer = Calc.Random.NextFloat((float)Math.PI * 2f),
-				Rate = animationRate + Calc.Random.NextFloat(2f),
+				Rate = animationRate + Calc.Random.NextFloat(animationRateRandom),
 				TextureSet = Calc.Random.Next(textures.Count),
 				Colors = new Color[trailCount],
 			};

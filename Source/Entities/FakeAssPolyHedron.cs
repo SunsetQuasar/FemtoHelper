@@ -45,7 +45,7 @@ public class PseudoPolyhedron : Entity
 		BaseSides = data.Int("baseSideCount", 4);
 		PrismMode = data.Bool("isPrism", false);
 		Alpha = data.Float("alpha", 1);
-		Samples = data.Int("samples", 128);
+		Samples = Math.Max(data.Int("samples", 128), 2);
 		Depth = data.Int("depth", 6000);
 		Positions = new Vector2[Samples, BaseSides];
 		Vector2 origScale = new Vector2(BaseWidth, BaseHeight);
