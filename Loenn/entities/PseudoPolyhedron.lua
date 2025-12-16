@@ -40,50 +40,56 @@ function FemtoHelperPseudoPolyhedron.sprite(room, entity)
    local color = entity.color
 
    local sides = entity.baseSideCount
-
-   local points = {}
    
    local pi = 3.1415926
 
    local trigContent = (entity.rotationOffset / entity.samples / sides) * pi * 2
 
-   if entity.isPrism == false then
+   local sprites = {}
+
+   --base
+   local base = {}
+   for i=0, sides, 1
+   do
+      table.insert(base, entity.x + math.sin((trigContent) + (pi / (sides / 2) * i)) * entity.baseWidth)
+      table.insert(base, entity.y + math.cos((trigContent) + (pi / (sides / 2) * i)) * entity.baseHeight)
+   end
+   table.insert(sprites, drawableLine.fromPoints(base, color, 1))
+
+   if not entity.isPrism then
+      --sides to tip
       for i=0, sides, 1
       do
-         --base
+         local points = {}
          table.insert(points, entity.x + math.sin((trigContent) + (pi / (sides / 2) * i)) * entity.baseWidth)
          table.insert(points, entity.y + math.cos((trigContent) + (pi / (sides / 2) * i)) * entity.baseHeight)
-      end
-      for i=0, sides, 1
-      do
-         --tip
          table.insert(points, entity.x + entity.tipBaseOffsetX)
          table.insert(points, entity.y + entity.tipBaseOffsetY)
-         --base again ahah
-         table.insert(points, entity.x + math.sin((trigContent) + (pi / (sides / 2) * i)) * entity.baseWidth)
-         table.insert(points, entity.y + math.cos((trigContent) + (pi / (sides / 2) * i)) * entity.baseHeight)
+         table.insert(sprites, drawableLine.fromPoints(points, color, 1))
       end
    else
-      for i=0, sides, 1
-      do
-         --base
-         table.insert(points, entity.x + math.sin((trigContent) + (pi / (sides / 2) * i)) * entity.baseWidth)
-         table.insert(points, entity.y + math.cos((trigContent) + (pi / (sides / 2) * i)) * entity.baseHeight)
-      end
+      --top base
+      local points = {}
       for i=0, sides, 1
       do
          table.insert(points, entity.x + entity.tipBaseOffsetX + math.sin((trigContent) + (pi / (sides / 2) * i)) * entity.topBaseWidth)
          table.insert(points, entity.y + entity.tipBaseOffsetY + math.cos((trigContent) + (pi / (sides / 2) * i)) * entity.topBaseHeight)
+      end
+      table.insert(sprites, drawableLine.fromPoints(points, color, 1))
 
-         table.insert(points, entity.x + entity.tipBaseOffsetX + math.sin((trigContent) + (pi / (sides / 2) * (i + 1))) * entity.topBaseWidth)
-         table.insert(points, entity.y + entity.tipBaseOffsetY + math.cos((trigContent) + (pi / (sides / 2) * (i + 1))) * entity.topBaseHeight)
-
-         table.insert(points, entity.x + math.sin((trigContent) + (pi / (sides / 2) * (i+1))) * entity.baseWidth)
-         table.insert(points, entity.y + math.cos((trigContent) + (pi / (sides / 2) * (i+1))) * entity.baseHeight)
+      --side edges
+      for i=0, sides, 1
+      do
+         local points = {}
+         table.insert(points, entity.x + math.sin((trigContent) + (pi / (sides / 2) * i)) * entity.baseWidth)
+         table.insert(points, entity.y + math.cos((trigContent) + (pi / (sides / 2) * i)) * entity.baseHeight)
+         table.insert(points, entity.x + entity.tipBaseOffsetX + math.sin((trigContent) + (pi / (sides / 2) * i)) * entity.topBaseWidth)
+         table.insert(points, entity.y + entity.tipBaseOffsetY + math.cos((trigContent) + (pi / (sides / 2) * i)) * entity.topBaseHeight)
+         table.insert(sprites, drawableLine.fromPoints(points, color, 1))
       end
    end
       
-      return drawableLine.fromPoints(points, color, 1)
+   return sprites
 
    
    --return psprite
