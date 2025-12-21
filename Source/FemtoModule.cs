@@ -20,6 +20,7 @@ using MonoMod.RuntimeDetour;
 using System.Reflection;
 using static Celeste.Mod.FemtoHelper.Entities.SparkRefill;
 using System.Diagnostics.CodeAnalysis;
+using Celeste.Mod.FemtoHelper.CustomFancyText;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -243,6 +244,7 @@ public class FemtoModule : EverestModule
         LimitRefill.Load();
         BoundRefill.Load();
         GenericSmwBlock.Load();
+        ObfuscatedFancyText.Load();
 
         Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
     }
@@ -281,6 +283,7 @@ public class FemtoModule : EverestModule
         LimitRefill.Unload();
         BoundRefill.Unload();
         GenericSmwBlock.Unload();
+        ObfuscatedFancyText.Unload();
 
         Everest.Events.Player.OnSpawn -= ReloadDistortedParallax;
     }
@@ -630,4 +633,3 @@ public class FemtoModule : EverestModule
         return null;
     }
 }
-
