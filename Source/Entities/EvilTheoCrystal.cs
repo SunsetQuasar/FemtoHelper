@@ -51,7 +51,9 @@ public class EvilTheoCrystal : Actor
 
     public readonly VertexLight Light;
 
-    public EvilTheoCrystal(Vector2 position, string spriteOverride)
+    private readonly bool preserveSpeedOnThrow;
+
+    public EvilTheoCrystal(Vector2 position, string spriteOverride, bool preserveSpeedOnThrow = false)
         : base(position)
     {
         previousPosition = position;
@@ -59,6 +61,7 @@ public class EvilTheoCrystal : Actor
         Collider = new Hitbox(8f, 10f, -4f, -10f);
         Add(sprite = !string.IsNullOrEmpty(spriteOverride) ? GFX.SpriteBank.Create(spriteOverride) : FemtoModule.FemtoSpriteBank.Create("theo_crystal_evil"));
         sprite.Scale.X = -1f;
+        this.preserveSpeedOnThrow = preserveSpeedOnThrow;
         Add(Hold = new Holdable());
         Hold.PickupCollider = new Hitbox(16f, 22f, -8f, -16f);
         Hold.SlowFall = false;
@@ -80,7 +83,7 @@ public class EvilTheoCrystal : Actor
     }
 
     public EvilTheoCrystal(EntityData e, Vector2 offset)
-        : this(e.Position + offset, e.Attr("spriteOverride", ""))
+        : this(e.Position + offset, e.Attr("spriteOverride", ""), e.Bool("preserveSpeedOnThrow", false))
     {
     }
 
@@ -460,7 +463,12 @@ public class EvilTheoCrystal : Actor
             {
                 force.Y *= 1.5f;
                 Speed.Y -= 80;
-                p.Speed = force * 350f;
+                force *= 350f;
+                if (preserveSpeedOnThrow && Math.Sign(p.Speed.X) == Math.Sign(force.X))
+                {
+                    force.X = (float)Math.MaxMagnitude(force.X, p.Speed.X);
+                }
+                p.Speed = force;
             }
         }
         skipit:
