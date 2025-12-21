@@ -4,8 +4,11 @@ using System.Data;
 using System.Linq;
 using System.Reflection.Metadata;
 using Celeste.Mod.FemtoHelper.Utils;
+using MonoMod.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
+
+public class AlreadyGone() : Component(false, false);
 
 [Tracked]
 [CustomEntity("FemtoHelper/GloriousPassage")]
@@ -185,10 +188,15 @@ public class GloriousPassage : Entity
             pos = player.Position;
 
             leader = player.Get<Leader>();
+
             foreach (Follower item in leader.Followers.Where(f => f.Entity != null))
             {
                 item.Entity.AddTag(Tags.Global);
-                level.Session.DoNotLoad.Add(item.ParentEntityID);
+
+                if (!level.Session.DoNotLoad.Add(item.ParentEntityID))
+                {
+                    item.Entity.Add(new AlreadyGone());
+                }
             }
 
             Holdable hold = player.Holding;
@@ -254,7 +262,11 @@ public class GloriousPassage : Entity
             {
                 item2.Entity.Position += playerDelta;
                 item2.Entity.RemoveTag(Tags.Global);
-                level.Session.DoNotLoad.Remove(item2.ParentEntityID);
+                if (item2.Entity.Get<AlreadyGone>() is not { } c)
+                {
+                    level.Session.DoNotLoad.Remove(item2.ParentEntityID);
+                }
+                else c.RemoveSelf();
             }
             for (int i = 0; i < leader.PastPoints.Count; i++)
             {
