@@ -52,7 +52,7 @@ float4 SpritePixelShader(float2 uv : TEXCOORD0) : COLOR0
 
     float scale = ScaleInfo.x + ((0.5+0.5*sin((Time*ScaleInfo.z) + ScaleInfo.w)) * ScaleInfo.y);
 
-    float2 scroll2 = ((float2(Scroll.x, Scroll.y)*scale)-(scale-1)) * factor * 2;
+    float2 scroll2 = ((float2(Scroll.x, Scroll.y)*scale)-(scale-1)) * factor;
 
     float2 worldPos = (uv * Dimensions) + CamPos * Scroll;
 
