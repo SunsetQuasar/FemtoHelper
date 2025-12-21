@@ -244,9 +244,8 @@ public class FemtoModule : EverestModule
         LimitRefill.Load();
         BoundRefill.Load();
         GenericSmwBlock.Load();
-        ObfuscatedFancyText.Load();
-
-        Everest.Events.Player.OnSpawn += ReloadDistortedParallax;
+        //ObfuscatedFancyText.Load();
+        NewDistortedParallax.Load();
     }
 
     public override void Unload()
@@ -283,9 +282,8 @@ public class FemtoModule : EverestModule
         LimitRefill.Unload();
         BoundRefill.Unload();
         GenericSmwBlock.Unload();
-        ObfuscatedFancyText.Unload();
-
-        Everest.Events.Player.OnSpawn -= ReloadDistortedParallax;
+        //ObfuscatedFancyText.Unload();
+        NewDistortedParallax.Unload();
     }
 
 
@@ -514,16 +512,6 @@ public class FemtoModule : EverestModule
         }
 
         return data;
-    }
-
-    public static void ReloadDistortedParallax(Player player)
-    {
-        Level level = player.Scene as Level;
-        List<NewDistortedParallax> d = level.Background.GetEach<NewDistortedParallax>().ToList();
-        foreach (NewDistortedParallax parallax in d)
-        {
-            parallax.Reset();
-        }
     }
 
     // Optional, initialize anything after Celeste has initialized itself properly.

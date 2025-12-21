@@ -2,8 +2,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
+using On.Celeste.Mod;
 using System;
 using System.Collections.Generic;
+using static MonoMod.InlineRT.MonoModRule;
 
 namespace Celeste.Mod.FemtoHelper.Code.Effects;
 
@@ -44,9 +46,13 @@ public class NewDistortedParallax : Backdrop
 
     public Effect Effect;
 
+    public static Dictionary<string, Effect> EffectCache = [];
+
     public bool Initialized;
 
     public readonly Texture2D Texture;
+
+    public static Dictionary<string, Texture2D> Cache = [];
 
     public float Time;
 
@@ -70,7 +76,17 @@ public class NewDistortedParallax : Backdrop
     {
         Position = new Vector2(data.AttrFloat("offsetX", 0f), data.AttrFloat("offsetY", 0f));
 
-        Texture = GFX.Game[data.Attr("texture", "bgs/disperse_clouds")].GetPaddedSubtextureCopy(); //DODO: rewrite the base shader to support textures from atlases rather than doing this
+        MTexture tex = GFX.Game[data.Attr("texture", "bgs/disperse_clouds")];
+
+        if (tex.IsPacked) //only need to subtexture copy (and therefore cache) vanilla assets
+        {
+            Texture = FetchFromCache(data.Attr("texture", "bgs/disperse_clouds"));
+        }
+        else
+        {
+            Texture = tex.Texture.Texture_Safe;
+        }
+
         LoopX = data.AttrBool("loopX", true);
         LoopY = data.AttrBool("loopY", true);
         Scroll = new Vector2(data.AttrFloat("scrollX", 1), data.AttrFloat("scrollY", 1));
@@ -129,39 +145,58 @@ public class NewDistortedParallax : Backdrop
         Reset();
     }
 
-    public void Reset()
+    public static Texture2D FetchFromCache(string from) //DOODOO: rewrite the base shader to support textures from atlases rather than doing this
     {
-        if (Everest.Content.TryGet($"Effects/{EffectId}.cso", out var effectAsset, true))
+        if (Cache.TryGetValue(from, out Texture2D value))
         {
-            Effect = new Effect(Engine.Graphics.GraphicsDevice, effectAsset.Data);
+            return value;
         }
         else
         {
-            Logger.Log(LogLevel.Error, "FemtoHelper/NewDistortedParallax", $"Failed getting effect: \"Effects/{EffectId}.cso\"! Using default shader instead.");
-            if(Everest.Content.TryGet($"Effects/FemtoHelper/DistortedParallax.cso", out var effectAsset2, true))
+            //Console.WriteLine("yall, " + from);
+            Texture2D created = GFX.Game[from].GetPaddedSubtextureCopy();
+            Cache.Add(from, created);
+            return created;
+        }
+    }
+
+    public static Effect EffectFromCache(string from)
+    {
+        if (EffectCache.TryGetValue(from, out var effect) && effect != null)
+        {
+            return effect;
+        }
+        else
+        {
+            Effect ret = null;
+
+            if (Everest.Content.TryGet($"Effects/{from}.cso", out var effectAsset, true))
             {
-                Effect = new Effect(Engine.Graphics.GraphicsDevice, effectAsset2.Data);
+                ret = new Effect(Engine.Graphics.GraphicsDevice, effectAsset.Data);
             }
             else
             {
-                Logger.Log(LogLevel.Error, "FemtoHelper/NewDistortedParallax", "Failed getting the default shader?? How??");
+                Logger.Log(LogLevel.Error, "FemtoHelper/NewDistortedParallax", $"Failed getting effect: \"Effects/{from}.cso\"! Using default shader instead.");
+                if (Everest.Content.TryGet($"Effects/FemtoHelper/DistortedParallax.cso", out var effectAsset2, true))
+                {
+                    ret = new Effect(Engine.Graphics.GraphicsDevice, effectAsset2.Data);
+                }
+                else
+                {
+                    Logger.Log(LogLevel.Error, "FemtoHelper/NewDistortedParallax", "Failed getting the default shader?? How??");
+                }
             }
+
+            EffectCache.Add(from, ret);
+            return ret;
         }
-        EffectParameterCollection parameters = Effect.Parameters;
-        parameters["textureSize"]?.SetValue(new Vector2(Texture.Width, Texture.Height));
-        parameters["Dimensions"]?.SetValue(new Vector2(320f, 180f));
-        parameters["offset"]?.SetValue(Position);
-        parameters["loopMul"]?.SetValue(new Vector2(LoopX ? 1 : 0, LoopY ? 1 : 0));
-        parameters["Speed"]?.SetValue(Speed);
-        parameters["Scroll"]?.SetValue(Scroll);
-        parameters["flipInfo"]?.SetValue(new Vector4(FlipX ? -1 : 1, FlipY ? -1 : 1, FlipX ? 1 : 0, FlipY ? 1 : 0));
-        parameters["Amplitudes"]?.SetValue(Amplitudes);
-        parameters["Periods"]?.SetValue(Periods * (float)(1/Math.PI));
-        parameters["Offsets"]?.SetValue(Offsets * Calc.DegToRad);
-        parameters["WaveSpeeds"]?.SetValue(Speeds * Calc.DegToRad);
-        parameters["ScaleInfo"]?.SetValue(ScaleInfo * new Vector4(1, 1, Calc.DegToRad, Calc.DegToRad));
-        parameters["RotInfo"]?.SetValue(RotationInfo * Calc.DegToRad);
-        parameters["waveFix"]?.SetValue(WaveFix);
+    }
+
+    public void Reset()
+    {
+        Effect = EffectFromCache(EffectId);
+        //EffectParameterCollection parameters = Effect.Parameters;
+
     }
 
     public override void Update(Scene scene)
@@ -209,6 +244,12 @@ public class NewDistortedParallax : Backdrop
     {
         base.BeforeRender(scene);
 
+
+
+    }
+
+    public override void Render(Scene scene)
+    {
         GraphicsDevice graphicsDevice = Draw.SpriteBatch.GraphicsDevice;
 
         //BlendState blend = graphicsDevice.BlendState;
@@ -233,6 +274,21 @@ public class NewDistortedParallax : Backdrop
         }
 
         EffectParameterCollection parameters = Effect.Parameters;
+
+        parameters["textureSize"]?.SetValue(new Vector2(Texture.Width, Texture.Height));
+        parameters["offset"]?.SetValue(Position);
+        parameters["loopMul"]?.SetValue(new Vector2(LoopX ? 1 : 0, LoopY ? 1 : 0));
+        parameters["Speed"]?.SetValue(Speed);
+        parameters["Scroll"]?.SetValue(Scroll);
+        parameters["flipInfo"]?.SetValue(new Vector4(FlipX ? -1 : 1, FlipY ? -1 : 1, FlipX ? 1 : 0, FlipY ? 1 : 0));
+        parameters["Amplitudes"]?.SetValue(Amplitudes);
+        parameters["Periods"]?.SetValue(Periods * (float)(1 / Math.PI));
+        parameters["Offsets"]?.SetValue(Offsets * Calc.DegToRad);
+        parameters["WaveSpeeds"]?.SetValue(Speeds * Calc.DegToRad);
+        parameters["ScaleInfo"]?.SetValue(ScaleInfo * new Vector4(1, 1, Calc.DegToRad, Calc.DegToRad));
+        parameters["RotInfo"]?.SetValue(RotationInfo * Calc.DegToRad);
+        parameters["waveFix"]?.SetValue(WaveFix);
+
         parameters["Dimensions"]?.SetValue(new Vector2(Buffer.Width, Buffer.Height));
         parameters["tint"]?.SetValue(col.ToVector4());
         parameters["DeltaTime"]?.SetValue(Engine.DeltaTime);
@@ -241,14 +297,7 @@ public class NewDistortedParallax : Backdrop
         parameters["TransformMatrix"]?.SetValue(halfPixelOffset * projection);
         parameters["ViewMatrix"]?.SetValue(Matrix.Identity);
 
-        graphicsDevice.SetRenderTarget(Buffer);
-        graphicsDevice.Clear(Color.Transparent);
-
-    }
-
-    public override void Render(Scene scene)
-    {
-        GraphicsDevice graphicsDevice = Draw.SpriteBatch.GraphicsDevice;
+        //GraphicsDevice graphicsDevice = Draw.SpriteBatch.GraphicsDevice;
         //BlendState prevBlendState = graphicsDevice.BlendState;
 
         Renderer.EndSpritebatch();
@@ -269,6 +318,37 @@ public class NewDistortedParallax : Backdrop
 
         graphicsDevice.Textures[2] = t;
         graphicsDevice.SamplerStates[2] = s;
+    }
+
+    public static void Load()
+    {
+        Everest.Content.OnUpdate += Content_OnUpdate;
+    }
+
+    private static void Content_OnUpdate(ModAsset from, ModAsset to)
+    {
+        if (to is not null)
+        {
+            string path = Everest.Content.GuessType(to.PathVirtual, out Type t, out string f);
+            if (f == "cso")
+            {
+                EffectCache.Remove(path[8..^4]);
+
+                if(Engine.Scene is Level level)
+                {
+                    List<NewDistortedParallax> d = [.. level.Background.GetEach<NewDistortedParallax>()];
+                    foreach (NewDistortedParallax parallax in d)
+                    {
+                        parallax.Reset();
+                    }
+                }
+            }
+        }
+    }
+
+    public static void Unload()
+    {
+        Everest.Content.OnUpdate -= Content_OnUpdate;
     }
 }
 

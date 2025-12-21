@@ -69,6 +69,9 @@ public static class ObfuscatedFancyText
 
         ILLabel @continue = null;
 
+        //Logger.Debug(LogId, "Hi! I'm just an innocent little IL hook! Please don't kill me!");
+        
+
         // pain
         if (!cursor.TryGotoNextBestFit(
             MoveType.AfterLabel,
@@ -85,6 +88,7 @@ public static class ObfuscatedFancyText
         cursor.EmitLdloc(7);
         cursor.EmitDelegate(TryMatchObfuscatedCommand);
         cursor.EmitBrtrue(@continue);
+        //Logger.Debug(LogId, il.ToString());
     }
 
     /// <summary>
