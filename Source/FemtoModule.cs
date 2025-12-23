@@ -244,7 +244,7 @@ public class FemtoModule : EverestModule
         LimitRefill.Load();
         BoundRefill.Load();
         GenericSmwBlock.Load();
-        //ObfuscatedFancyText.Load();
+        ObfuscatedFancyText.Load();
         NewDistortedParallax.Load();
     }
 
@@ -282,7 +282,7 @@ public class FemtoModule : EverestModule
         LimitRefill.Unload();
         BoundRefill.Unload();
         GenericSmwBlock.Unload();
-        //ObfuscatedFancyText.Unload();
+        ObfuscatedFancyText.Unload();
         NewDistortedParallax.Unload();
     }
 
