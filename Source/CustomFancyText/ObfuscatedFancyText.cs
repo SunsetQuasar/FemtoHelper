@@ -69,12 +69,12 @@ public static class ObfuscatedFancyText
 
         ILLabel @continue = null;
 
-        //Logger.Debug(LogId, "Hi! I'm just an innocent little IL hook! Please don't kill me!");
-        
-
         // pain
+        // need to match the br too, because else prismatic's hook will throw us off
+        // once we find a match, go to the next ldloc.7 to go to the correct place
         if (!cursor.TryGotoNextBestFit(
-            MoveType.AfterLabel,
+            MoveType.Before,
+            static instr => instr.MatchBr(out _),
             static instr => instr.MatchLdloc(7),
             static instr => instr.MatchLdstr("savedata"),
             static instr => instr.MatchCallvirt<string>("Equals"),
@@ -84,11 +84,11 @@ public static class ObfuscatedFancyText
             return;
         }
 
+        cursor.GotoNext(MoveType.AfterLabel, static instr => instr.MatchLdloc(7));
         cursor.EmitLdarg0();
         cursor.EmitLdloc(7);
         cursor.EmitDelegate(TryMatchObfuscatedCommand);
         cursor.EmitBrtrue(@continue);
-        //Logger.Debug(LogId, il.ToString());
     }
 
     /// <summary>

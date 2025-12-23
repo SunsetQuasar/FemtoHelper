@@ -61,6 +61,16 @@ public class FemtoModule : EverestModule
     // Only one alive module instance can exist at any given time.
     public static FemtoModule Instance;
     public static SpriteBank FemtoSpriteBank;
+
+    /// <summary>
+    ///   FemtoHelper's root <see cref="DetourConfig"/>, used for modifying hook order.
+    /// </summary>
+    /// <remarks>
+    ///   See <a href="https://monomod.dev/docs/RuntimeDetour/Usage.html">MonoMod docs</a>
+    ///   for usage and details on how <see cref="DetourConfig"/>s affect hook ordering.
+    /// </remarks>
+    internal static DetourConfig FemtoDetourRootConfig = new(nameof(FemtoHelper));
+
     public override Type SessionType => typeof(FemtoHelperSession);
     public static FemtoHelperSession Session => (FemtoHelperSession)Instance._Session;
 
@@ -244,7 +254,7 @@ public class FemtoModule : EverestModule
         LimitRefill.Load();
         BoundRefill.Load();
         GenericSmwBlock.Load();
-        //ObfuscatedFancyText.Load();
+        ObfuscatedFancyText.Load();
         NewDistortedParallax.Load();
     }
 
@@ -282,7 +292,7 @@ public class FemtoModule : EverestModule
         LimitRefill.Unload();
         BoundRefill.Unload();
         GenericSmwBlock.Unload();
-        //ObfuscatedFancyText.Unload();
+        ObfuscatedFancyText.Unload();
         NewDistortedParallax.Unload();
     }
 
