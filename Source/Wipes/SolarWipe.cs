@@ -34,7 +34,7 @@ public class SolarWipe : ScreenWipe
     public override void Update(Scene scene)
     {
         base.Update(scene);
-        Spin += Engine.DeltaTime * SpinSpeed;
+        Spin += Engine.RawDeltaTime * SpinSpeed;
         SpinSpeed += WipeIn ? -0.2f : 0.2f;
     }
 

@@ -63,17 +63,17 @@ public class CliffhangerWipe : ScreenWipe
 		{
 			if (!WipeIn)
 			{
-				_circles[i].Delay -= Engine.DeltaTime;
+				_circles[i].Delay -= Engine.RawDeltaTime;
 				if (_circles[i].Delay <= 0f)
 				{
-					_circles[i].Radius += Engine.DeltaTime * (CircleFillSpeed / 8) + _circles[i].Radius / 7;
-					//circles[i].Angle += Engine.DeltaTime * circleSpinSpeed;
+					_circles[i].Radius += Engine.RawDeltaTime * (CircleFillSpeed / 8) + _circles[i].Radius / 7;
+					//circles[i].Angle += Engine.RawDeltaTime * circleSpinSpeed;
 				}
 			}
 			else if (_circles[i].Radius > 0f)
 			{
-				_circles[i].Radius -= Engine.DeltaTime * (CircleFillSpeed / 8) + _circles[i].Radius / 7;
-				//circles[i].Angle -= Engine.DeltaTime * circleSpinSpeed;
+				_circles[i].Radius -= Engine.RawDeltaTime * (CircleFillSpeed / 8) + _circles[i].Radius / 7;
+				//circles[i].Angle -= Engine.RawDeltaTime * circleSpinSpeed;
 			}
 			else
 			{

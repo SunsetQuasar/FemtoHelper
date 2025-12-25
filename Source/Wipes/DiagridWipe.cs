@@ -88,10 +88,10 @@ public class DiagridWipe : ScreenWipe
         base.Update(scene);
         for (int i = 0; i < _circles.Length; i++)
         {
-            _circles[i].Delay -= Engine.DeltaTime;
+            _circles[i].Delay -= Engine.RawDeltaTime;
             if (_circles[i].Delay <= 0f)
             {
-                _circles[i].Radius += Engine.DeltaTime * CircleFillSpeed;
+                _circles[i].Radius += Engine.RawDeltaTime * CircleFillSpeed;
             }
         }
     }
