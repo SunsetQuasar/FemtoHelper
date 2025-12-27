@@ -153,7 +153,6 @@ public class NewDistortedParallax : Backdrop
         }
         else
         {
-            //Console.WriteLine("yall, " + from);
             Texture2D created = GFX.Game[from].GetPaddedSubtextureCopy();
             Cache.Add(from, created);
             return created;

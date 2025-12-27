@@ -731,7 +731,6 @@ public class GenericSmwBlock : Solid
                 {
                     if (entity is Platform platform)
                     {
-                        Console.WriteLine("yo i'm " + entity.GetType().FullName);
                         platform.MoveTo(new Vector2(lerpx, lerpy));
                         //platform.Position = new Vector2(lerpx, lerpy);
                     }
