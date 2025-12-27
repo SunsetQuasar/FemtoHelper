@@ -1,6 +1,7 @@
 ﻿global using Monocle;
 global using Microsoft.Xna.Framework;
 global using Celeste.Mod.Entities;
+global using static Celeste.Mod.FemtoHelper.Utils.Util;
 
 using System;
 using MonoMod.Cil;
@@ -77,6 +78,14 @@ public class FemtoModule : EverestModule
     public FemtoModule()
     {
         Instance = this;
+
+#if DEBUG
+        // debug builds use verbose logging
+        Logger.SetLogLevel(nameof(FemtoModule), LogLevel.Verbose);
+#else
+        // release builds use info logging to reduce spam in log files
+        Logger.SetLogLevel(nameof(FemtoModule), LogLevel.Info);
+#endif
     }
 
 

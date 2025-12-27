@@ -46,6 +46,11 @@ public class Util
         }
         else return session.FancyCheckFlag(exp);
     }
+
+    public static void Log(string str, LogLevel level = LogLevel.Debug)
+    {
+        Logger.Log(level, nameof(FemtoModule), str);
+    }
 }
 
 public static class SpriteExtensions
