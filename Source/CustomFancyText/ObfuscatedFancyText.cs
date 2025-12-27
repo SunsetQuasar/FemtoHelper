@@ -15,6 +15,7 @@ public static class ObfuscatedFancyText
 
     public const string ObfuscatedCommand = "femto_obfuscated";
     public const string ObfuscatedDynDataKey = "FemtoHelper_CurrentObfuscated";
+    public const string ObfuscatedDynDataNoOrigChance = "FemtoHelper_CurrentObfuscated_NoOrigChance";
 
     /// <summary>
     ///   Characters of a <see cref="PixelFontSize"/> grouped by their width.
@@ -87,6 +88,7 @@ public static class ObfuscatedFancyText
         cursor.GotoNext(MoveType.AfterLabel, static instr => instr.MatchLdloc(7));
         cursor.EmitLdarg0();
         cursor.EmitLdloc(7);
+        cursor.EmitLdloc(8);
         cursor.EmitDelegate(TryMatchObfuscatedCommand);
         cursor.EmitBrtrue(@continue);
     }
@@ -97,13 +99,23 @@ public static class ObfuscatedFancyText
     /// <returns>
     ///   Whether the start or end marker for the obfuscated command has been matched.
     /// </returns>
-    private static bool TryMatchObfuscatedCommand(FancyText self, string text)
+    private static bool TryMatchObfuscatedCommand(FancyText self, string text, List<string> list)
     {
         DynamicData selfData = DynamicData.For(self);
+
         switch (text)
         {
             case ObfuscatedCommand:
                 selfData.Set(ObfuscatedDynDataKey, true);
+
+                float noOrigChance = 0.5f;
+
+                if(list.Count > 0 && float.TryParse(list[0], out var result))
+                {
+                    noOrigChance = result / 100f;
+                }
+
+                selfData.Set(ObfuscatedDynDataNoOrigChance, noOrigChance);
                 return true;
             case "/" + ObfuscatedCommand:
                 selfData.Set(ObfuscatedDynDataKey, false);
@@ -135,7 +147,7 @@ public static class ObfuscatedFancyText
     {
         DynamicData selfData = DynamicData.For(self);
         return selfData.Get(ObfuscatedDynDataKey) is true
-            ? ObfuscatedChar.FromChar(node)
+            ? ObfuscatedChar.FromChar(node, (float)(selfData.Get(ObfuscatedDynDataNoOrigChance) ?? 0.5f))
             : node;
     }
 
@@ -176,16 +188,23 @@ public static class ObfuscatedFancyText
     {
         private static readonly Random Rng = new();
 
+
         /// <summary>
         ///   The true character from the parsed text.
         /// </summary>
         public int ActualCharacter;
 
         /// <summary>
+        ///   The chance [0f..1f] that the original character will not be shown when printing the <see cref="ObfuscatedChar"/>.
+        /// </summary>
+        public float NoOriginalCharacterChance;
+
+        /// <summary>
         ///   Clones the passed <see cref="FancyText.Char"/> and turns it into an <see cref="ObfuscatedChar"/>.
         /// </summary>
-        internal static ObfuscatedChar FromChar(FancyText.Char character)
-            => new() {
+        internal static ObfuscatedChar FromChar(FancyText.Char character, float chance)
+            => new()
+            {
                 Index = character.Index,
                 Character = character.Character,
                 ActualCharacter = character.Character,
@@ -203,6 +222,7 @@ public static class ObfuscatedFancyText
                 Wave = character.Wave,
                 Impact = character.Impact,
                 IsPunctuation = character.IsPunctuation,
+                NoOriginalCharacterChance = chance,
             };
 
         /// <summary>
@@ -216,7 +236,18 @@ public static class ObfuscatedFancyText
 
             PrepareCharWidthMap(pixelFontSize);
 
-            Character = Rng.Choose(GetSimilarWidthChars(pixelFontSize, ActualCharacter));
+            List<int> choices = GetSimilarWidthChars(pixelFontSize, ActualCharacter);
+
+            if (Rng.Chance(1 - NoOriginalCharacterChance))
+            {
+                choices.Remove(ActualCharacter);
+                Character = Rng.Choose(choices);
+                choices.Add(ActualCharacter);
+            } 
+            else
+            {
+                Character = Rng.Choose(choices);
+            }
         }
     }
 }
