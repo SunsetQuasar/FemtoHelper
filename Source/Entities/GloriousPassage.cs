@@ -223,13 +223,20 @@ public class GloriousPassage : Entity
                 }
             }
 
-
             level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(SpawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
 
             level.Session.FirstLevel = false;
             level.Add(player);
             level.LoadLevel(Player.IntroTypes.Transition);
 
+            //handle dark-nondark room transitions
+            float lightingStart = level.Lighting.Alpha;
+            float lightingEnd = (level.DarkRoom ? level.Session.DarkRoomAlpha : (level.BaseLightingAlpha + level.Session.LightingAlphaAdd));
+            bool lightingWait = lightingStart >= level.Session.DarkRoomAlpha || lightingEnd >= level.Session.DarkRoomAlpha;
+            if ((lightingEnd != lightingStart) && lightingWait)
+            {
+                level.Lighting.Alpha = lightingEnd;
+            }
 
             player.Position = level.Session.RespawnPoint.Value;
 
