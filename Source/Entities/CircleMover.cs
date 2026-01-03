@@ -41,7 +41,7 @@ public class CircleMover : Solid
 
         public CircleMoverPathRenderer(CircleMover zipMover)
         {
-            base.Depth = 5000;
+            Depth = 5000;
             CircleMover = zipMover;
 
             from = CircleMover.centerNode - Calc.AngleToVector(CircleMover.angleStart, CircleMover.length) + new Vector2(CircleMover.Width / 2f, CircleMover.Height / 2f);
@@ -176,7 +176,7 @@ public class CircleMover : Solid
 
         Add(new Coroutine(Sequence()));
 
-        sfx.Position = new Vector2(base.Width, base.Height) / 2f;
+        sfx.Position = new Vector2(Width, Height) / 2f;
         Add(sfx);
 
         chainZipperFlag = data.Attr("chainZipperFlag", "");
@@ -254,24 +254,24 @@ public class CircleMover : Solid
         Vector2 pos = Position;
         Position += Shake;
 
-        Draw.Rect(base.X + 1f, base.Y + 1f, base.Width - 2f, base.Height - 2f, Color.Black);
+        Draw.Rect(X + 1f, Y + 1f, Width - 2f, Height - 2f, Color.Black);
 
-        for (int k = 0; (float)k + 1 < base.Width / 8f; k++)
+        for (int k = 0; (float)k + 1 < Width / 8f; k++)
         {
             float offset = Mod(4 - (k * 3) + (percent * ((k % 2) == 0 ? -1 : 1)) * 16, 8);
             chainTex.GetSubtexture(0, (int)MathF.Round(8 - offset), 8, (int)MathF.Round(offset)).Draw(new Vector2(4 + X + (float)(k * 8), Y), Vector2.Zero, Calc.HexToColor("666262"));
-            for (int l = 0; (float)l < (base.Height / 8f) - 1f; l++)
+            for (int l = 0; (float)l < (Height / 8f) - 1f; l++)
             {
                 chainTex.Draw(new Vector2(4 + X + (float)(k * 8), offset + Y + (float)(l * 8)), Vector2.Zero, Calc.HexToColor("666262"));
             }
             chainTex.GetSubtexture(0, 0, 8, (int)MathF.Round(8 - offset)).Draw(new Vector2(4 + X + (float)(k * 8), offset + Y + Height - 8), Vector2.Zero, Calc.HexToColor("666262"));
         }
 
-        for (int k = 0; (float)k < base.Width / 8f; k++)
+        for (int k = 0; (float)k < Width / 8f; k++)
         {
             float offset = Mod((k * 3) + (percent * ((k % 2) == 0 ? 1 : -1)) * 32, 8);
             chainTex.GetSubtexture(0, (int)MathF.Round(8 - offset), 8, (int)MathF.Round(offset)).Draw(new Vector2(X + (float)(k * 8), Y));
-            for (int l = 0; (float)l < (base.Height / 8f) - 1f; l++)
+            for (int l = 0; (float)l < (Height / 8f) - 1f; l++)
             {
                 chainTex.Draw(new Vector2(X + (float)(k * 8), offset + Y + (float)(l * 8)));
             }
@@ -279,15 +279,15 @@ public class CircleMover : Solid
         }
 
 
-        for (int k = 0; (float)k < base.Width / 8f; k++)
+        for (int k = 0; (float)k < Width / 8f; k++)
         {
-            for (int l = 0; (float)l < base.Height / 8f; l++)
+            for (int l = 0; (float)l < Height / 8f; l++)
             {
-                int num4 = ((k != 0) ? (((float)k != base.Width / 8f - 1f) ? 1 : 2) : 0);
-                int num5 = ((l != 0) ? (((float)l != base.Height / 8f - 1f) ? 1 : 2) : 0);
+                int num4 = ((k != 0) ? (((float)k != Width / 8f - 1f) ? 1 : 2) : 0);
+                int num5 = ((l != 0) ? (((float)l != Height / 8f - 1f) ? 1 : 2) : 0);
                 if (num4 != 1 || num5 != 1)
                 {
-                    edges[num4, num5].Draw(new Vector2(base.X + (float)(k * 8), base.Y + (float)(l * 8)));
+                    edges[num4, num5].Draw(new Vector2(X + (float)(k * 8), Y + (float)(l * 8)));
                 }
             }
         }

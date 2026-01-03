@@ -139,30 +139,30 @@ public class SwitchMovetBox : Solid
         if (dir == Vector2.UnitX)
         {
             direction = 0f;
-            position = base.CenterRight - Vector2.UnitX * 12f;
-            positionRange = Vector2.UnitY * (base.Height - 6f) * 0.5f;
-            num = (int)(base.Height / 8f) * 4;
+            position = CenterRight - Vector2.UnitX * 12f;
+            positionRange = Vector2.UnitY * (Height - 6f) * 0.5f;
+            num = (int)(Height / 8f) * 4;
         }
         else if (dir == -Vector2.UnitX)
         {
             direction = MathF.PI;
-            position = base.CenterLeft + Vector2.UnitX * 12f;
-            positionRange = Vector2.UnitY * (base.Height - 6f) * 0.5f;
-            num = (int)(base.Height / 8f) * 4;
+            position = CenterLeft + Vector2.UnitX * 12f;
+            positionRange = Vector2.UnitY * (Height - 6f) * 0.5f;
+            num = (int)(Height / 8f) * 4;
         }
         else if (dir == Vector2.UnitY)
         {
             direction = MathF.PI / 2f;
-            position = base.BottomCenter - Vector2.UnitY * 12f;
-            positionRange = Vector2.UnitX * (base.Width - 6f) * 0.5f;
-            num = (int)(base.Width / 8f) * 4;
+            position = BottomCenter - Vector2.UnitY * 12f;
+            positionRange = Vector2.UnitX * (Width - 6f) * 0.5f;
+            num = (int)(Width / 8f) * 4;
         }
         else
         {
             direction = -MathF.PI / 2f;
-            position = base.TopCenter + Vector2.UnitY * 12f;
-            positionRange = Vector2.UnitX * (base.Width - 6f) * 0.5f;
-            num = (int)(base.Width / 8f) * 4;
+            position = TopCenter + Vector2.UnitY * 12f;
+            positionRange = Vector2.UnitX * (Width - 6f) * 0.5f;
+            num = (int)(Width / 8f) * 4;
         }
         num += 2;
         SceneAs<Level>().ParticlesBG.Emit(PSmash, num, position, positionRange, -direction);
@@ -249,7 +249,7 @@ public class SwitchMovetPathRenderer : Entity
     public Player Player;
     public SwitchMovetPathRenderer(SwitchMovet parent) : base()
     {
-        base.Depth = 5000;
+        Depth = 5000;
         this.Parent = parent;
         Timer = Calc.Random.NextFloat(MathF.Tau);
     }
@@ -433,7 +433,7 @@ public class SwitchMovet : Solid
     public override void Render()
     {
         Vector2 position = Position;
-        Position += base.Shake;
+        Position += Shake;
         base.Render();
 
         Color trueGemColor = gemColor;
@@ -492,38 +492,38 @@ public class SwitchMovet : Solid
     }
     private void ScrapeParticlesCheck(Vector2 to)
     {
-        if (!base.Scene.OnInterval(0.03f))
+        if (!Scene.OnInterval(0.03f))
         {
             return;
         }
-        bool flag = to.Y != base.ExactPosition.Y;
-        bool flag2 = to.X != base.ExactPosition.X;
+        bool flag = to.Y != ExactPosition.Y;
+        bool flag2 = to.X != ExactPosition.X;
         if (flag && !flag2)
         {
-            int num = Math.Sign(to.Y - base.ExactPosition.Y);
-            Vector2 vector = ((num != 1) ? base.TopLeft : base.BottomLeft);
+            int num = Math.Sign(to.Y - ExactPosition.Y);
+            Vector2 vector = ((num != 1) ? TopLeft : BottomLeft);
             int num2 = 4;
             if (num == 1)
             {
-                num2 = Math.Min((int)base.Height - 12, 20);
+                num2 = Math.Min((int)Height - 12, 20);
             }
-            int num3 = (int)base.Height;
+            int num3 = (int)Height;
             if (num == -1)
             {
-                num3 = Math.Max(16, (int)base.Height - 16);
+                num3 = Math.Max(16, (int)Height - 16);
             }
-            if (base.Scene.CollideCheck<Solid>(vector + new Vector2(-2f, num * -2)))
+            if (Scene.CollideCheck<Solid>(vector + new Vector2(-2f, num * -2)))
             {
                 for (int i = num2; i < num3; i += 8)
                 {
-                    SceneAs<Level>().ParticlesFG.Emit(PScrape, base.TopLeft + new Vector2(0f, (float)i + (float)num * 2f), (num == 1) ? (-MathF.PI / 4f) : (MathF.PI / 4f));
+                    SceneAs<Level>().ParticlesFG.Emit(PScrape, TopLeft + new Vector2(0f, (float)i + (float)num * 2f), (num == 1) ? (-MathF.PI / 4f) : (MathF.PI / 4f));
                 }
             }
-            if (base.Scene.CollideCheck<Solid>(vector + new Vector2(base.Width + 2f, num * -2)))
+            if (Scene.CollideCheck<Solid>(vector + new Vector2(Width + 2f, num * -2)))
             {
                 for (int j = num2; j < num3; j += 8)
                 {
-                    SceneAs<Level>().ParticlesFG.Emit(PScrape, base.TopRight + new Vector2(-1f, (float)j + (float)num * 2f), (num == 1) ? (MathF.PI * -3f / 4f) : (MathF.PI * 3f / 4f));
+                    SceneAs<Level>().ParticlesFG.Emit(PScrape, TopRight + new Vector2(-1f, (float)j + (float)num * 2f), (num == 1) ? (MathF.PI * -3f / 4f) : (MathF.PI * 3f / 4f));
                 }
             }
         }
@@ -533,30 +533,30 @@ public class SwitchMovet : Solid
             {
                 return;
             }
-            int num4 = Math.Sign(to.X - base.ExactPosition.X);
-            Vector2 vector2 = ((num4 != 1) ? base.TopLeft : base.TopRight);
+            int num4 = Math.Sign(to.X - ExactPosition.X);
+            Vector2 vector2 = ((num4 != 1) ? TopLeft : TopRight);
             int num5 = 4;
             if (num4 == 1)
             {
-                num5 = Math.Min((int)base.Width - 12, 20);
+                num5 = Math.Min((int)Width - 12, 20);
             }
-            int num6 = (int)base.Width;
+            int num6 = (int)Width;
             if (num4 == -1)
             {
-                num6 = Math.Max(16, (int)base.Width - 16);
+                num6 = Math.Max(16, (int)Width - 16);
             }
-            if (base.Scene.CollideCheck<Solid>(vector2 + new Vector2(num4 * -2, -2f)))
+            if (Scene.CollideCheck<Solid>(vector2 + new Vector2(num4 * -2, -2f)))
             {
                 for (int k = num5; k < num6; k += 8)
                 {
-                    SceneAs<Level>().ParticlesFG.Emit(PScrape, base.TopLeft + new Vector2((float)k + (float)num4 * 2f, -1f), (num4 == 1) ? (MathF.PI * 3f / 4f) : (MathF.PI / 4f));
+                    SceneAs<Level>().ParticlesFG.Emit(PScrape, TopLeft + new Vector2((float)k + (float)num4 * 2f, -1f), (num4 == 1) ? (MathF.PI * 3f / 4f) : (MathF.PI / 4f));
                 }
             }
-            if (base.Scene.CollideCheck<Solid>(vector2 + new Vector2(num4 * -2, base.Height + 2f)))
+            if (Scene.CollideCheck<Solid>(vector2 + new Vector2(num4 * -2, Height + 2f)))
             {
                 for (int l = num5; l < num6; l += 8)
                 {
-                    SceneAs<Level>().ParticlesFG.Emit(PScrape, base.BottomLeft + new Vector2((float)l + (float)num4 * 2f, 0f), (num4 == 1) ? (MathF.PI * -3f / 4f) : (-MathF.PI / 4f));
+                    SceneAs<Level>().ParticlesFG.Emit(PScrape, BottomLeft + new Vector2((float)l + (float)num4 * 2f, 0f), (num4 == 1) ? (MathF.PI * -3f / 4f) : (-MathF.PI / 4f));
                 }
             }
         }

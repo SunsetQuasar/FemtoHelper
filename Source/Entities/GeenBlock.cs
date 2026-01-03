@@ -163,13 +163,13 @@ public class GeenBlock : Solid
     {
         Vector2 pos = Position;
         Position += offset;
-        for (int k = 0; (float)k < base.Width / 8f; k++)
+        for (int k = 0; (float)k < Width / 8f; k++)
         {
-            for (int l = 0; (float)l < base.Height / 8f; l++)
+            for (int l = 0; (float)l < Height / 8f; l++)
             {
-                int num4 = (int)(base.Width / 8f) == 1 ? 3 : ((k != 0) ? (((float)k != base.Width / 8f - 1f) ? 1 : 2) : 0);
-                int num5 = (int)(base.Height / 8f) == 1 ? 3 : ((l != 0) ? (((float)l != base.Height / 8f - 1f) ? 1 : 2) : 0);
-                edges[num4, num5].Draw(new Vector2(base.X + (float)(k * 8), base.Y + (float)(l * 8)), Vector2.Zero, color);
+                int num4 = (int)(Width / 8f) == 1 ? 3 : ((k != 0) ? (((float)k != Width / 8f - 1f) ? 1 : 2) : 0);
+                int num5 = (int)(Height / 8f) == 1 ? 3 : ((l != 0) ? (((float)l != Height / 8f - 1f) ? 1 : 2) : 0);
+                edges[num4, num5].Draw(new Vector2(X + (float)(k * 8), Y + (float)(l * 8)), Vector2.Zero, color);
             }
         }
         Position = pos;

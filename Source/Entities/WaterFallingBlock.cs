@@ -181,11 +181,11 @@ public class WaterFallingBlock : GenericWaterBlock
 
     private void ShakeSfx()
     {
-        Audio.Play("event:/FemtoHelper/water_fallblock_first_shake", base.Center);
+        Audio.Play("event:/FemtoHelper/water_fallblock_first_shake", Center);
     }
 
     private void ImpactSfx()
     {
-        Audio.Play("event:/FemtoHelper/water_fallblock_first_impact", base.BottomCenter);
+        Audio.Play("event:/FemtoHelper/water_fallblock_first_impact", BottomCenter);
     }
 }

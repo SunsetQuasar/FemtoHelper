@@ -155,10 +155,10 @@ public static class PlutoniumTextNodes
                     result += level.Session.GetFlag(f.Key) ? f.StrIfOn : f.StrIfOff;
                     break;
                 case ExpressionAsFlag ef:
-                    result += Util.EvaluateExpressionAsBool(ef.Exp, level.Session) ? ef.StrIfOn : ef.StrIfOff;
+                    result += EvaluateExpressionAsBool(ef.Exp, level.Session) ? ef.StrIfOn : ef.StrIfOff;
                     break;
                 case ExpressionAsCounter ec:
-                    result += Util.EvaluateExpressionAsInt(ec.Exp, level.Session).ToString();
+                    result += EvaluateExpressionAsInt(ec.Exp, level.Session).ToString();
                     break;
             }
         }

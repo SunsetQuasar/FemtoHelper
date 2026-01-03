@@ -40,7 +40,7 @@ public class WaterCircleMover : GenericWaterBlock
 
         public WaterCircleMoverPathRenderer(WaterCircleMover zipMover)
         {
-            base.Depth = 5000;
+            Depth = 5000;
             CircleMover = zipMover;
 
             from = CircleMover.centerNode - Calc.AngleToVector(CircleMover.angleStart, CircleMover.length) + new Vector2(CircleMover.Width / 2f, CircleMover.Height / 2f);
@@ -174,7 +174,7 @@ public class WaterCircleMover : GenericWaterBlock
 
         Add(new Coroutine(Sequence()));
 
-        sfx.Position = new Vector2(base.Width, base.Height) / 2f;
+        sfx.Position = new Vector2(Width, Height) / 2f;
         Add(sfx);
 
         chainZipperFlag = data.Attr("chainZipperFlag", "");

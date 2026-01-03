@@ -68,14 +68,14 @@ public class OcularBarrier : Solid
                 spikes.DisabledColor = Invert ? Color4 : Color2;
                 spikes.VisibleWhenDisabled = true;
                 spikes.SetSpikeColor(ReturnColor);
-                spikes.Depth = base.Depth + 1;
+                spikes.Depth = Depth + 1;
             }
             Spring spring = staticMover.Entity as Spring;
             if (spring != null)
             {
                 spring.DisabledColor = Invert ? Color4 : Color2;
                 spring.VisibleWhenDisabled = true;
-                spring.Depth = base.Depth + 1;
+                spring.Depth = Depth + 1;
             }
         }
     }
@@ -107,7 +107,7 @@ public class OcularBarrier : Solid
         Depth = -9000;
         foreach (StaticMover staticMover in staticMovers)
         {
-            staticMover.Entity.Depth = base.Depth + 1;
+            staticMover.Entity.Depth = Depth + 1;
         }
     }
 
@@ -117,7 +117,7 @@ public class OcularBarrier : Solid
         Depth = 100;
         foreach (StaticMover staticMover in staticMovers)
         {
-            staticMover.Entity.Depth = base.Depth + 1;
+            staticMover.Entity.Depth = Depth + 1;
         }
     }
 

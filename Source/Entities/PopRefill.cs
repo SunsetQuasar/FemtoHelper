@@ -49,7 +49,7 @@ public class PopRefill : Entity
     public PopRefill(Vector2 position, bool twoDashes, bool oneUse, float spawnTime)
         : base(position)
     {
-        base.Collider = new Hitbox(16f, 16f, -8f, -8f);
+        Collider = new Hitbox(16f, 16f, -8f, -8f);
         Add(new PlayerCollider(OnPlayer));
         this.twoDashes = twoDashes;
         this.oneUse = oneUse;
@@ -92,7 +92,7 @@ public class PopRefill : Entity
         Add(sine = new SineWave(0.6f, 0f));
         sine.Randomize();
         UpdateY();
-        base.Depth = -100;
+        Depth = -100;
         this.SpawnTime = spawnTime;
     }
 
@@ -154,14 +154,14 @@ public class PopRefill : Entity
                 Respawn();
             }
         }
-        else if (base.Scene.OnInterval(0.1f))
+        else if (Scene.OnInterval(0.1f))
         {
             level.ParticlesFG.Emit(pGlow, 1, Position, Vector2.One * 5f);
         }
         UpdateY();
         light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
         bloom.Alpha = light.Alpha * 0.8f;
-        if (base.Scene.OnInterval(2f) && sprite.Visible)
+        if (Scene.OnInterval(2f) && sprite.Visible)
         {
             flash.Play("flash", restart: true);
             flash.Visible = true;
@@ -177,7 +177,7 @@ public class PopRefill : Entity
             Collidable = true;
             sprite.Visible = true;
             outline.Visible = false;
-            base.Depth = -100;
+            Depth = -100;
             wiggler.Start();
             Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_return" : "event:/game/general/diamond_return", Position);
             level.ParticlesFG.Emit(pRegen, 16, Position, Vector2.One * 2f);
@@ -220,7 +220,7 @@ public class PopRefill : Entity
     
     private IEnumerator RefillRoutine(Player player)
     {
-        global::Celeste.Celeste.Freeze(0.05f);
+        Celeste.Freeze(0.05f);
         yield return null;
         level.Shake();
         Sprite obj = sprite;

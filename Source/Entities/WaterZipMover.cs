@@ -42,7 +42,7 @@ public class WaterZipMover : GenericWaterBlock
 
         public WaterZipMoverPathRenderer(WaterZipMover zipMover, string path)
         {
-            base.Depth = 5000;
+            Depth = 5000;
             WaterZipMover = zipMover;
             from = WaterZipMover.start + new Vector2(WaterZipMover.Width / 2f, WaterZipMover.Height / 2f);
             to = WaterZipMover.target + new Vector2(WaterZipMover.Width / 2f, WaterZipMover.Height / 2f);
@@ -143,7 +143,7 @@ public class WaterZipMover : GenericWaterBlock
         start = data.Position + offset;
         target = data.Nodes[0] + offset;
         Add(new Coroutine(Sequence()));
-        sfx.Position = new Vector2(base.Width, base.Height) / 2f;
+        sfx.Position = new Vector2(Width, Height) / 2f;
         Add(sfx);
 
         behavior = data.Enum("behavior", Behaviors.Default);

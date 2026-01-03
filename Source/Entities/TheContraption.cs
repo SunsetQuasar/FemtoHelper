@@ -41,9 +41,9 @@ public class TheContraption : Actor
         public ContraptionDebris()
             : base(Vector2.Zero)
         {
-            base.Collider = new Hitbox(4f, 4f, -2f, -2f);
-            base.Tag = Tags.Persistent;
-            base.Depth = 2000;
+            Collider = new Hitbox(4f, 4f, -2f, -2f);
+            Tag = Tags.Persistent;
+            Depth = 2000;
             Add(image = new Image(null));
             collideH = OnCollideH;
             collideV = OnCollideV;
@@ -290,7 +290,7 @@ public class TheContraption : Actor
         Depth = -5;
         Child = new ChildSolid(this, Position, data.Width, data.Height);
         Collider = new Hitbox(data.Width, data.Height);
-        Collider.Position = new Vector2((0f - base.Width) / 2f, 0f - base.Height);
+        Collider.Position = new Vector2((0f - Width) / 2f, 0f - Height);
         Add(Hold = new Holdable(0.3f)
         {
             PickupCollider = new Hitbox(Width, 8, -Width / 2, 0),
@@ -371,13 +371,13 @@ public class TheContraption : Actor
     {
         Vector2 position = Position;
         Position = Child.TopLeft + Child.Shake;
-        for (int k = 0; (float)k < base.Width / 8f; k++)
+        for (int k = 0; (float)k < Width / 8f; k++)
         {
-            for (int l = 0; (float)l < base.Height / 8f; l++)
+            for (int l = 0; (float)l < Height / 8f; l++)
             {
-                int num4 = (int)(base.Width / 8f) == 1 ? 3 : ((k != 0) ? (((float)k != base.Width / 8f - 1f) ? 1 : 2) : 0);
-                int num5 = (int)(base.Height / 8f) == 1 ? 3 : ((l != 0) ? (((float)l != base.Height / 8f - 1f) ? 1 : 2) : 0);
-                edges[num4, num5].Draw(new Vector2(base.X + (float)(k * 8), base.Y + (float)(l * 8)));
+                int num4 = (int)(Width / 8f) == 1 ? 3 : ((k != 0) ? (((float)k != Width / 8f - 1f) ? 1 : 2) : 0);
+                int num5 = (int)(Height / 8f) == 1 ? 3 : ((l != 0) ? (((float)l != Height / 8f - 1f) ? 1 : 2) : 0);
+                edges[num4, num5].Draw(new Vector2(X + (float)(k * 8), Y + (float)(l * 8)));
             }
         }
 
@@ -455,9 +455,9 @@ public class TheContraption : Actor
         Collidable = false;
         Child.Collidable = false;
         data.Pusher.Collidable = true;
-        for (int i = 0; i <= Math.Max(3, (int)base.Width / 2); i++)
+        for (int i = 0; i <= Math.Max(3, (int)Width / 2); i++)
         {
-            for (int j = 0; j <= Math.Max(3, (int)base.Height / 2); j++)
+            for (int j = 0; j <= Math.Max(3, (int)Height / 2); j++)
             {
                 if (i == 0 && j == 0)
                 {
@@ -493,9 +493,9 @@ public class TheContraption : Actor
         bool collidable2 = Child.Collidable;
         Collidable = false;
         Child.Collidable = false;
-        for (int i = 0; i <= Math.Max(3, (int)base.Width); i++)
+        for (int i = 0; i <= Math.Max(3, (int)Width); i++)
         {
-            for (int j = 0; j <= Math.Max(3, (int)base.Height); j++)
+            for (int j = 0; j <= Math.Max(3, (int)Height); j++)
             {
                 if (i == 0 && j == 0)
                 {
@@ -525,9 +525,9 @@ public class TheContraption : Actor
 
     public void Explode()
     {
-        for (int i = 0; (float)i < base.Width / 8f; i++)
+        for (int i = 0; (float)i < Width / 8f; i++)
         {
-            for (int j = 0; (float)j < base.Height / 8f; j++)
+            for (int j = 0; (float)j < Height / 8f; j++)
             {
                 bool flag = true;
                 if (reducedDebris)
@@ -538,44 +538,44 @@ public class TheContraption : Actor
                     }
                 } 
 
-                if (flag) base.Scene.Add(Engine.Pooler.Create<ContraptionDebris>().Init(TopLeft + new Vector2(4 + i * 8, 4 + j * 8), $"{spritePath}debris", true).BlastFrom(Center));
+                if (flag) Scene.Add(Engine.Pooler.Create<ContraptionDebris>().Init(TopLeft + new Vector2(4 + i * 8, 4 + j * 8), $"{spritePath}debris", true).BlastFrom(Center));
             }
         }
-        Collider collider = base.Collider;
-        base.Collider = new Hitbox(collider.Width + 48, collider.Height + 48, collider.Left - 24, collider.Top - 24);
+        Collider collider = Collider;
+        Collider = new Hitbox(collider.Width + 48, collider.Height + 48, collider.Left - 24, collider.Top - 24);
         Audio.Play("event:/new_content/game/10_farewell/puffer_splode", Position);
         Player player = CollideFirst<Player>();
-        if (player != null && !base.Scene.CollideCheck<Solid>(Position, player.Center))
+        if (player != null && !Scene.CollideCheck<Solid>(Position, player.Center))
         {
             player.ExplodeLaunch(Position, snapUp: false, sidesOnly: true);
         }
         TheoCrystal theoCrystal = CollideFirst<TheoCrystal>();
-        if (theoCrystal != null && !base.Scene.CollideCheck<Solid>(Position, theoCrystal.Center))
+        if (theoCrystal != null && !Scene.CollideCheck<Solid>(Position, theoCrystal.Center))
         {
             theoCrystal.ExplodeLaunch(Position);
         }
-        foreach (TempleCrackedBlock entity in base.Scene.Tracker.GetEntities<TempleCrackedBlock>())
+        foreach (TempleCrackedBlock entity in Scene.Tracker.GetEntities<TempleCrackedBlock>())
         {
             if (CollideCheck(entity))
             {
                 entity.Break(Position);
             }
         }
-        foreach (TouchSwitch entity2 in base.Scene.Tracker.GetEntities<TouchSwitch>())
+        foreach (TouchSwitch entity2 in Scene.Tracker.GetEntities<TouchSwitch>())
         {
             if (CollideCheck(entity2))
             {
                 entity2.TurnOn();
             }
         }
-        foreach (FloatingDebris entity3 in base.Scene.Tracker.GetEntities<FloatingDebris>())
+        foreach (FloatingDebris entity3 in Scene.Tracker.GetEntities<FloatingDebris>())
         {
             if (CollideCheck(entity3))
             {
                 entity3.OnExplode(Position);
             }
         }
-        base.Collider = collider;
+        Collider = collider;
         Level level = SceneAs<Level>();
         level.Shake();
         level.Displacement.AddBurst(Position, 0.4f, 12f, 36f, 0.5f);
@@ -583,7 +583,7 @@ public class TheContraption : Actor
         level.Displacement.AddBurst(Position, 0.4f, 36f, 60f, 0.5f);
         for (float num = 0f; num < MathF.PI * 2f; num += 0.17453292f)
         {
-            Vector2 position = base.Center + Calc.AngleToVector(num + Calc.Random.Range(-MathF.PI / 90f, MathF.PI / 90f), Calc.Random.Range(12, 18));
+            Vector2 position = Center + Calc.AngleToVector(num + Calc.Random.Range(-MathF.PI / 90f, MathF.PI / 90f), Calc.Random.Range(12, 18));
             level.Particles.Emit(Seeker.P_Regen, position, num);
         }
 
@@ -707,7 +707,7 @@ public class TheContraption : Actor
 
                     float target2 = ((!OnGround(Position + Vector2.UnitX * 3f)) ? 20f : (OnGround(Position - Vector2.UnitX * 3f) ? 0f : (-20f)));
                     speed.X = Calc.Approach(speed.X, target2, 800f * Engine.DeltaTime);
-                    Vector2 liftSpeed = base.LiftSpeed;
+                    Vector2 liftSpeed = LiftSpeed;
                     if (liftSpeed == Vector2.Zero && prevLiftSpeed != Vector2.Zero)
                     {
                         speed.Y = prevLiftSpeed.Y;
@@ -761,25 +761,25 @@ public class TheContraption : Actor
                 Move(speed * Engine.DeltaTime);
 
 
-                if (base.Left < (float)level.Bounds.Left)
+                if (Left < (float)level.Bounds.Left)
                 {
-                    base.Left = level.Bounds.Left;
+                    Left = level.Bounds.Left;
                     Child.MoveToX(Position.X);
                     OnCollideH(new CollisionData
                     {
                         Direction = -Vector2.UnitX
                     });
                 }
-                else if (base.Right > (float)level.Bounds.Right)
+                else if (Right > (float)level.Bounds.Right)
                 {
-                    base.Right = level.Bounds.Right;
+                    Right = level.Bounds.Right;
                     Child.MoveToY(Position.Y);
                     OnCollideH(new CollisionData
                     {
                         Direction = Vector2.UnitX
                     });
                 }
-                else if (base.Top > (float)(level.Bounds.Bottom + 16))
+                else if (Top > (float)(level.Bounds.Bottom + 16))
                 {
                     Die();
                     return;

@@ -521,7 +521,7 @@ public class SmwShell : Actor
         hold.cannotHoldTimer = 0.02f;
         ChangeSprite("kicked");
         Audio.Play($"{audioPath}shellkick", Center);
-        base.LiftSpeed = prevLiftSpeed = Vector2.Zero;
+        LiftSpeed = prevLiftSpeed = Vector2.Zero;
     }
 
     private void OnClipDeath(Vector2 force)
@@ -624,23 +624,23 @@ public class SmwShell : Actor
         else
         {
             Level level = Scene as Level;
-            if (base.Left < (float)level.Bounds.Left)
+            if (Left < (float)level.Bounds.Left)
             {
-                base.Left = level.Bounds.Left;
+                Left = level.Bounds.Left;
                 OnCollideH(new CollisionData
                 {
                     Direction = -Vector2.UnitX
                 });
             }
-            else if (base.Right > (float)level.Bounds.Right)
+            else if (Right > (float)level.Bounds.Right)
             {
-                base.Right = level.Bounds.Right;
+                Right = level.Bounds.Right;
                 OnCollideH(new CollisionData
                 {
                     Direction = Vector2.UnitX
                 });
             }
-            else if (base.Top > (float)(level.Bounds.Bottom + 16))
+            else if (Top > (float)(level.Bounds.Bottom + 16))
             {
                 RemoveSelf();
                 return;
@@ -684,7 +684,7 @@ public class SmwShell : Actor
                 {
                     float target = (!OnGround(Position + Vector2.UnitX * 3f)) ? 20f : (OnGround(Position - Vector2.UnitX * 3f) ? 0f : (-20f));
                     if (state != States.Kicked) speed.X = Calc.Approach(speed.X, target, groundFriction * Engine.DeltaTime);
-                    Vector2 liftSpeed = base.LiftSpeed;
+                    Vector2 liftSpeed = LiftSpeed;
                     if (liftSpeed == Vector2.Zero && prevLiftSpeed != Vector2.Zero)
                     {
                         speed.Y = prevLiftSpeed.Y;
@@ -737,7 +737,7 @@ public class SmwShell : Actor
             MoveV(speed.Y * Engine.DeltaTime, onCollideV);
             if (state != States.Dropped || idleActivateTouchSwitches)
             {
-                foreach (TouchSwitch entity2 in base.Scene.Tracker.GetEntities<TouchSwitch>())
+                foreach (TouchSwitch entity2 in Scene.Tracker.GetEntities<TouchSwitch>())
                 {
                     if (CollideCheck(entity2))
                     {
@@ -913,7 +913,7 @@ public class SmwShell : Actor
 
     private Vector2 PlatformAdd(int num)
     {
-        return new Vector2(-12 + num, 2 + (int)Math.Round(Math.Sin(base.Scene.TimeActive + (float)num * 0.2f) * 1.7999999523162842));
+        return new Vector2(-12 + num, 2 + (int)Math.Round(Math.Sin(Scene.TimeActive + (float)num * 0.2f) * 1.7999999523162842));
     }
 
     private Color PlatformColor(int num)

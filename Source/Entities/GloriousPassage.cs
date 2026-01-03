@@ -76,7 +76,7 @@ public class GloriousPassage : Entity
 
     public void OnPlayer(Player player)
     {
-        if (Simple && !Done && Util.EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
+        if (Simple && !Done && EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
         {
             Add(new Coroutine(Routine(player)));
             return;
@@ -87,7 +87,7 @@ public class GloriousPassage : Entity
 
     public override void Update()
     {
-        if (!Util.EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
+        if (!EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
         {
             if(Talk != null && Talk.UI != null)
             {
@@ -289,7 +289,7 @@ public class GloriousPassage : Entity
 
     public override void Render()
     {
-        if (!Util.EvaluateExpressionAsBoolOrFancyFlag(visibilityFlag, SceneAs<Level>().Session)) return;
+        if (!EvaluateExpressionAsBoolOrFancyFlag(visibilityFlag, SceneAs<Level>().Session)) return;
         base.Render();
         if (Simple) return;
         if (Done)

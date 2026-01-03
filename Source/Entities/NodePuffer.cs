@@ -107,7 +107,7 @@ public class NodePuffer : Entity
     public NodePuffer(Vector2 position, bool faceRight, float speed, Color col1, Color col2, Vector2[] nodes)
         : base(position)
     {
-        base.Collider = new Hitbox(14f, 12f, -7f, -7f);
+        Collider = new Hitbox(14f, 12f, -7f, -7f);
         Add(new PlayerCollider(OnPlayer));
         Add(sprite = GFX.SpriteBank.Create("pufferFish"));
         sprite.Play("idle");
@@ -246,42 +246,42 @@ public class NodePuffer : Entity
 
     private void Explode()
     {
-        Collider collider = base.Collider;
-        base.Collider = pushRadius;
+        Collider collider = Collider;
+        Collider = pushRadius;
         Audio.Play("event:/new_content/game/10_farewell/puffer_splode", Position);
         sprite.Play("explode");
         Player player = CollideFirst<Player>();
-        if (player != null && !base.Scene.CollideCheck<Solid>(Position, player.Center))
+        if (player != null && !Scene.CollideCheck<Solid>(Position, player.Center))
         {
             player.ExplodeLaunch(Position, snapUp: false, sidesOnly: true);
         }
         TheoCrystal theoCrystal = CollideFirst<TheoCrystal>();
-        if (theoCrystal != null && !base.Scene.CollideCheck<Solid>(Position, theoCrystal.Center))
+        if (theoCrystal != null && !Scene.CollideCheck<Solid>(Position, theoCrystal.Center))
         {
             theoCrystal.ExplodeLaunch(Position);
         }
-        foreach (TempleCrackedBlock entity in base.Scene.Tracker.GetEntities<TempleCrackedBlock>())
+        foreach (TempleCrackedBlock entity in Scene.Tracker.GetEntities<TempleCrackedBlock>())
         {
             if (CollideCheck(entity))
             {
                 entity.Break(Position);
             }
         }
-        foreach (TouchSwitch entity2 in base.Scene.Tracker.GetEntities<TouchSwitch>())
+        foreach (TouchSwitch entity2 in Scene.Tracker.GetEntities<TouchSwitch>())
         {
             if (CollideCheck(entity2))
             {
                 entity2.TurnOn();
             }
         }
-        foreach (FloatingDebris entity3 in base.Scene.Tracker.GetEntities<FloatingDebris>())
+        foreach (FloatingDebris entity3 in Scene.Tracker.GetEntities<FloatingDebris>())
         {
             if (CollideCheck(entity3))
             {
                 entity3.OnExplode(Position);
             }
         }
-        base.Collider = collider;
+        Collider = collider;
         Level level = SceneAs<Level>();
         level.Shake();
         level.Displacement.AddBurst(Position, 0.4f, 12f, 36f, 0.5f);
@@ -289,7 +289,7 @@ public class NodePuffer : Entity
         level.Displacement.AddBurst(Position, 0.4f, 36f, 60f, 0.5f);
         for (float num = 0f; num < MathF.PI * 2f; num += 0.17453292f)
         {
-            Vector2 position = base.Center + Calc.AngleToVector(num + Calc.Random.Range(-MathF.PI / 90f, MathF.PI / 90f), Calc.Random.Range(12, 18));
+            Vector2 position = Center + Calc.AngleToVector(num + Calc.Random.Range(-MathF.PI / 90f, MathF.PI / 90f), Calc.Random.Range(12, 18));
             level.Particles.Emit(Seeker.P_Regen, position, num);
         }
     }
@@ -341,16 +341,16 @@ public class NodePuffer : Entity
         {
             bool flag2 = false;
             Vector2 vector = lastPlayerPos;
-            if (vector.Y < base.Y)
+            if (vector.Y < Y)
             {
-                vector.Y = base.Y - (vector.Y - base.Y) * 0.5f;
-                vector.X += vector.X - base.X;
+                vector.Y = Y - (vector.Y - Y) * 0.5f;
+                vector.X += vector.X - X;
                 flag2 = true;
             }
             float radiansB = (vector - Position).Angle();
             for (int i = 0; i < 28; i++)
             {
-                float num2 = (float)Math.Sin(base.Scene.TimeActive * 0.5f) * 0.02f;
+                float num2 = (float)Math.Sin(Scene.TimeActive * 0.5f) * 0.02f;
                 float num3 = Calc.Map((float)i / 28f + num2, 0f, 1f, -MathF.PI / 30f, 3.2463126f);
                 num3 += bounceWiggler.Value * 20f * (MathF.PI / 180f);
                 Vector2 vector2 = Calc.AngleToVector(num3, 1f);
@@ -366,7 +366,7 @@ public class NodePuffer : Entity
                     Draw.Line(vector3, vector3 - vector2 * 10f, Color.White * t);
                     continue;
                 }
-                Vector2 vector4 = vector2 * (float)Math.Sin(base.Scene.TimeActive * 2f + (float)i * 0.6f);
+                Vector2 vector4 = vector2 * (float)Math.Sin(Scene.TimeActive * 2f + (float)i * 0.6f);
                 if (i % 2 == 0)
                 {
                     vector4 *= -1f;
@@ -428,7 +428,7 @@ public class NodePuffer : Entity
         {
             alertTimer -= Engine.DeltaTime;
         }
-        Player entity = base.Scene.Tracker.GetEntity<Player>();
+        Player entity = Scene.Tracker.GetEntity<Player>();
         if (entity == null)
         {
             playerAliveFade = Calc.Approach(playerAliveFade, 0f, 1f * Engine.DeltaTime);
@@ -474,7 +474,7 @@ public class NodePuffer : Entity
                     GotoGone();
                     break;
                 }
-                if (base.Top >= (float)(SceneAs<Level>().Bounds.Bottom + 5))
+                if (Top >= (float)(SceneAs<Level>().Bounds.Bottom + 5))
                 {
                     sprite.Play("hidden");
                     GotoGone();
@@ -515,24 +515,24 @@ public class NodePuffer : Entity
             return false;
         }
         bool result = false;
-        Collider collider = base.Collider;
-        base.Collider = detectRadius;
+        Collider collider = Collider;
+        Collider = detectRadius;
         Player player;
-        if ((player = CollideFirst<Player>()) != null && player.CenterY >= base.Y + collider.Bottom - 4f && !base.Scene.CollideCheck<Solid>(Position, player.Center))
+        if ((player = CollideFirst<Player>()) != null && player.CenterY >= Y + collider.Bottom - 4f && !Scene.CollideCheck<Solid>(Position, player.Center))
         {
             result = true;
         }
-        base.Collider = collider;
+        Collider = collider;
         return result;
     }
 
 
     private bool AlertedCheck()
     {
-        Player entity = base.Scene.Tracker.GetEntity<Player>();
+        Player entity = Scene.Tracker.GetEntity<Player>();
         if (entity != null)
         {
-            return (entity.Center - base.Center).Length() < 60f;
+            return (entity.Center - Center).Length() < 60f;
         }
         return false;
     }
@@ -572,7 +572,7 @@ public class NodePuffer : Entity
             }
             else
             {
-                player.Bounce(base.Top);
+                player.Bounce(Top);
                 GotoHit(player.Center);
                 //MoveToX(anchorPosition.X);
                 idleSine.Reset();
@@ -585,9 +585,9 @@ public class NodePuffer : Entity
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        if (base.Depth == 0 && ((AreaKey)(object)(scene as Level).Session.Area).LevelSet != "Celeste")
+        if (Depth == 0 && ((AreaKey)(object)(scene as Level).Session.Area).LevelSet != "Celeste")
         {
-            base.Depth = -1;
+            Depth = -1;
         }
     }
 }

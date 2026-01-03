@@ -85,7 +85,7 @@ public class ExtraHoldableInteractionsController : Entity
 
         self.playSounds = true;
         Level level = self.SceneAs<Level>();
-        level.CoreMode = level.CoreMode == global::Celeste.Session.CoreModes.Cold ? global::Celeste.Session.CoreModes.Hot : global::Celeste.Session.CoreModes.Cold;
+        level.CoreMode = level.CoreMode == Session.CoreModes.Cold ? Session.CoreModes.Hot : Session.CoreModes.Cold;
         if (self.persistent)
         {
             level.Session.CoreMode = level.CoreMode;

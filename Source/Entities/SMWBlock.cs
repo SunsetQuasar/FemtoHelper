@@ -604,7 +604,7 @@ public class GenericSmwBlock : Solid
 
     public void CheckTriggersForPlayer(Player player)
     {
-        foreach (Trigger entity in base.Scene.Tracker.GetEntities<Trigger>())
+        foreach (Trigger entity in Scene.Tracker.GetEntities<Trigger>())
         {
             if (CollideCheck(entity))
             {
@@ -907,7 +907,7 @@ public class GenericSmwBlock : Solid
         }
         else if (p.Dashes > 1)
         {
-            p.Hair.StepPerSegment = new Vector2((float)Math.Sin(base.Scene.TimeActive * 2f) * 0.7f - (float)((int)p.Facing * 3), (float)Math.Sin(base.Scene.TimeActive * 1f));
+            p.Hair.StepPerSegment = new Vector2((float)Math.Sin(Scene.TimeActive * 2f) * 0.7f - (float)((int)p.Facing * 3), (float)Math.Sin(Scene.TimeActive * 1f));
             p.Hair.StepInFacingPerSegment = 0f;
             p.Hair.StepApproach = 90f;
             p.Hair.StepYSinePerSegment = 1f;

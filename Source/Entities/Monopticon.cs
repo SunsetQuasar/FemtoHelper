@@ -82,7 +82,7 @@ public class Monopticon : Lookout
 
         summit = false;
         onlyY = data.Bool("onlyY");
-        base.Collider = new Hitbox(4f, 4f, -2f, -4f);
+        Collider = new Hitbox(4f, 4f, -2f, -4f);
         Add(new MirrorReflection());
         VertexLight vertexLight = new VertexLight(new Vector2(-1f, -11f), Color.White, 0.8f, 16, 24);
         Add(vertexLight);
@@ -435,7 +435,7 @@ public class Monopticon : Lookout
     private IEnumerator LookRoutine2(Player player)
     {
         Level level = SceneAs<Level>();
-        SandwichLava sandwichLava = base.Scene.Entities.FindFirst<SandwichLava>();
+        SandwichLava sandwichLava = Scene.Entities.FindFirst<SandwichLava>();
         if (sandwichLava != null)
         {
             sandwichLava.Waiting = true;
@@ -558,7 +558,7 @@ public class Monopticon : Lookout
                     speed = speed.SafeNormalize(binoMaxSpeed);
                 }
                 Vector2 vector = cam;
-                List<Entity> entities = base.Scene.Tracker.GetEntities<LookoutBlocker>();
+                List<Entity> entities = Scene.Tracker.GetEntities<LookoutBlocker>();
                 cam.X += speed.X * Engine.DeltaTime;
                 if (cam.X < (float)level.Bounds.Left || cam.X + 320f > (float)level.Bounds.Right)
                 {
@@ -710,14 +710,14 @@ public class Monopticon : Lookout
             Vector2 was = level.Camera.Position;
             Vector2 direction = (was - camStart).SafeNormalize();
             float approach2 = (atSummitTop ? 1f : 0.5f);
-            new FadeWipe(base.Scene, wipeIn: false).Duration = approach2;
+            new FadeWipe(Scene, wipeIn: false).Duration = approach2;
             for (float duration2 = 0f; duration2 < 1f; duration2 += Engine.DeltaTime / approach2)
             {
                 level.Camera.Position = was - direction * MathHelper.Lerp(0f, 64f, Ease.CubeIn(duration2));
                 yield return null;
             }
             level.Camera.Position = camStart + direction * 32f;
-            new FadeWipe(base.Scene, wipeIn: true);
+            new FadeWipe(Scene, wipeIn: true);
         }
         Audio.SetMusicParam("escape", 0f);
         level.ScreenPadding = 0f;

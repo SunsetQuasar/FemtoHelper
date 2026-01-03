@@ -74,7 +74,7 @@ public abstract class GenericWaterBlock : Water
         {
             return;
         }
-        if (base.Scene.OnInterval(0.04f))
+        if (Scene.OnInterval(0.04f))
         {
             Vector2 vector = shakeAmount;
             shakeAmount = Calc.Random.ShakeVector();
@@ -360,11 +360,11 @@ public abstract class GenericWaterBlock : Water
             {
                 if (thruDashBlocks)
                 {
-                    foreach (DashBlock entity in base.Scene.Tracker.GetEntities<DashBlock>())
+                    foreach (DashBlock entity in Scene.Tracker.GetEntities<DashBlock>())
                     {
                         if (CollideCheck(entity, Position + Vector2.UnitY * num))
                         {
-                            entity.Break(base.Center, Vector2.UnitY * num, true, true);
+                            entity.Break(Center, Vector2.UnitY * num, true, true);
                             SceneAs<Level>().Shake(0.2f);
                             Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
                         }
@@ -437,11 +437,11 @@ public abstract class GenericWaterBlock : Water
             {
                 if (thruDashBlocks)
                 {
-                    foreach (DashBlock entity in base.Scene.Tracker.GetEntities<DashBlock>())
+                    foreach (DashBlock entity in Scene.Tracker.GetEntities<DashBlock>())
                     {
                         if (CollideCheck(entity, Position + Vector2.UnitX * num))
                         {
-                            entity.Break(base.Center, Vector2.UnitX * num, true, true);
+                            entity.Break(Center, Vector2.UnitX * num, true, true);
                             SceneAs<Level>().Shake(0.2f);
                             Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
                         }

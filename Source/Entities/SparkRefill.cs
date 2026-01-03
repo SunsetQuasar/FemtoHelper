@@ -63,7 +63,7 @@ public class SparkRefill : Entity
     public SparkRefill(Vector2 position, EntityData data)
         : base(position)
     {
-        base.Collider = new Hitbox(16f, 16f, -8f, -8f);
+        Collider = new Hitbox(16f, 16f, -8f, -8f);
         Add(new PlayerCollider(OnPlayer));
         this.oneUse = data.Bool("oneUse", false);
         string text;
@@ -92,7 +92,7 @@ public class SparkRefill : Entity
         Add(sine = new SineWave(0.6f, 0f));
         sine.Randomize();
         UpdateY();
-        base.Depth = -100;
+        Depth = -100;
         respawnTime = data.Float("respawnTime", 2.5f);
     }
 
@@ -121,14 +121,14 @@ public class SparkRefill : Entity
                 Respawn();
             }
         }
-        else if (base.Scene.OnInterval(0.1f))
+        else if (Scene.OnInterval(0.1f))
         {
             level.ParticlesFG.Emit(_pGlow, 1, Position, Vector2.One * 5f);
         }
         UpdateY();
         light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
         bloom.Alpha = light.Alpha * 0.8f;
-        if (base.Scene.OnInterval(2f) && sprite.Visible)
+        if (Scene.OnInterval(2f) && sprite.Visible)
         {
             flash.Play("flash", restart: true);
             flash.Visible = true;
@@ -143,7 +143,7 @@ public class SparkRefill : Entity
             Collidable = true;
             sprite.Visible = true;
             outline.Visible = false;
-            base.Depth = -100;
+            Depth = -100;
             wiggler.Start();
             Audio.Play("event:/game/general/diamond_return", Position);
             level.ParticlesFG.Emit(_pRegen, 16, Position, Vector2.One * 2f);

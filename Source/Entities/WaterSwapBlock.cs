@@ -146,13 +146,13 @@ public class WaterSwapBlock : GenericWaterBlock
                 if (!toggle)
                 {
                     target = 0;
-                    returnSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_return", base.Center);
+                    returnSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_return", Center);
                 }
             }
         }
         if (burst != null)
         {
-            burst.Position = base.Center;
+            burst.Position = Center;
         }
         redAlpha = Calc.Approach(redAlpha, (target != 1) ? 1 : 0, Engine.DeltaTime * 32f);
         if (target == 0 && lerp == 0f)
@@ -186,7 +186,7 @@ public class WaterSwapBlock : GenericWaterBlock
             {
                 liftSpeed *= -1f;
             }
-            if ((target == 1 || toggle) && base.Scene.OnInterval(0.02f))
+            if ((target == 1 || toggle) && Scene.OnInterval(0.02f))
             {
                 Vector2 normal = ((target != 1) ? (start - end) : (end - start));
                 MoveParticles(normal);
@@ -198,17 +198,17 @@ public class WaterSwapBlock : GenericWaterBlock
             //MoveTo(Vector2.Lerp(start, end, lerp), liftSpeed);
             if (position != Position)
             {
-                Audio.Position(moveSfx, base.Center);
-                Audio.Position(returnSfx, base.Center);
+                Audio.Position(moveSfx, Center);
+                Audio.Position(returnSfx, Center);
                 if (Position == start && target == 0)
                 {
                     Audio.SetParameter(returnSfx, "end", 1f);
-                    Audio.Play("event:/game/05_mirror_temple/swapblock_return_end", base.Center);
+                    Audio.Play("event:/game/05_mirror_temple/swapblock_return_end", Center);
                     waterSprite.Wiggle.Start();
                 }
                 else if (Position == end && target == 1)
                 {
-                    Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", base.Center);
+                    Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", Center);
                     waterSprite.Wiggle.Start();
                 }
             }
@@ -267,31 +267,31 @@ public class WaterSwapBlock : GenericWaterBlock
         float num;
         if (normal.X > 0f)
         {
-            position = base.CenterLeft;
-            positionRange = Vector2.UnitY * (base.Height - 6f);
+            position = CenterLeft;
+            positionRange = Vector2.UnitY * (Height - 6f);
             direction = MathF.PI;
-            num = Math.Max(2f, base.Height / 14f);
+            num = Math.Max(2f, Height / 14f);
         }
         else if (normal.X < 0f)
         {
-            position = base.CenterRight;
-            positionRange = Vector2.UnitY * (base.Height - 6f);
+            position = CenterRight;
+            positionRange = Vector2.UnitY * (Height - 6f);
             direction = 0f;
-            num = Math.Max(2f, base.Height / 14f);
+            num = Math.Max(2f, Height / 14f);
         }
         else if (normal.Y > 0f)
         {
-            position = base.TopCenter;
-            positionRange = Vector2.UnitX * (base.Width - 6f);
+            position = TopCenter;
+            positionRange = Vector2.UnitX * (Width - 6f);
             direction = -MathF.PI / 2f;
-            num = Math.Max(2f, base.Width / 14f);
+            num = Math.Max(2f, Width / 14f);
         }
         else
         {
-            position = base.BottomCenter;
-            positionRange = Vector2.UnitX * (base.Width - 6f);
+            position = BottomCenter;
+            positionRange = Vector2.UnitX * (Width - 6f);
             direction = MathF.PI / 2f;
-            num = Math.Max(2f, base.Width / 14f);
+            num = Math.Max(2f, Width / 14f);
         }
         particlesRemainder += num;
         int num2 = (int)particlesRemainder;

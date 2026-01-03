@@ -171,16 +171,16 @@ public class VitalDrainController : Entity
             oxygen = currSlider;
         }
         lastslider = level.Session.GetSlider(oxygenSlider) * 500;
-        bool flg = Util.EvaluateExpressionAsBoolOrFancyFlag(requireFlag, level.Session);
+        bool flg = EvaluateExpressionAsBoolOrFancyFlag(requireFlag, level.Session);
         if (invertFlag) flg = !flg;
 
-        if (!Util.EvaluateExpressionAsBoolOrFancyFlag(pauseFlag, level.Session) || string.IsNullOrEmpty(pauseFlag))
+        if (!EvaluateExpressionAsBoolOrFancyFlag(pauseFlag, level.Session) || string.IsNullOrEmpty(pauseFlag))
         {
             bool overrideDrain = false;
             foreach (Entity e in player.CollideAll<VitalSafetyTrigger>())
             {
                 if (e is not VitalSafetyTrigger { Override: true } v ||
-                    !Util.EvaluateExpressionAsBoolOrFancyFlag(v.FlagToggle, level.Session)) continue;
+                    !EvaluateExpressionAsBoolOrFancyFlag(v.FlagToggle, level.Session)) continue;
                 overrideDrain = true;
                 level.Session.SetFlag(drainingFlag, Math.Sign(v.OverrideValue) == -1);
                 Oxygen = Calc.Clamp(Oxygen + v.OverrideValue * Engine.DeltaTime, 0f, 500f);
