@@ -80,12 +80,13 @@ public class SwitchMovetBox : Solid
     private Wiggler bounce;
     public Vector2 Start;
     public Sprite Cover;
-    public Image Back;
-    public Image Crystal;
-    public Image Glow;
+    public Image Back, BackOneUse, Crystal, Glow;
     public bool DoSmashParticles;
     public ParticleType PSmash;
+    private readonly bool floaty;
+    public SoundSource Sound;
     public Vector2 halfSize => new Vector2(Width, Height) / 2f;
+    public readonly bool OneUse;
     public SwitchMovetBox(EntityData data, Vector2 offset) : base(data.Position + offset, 32, 32, false)
     {
         Depth = -450;
@@ -101,20 +102,37 @@ public class SwitchMovetBox : Solid
         bounce.StartZero = false;
         Add(bounce);
         string path = data.Attr("path", "objects/FemtoHelper/switchMovetBox/");
+        floaty = data.Bool("floaty", true);
+        OneUse = data.Bool("oneUse", false);
         Add(Back = new Image(GFX.Game[path + "back"]));
+        BackOneUse = new Image(GFX.Game[path + "back_oneuse"]);
+        if (OneUse)
+        {
+            BackOneUse.Color = Calc.HexToColor(Color);
+            Add(BackOneUse);
+        }
         Add(Crystal = new Image(GFX.Game[path + "crystal"]));
         Add(Glow = new Image(GFX.Game[path + "glow"]));
-        Add(Cover = new Sprite(GFX.Game, path + "cover"));
-        Cover.AddLoop("idle", "", 0.1f, [0]);
+        Add(Cover = new Sprite(GFX.Game, path));
+        Cover.AddLoop("idle", "cover", 0.1f, [0]);
         Cover.Play("idle");
-        Cover.Add("hit", "", 0.05f, "idle", [0, 1, 2, 3, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0]);
+        Cover.Add("hit", "cover", 0.05f, "idle", [0, 1, 2, 3, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0]);
+        Cover.Add("break", "break", 0.05f);
+        Cover.OnFinish = (s) =>
+        {
+            if (s == "break")
+            {
+                Cover.Visible = false;
+            }
+        };
 
         Back.CenterOrigin();
+        BackOneUse.CenterOrigin();
         Crystal.CenterOrigin();
         Glow.CenterOrigin();
         Cover.CenterOrigin();
 
-        Cover.Position = Back.Position = Crystal.Position = Glow.Position = halfSize;
+        Cover.Position = BackOneUse.Position = Back.Position = Crystal.Position = Glow.Position = halfSize;
 
         Color glowColor = Microsoft.Xna.Framework.Color.Lerp(Calc.HexToColor(Color), Microsoft.Xna.Framework.Color.DarkGray * 0.2f, 0.8f);
         Glow.Color = glowColor;
@@ -128,6 +146,10 @@ public class SwitchMovetBox : Solid
             SpeedMin = 70,
             SpeedMax = 80
         };
+        Add(Sound = new SoundSource()
+        {
+            Position = halfSize
+        });
     }
 
     private void SmashParticles(Vector2 dir)
@@ -187,20 +209,31 @@ public class SwitchMovetBox : Solid
         {
             Cover.Play("hit");
             (Scene as Level).DirectionalShake(dir);
-            Cover.Scale = Back.Scale = new Vector2(1f + Math.Abs(dir.Y) * 0.4f - Math.Abs(dir.X) * 0.4f, 1f + Math.Abs(dir.X) * 0.4f - Math.Abs(dir.Y) * 0.4f);
             bounceDir = dir;
             bounce.Start();
-            DoSmashParticles = true;
-            Audio.Play("event:/FemtoHelper/switch_movet_box_hit", Position);
+            Cover.Scale = Back.Scale = BackOneUse.Scale = new Vector2(1f + Math.Abs(dir.Y) * 0.2f - Math.Abs(dir.X) * 0.2f, 1f + Math.Abs(dir.X) * 0.2f - Math.Abs(dir.Y) * 0.2f);
             Celeste.Freeze(0.1f);
+            DoSmashParticles = true;
+            Sound.Play("event:/FemtoHelper/switch_movet_box_hit");
+            if (OneUse)
+            {
+                Alarm Yep = Alarm.Set(this, 0.5f, () =>
+                {
+                    Sound.Play("event:/new_content/game/10_farewell/fusebox_hit_2");
+                    Cover.Play("break");
+                    Crystal.Visible = Glow.Visible = Back.Visible = BackOneUse.Visible = Collidable = false;
+                    SceneAs<Level>().Flash(new(0.2f, 0.2f, 0.2f, 0f));
+                    Celeste.Freeze(0.1f);
+                });
+            }
         }
         else
         {
             (Scene as Level).DirectionalShake(dir);
-            Cover.Scale = Back.Scale = new Vector2(1f + Math.Abs(dir.Y) * 0.2f - Math.Abs(dir.X) * 0.2f, 1f + Math.Abs(dir.X) * 0.2f - Math.Abs(dir.Y) * 0.2f);
+            Cover.Scale = Back.Scale = BackOneUse.Scale = new Vector2(1f + Math.Abs(dir.Y) * 0.2f - Math.Abs(dir.X) * 0.2f, 1f + Math.Abs(dir.X) * 0.2f - Math.Abs(dir.Y) * 0.2f);
             bounceDir = dir;
             bounce.Start();
-            Audio.Play("event:/FemtoHelper/switch_movet_box_hitfail", Position);
+            Sound.Play("event:/FemtoHelper/switch_movet_box_hitfail");
             Celeste.Freeze(0.1f);
         }
         return DashCollisionResults.Rebound;
@@ -211,18 +244,21 @@ public class SwitchMovetBox : Solid
         base.Update();
         if (Collidable)
         {
-            bool flag = HasPlayerRider();
-            sink = Calc.Approach(sink, flag ? 1 : 0, 2f * Engine.DeltaTime);
-            sine.Rate = MathHelper.Lerp(1f, 0.5f, sink);
-            sine2.Rate = MathHelper.Lerp(1f, 0.5f, sink);
-            Vector2 vector = Start;
-            vector.Y += sink * 6f + sine.Value * MathHelper.Lerp(4f, 2f, sink);
-            vector += bounce.Value * bounceDir * 12f;
-            MoveToX(vector.X);
-            MoveToY(vector.Y);
+            if (floaty)
+            {
+                bool flag = HasPlayerRider();
+                sink = Calc.Approach(sink, flag ? 1 : 0, 2f * Engine.DeltaTime);
+                sine.Rate = MathHelper.Lerp(1f, 0.5f, sink);
+                sine2.Rate = MathHelper.Lerp(1f, 0.5f, sink);
+                Vector2 vector = Start;
+                vector.Y += sink * 6f + sine.Value * MathHelper.Lerp(4f, 2f, sink);
+                vector += bounce.Value * bounceDir * 12f;
+                MoveToX(vector.X);
+                MoveToY(vector.Y);
+            }
             Vector2 vector2 = Start;
             vector2.Y += sink * 6f + sine2.Value * MathHelper.Lerp(4f, 2f, sink);
-            vector2 += bounce.Value * bounceDir * 12f;
+            vector2 += bounce.Value * bounceDir * (floaty ? 12f : 3f);
             Crystal.Position = halfSize + vector2 - Position;
             Glow.Position = halfSize + vector2 - Position;
             if (DoSmashParticles)
@@ -232,8 +268,8 @@ public class SwitchMovetBox : Solid
                 SmashParticles(-bounceDir.Perpendicular());
             }
         }
-        Cover.Scale.X = Back.Scale.X = Calc.Approach(Cover.Scale.X, 1f, Engine.DeltaTime * 4f);
-        Cover.Scale.Y = Back.Scale.Y = Calc.Approach(Cover.Scale.Y, 1f, Engine.DeltaTime * 4f);
+        Cover.Scale.X = Back.Scale.X = BackOneUse.Scale.X = Calc.Approach(Cover.Scale.X, 1f, Engine.DeltaTime * 4f);
+        Cover.Scale.Y = Back.Scale.Y = BackOneUse.Scale.Y = Calc.Approach(Cover.Scale.Y, 1f, Engine.DeltaTime * 4f);
     }
 
     public override void Render()
@@ -283,7 +319,7 @@ public class SwitchMovetPathRenderer : Entity
         if (Scene.OnInterval(0.1f))
         {
             int count = (int)MathF.Round(Vector2.Distance(Parent.Anchor, Parent.Node) / 32f);
-            for(int i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 (Scene as Level).ParticlesBG.Emit(movetPath, Vector2.Lerp(Parent.Anchor + Parent.halfSize, Parent.Node + Parent.halfSize, Calc.Random.NextFloat()) + new Vector2(Calc.Random.Range(-0.5f, 0.5f), Calc.Random.Range(-0.5f, 0.5f)));
             }
@@ -364,7 +400,7 @@ public class SwitchMovet : Solid
     public BloomPoint Nodebloom2;
 
     private readonly float speedMultiplier;
-    public float SpeedMultiplier => (speedMultiplier == 0 ? float.Epsilon : speedMultiplier);
+    public float SpeedMultiplier => (speedMultiplier == 0 ? 1f : speedMultiplier);
 
     public SwitchMovet(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {

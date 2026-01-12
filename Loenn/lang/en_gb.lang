@@ -619,12 +619,15 @@ entities.FemtoHelper/OcularBarrier.attributes.description.texturePath=The textur
 entities.FemtoHelper/SwitchMovet.placements.name.SwitchMovet=Switch Movet
 entities.FemtoHelper/SwitchMovet.attributes.description.color=The color of the Switch Movet.\nSwitch Movets are only activated by Switch Movet Boxes of the same color.
 entities.FemtoHelper/SwitchMovet.attributes.description.path=The sprite path of the Switch Movet.
+entities.FemtoHelper/SwitchMovet.attributes.description.speedMultiplier=Adjusts the Switch Movet's movement speed.
 
 # Switch Movet Box
 
 entities.FemtoHelper/SwitchMovetBox.placements.name.SwitchMovet=Switch Movet Box
 entities.FemtoHelper/SwitchMovetBox.attributes.description.color=The color of the Switch Movet Box.\nSwitch Movet Boxes only activate Switch Movets of the same color.
 entities.FemtoHelper/SwitchMovetBox.attributes.description.path=The sprite path of the Switch Movet Box.
+entities.FemtoHelper/SwitchMovetBox.attributes.description.floaty=Whether the Switch Movet Box should float or not.
+entities.FemtoHelper/SwitchMovetBox.attributes.description.oneUse=Destroys the Switch Movet Box after one hit.
 
 # Node Puffer
 
