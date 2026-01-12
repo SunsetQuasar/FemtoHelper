@@ -400,7 +400,7 @@ public class SwitchMovet : Solid
     public BloomPoint Nodebloom2;
 
     private readonly float speedMultiplier;
-    public float SpeedMultiplier => (speedMultiplier == 0 ? 1f : speedMultiplier);
+    public float SpeedMultiplier => speedMultiplier;
 
     public SwitchMovet(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
@@ -531,16 +531,19 @@ public class SwitchMovet : Solid
             yield return null;
         }
         Audio.Play("event:/FemtoHelper/switch_movet_accelerate", Position);
-        Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeIn, 0.7f / SpeedMultiplier, true);
-        tween.OnUpdate += delegate (Tween t)
+
+        float p = 0f;
+        while (p < 1f)
         {
-            CogWinding = State ? Calc.LerpClamp(0, 2 * MathF.Tau, t.Eased) : Calc.LerpClamp(2 * MathF.Tau, 0, t.Eased);
-            Vector2 vector = Vector2.Lerp(start, end, t.Eased);
+            yield return null;
+            p = Calc.Approach(p, 1f, (Engine.DeltaTime / 0.7f) * SpeedMultiplier);
+            float eased = Ease.CubeIn(p);
+            CogWinding = State ? Calc.LerpClamp(0, 2 * MathF.Tau, eased) : Calc.LerpClamp(2 * MathF.Tau, 0, eased);
+            Vector2 vector = Vector2.Lerp(start, end, eased);
             ScrapeParticlesCheck(vector);
             MoveTo(vector);
-        };
-        Add(tween);
-        yield return 0.7f / SpeedMultiplier;
+        }
+
         Audio.Play("event:/FemtoHelper/switch_movet_hit", Position);
         StartShaking(0.3f);
         for (float i = 0; i < 1; i += Engine.DeltaTime / 0.3f)
