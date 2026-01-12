@@ -141,9 +141,9 @@ public class NodePuffer : Entity
         }
 
         nodeLens = new float[nodes.Length];
-        for (int i = 0; i < nodes.Length; i++)
+        for (int i = nodes.Length - 1; i >= 0; i--)
         {
-            nodeLens[i] = Vector2.Distance(nodes[i], nodes[(i + 1 == nodes.Length) ? 0 : i + 1]);
+            nodeLens[i] = Vector2.Distance(nodes[i], nodes[Utils.Util.Mod(i + 1, nodes.Length)]);
         }
 
         timer = Calc.Random.NextFloat(500f);
@@ -305,7 +305,7 @@ public class NodePuffer : Entity
             float nextFactor = nodeIndex == i ? Ease.SineInOut(1 - sequenceTimer) : nodeIndex == Utils.Util.Mod(i - 1, nodes.Length - 1) ? Ease.SineInOut(sequenceTimer) : 0;
             Color col = Color.Lerp(lineColor1, lineColor2, nextFactor);
             col.A = 0;
-            float count = MathF.Round(nodeLens[Utils.Util.Mod(i - 1, nodeLens.Length)] / 8f);
+            float count = MathF.Round(nodeLens[Utils.Util.Mod(i - 1, nodes.Length - 1)] / 8f);
             for (float j = 0; j < count; j++)
             {
                 float percent = j / count;

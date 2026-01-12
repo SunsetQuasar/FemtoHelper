@@ -89,13 +89,15 @@ public class GloriousPassage : Entity
     {
         if (!EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
         {
-            if(Talk != null && Talk.UI != null)
+            if (Talk != null && Talk.UI != null)
             {
                 Talk.UI.Visible = false;
             }
             PlayerInside = false;
             return;
-        } else {
+        }
+        else
+        {
             if (Talk != null && Talk.UI != null)
             {
                 Talk.UI.Visible = true;
@@ -121,7 +123,17 @@ public class GloriousPassage : Entity
         for (float i = 0; i < 1; i += Engine.RawDeltaTime * 4)
         {
             if (timeRateModifier is not null) timeRateModifier.Multiplier = Calc.Approach(timeRateModifier.Multiplier, 0, Engine.RawDeltaTime * 4);
+            if (Player.Dead || Player == null || Scene == null)
+            {
+                timeRateModifier.Multiplier = 1f;
+                yield break;
+            }
             yield return null;
+        }
+        if (Player.Dead || Player == null || Scene == null)
+        {
+            timeRateModifier.Multiplier = 1f;
+            yield break;
         }
         level.DoScreenWipe(wipeIn: false, new Action(Tp));
 
@@ -130,13 +142,14 @@ public class GloriousPassage : Entity
 
     public void Tp()
     {
-        if (Player == null || Scene == null) return;
+        if (Player.Dead || Player == null || Scene == null) return;
         if (timeRateModifier is not null) timeRateModifier.Multiplier = 1;
         Level level = Scene as Level;
         level.Session.SetFlag("transition_assist", false);
         Player player = Scene.Tracker.GetEntity<Player>();
         level.OnEndOfFrame += () =>
         {
+            if (Player.Dead || Player == null || Scene == null) return;
             Vector2 pos, playerDelta;
             Leader leader;
 

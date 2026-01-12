@@ -4,6 +4,8 @@ using System.Linq;
 using System.Collections;
 using Celeste.Mod.FemtoHelper.Utils;
 using MonoMod.Utils;
+using MonoMod.Cil;
+using Celeste.Mod.Helpers;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -171,6 +173,28 @@ public class GenericSmwBlock : Solid
 
     private readonly HashSet<string> whitelist;
     private readonly HashSet<string> blacklist;
+
+    private HashSet<StaticMover> exemptFromRenderThingy = [];
+
+    //public float BounceOffset => MathF.Sin(Bouncetimer / 10f * MathF.PI) * 6f;
+
+    private Vector2 bounceOffset;
+    public Vector2 BounceOffset
+    {
+        get {
+            return bounceOffset;
+        }
+        set
+        {
+            Vector2 old = BounceOffset;
+            bounceOffset = value;
+            Vector2 delta = BounceOffset - old;
+            foreach (StaticMover staticMover in staticMovers.Where(c => exemptFromRenderThingy.Contains(c)))
+            {
+                staticMover.Shake(delta);
+            }
+        }
+    }
     public enum Direction
     {
         Up,
@@ -270,6 +294,20 @@ public class GenericSmwBlock : Solid
 
 
         if (crystalCollider != null) Add(crystalCollider);
+    }
+
+    public override void Awake(Scene scene)
+    {
+        base.Awake(scene);
+        foreach(StaticMover s in staticMovers)
+        {
+            if (s.Entity.Any(c => c is DustEdge))
+            {
+                exemptFromRenderThingy.Add(s);
+                continue;
+            }
+            s.Entity.Visible = false;
+        }
     }
 
     public override void Update()
@@ -388,6 +426,16 @@ public class GenericSmwBlock : Solid
             Bouncetimer -= Engine.DeltaTime * 60;
         }
 
+        float distance = MathF.Sin(Bouncetimer / 10f * MathF.PI) * 6f;
+
+        BounceOffset = Bumpdir switch
+        {
+            Direction.Right => Vector2.UnitX * distance,
+            Direction.Left => -Vector2.UnitX * distance,
+            Direction.Down => Vector2.UnitY * distance,
+            _ => -Vector2.UnitY * distance
+        };
+
         if (!Collidable)
         {
             DisableStaticMovers();
@@ -411,6 +459,16 @@ public class GenericSmwBlock : Solid
     public override void Render()
     {
         base.Render();
+
+        foreach (StaticMover s in staticMovers.Where(s => !exemptFromRenderThingy.Contains(s)))
+        {
+            Entity e = s.Entity;
+            e.Visible = true;
+            e.Position += BounceOffset;
+            e.Render();
+            e.Position -= BounceOffset;
+            e.Visible = false;
+        }
 
         Color color = Neededflagplus ? Color.White : Calc.HexToColor("808080");
 
@@ -440,24 +498,8 @@ public class GenericSmwBlock : Solid
             }
             else
             {
-                float distance = (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6;
-                switch (Bumpdir)
-                {
-                    default:
-                    case Direction.Up:
-                        TryDrawTiled(HitSprite, color, -Vector2.UnitY * distance);
-                        break;
-                    case Direction.Right:
-                        TryDrawTiled(HitSprite, color, Vector2.UnitX * distance);
-                        break;
-                    case Direction.Left:
-                        TryDrawTiled(HitSprite, color, -Vector2.UnitX * distance);
-                        break;
-                    case Direction.Down:
-                        TryDrawTiled(HitSprite, color, Vector2.UnitY * distance);
-                        break;
-                }
-
+                //float distance = (float)Math.Sin(Bouncetimer / 10 * Math.PI) * 6;
+                TryDrawTiled(HitSprite, color, BounceOffset);
             }
         }
         else
@@ -971,42 +1013,47 @@ public class GenericSmwBlock : Solid
 
     public static void Load()
     {
-        On.Monocle.Entity.Render += Entity_Render;
+        On.Celeste.TriggerSpikes.Render += TriggerSpikes_Render;
+        IL.Celeste.DustEdges.BeforeRender += DustEdges_BeforeRender;
     }
 
-    private static void Entity_Render(On.Monocle.Entity.orig_Render orig, Entity self)
+    private static void DustEdges_BeforeRender(ILContext il)
     {
-        bool yep = false;
-        Vector2 pos = self.Position;
-        if ((self.Get<StaticMover>() is { } sm) && sm.Platform is GenericSmwBlock block && block.Bouncetimer > 0)
+        ILCursor cursor = new(il);
+        if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld("Celeste.DustEdge", "RenderDust")))
         {
-            yep = true;
-            switch (block.Bumpdir)
-            {
-                default:
-                case Direction.Up:
-                    self.Position -= Vector2.UnitY * (float)Math.Sin(block.Bouncetimer / 10 * Math.PI) * 6;
-                    break;
-                case Direction.Right:
-                    self.Position += Vector2.UnitX * (float)Math.Sin(block.Bouncetimer / 10 * Math.PI) * 6;
-                    break;
-                case Direction.Left:
-                    self.Position -= Vector2.UnitX * (float)Math.Sin(block.Bouncetimer / 10 * Math.PI) * 6;
-                    break;
-                case Direction.Down:
-                    self.Position += Vector2.UnitY * (float)Math.Sin(block.Bouncetimer / 10 * Math.PI) * 6;
-                    break;
-            }
+            cursor.EmitLdloc3();
+            cursor.EmitLdcI4(0);
+            cursor.EmitDelegate(GoMyRenderDust);
+            cursor.Index++;
+            cursor.EmitLdloc3();
+            cursor.EmitLdcI4(1);
+            cursor.EmitDelegate(GoMyRenderDust);
+        }
+    }
+
+    private static void GoMyRenderDust(DustEdge e, bool goingback)
+    {
+        if ((e.Entity.Get<StaticMover>()?.Platform ?? null) is GenericSmwBlock block && !e.Entity.Any(c => c is DustGraphic))
+        {
+            e.Entity.Position += block.BounceOffset * (goingback ? -1f : 1f);
+        }
+    }
+
+    private static void TriggerSpikes_Render(On.Celeste.TriggerSpikes.orig_Render orig, TriggerSpikes self)
+    {
+        Vector2 pos = self.Position;
+        if ((self.Get<StaticMover>()?.Platform ?? null) is GenericSmwBlock block)
+        {
+            self.Position += self.shakeOffset;
         }
         orig(self);
-        if (yep)
-        {
-            self.Position = pos;
-        }
+        self.Position = pos;
     }
 
     public static void Unload()
     {
-        On.Monocle.Entity.Render -= Entity_Render;
+        On.Celeste.TriggerSpikes.Render -= TriggerSpikes_Render;
+        IL.Celeste.DustEdges.BeforeRender -= DustEdges_BeforeRender;
     }
 }

@@ -247,11 +247,27 @@ public class SwitchMovetPathRenderer : Entity
     public SwitchMovet Parent;
     public float Timer;
     public Player Player;
+
+    private ParticleType movetPath = new(Seeker.P_Regen);
     public SwitchMovetPathRenderer(SwitchMovet parent) : base()
     {
         Depth = 5000;
         this.Parent = parent;
         Timer = Calc.Random.NextFloat(MathF.Tau);
+
+        movetPath = new(Seeker.P_Regen)
+        {
+            Color = Color.Lerp(Calc.HexToColor(parent.Color), Color.White, 0.7f) * 0.4f,
+            Color2 = Calc.HexToColor(parent.Color) * 0.3f,
+            FadeMode = ParticleType.FadeModes.InAndOut,
+            SpeedMin = 5,
+            SpeedMax = 15,
+            Direction = 0,
+            DirectionRange = 360,
+            Friction = 30,
+            LifeMin = 0.1f,
+            LifeMax = 0.3f,
+        };
     }
 
     public override void Awake(Scene scene)
@@ -263,7 +279,15 @@ public class SwitchMovetPathRenderer : Entity
     public override void Update()
     {
         base.Update();
-        Timer += Engine.DeltaTime * (3 * Parent.GemActivation + 1);
+        Timer += Engine.DeltaTime * (3 * (Parent.GemActivation * Parent.SpeedMultiplier) + 1);
+        if (Scene.OnInterval(0.1f))
+        {
+            int count = (int)MathF.Round(Vector2.Distance(Parent.Anchor, Parent.Node) / 32f);
+            for(int i = 0; i < count; i++)
+            {
+                (Scene as Level).ParticlesBG.Emit(movetPath, Vector2.Lerp(Parent.Anchor + Parent.halfSize, Parent.Node + Parent.halfSize, Calc.Random.NextFloat()) + new Vector2(Calc.Random.Range(-0.5f, 0.5f), Calc.Random.Range(-0.5f, 0.5f)));
+            }
+        }
     }
 
     public override void Render()
@@ -338,6 +362,10 @@ public class SwitchMovet : Solid
     public BloomPoint Bloom;
     public BloomPoint Nodebloom;
     public BloomPoint Nodebloom2;
+
+    private readonly float speedMultiplier;
+    public float SpeedMultiplier => (speedMultiplier == 0 ? float.Epsilon : speedMultiplier);
+
     public SwitchMovet(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
         Depth = -400;
@@ -349,6 +377,7 @@ public class SwitchMovet : Solid
         Perp = Step.Perpendicular();
         Step *= 8;
         Color = data.Attr("color", "FF0000");
+        speedMultiplier = data.Float("speedMultiplier", 1f);
         string path = data.Attr("path", "objects/FemtoHelper/switchMovet/");
         Cog = GFX.Game[path + "gear"];
         CogGem = GFX.Game[path + "geargem"];
@@ -466,7 +495,7 @@ public class SwitchMovet : Solid
             yield return null;
         }
         Audio.Play("event:/FemtoHelper/switch_movet_accelerate", Position);
-        Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeIn, 0.7f, true);
+        Tween tween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeIn, 0.7f / SpeedMultiplier, true);
         tween.OnUpdate += delegate (Tween t)
         {
             CogWinding = State ? Calc.LerpClamp(0, 2 * MathF.Tau, t.Eased) : Calc.LerpClamp(2 * MathF.Tau, 0, t.Eased);
@@ -475,7 +504,7 @@ public class SwitchMovet : Solid
             MoveTo(vector);
         };
         Add(tween);
-        yield return 0.7f;
+        yield return 0.7f / SpeedMultiplier;
         Audio.Play("event:/FemtoHelper/switch_movet_hit", Position);
         StartShaking(0.3f);
         for (float i = 0; i < 1; i += Engine.DeltaTime / 0.3f)

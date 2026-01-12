@@ -21,7 +21,8 @@ FemtoHelperSwitchMovet.placements = {
             width = 16, 
             height = 16,
             color = "FF0000",
-            path = "objects/FemtoHelper/switchMovet/"
+            path = "objects/FemtoHelper/switchMovet/",
+            speedMultiplier = 1.0,
         }
     }
 }
