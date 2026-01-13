@@ -222,7 +222,7 @@ public class SwitchMovetBox : Solid
                     Sound.Play("event:/new_content/game/10_farewell/fusebox_hit_2");
                     Cover.Play("break");
                     Crystal.Visible = Glow.Visible = Back.Visible = BackOneUse.Visible = Collidable = false;
-                    SceneAs<Level>().Flash(new(0.2f, 0.2f, 0.2f, 0f));
+                    SceneAs<Level>().Flash(new(0.1f, 0.1f, 0.1f, 0f));
                     Celeste.Freeze(0.1f);
                 });
             }
@@ -357,8 +357,7 @@ public class SwitchMovetPathRenderer : Entity
         //color.A = 0;
         //Draw.Line(parent.anchor + parent.halfSize, parent.node + parent.halfSize, color, 4);
 
-        Color trueGemColor = Parent.gemColor;
-        trueGemColor.A = 0;
+        Color trueGemColor = new(Parent.gemColor, 0f);
 
         Parent.Smallcog.DrawCentered(Parent.Node + Parent.halfSize + Vector2.UnitY, Color.Black, 1, Parent.CogWinding);
         Parent.Smallcog.DrawCentered(Parent.Anchor + Parent.halfSize, Parent.cogColor, 1, Parent.CogWinding);
