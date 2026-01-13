@@ -359,7 +359,7 @@ public class SwitchMovetPathRenderer : Entity
 
         Color trueGemColor = new(Parent.gemColor, 0f);
 
-        Parent.Smallcog.DrawCentered(Parent.Node + Parent.halfSize + Vector2.UnitY, Color.Black, 1, Parent.CogWinding);
+        Parent.Smallcog.DrawCentered(Parent.Anchor + Parent.halfSize + Vector2.UnitY, Color.Black, 1, Parent.CogWinding);
         Parent.Smallcog.DrawCentered(Parent.Anchor + Parent.halfSize, Parent.cogColor, 1, Parent.CogWinding);
         Parent.CogGem.DrawCentered(Parent.Anchor + Parent.halfSize, trueGemColor);
 
