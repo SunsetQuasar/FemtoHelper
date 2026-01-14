@@ -85,8 +85,9 @@ public class SwitchMovetBox : Solid
     public ParticleType PSmash;
     private readonly bool floaty;
     public SoundSource Sound;
-    public Vector2 halfSize => new Vector2(Width, Height) / 2f;
+    public Vector2 HalfSize => new Vector2(Width, Height) / 2f;
     public readonly bool OneUse;
+    public readonly bool DestroyAttached;
     public SwitchMovetBox(EntityData data, Vector2 offset) : base(data.Position + offset, 32, 32, false)
     {
         Depth = -450;
@@ -104,6 +105,7 @@ public class SwitchMovetBox : Solid
         string path = data.Attr("path", "objects/FemtoHelper/switchMovetBox/");
         floaty = data.Bool("floaty", true);
         OneUse = data.Bool("oneUse", false);
+        DestroyAttached = data.Bool("destroyAttached", true);
         Add(Back = new Image(GFX.Game[path + "back"]));
         BackOneUse = new Image(GFX.Game[path + "back_oneuse"]);
         if (OneUse)
@@ -132,7 +134,7 @@ public class SwitchMovetBox : Solid
         Glow.CenterOrigin();
         Cover.CenterOrigin();
 
-        Cover.Position = BackOneUse.Position = Back.Position = Crystal.Position = Glow.Position = halfSize;
+        Cover.Position = BackOneUse.Position = Back.Position = Crystal.Position = Glow.Position = HalfSize;
 
         Color glowColor = Microsoft.Xna.Framework.Color.Lerp(Calc.HexToColor(Color), Microsoft.Xna.Framework.Color.DarkGray * 0.2f, 0.8f);
         Glow.Color = glowColor;
@@ -148,7 +150,7 @@ public class SwitchMovetBox : Solid
         };
         Add(Sound = new SoundSource()
         {
-            Position = halfSize
+            Position = HalfSize
         });
     }
 
@@ -222,6 +224,11 @@ public class SwitchMovetBox : Solid
                     Sound.Play("event:/new_content/game/10_farewell/fusebox_hit_2");
                     Cover.Play("break");
                     Crystal.Visible = Glow.Visible = Back.Visible = BackOneUse.Visible = Collidable = false;
+                    if (DestroyAttached)
+                    {
+                        DestroyStaticMovers();
+                        //DisableStaticMovers();
+                    }
                     SceneAs<Level>().Flash(new(0.1f, 0.1f, 0.1f, 0f));
                     Celeste.Freeze(0.1f);
                 });
@@ -259,8 +266,8 @@ public class SwitchMovetBox : Solid
             Vector2 vector2 = Start;
             vector2.Y += sink * 6f + sine2.Value * MathHelper.Lerp(4f, 2f, sink);
             vector2 += bounce.Value * bounceDir * (floaty ? 12f : 3f);
-            Crystal.Position = halfSize + vector2 - Position;
-            Glow.Position = halfSize + vector2 - Position;
+            Crystal.Position = HalfSize + vector2 - Position;
+            Glow.Position = HalfSize + vector2 - Position;
             if (DoSmashParticles)
             {
                 DoSmashParticles = false;
