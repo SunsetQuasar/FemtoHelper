@@ -398,6 +398,7 @@ entities.FemtoHelper/SMWBlock.attributes.description.affectCollidable=If checked
 entities.FemtoHelper/SMWBlock.attributes.description.affectActive=If checked, the reward entities will be inactive before being released, and active afterwards.\nIf unchecked, the Active state will be ignored.
 entities.FemtoHelper/SMWBlock.attributes.description.dashableKaizo=If checked, the player can hit an otherwise intangible hidden SMW Block from above or the sides by dahsing on it.
 entities.FemtoHelper/SMWBlock.attributes.description.launchMultiplier=Launches players and holdables with the specified speed multiplier.\nSetting this to 0 disables launching.\nMay not work for certain moddded holdables.
+entities.FemtoHelper/SMWBlock.attributes.description.solidAfterHit=Whether the block should be solid after being hit.\n Becomes solid again if "Turn Block Return Time" isn't a negative value. If set, no coin spawns if there are no rewards.
 
 # SMW Fish
 
@@ -628,6 +629,7 @@ entities.FemtoHelper/SwitchMovetBox.attributes.description.color=The color of th
 entities.FemtoHelper/SwitchMovetBox.attributes.description.path=The sprite path of the Switch Movet Box.
 entities.FemtoHelper/SwitchMovetBox.attributes.description.floaty=Whether the Switch Movet Box should float or not.
 entities.FemtoHelper/SwitchMovetBox.attributes.description.oneUse=Destroys the Switch Movet Box after one hit.
+entities.FemtoHelper/SwitchMovetBox.attributes.description.destroyAttached=Destroys attached entities.\n Does nothing if "One Use" isn't set.
 
 # Node Puffer
 

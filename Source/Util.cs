@@ -51,6 +51,11 @@ public class Util
     {
         Logger.Log(level, nameof(FemtoModule), str);
     }
+
+    public static void Log(object obj, LogLevel level = LogLevel.Debug)
+    {
+        Logger.Log(level, nameof(FemtoModule), obj.ToString());
+    }
 }
 
 public static class SpriteExtensions

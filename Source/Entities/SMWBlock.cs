@@ -107,7 +107,7 @@ public class GenericSmwBlock : Solid
 
     public readonly string Path;
 
-    public readonly bool Solidbeforehit;
+    public readonly bool SolidBeforeHit, SolidAfterHit;
 
     public readonly Collider PlCol;
 
@@ -115,7 +115,7 @@ public class GenericSmwBlock : Solid
 
     public Vector2 Node;
 
-    public readonly List<Entity> Rewards;
+    public List<Entity> Rewards;
 
     public readonly List<Vector2> Offsets;
 
@@ -174,6 +174,9 @@ public class GenericSmwBlock : Solid
     private readonly HashSet<string> whitelist;
     private readonly HashSet<string> blacklist;
 
+    public readonly float TurnBlockReturnTime;
+    public float TurnBlockReturnTimer;
+
     private HashSet<StaticMover> exemptFromRenderThingy = [];
 
     //public float BounceOffset => MathF.Sin(Bouncetimer / 10f * MathF.PI) * 6f;
@@ -181,7 +184,8 @@ public class GenericSmwBlock : Solid
     private Vector2 bounceOffset;
     public Vector2 BounceOffset
     {
-        get {
+        get
+        {
             return bounceOffset;
         }
         set
@@ -240,7 +244,9 @@ public class GenericSmwBlock : Solid
 
         Bouncetimer = 0;
 
-        Collidable = Solidbeforehit = data.Bool("solidBeforeHit", false);
+        Collidable = SolidBeforeHit = data.Bool("solidBeforeHit", false);
+        SolidAfterHit = data.Bool("solidAfterHit", true);
+        TurnBlockReturnTime = data.Float("turnBlockReturnTime", 4.27f);
 
         dashableKaizo = data.Bool("dashableKaizo", false);
         if (!Collidable) DisableStaticMovers();
@@ -299,7 +305,7 @@ public class GenericSmwBlock : Solid
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        foreach(StaticMover s in staticMovers)
+        foreach (StaticMover s in staticMovers)
         {
             if (s.Entity.Any(c => c is DustEdge))
             {
@@ -368,7 +374,7 @@ public class GenericSmwBlock : Solid
 
         base.Update();
 
-        if (!Solidbeforehit && player != null)
+        if (!SolidBeforeHit && player != null)
         {
             //bottom (top in inverted gravity)
 
@@ -421,9 +427,39 @@ public class GenericSmwBlock : Solid
                 }
             }
         }
+
+
+
         if (Bouncetimer > 0)
         {
             Bouncetimer -= Engine.DeltaTime * 60;
+        }
+        else if (Collidable && Activated && !SolidAfterHit)
+        {
+            Collidable = false;
+            TurnBlockReturnTimer = MathF.Max(TurnBlockReturnTime, 0);
+        }
+        if (!Collidable)
+        {
+            if (TurnBlockReturnTimer < 0)
+            {
+                if (!CollideCheck<Actor>())
+                {
+                    Collidable = true;
+                    Activated = false;
+                }
+            }
+            else
+            {
+                Log(TurnBlockReturnTime >= 0);
+                if (TurnBlockReturnTime >= 0)
+                {
+                    Log("???");
+                    Log("before: " + TurnBlockReturnTimer);
+                    TurnBlockReturnTimer -= Engine.DeltaTime;
+                    Log("after: " + TurnBlockReturnTimer);
+                }
+            }
         }
 
         float distance = MathF.Sin(Bouncetimer / 10f * MathF.PI) * 6f;
@@ -447,7 +483,7 @@ public class GenericSmwBlock : Solid
 
     public void TryDrawTiled(MTexture texture, Color color, Vector2 offset = default)
     {
-        for(int i = 0; i < Width; i += texture.Width)
+        for (int i = 0; i < Width; i += texture.Width)
         {
             for (int j = 0; j < Height; j += texture.Height)
             {
@@ -578,7 +614,7 @@ public class GenericSmwBlock : Solid
             {
                 Audio.Play(AudioPath + "blockswitch");
             }
-            else
+            else if (SolidAfterHit)
             {
                 Audio.Play(AudioPath + "blockcoin");
                 Scene.Add(new Coin(Position + new Vector2(Width / 2, Height / 2), Path));
@@ -612,6 +648,11 @@ public class GenericSmwBlock : Solid
 
             }
         }
+
+        if(!SolidAfterHit)
+        {
+            Rewards = [];
+        }
     }
 
     public void OnCrystalExplosion(Vector2 dir)
@@ -621,7 +662,7 @@ public class GenericSmwBlock : Solid
 
     public void OnPlayerCollide(Player player)
     {
-        if (!Solidbeforehit) return;
+        if (!SolidBeforeHit) return;
         if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
         {
             if (!(player.Bottom - 2 <= Top) || Activated || Bouncetimer > 0) return;
@@ -973,7 +1014,7 @@ public class GenericSmwBlock : Solid
 
         }
 
-        if (!Solidbeforehit) return DashCollisionResults.NormalCollision;
+        if (!SolidBeforeHit) return DashCollisionResults.NormalCollision;
 
         if (Activated || Bouncetimer > 0) return DashCollisionResults.NormalCollision;
         switch (direction.X)

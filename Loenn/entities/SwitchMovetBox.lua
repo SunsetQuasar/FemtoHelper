@@ -17,6 +17,7 @@ FemtoHelperSwitchMovetBox.placements = {
         path = "objects/FemtoHelper/switchMovetBox/",
         floaty = true,
         oneUse = false,
+        destroyAttached = true,
     }
 }
 
