@@ -363,6 +363,7 @@ entities.FemtoHelper/PseudoPolyhedron.attributes.description.topBaseHeight=The h
 entities.FemtoHelper/SMWBlock.placements.name.smwblockdefault=SMW Block (Default)
 entities.FemtoHelper/SMWBlock.placements.name.smwblockhidden=SMW Block (Kaizo/Hidden)
 entities.FemtoHelper/SMWBlock.placements.name.smwblockswitch=SMW Block (Switch)
+entities.FemtoHelper/SMWBlock.placements.name.smwblockturn=SMW Block (Turn Block)
 entities.FemtoHelper/SMWBlock.attributes.description.animationRate=Framerate for the block animations.
 entities.FemtoHelper/SMWBlock.attributes.description.ejectDistance=How far the reward gets ejected in the outwards direction.\nHigher values don't go a specific direction, but farther outwards from the block.
 entities.FemtoHelper/SMWBlock.attributes.description.ejectOffsetX=Horizontal offset of the rewards at the START of the animation.\nChanges where they come from, but not where they end up.
@@ -398,7 +399,8 @@ entities.FemtoHelper/SMWBlock.attributes.description.affectCollidable=If checked
 entities.FemtoHelper/SMWBlock.attributes.description.affectActive=If checked, the reward entities will be inactive before being released, and active afterwards.\nIf unchecked, the Active state will be ignored.
 entities.FemtoHelper/SMWBlock.attributes.description.dashableKaizo=If checked, the player can hit an otherwise intangible hidden SMW Block from above or the sides by dahsing on it.
 entities.FemtoHelper/SMWBlock.attributes.description.launchMultiplier=Launches players and holdables with the specified speed multiplier.\nSetting this to 0 disables launching.\nMay not work for certain moddded holdables.
-entities.FemtoHelper/SMWBlock.attributes.description.solidAfterHit=Whether the block should be solid after being hit.\n Becomes solid again if "Turn Block Return Time" isn't a negative value. If set, no coin spawns if there are no rewards.
+entities.FemtoHelper/SMWBlock.attributes.description.solidAfterHit=Whether the block should be solid after being hit.\nBecomes solid again if "Turn Block Return Time" isn't a negative value.\nIf set, no coin spawns if there are no rewards.
+entities.FemtoHelper/SMWBlock.attributes.description.turnBlockReturnTime=The time it takes for a block with "Solid After Hit" disabled to reset.\nSet to a negative value for the block to never reset.\nDoes nothing if "Solid After Hit" is set.
 
 # SMW Fish
 
