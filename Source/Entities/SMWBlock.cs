@@ -439,7 +439,7 @@ public class GenericSmwBlock : Solid
             Collidable = false;
             TurnBlockReturnTimer = MathF.Max(TurnBlockReturnTime, 0);
         }
-        if (!Collidable)
+        if (!Collidable && Activated)
         {
             if (TurnBlockReturnTimer < 0)
             {
@@ -451,13 +451,9 @@ public class GenericSmwBlock : Solid
             }
             else
             {
-                Log(TurnBlockReturnTime >= 0);
                 if (TurnBlockReturnTime >= 0)
                 {
-                    Log("???");
-                    Log("before: " + TurnBlockReturnTimer);
                     TurnBlockReturnTimer -= Engine.DeltaTime;
-                    Log("after: " + TurnBlockReturnTimer);
                 }
             }
         }
