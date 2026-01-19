@@ -401,6 +401,8 @@ entities.FemtoHelper/SMWBlock.attributes.description.dashableKaizo=If checked, t
 entities.FemtoHelper/SMWBlock.attributes.description.launchMultiplier=Launches players and holdables with the specified speed multiplier.\nSetting this to 0 disables launching.\nMay not work for certain moddded holdables.
 entities.FemtoHelper/SMWBlock.attributes.description.solidAfterHit=Whether the block should be solid after being hit.\nBecomes solid again if "Turn Block Return Time" isn't a negative value.\nIf set, no coin spawns if there are no rewards.
 entities.FemtoHelper/SMWBlock.attributes.description.turnBlockReturnTime=The time it takes for a block with "Solid After Hit" disabled to reset.\nSet to a negative value for the block to never reset.\nDoes nothing if "Solid After Hit" is set.
+entities.FemtoHelper/SMWBlock.attributes.description.whitelist=Comma-separated list of entity class names and/or entity placement names allowed to be caught by the block.\nAllows wildcards (*). Use "@triggers" to match all triggers.\nTakes priority over Blacklist.
+entities.FemtoHelper/SMWBlock.attributes.description.blacklist=Comma-separated list of entity class names and/or entity placement names to exclude from being caught by the block.\nAllows wildcards (*). Use "@triggers" to match all triggers.\nDoes nothing if a whitelist is set.
 
 # SMW Fish
 
