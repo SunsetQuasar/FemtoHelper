@@ -48,7 +48,7 @@ public class GloriousPassage : Entity
         Simple = data.Bool("simpleTrigger", false);
         FaceLeft = data.Bool("faceLeft", false);
         SpawnIndex = data.Int("spawnpointIndex");
-        InteractToOpen = !data.Bool("pressUpToOpen", false);
+        InteractToOpen = !data.Bool("pressUpToOpen", false) && !Simple;
         KeepDashes = data.Bool("keepDashes", false);
         SameRoom = data.Bool("sameRoom", false);
         CarryHoldablesOver = data.Bool("carryHoldablesOver", false);
@@ -76,7 +76,7 @@ public class GloriousPassage : Entity
 
     public void OnPlayer(Player player)
     {
-        if (Simple && !Done && EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
+        if (Simple && !Done && Player != null && !PlayerInside && EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
         {
             Add(new Coroutine(Routine(player)));
             return;
@@ -123,14 +123,14 @@ public class GloriousPassage : Entity
         for (float i = 0; i < 1; i += Engine.RawDeltaTime * 4)
         {
             if (timeRateModifier is not null) timeRateModifier.Multiplier = Calc.Approach(timeRateModifier.Multiplier, 0, Engine.RawDeltaTime * 4);
-            if (Player.Dead || Player == null || Scene == null)
+            if (Player == null || Player.Dead || Scene == null)
             {
                 timeRateModifier.Multiplier = 1f;
                 yield break;
             }
             yield return null;
         }
-        if (Player.Dead || Player == null || Scene == null)
+        if (Player == null || Player.Dead || Scene == null)
         {
             timeRateModifier.Multiplier = 1f;
             yield break;
@@ -142,14 +142,14 @@ public class GloriousPassage : Entity
 
     public void Tp()
     {
-        if (Player.Dead || Player == null || Scene == null) return;
+        if (Player == null || Player.Dead || Scene == null) return;
         if (timeRateModifier is not null) timeRateModifier.Multiplier = 1;
         Level level = Scene as Level;
         level.Session.SetFlag("transition_assist", false);
         Player player = Scene.Tracker.GetEntity<Player>();
         level.OnEndOfFrame += () =>
         {
-            if (Player.Dead || Player == null || Scene == null) return;
+            if (Player == null || Player.Dead || Scene == null) return;
             Vector2 pos, playerDelta;
             Leader leader;
 

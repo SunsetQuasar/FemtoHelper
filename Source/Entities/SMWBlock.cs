@@ -6,6 +6,8 @@ using Celeste.Mod.FemtoHelper.Utils;
 using MonoMod.Utils;
 using MonoMod.Cil;
 using Celeste.Mod.Helpers;
+using System.Text.RegularExpressions;
+using static Celeste.WindController;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -332,7 +334,9 @@ public class GenericSmwBlock : Solid
                     bool whitelisted = false;
                     foreach (string str in whitelist)
                     {
-                        if (entity.GetType().FullName == str)
+                        string pattern = "^" + Regex.Escape(str).Replace("\\*", ".*") + "$";
+
+                        if (Regex.IsMatch(entity.GetType().FullName, pattern) || Regex.IsMatch(entity.SourceData.Name, pattern) || (whitelist.Contains("@triggers") && entity is Trigger))
                         {
                             whitelisted = true;
                             break;
@@ -345,7 +349,9 @@ public class GenericSmwBlock : Solid
                     bool blacklisted = false;
                     foreach (string str in blacklist)
                     {
-                        if (entity.GetType().FullName == str)
+                        string pattern = "^" + Regex.Escape(str).Replace("\\*", ".*") + "$";
+
+                        if (Regex.IsMatch(entity.GetType().FullName, pattern) || Regex.IsMatch(entity.SourceData.Name, pattern) || (blacklist.Contains("@triggers") && entity is Trigger))
                         {
                             blacklisted = true;
                             break;
