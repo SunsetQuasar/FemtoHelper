@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -212,9 +213,14 @@ public class GloriousPassage : Entity
                 }
             }
 
-            Holdable hold = player.Holding;
+            Holdable hold = null;
+            if (CarryHoldablesOver)
+            {
+                hold = player.Holding;
 
-            hold?.Entity.AddTag(Tags.Global);
+                hold?.Entity.AddTag(Tags.Global);
+            }
+            
 
             Vector2 cameraDelta = level.Camera.Position - pos;
             int dashes = player.Dashes;
@@ -272,10 +278,13 @@ public class GloriousPassage : Entity
             player.Sprite.Visible = true;
             if (KeepDashes) player.Dashes = dashes;
 
-            if (hold != null)
+            if (CarryHoldablesOver)
             {
-                hold.Entity.Position += playerDelta;
-                hold.Entity.RemoveTag(Tags.Global);
+                if (hold != null)
+                {
+                    hold.Entity.Position += playerDelta;
+                    hold.Entity.RemoveTag(Tags.Global);
+                }
             }
 
             foreach (Follower item2 in leader.Followers.Where(f => f.Entity != null))
