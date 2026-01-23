@@ -5,11 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Utils;
 public class Util
 {
+    public static float VectorToAngle(Vector2 vector)
+    {
+        return (float)Math.Atan2(vector.Y, vector.X);
+    }
+
     public static float Mod(float x, float m)
     {
         return (x % m + m) % m;

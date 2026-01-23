@@ -26,4 +26,53 @@ public class AssistHazardController : Entity
             entity.RemoveSelf();
         }
     }
+
+
+    public static void NoAssistSquishHook(On.Celeste.Solid.orig_Update orig, Solid self)
+    {
+        bool assist1 = SaveData.Instance.Assists.Invincible;
+        if (self.Scene.Tracker.GetEntity<AssistHazardController>() != null)
+        {
+            SaveData.Instance.Assists.Invincible = true;
+        }
+        orig(self);
+        SaveData.Instance.Assists.Invincible = assist1;
+    }
+
+    public static void NoAssistSquishPlayer(On.Celeste.Player.orig_OnSquish orig, Player self, CollisionData data)
+    {
+        bool assist1 = SaveData.Instance.Assists.Invincible;
+        if (self.Scene.Tracker.GetEntity<AssistHazardController>() != null)
+        {
+            SaveData.Instance.Assists.Invincible = true;
+        }
+        orig(self, data);
+        SaveData.Instance.Assists.Invincible = assist1;
+    }
+
+    public static int DreamDashBounceHook(On.Celeste.Player.orig_DreamDashUpdate orig, Player self)
+    {
+        bool assist1 = SaveData.Instance.Assists.Invincible;
+        if (self.Scene.Tracker.GetEntity<AssistHazardController>() != null)
+        {
+            SaveData.Instance.Assists.Invincible = true;
+        }
+        int a = orig(self);
+        SaveData.Instance.Assists.Invincible = assist1;
+        return a;
+    }
+
+    public static void Load()
+    {
+        On.Celeste.Solid.Update += NoAssistSquishHook;
+        On.Celeste.Player.OnSquish += NoAssistSquishPlayer;
+        On.Celeste.Player.DreamDashUpdate += DreamDashBounceHook;
+    }
+
+    public static void Unload()
+    {
+        On.Celeste.Solid.Update -= NoAssistSquishHook;
+        On.Celeste.Player.OnSquish -= NoAssistSquishPlayer;
+        On.Celeste.Player.DreamDashUpdate -= DreamDashBounceHook;
+    }
 }

@@ -250,7 +250,6 @@ public class FemtoModule : EverestModule
         On.Celeste.Seeker.RegenerateCoroutine += Seeker_RegenKaizoHook;
         IL.Celeste.Actor.MoveHExact += onCollideH_IL;
         IL.Celeste.Actor.MoveVExact += onCollideV_IL;
-        CodecumberPortStuff.Load();
         VitalDrainController.Load();
         CrystalHeartBoss.Load();
         PlutoniumText.Load();
@@ -265,6 +264,10 @@ public class FemtoModule : EverestModule
         GenericSmwBlock.Load();
         ObfuscatedFancyText.Load();
         NewDistortedParallax.Load();
+        RotateDashRefill.Load();
+        BoostingBoosterSorryIStoleFromCommunalHelper.Load();
+        EvilTheoCrystal.Load();
+        AssistHazardController.Load();
     }
 
     public override void Unload()
@@ -288,7 +291,6 @@ public class FemtoModule : EverestModule
         On.Celeste.Seeker.RegenerateCoroutine -= Seeker_RegenKaizoHook;
         IL.Celeste.Actor.MoveHExact -= onCollideH_IL;
         IL.Celeste.Actor.MoveVExact -= onCollideV_IL;
-        CodecumberPortStuff.Unload();
         VitalDrainController.Unload();
         CrystalHeartBoss.Unload();
         PlutoniumText.Unload();
@@ -303,6 +305,10 @@ public class FemtoModule : EverestModule
         GenericSmwBlock.Unload();
         ObfuscatedFancyText.Unload();
         NewDistortedParallax.Unload();
+        RotateDashRefill.Unload();
+        BoostingBoosterSorryIStoleFromCommunalHelper.Unload();
+        EvilTheoCrystal.Unload();
+        AssistHazardController.Unload();
     }
 
 

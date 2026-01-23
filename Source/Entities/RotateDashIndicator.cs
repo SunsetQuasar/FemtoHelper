@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿
+using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ public class RotateDashIndicator() : Component(true, true)
     {
         if (FemtoModule.Session.HasRotateDash && (Entity as Player).Speed != Vector2.Zero)
         {
-            float newAngle = CodecumberPortStuff.VectorToAngle((Entity as Player).Speed) - FemtoModule.Session.RotateDashAngle;
+            float newAngle = VectorToAngle((Entity as Player).Speed) - FemtoModule.Session.RotateDashAngle;
             Texture.DrawOutlineCentered(Entity.Center, Color.Black, 1, newAngle);
             Texture.DrawOutlineCentered(Entity.Center + Vector2.UnitY, Color.Black, 1, newAngle);
             Texture.DrawCentered(Entity.Center + Vector2.UnitY, FemtoModule.Session.RotateDashColors[2], 1, newAngle);
