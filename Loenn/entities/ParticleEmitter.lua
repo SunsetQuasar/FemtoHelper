@@ -37,17 +37,19 @@ FemtoHelperParticleEmitter.fieldInformation = {
         editable = false
     },
     particleColor = {
-      fieldType = "color"
+      fieldType = "color",
+      useAlpha = true
     },
     particleColor2 = {
-      fieldType = "color"
+      fieldType = "color",
+      useAlpha = true
     }
 }
 FemtoHelperParticleEmitter.placements = {
     name = "default",
     data = {
-      particleColor="ff7777",
-      particleColor2="9c2e36",
+      particleColor="FF7777FF",
+      particleColor2="9C2E36FF",
       particleTexture="particles/feather",
       particleFadeMode=2,
       particleColorMode=3,

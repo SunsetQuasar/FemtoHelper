@@ -218,8 +218,6 @@ FemtoHelperSMWBlock.placements = {
     }
 }
 
-    
-
 function FemtoHelperSMWBlock.sprite(room, entity)
 
     local spr = {}

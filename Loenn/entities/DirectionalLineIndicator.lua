@@ -113,7 +113,8 @@ FemtoHelperDirectionalLineIndicator.fieldInformation = {
       fieldType = "integer"
     },
     color = {
-      fieldType = "color"
+      fieldType = "color",
+      useAlpha = true
     }
 }
 FemtoHelperDirectionalLineIndicator.placements = {
@@ -134,7 +135,7 @@ FemtoHelperDirectionalLineIndicator.placements = {
         positionEase = "SineInOut",
         alphaInPercent = 0.3,
         orientSprite = true,
-        color = "ffffff"
+        color = "FFFFFFFF"
     }
 }
 

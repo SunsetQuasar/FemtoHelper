@@ -15,10 +15,12 @@ FemtoHelperCinematicText.nodeLimits = {0, 2}
 
 FemtoHelperCinematicText.fieldInformation = {
     mainColor = {
-        fieldType = "color"
+        fieldType = "color",
+        useAlpha = true
     },
     outlineColor = {
-        fieldType = "color"
+        fieldType = "color",
+        useAlpha = true
     }
 }
 

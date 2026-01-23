@@ -14,10 +14,12 @@ FemtoHelperSimpleText.nodeRenderType = "fan"
 
 FemtoHelperSimpleText.fieldInformation = {
     mainColor = {
-        fieldType = "color"
+        fieldType = "color",
+        useAlpha = true
     },
     outlineColor = {
-        fieldType = "color"
+        fieldType = "color",
+        useAlpha = true
     }
 }
 
