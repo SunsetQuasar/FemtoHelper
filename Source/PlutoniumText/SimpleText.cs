@@ -14,7 +14,7 @@ public partial class SimpleText : Entity
     public Color Color2;
     public readonly bool Shadow;
     public readonly int Spacing;
-    public readonly PlutoniumText Text;
+    public readonly PlutoniumTextComponent Text;
     public readonly float Parallax;
     public readonly bool Hud;
 
@@ -47,7 +47,7 @@ public partial class SimpleText : Entity
         string path = data.Attr("fontPath", "objects/FemtoHelper/PlutoniumText/example");
         string list = data.Attr("charList", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\".,ç");
         Vector2 size = new Vector2(data.Int("fontWidth", 7), data.Int("fontHeight", 7));
-        Add(Text = new PlutoniumText(path, list, size));
+        Add(Text = new PlutoniumTextComponent(path, list, size));
         Parallax = data.Float("parallax", 1);
         Hud = data.Bool("hud", false);
         Scale = data.Float("scale", 1);

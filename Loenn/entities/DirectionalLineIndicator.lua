@@ -165,7 +165,7 @@ function FemtoHelperDirectionalLineIndicator.sprite(room, entity)
                     arrow:setPosition(entity.x + ((i / entity.spriteCount) * xx), entity.y + ((i / entity.spriteCount) * yy))
                     arrow:setColor(entity.color)
                     arrow:setAlpha(entity.alphaMultiplier)
-                    arrow.rotation = math.atan2(yy, xx)
+                    if entity.orientSprite then arrow.rotation = math.atan2(yy, xx) end
                     table.insert(sprites, arrow)
                 end
             end

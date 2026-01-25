@@ -7,9 +7,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Celeste.Mod.FemtoHelper;
-
-
-
 public static class PlutoniumTextNodes
 {
 
@@ -181,7 +178,7 @@ public class TextEffectData
     public readonly bool Twitchy;
     public readonly float TwitchChance;
 
-    public readonly bool Empty;
+    public readonly bool Empty = true;
     public TextEffectData(bool wavey, Vector2 amp, float offset, bool shakey, float amount, bool obfs, bool twitchy, float twitchChance, float phaseIncrement, float waveSpeed)
     {
         Wavey = wavey;
@@ -199,26 +196,26 @@ public class TextEffectData
         Obfuscated = obfs;
         Twitchy = twitchy;
         TwitchChance = twitchChance;
+        Empty = false;
     }
 
     public TextEffectData()
     {
-        Empty = true;
     }
 }
 
-public class PlutoniumText : Component
+public class PlutoniumTextComponent : Component
 {
     public readonly Dictionary<char, int> Charset;
     public readonly List<MTexture> CharTextures;
     public Vector2 FontSize;
     public float Seed;
     public readonly string CharList;
-    public PlutoniumText(string fontPath, string charList, Vector2 fontSize) : base(true, true)
+    public PlutoniumTextComponent(string fontPath, string charList, Vector2 fontSize) : base(true, true)
     {
         FontSize = fontSize;
-        Charset = new Dictionary<char, int>();
-        CharTextures = new List<MTexture>();
+        Charset = [];
+        CharTextures = [];
         string characters = CharList = charList;
         // " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'".,ç"
         // " !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"

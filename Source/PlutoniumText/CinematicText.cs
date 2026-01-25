@@ -18,7 +18,7 @@ public partial class CinematicText : Entity
     public Color Color2;
     public readonly bool Shadow;
     public readonly int Spacing;
-    public readonly PlutoniumText Text;
+    public readonly PlutoniumTextComponent Text;
     public readonly float Parallax;
     public int FinalStringLen = 0;
     public char MovingChar = ' ';
@@ -112,7 +112,7 @@ public partial class CinematicText : Entity
 
         Vector2 size = new Vector2(data.Int("fontWidth", 7), data.Int("fontHeight", 7));
 
-        Add(Text = new PlutoniumText(path, list, size));
+        Add(Text = new PlutoniumTextComponent(path, list, size));
 
         Add(new BeforeRenderHook(BeforeRender));
 
