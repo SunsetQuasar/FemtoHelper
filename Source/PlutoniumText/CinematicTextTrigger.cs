@@ -45,7 +45,7 @@ public class CinematicTextTrigger(EntityData data, Vector2 offset) : Trigger(dat
                         return;
                     }
                     t.StopText = false;
-                    t.Active = t.Entered = false;
+                    t.Activated = t.Entered = false;
                     t.DisappearPercent = 1f;
                     t.FinalStringLen = 0;
                     t.Finished = false;
@@ -53,7 +53,7 @@ public class CinematicTextTrigger(EntityData data, Vector2 offset) : Trigger(dat
                     t.ActualSequence = null;
                     return;
                 }
-                if (t.Active) t.StopText = true;
+                if (t.Activated) t.StopText = true;
             } else
             {
                 t.Enter();

@@ -247,6 +247,16 @@ public static class Vector2Extensions
         }
         return vec;
     }
+
+    public static Point ToPoint(this Vector2 vec)
+    {
+        return new Point((int)vec.X, (int)vec.Y);
+    }
+
+    public static Vector2 ToVector2(this Point pnt)
+    {
+        return new Vector2(pnt.X, pnt.Y);
+    }
 }
 
 public static class PlayerExtensions

@@ -2,6 +2,7 @@
 using MonoMod.ModInterop;
 using Celeste.Mod.FemtoHelper.Entities;
 using System;
+using Celeste.Mod.FemtoHelper.PlutoniumText;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -30,25 +31,6 @@ public static class FemtoHelperExports
     public static bool CanHitRight(Entity block)
     {
         return (block as GenericSmwBlock)?.CanHitRight ?? false;
-    }
-
-    public static object CreateTextEffectData(bool wavey, Vector2 amp, float offset, bool shakey, float amount, bool obfuscated, bool twitchy, float twitchChance, float phaseIncrement, float waveSpeed)
-    {
-        return new TextEffectData(wavey, amp, offset, shakey, amount, obfuscated, twitchy, twitchChance, phaseIncrement, waveSpeed);
-    }
-
-    public static object EmptyTextEffectData() => new TextEffectData();
-
-    public static Component CreatePlutoniumTextComponent(string fontPath, string charList, Vector2 fontSize) => new PlutoniumTextComponent(fontPath, charList, fontSize);
-
-    public static void PrintPlutoniumText(Component text, Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, object textEffectData /* create an empty one for no effects */, float scale /* = 1 */, int id /* = 0 */)
-    {
-        (text as PlutoniumTextComponent)?.Print(pos, str, shadow, spacing, mainColor, outlineColor, (textEffectData as TextEffectData) ?? new TextEffectData(), 1, 0);
-    }
-
-    public static void PrintPlutoniumTextCentered(Component text, Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, object textEffectData /* create an empty one for no effects */, float scale /* = 1 */, int id /* = 0 */)
-    {
-        (text as PlutoniumTextComponent)?.PrintCentered(pos, str, shadow, spacing, mainColor, outlineColor, (textEffectData as TextEffectData) ?? new TextEffectData(), 1, 0);
     }
 
     public static Entity TransformIntoEvilTheo(Actor from, string spriteOverride)

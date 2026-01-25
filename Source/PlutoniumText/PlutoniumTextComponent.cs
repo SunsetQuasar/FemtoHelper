@@ -1,10 +1,15 @@
-﻿using Celeste.Mod.FemtoHelper.Entities;
+﻿using Celeste.Mod.FemtoHelper.Code.Effects;
+using Celeste.Mod.FemtoHelper.Entities;
+using Celeste.Mod.FemtoHelper.PlutoniumText;
 using Celeste.Mod.FemtoHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml;
+using static Celeste.Mod.FemtoHelper.PlutoniumFont;
 
 namespace Celeste.Mod.FemtoHelper;
 public static class PlutoniumTextNodes
@@ -23,7 +28,7 @@ public static class PlutoniumTextNodes
         public readonly string Key = k;
     }
 
-    public class Slider(string k, bool t, int d) : Node 
+    public class Slider(string k, bool t, int d) : Node
     {
         public readonly string Key = k;
         public readonly bool Truncate = t;
@@ -55,17 +60,18 @@ public static class PlutoniumTextNodes
 
         string format = "0.";
 
-        for(int i = 0; i < decimals; i++)
+        for (int i = 0; i < decimals; i++)
         {
             format += "0";
         }
-        
+
         return f.ToString(format);
     }
 
-    private static string GetShorthandNumber(float f) {
+    private static string GetShorthandNumber(float f)
+    {
         if (f < 1000000) return f.ToString();
-        int orderOfMagnitudeTriplets = (int) (MathF.Log10(f) / 3);
+        int orderOfMagnitudeTriplets = (int)(MathF.Log10(f) / 3);
         double num = Math.Round(f / Math.Pow(10, 3 * orderOfMagnitudeTriplets), 3);
         string str = num.ToString();
         if (orderOfMagnitudeTriplets < BigNumberNames.Length - 1) return str + " " + BigNumberNames[orderOfMagnitudeTriplets];
@@ -145,7 +151,7 @@ public static class PlutoniumTextNodes
                 case Counter c:
                     result += level.Session.GetCounter(c.Key).ToString();
                     break;
-                case Slider s:              
+                case Slider s:
                     result += s.Truncate ? GetShorthandNumber(level.Session.GetSlider(s.Key)) : LimitedDecimals(level.Session.GetSlider(s.Key), s.Decimals);
                     break;
                 case Flag f:
@@ -178,8 +184,8 @@ public class TextEffectData
     public readonly bool Twitchy;
     public readonly float TwitchChance;
 
-    public readonly bool Empty = true;
-    public TextEffectData(bool wavey, Vector2 amp, float offset, bool shakey, float amount, bool obfs, bool twitchy, float twitchChance, float phaseIncrement, float waveSpeed)
+    public bool Empty => !(Twitchy || Shakey || Obfuscated || Wavey);
+    public TextEffectData(bool wavey = false, Vector2 amp = default, float offset = 0, bool shakey = false, float amount = 0, bool obfs = false, bool twitchy = false, float twitchChance = 0, float phaseIncrement = 0, float waveSpeed = 0)
     {
         Wavey = wavey;
         if (wavey)
@@ -196,7 +202,6 @@ public class TextEffectData
         Obfuscated = obfs;
         Twitchy = twitchy;
         TwitchChance = twitchChance;
-        Empty = false;
     }
 
     public TextEffectData()
@@ -204,27 +209,227 @@ public class TextEffectData
     }
 }
 
+public struct PlutoniumFont
+{
+    public static Dictionary<string, PlutoniumFont> FontCache = [];
+
+    public struct Character
+    {
+        public static BlendState AlphaSubtract = new()
+        {
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.One,
+            ColorBlendFunction = BlendFunction.ReverseSubtract,
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.One,
+            AlphaBlendFunction = BlendFunction.ReverseSubtract
+        };
+
+        public readonly Rectangle SourceRect;
+        public Point PreDrawOffset;
+        public Point PostDrawOffset;
+        public MTexture Sprite;
+        public VirtualRenderTarget Outline;
+        public VirtualRenderTarget Shadow;
+
+        public Character(PlutoniumFont parent, char character, MTexture source, Rectangle rect, Point preOffset, Point postOffset)
+        {
+            Sprite = source.GetSubtexture(rect);
+            SourceRect = rect;
+            PreDrawOffset = preOffset;
+            PostDrawOffset = postOffset;
+
+            Outline = VirtualContent.CreateRenderTarget(parent.SourcePath + "_" + character + "_outline", SourceRect.Width + 2, SourceRect.Height + 2);
+            Shadow = VirtualContent.CreateRenderTarget(parent.SourcePath + "_" + character + "_shadow", SourceRect.Width + 2, SourceRect.Height + 2);
+
+            GraphicsDevice g = Engine.Graphics.GraphicsDevice;
+
+            //do outline first
+
+            g.SetRenderTarget(Outline);
+            g.Clear(Color.Transparent);
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            PlutoniumTextComponent.DrawOutlineExceptGood(Sprite, Vector2.One, Vector2.Zero, Color.White);
+            Draw.SpriteBatch.End();
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, AlphaSubtract, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            Sprite.Draw(Vector2.One);
+            Draw.SpriteBatch.End();
+
+            //then do shadow
+
+            g.SetRenderTarget(Shadow);
+            g.Clear(Color.Transparent);
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            Sprite.Draw(Vector2.One + Vector2.One);
+            Draw.SpriteBatch.End();
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, AlphaSubtract, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            Sprite.Draw(Vector2.One);
+            Draw.SpriteBatch.End();
+        }
+    }
+
+    public Dictionary<char, Character> Chars = [];
+
+    public string CharList = "";
+
+    public MTexture SourceTexture;
+
+    public string SourcePath = "";
+
+    public PlutoniumFont(string path, string legacyCharList = "", Vector2 legacySize = default)
+    {
+        if (!string.IsNullOrWhiteSpace(legacyCharList))
+        {
+            SourcePath = "";
+
+            SourceTexture = GFX.Game[path];
+
+            CharList = legacyCharList;
+
+            for(int i = 0; i < CharList.Length; i++)
+            {
+                Chars.Add(CharList[i], new Character(this, CharList[i], SourceTexture, new Rectangle((int)legacySize.X * i, 0, (int)legacySize.X, (int)legacySize.Y), Point.Zero, Point.Zero));
+            }
+
+            FontCache.Add(path, this);
+
+            return;
+        }
+
+        XmlDocument doc = Calc.LoadContentXML(path);
+        if (!doc.HasChildNodes)
+        {
+            Log($"Missing font XML: {path}", LogLevel.Error);
+            return;
+        }
+        XmlNodeList list = doc.GetElementsByTagName("Font");
+        XmlElement font = list.Count == 0 ? null : (XmlElement)list[0];
+
+        if (font is null)
+        {
+            throw new Exception($"'{path}': file is missing a 'Font' element!");
+        }
+
+        SourcePath = path;
+
+        if (font.HasAttr("source"))
+        {
+            SourceTexture = GFX.Game[font.Attr("source")];
+        }
+        else
+        {
+            throw new Exception($"'{path}': 'Font' element does not contain a 'source' attribute!");
+        }
+
+        foreach (XmlElement character in font.GetElementsByTagName("Character"))
+        {
+            char id = default;
+            Point pre, post;
+            Rectangle source;
+            if (
+                character.HasAttr("id") &&
+                character.HasAttr("x") &&
+                character.HasAttr("y") &&
+                character.HasAttr("width") &&
+                character.HasAttr("height") &&
+                character.HasAttr("preOffsetX") &&
+                character.HasAttr("preOffsetY") &&
+                character.HasAttr("postOffsetX") &&
+                character.HasAttr("postOffsetY")
+                )
+            {
+                id = character.AttrChar("id");
+                source = character.Rect();
+                pre = new(character.AttrInt("preOffsetX"), character.AttrInt("preOffsetY"));
+                post = new(character.AttrInt("postOffsetX"), character.AttrInt("postOffsetY"));
+            }
+            else
+            {
+                throw new Exception($"'{path}': 'Character' element is missing one or more attributes!");
+            }
+
+            Chars.Add(id, new Character(this, id, SourceTexture, source, pre, post));
+
+            CharList += id;
+        }
+
+        FontCache.Add(path, this);
+    }
+
+    public static PlutoniumFont GetFont(string path, string legacyCharList = "", Vector2 legacyFontSize = default)
+    {
+        if (FontCache.TryGetValue(path, out PlutoniumFont font))
+        {
+            return font;
+        }
+        return new PlutoniumFont(path, legacyCharList, legacyFontSize);
+    }
+
+    public readonly Character? GetCharacter(char c)
+    {
+        if (Chars.TryGetValue(c, out Character character))
+        {
+            return character;
+        }
+        return null;
+    }
+
+    public readonly Vector2 StringSize(string str, int extraSpacing)
+    {
+        Vector2 size = Vector2.Zero;
+        foreach(char c in str)
+        {
+            Character? ch = GetCharacter(c);
+            if (ch is { } ch2)
+            {
+                size += new Vector2(ch2.Sprite.Width, 0) + ch2.PreDrawOffset.ToVector2() + ch2.PostDrawOffset.ToVector2() + (Vector2.UnitX * extraSpacing);
+            }
+        }
+        return size;
+    }
+}
+
 public class PlutoniumTextComponent : Component
 {
-    public readonly Dictionary<char, int> Charset;
-    public readonly List<MTexture> CharTextures;
-    public Vector2 FontSize;
+    //public readonly List<MTexture> CharTextures;
     public float Seed;
-    public readonly string CharList;
-    public PlutoniumTextComponent(string fontPath, string charList, Vector2 fontSize) : base(true, true)
+    public string FontPath;
+    public readonly Action<Level> BeforeRenderCallback, RenderCallback;
+    public readonly TextLayer Layer;
+    public PlutoniumFont Font;
+    public TextEffectData EffectData;
+    public PlutoniumTextComponent(string fontPath, TextLayer layer = TextLayer.Gameplay, Action<Level> beforeRender = null, Action<Level> render = null, TextEffectData data = default, string legacyCharList = "", Vector2 legacyFontSize = default) : base(true, true)
     {
-        FontSize = fontSize;
-        Charset = [];
-        CharTextures = [];
-        string characters = CharList = charList;
-        // " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'".,ç"
-        // " !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+        Layer = layer;
+        BeforeRenderCallback = beforeRender;
+        RenderCallback = render;
 
-        for (int i = 0; i < characters.Length; i++)
-        {
-            Charset.Add(characters[i], i);
-            CharTextures.Add(GFX.Game[fontPath].GetSubtexture(i * (int)fontSize.X, 0, (int)fontSize.X, (int)fontSize.Y)); // "PlutoniumHelper/PlutoniumText/font"
-        }
+        Font = GetFont(fontPath, legacyCharList, legacyFontSize);
+
+        FontPath = fontPath;
+
+        EffectData = data;
+    }
+
+    public override void EntityAwake()
+    {
+        PlutoniumTextRenderer.Track(this);
+    }
+    public override void EntityRemoved(Scene scene)
+    {
+        PlutoniumTextRenderer.Untrack(this);
+    }
+    public override void SceneEnd(Scene scene)
+    {
+        PlutoniumTextRenderer.Untrack(this);
+    }
+    public override void Removed(Entity entity)
+    {
+        PlutoniumTextRenderer.Untrack(this);
     }
 
     public override void Update()
@@ -235,105 +440,92 @@ public class PlutoniumTextComponent : Component
             Seed = Calc.Random.NextFloat() * 12801;
         }
     }
-    public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
+    public void PrintCentered(Vector2 pos, string str, bool shadow, int extraSpacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
     {
-        float stringlen = spacing * str.Length * scale;
-        Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(FontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, new TextEffectData(), scale, id);
+        Vector2 stringSize = Font.StringSize(str, extraSpacing) * scale;
+        Print(pos - stringSize / 2f, str, shadow, extraSpacing, mainColor, outlineColor, scale, id);
     }
 
-    public void PrintCentered(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, TextEffectData data, float scale = 1, int id = 0)
+    public void Print(Vector2 pos, string str, bool shadow, int extraSpacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
     {
-        float stringlen = spacing * str.Length * scale;
-        Print(pos - new Vector2((float)Math.Floor(stringlen / 2f), (float)Math.Floor(FontSize.Y / 2f)), str, shadow, spacing, mainColor, outlineColor, data, scale, id);
-    }
-
-    public void Print(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
-    {
-        Print(pos, str, shadow, spacing, mainColor, outlineColor, new TextEffectData(), scale, id);
-    }
-
-    public void Print(Vector2 pos, string str, bool shadow, int spacing, Color mainColor, Color outlineColor, TextEffectData data, float scale = 1, int id = 0)
-    {
-
-        SpriteEffects flip = SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        if (SaveData.Instance.Assists.MirrorMode) str = new string(str.Reverse().ToArray());
 
         List<Vector2> effectOffsets = [];
-        List<char> theseChars = [];
+        List<char> useChar = [];
 
         pos = pos.Floor();
 
-        if (!data.Empty)
+        if (!EffectData.Empty)
         {
             for (float i = 0; i < str.Length; i++)
             {
                 effectOffsets.Add(Vector2.Zero);
-                theseChars.Add(' ');
+                useChar.Add(' ');
 
                 float i2 = i + id;
 
                 Calc.PushRandom((int)(Seed + 82 * i2 * i));
-                if (data.Shakey || (data.Twitchy && Calc.Random.Chance(data.TwitchChance)))
+                if (EffectData.Shakey || (EffectData.Twitchy && Calc.Random.Chance(EffectData.TwitchChance)))
                 {
-                    Vector2 num = new Vector2(Calc.Random.NextFloat(2f * data.ShakeAmount) - data.ShakeAmount, Calc.Random.NextFloat(2f * data.ShakeAmount) - data.ShakeAmount) * scale;
+                    Vector2 num = new Vector2(Calc.Random.NextFloat(2f * EffectData.ShakeAmount) - EffectData.ShakeAmount, Calc.Random.NextFloat(2f * EffectData.ShakeAmount) - EffectData.ShakeAmount) * scale;
                     effectOffsets[(int)i] += num;
                 }
                 Calc.PopRandom();
-                if (data.Wavey)
+                if (EffectData.Wavey)
                 {
                     Vector2 num = new Vector2
                         (
-                        (float)Math.Sin(Scene.TimeActive * data.WaveSpeed + data.PhaseOffset + i2 * data.PhaseIncrement) * data.WaveAmp.X,
-                        (float)Math.Sin(Scene.TimeActive * data.WaveSpeed + i2 * data.PhaseIncrement) * data.WaveAmp.Y
+                        (float)Math.Sin(Scene.TimeActive * EffectData.WaveSpeed + EffectData.PhaseOffset + i2 * EffectData.PhaseIncrement) * EffectData.WaveAmp.X,
+                        (float)Math.Sin(Scene.TimeActive * EffectData.WaveSpeed + i2 * EffectData.PhaseIncrement) * EffectData.WaveAmp.Y
                         ) * scale;
                     effectOffsets[(int)i] += num;
                 }
 
-                if (!data.Obfuscated) continue;
+                if (!EffectData.Obfuscated) continue;
 
                 Calc.PushRandom((int)(Seed + 47 * i2));
-                theseChars[(int)i] = CharList[Calc.Random.Next(CharList.Length)];
+                useChar[(int)i] = Font.CharList[Calc.Random.Next(Font.CharList.Length)];
                 Calc.PopRandom();
             }
         }
 
         int index = 0;
+        Vector2 offset = Vector2.Zero;
 
         if (outlineColor != Color.Transparent)
         {
             foreach (char c in str) //draw all outlines/shadows
             {
-                float offset = index * spacing * scale;
-                Vector2 charpos = pos + Vector2.UnitX * offset;
-                charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
-                if (!data.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
 
-                int chr;
-                if (!Charset.ContainsKey(c))
+                char actualChar = c;
+
+                if(!EffectData.Empty && index < useChar.Count)
                 {
-                    chr = 0;
-                }
-                else
-                {
-                    if (!data.Empty && index < theseChars.Count)
+                    if (useChar[index] != ' ' && c != ' ')
                     {
-                        if (theseChars[index] != ' ' && c != ' ')
-                        {
-                            chr = Charset[theseChars[index]];
-                        }
-                        else chr = Charset[c];
+                        actualChar = useChar[index];
                     }
-                    else chr = Charset[c];
                 }
-                //Logger.Log(nameof(PlutoniumHelperModule), "outline color: " + outlineColor.ToString());
-                if (shadow)
+
+                Character? ch = Font.GetCharacter(actualChar);
+                if(ch is { } ch2)
                 {
-                    CharTextures[chr].Draw(charpos + Vector2.One * scale, Vector2.Zero, outlineColor, scale, 0, flip);
+                    offset += ch2.PreDrawOffset.ToVector2() * scale;
+                    Vector2 charpos = pos + offset;
+                    charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
+                    if (!EffectData.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
+
+                    if (shadow)
+                    {
+                        Draw.SpriteBatch.Draw(ch2.Shadow, new Rectangle((int)(charpos.X - scale), (int)(charpos.Y - scale), (int)(ch2.Shadow.Width * scale), (int)(ch2.Shadow.Height * scale)), outlineColor);
+                    }
+                    else
+                    {
+                        Draw.SpriteBatch.Draw(ch2.Outline, new Rectangle((int)(charpos.X - scale), (int)(charpos.Y - scale), (int)(ch2.Shadow.Width * scale), (int)(ch2.Shadow.Height * scale)), outlineColor);
+                    }
+
+                    offset += ((Vector2.UnitX * (ch2.Sprite.Width + extraSpacing)) + ch2.PostDrawOffset.ToVector2()) * scale;
                 }
-                else
-                {
-                    DrawOutlineExceptGood(CharTextures[chr], charpos, Vector2.Zero, outlineColor, flip, scale);
-                }
+
                 index++;
             }
         }
@@ -341,41 +533,79 @@ public class PlutoniumTextComponent : Component
         if (mainColor == Color.Transparent) return;
 
         index = 0;
+        offset = Vector2.Zero;
 
         foreach (char c in str) //draw all characters
         {
-            float offset = index * spacing * scale;
-            Vector2 charpos = pos + Vector2.UnitX * offset;
-            charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
-            if (!data.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
-            int chr;
-            if (!Charset.TryGetValue(c, out int value))
+
+            char actualChar = c;
+
+            if (!EffectData.Empty && index < useChar.Count)
             {
-                chr = 0;
-            }
-            else
-            {
-                if (!data.Empty && index < theseChars.Count)
+                if (useChar[index] != ' ' && c != ' ')
                 {
-                    if (theseChars[index] != ' ' && c != ' ')
-                    {
-                        chr = Charset[theseChars[index]];
-                    }
-                    else chr = value;
+                    actualChar = useChar[index];
                 }
-                else chr = value;
             }
 
-            CharTextures[chr].Draw(charpos, Vector2.Zero, mainColor, scale, 0, flip);
+            Character? ch = Font.GetCharacter(actualChar);
+            if (ch is { } ch2)
+            {
+                offset += ch2.PreDrawOffset.ToVector2() * scale;
+                Vector2 charpos = pos + offset;
+                charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
+                if (!EffectData.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
+
+                ch2.Sprite.Draw(charpos.Floor(), Vector2.Zero, mainColor, scale, 0, SpriteEffects.None);
+
+                offset += ((Vector2.UnitX * (ch2.Sprite.Width + extraSpacing)) + ch2.PostDrawOffset.ToVector2()) * scale;
+            }
+
             index++;
         }
 
     }
 
+    public static void LoadContent()
+    {
+        /*
+        if (Everest.Content.TryGet("Effects/FemtoHelper/Cutout.cso", out ModAsset value))
+        {
+            Cutout = new Effect(Engine.Graphics.GraphicsDevice, value.Data);
+        }
+        else
+        {
+            Log("Could not find Effect \"Effects/FemtoHelper/Cutout.cso\"!", LogLevel.Error);
+        }
+        */
+    }
+
     public static void Load()
     {
         //On.Celeste.DustEdges.BeforeRender += DustEdges_BeforeRender;
+        Everest.Content.OnUpdate += Content_OnUpdate;
     }
+
+    private static void Content_OnUpdate(ModAsset from, ModAsset to)
+    {
+
+        if (to is not null)
+        {
+            if (to.Format == "xml")
+            {
+                if (PlutoniumFont.FontCache.TryGetValue(to.PathVirtual + "." + to.Format, out PlutoniumFont found))
+                {
+                    foreach (var c in found.Chars)
+                    {
+                        c.Value.Outline.Dispose();
+                        c.Value.Shadow.Dispose();
+                    }
+                    FontCache.Remove(to.PathVirtual + "." + to.Format);
+                }
+            }
+        }
+    }
+
     //private static void DustEdges_BeforeRender(On.Celeste.DustEdges.orig_BeforeRender orig, DustEdges self)
     //{
     //    Texture temp1 = Engine.Graphics.GraphicsDevice.Textures[1];
@@ -387,9 +617,10 @@ public class PlutoniumTextComponent : Component
     public static void Unload()
     {
         //On.Celeste.DustEdges.BeforeRender -= DustEdges_BeforeRender;
+        Everest.Content.OnUpdate -= Content_OnUpdate;
     }
 
-    public static void DrawOutlineExceptGood(MTexture t, Vector2 position, Vector2 origin, Color color, SpriteEffects flip, float scale)
+    public static void DrawOutlineExceptGood(MTexture t, Vector2 position, Vector2 origin = default, Color color = default, SpriteEffects flip = default, float scale = 1f)
     {
         float scaleFix = t.ScaleFix * scale;
         Rectangle clipRect = t.ClipRect;

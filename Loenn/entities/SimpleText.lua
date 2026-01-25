@@ -26,7 +26,7 @@ FemtoHelperSimpleText.fieldInformation = {
 FemtoHelperSimpleText.placements = {
     name = "default",
     data = {
-        charList = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\\\".,ç",
+        charList = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\\\".,",
         depth = -10000,
         dialogID = "FemtoHelper_PlutoniumText_Example",
         fontHeight = 12,

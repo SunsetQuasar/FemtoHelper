@@ -242,9 +242,6 @@ public class NewDistortedParallax : Backdrop
     public override void BeforeRender(Scene scene)
     {
         base.BeforeRender(scene);
-
-
-
     }
 
     public override void Render(Scene scene)
@@ -328,7 +325,7 @@ public class NewDistortedParallax : Backdrop
     {
         if (to is not null)
         {
-            string path = Everest.Content.GuessType(to.PathVirtual, out Type t, out string f);
+            string path = Everest.Content.GuessType(to.PathVirtual, out var _, out string f);
             if (f == "cso")
             {
                 EffectCache.Remove(path[8..^4]);

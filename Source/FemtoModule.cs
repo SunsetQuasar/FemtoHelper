@@ -252,7 +252,7 @@ public class FemtoModule : EverestModule
         IL.Celeste.Actor.MoveVExact += onCollideV_IL;
         VitalDrainController.Load();
         CrystalHeartBoss.Load();
-        PlutoniumText.Load();
+        PlutoniumTextComponent.Load();
         ClutterShadowController.Load();
         SmwHoldable.Load();
         ExtraHoldableInteractionsController.Load();
@@ -293,7 +293,7 @@ public class FemtoModule : EverestModule
         IL.Celeste.Actor.MoveVExact -= onCollideV_IL;
         VitalDrainController.Unload();
         CrystalHeartBoss.Unload();
-        PlutoniumText.Unload();
+        PlutoniumTextComponent.Unload();
         ClutterShadowController.Unload();
         SmwHoldable.Unload();
         ExtraHoldableInteractionsController.Unload();
@@ -550,6 +550,7 @@ public class FemtoModule : EverestModule
     {
         base.LoadContent(firstLoad);
         FemtoSpriteBank = new SpriteBank(GFX.Game, "Graphics/FemtoHelper/Sprites.xml");
+        PlutoniumTextComponent.LoadContent();
     }
 
     // Unload the entirety of your mod's content. Free up any native resources.

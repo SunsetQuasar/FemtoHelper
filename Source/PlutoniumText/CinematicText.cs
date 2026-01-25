@@ -23,7 +23,7 @@ public partial class CinematicText : Entity
     public int FinalStringLen = 0;
     public char MovingChar = ' ';
     public float MovingCharPercent;
-    public bool Active = false;
+    public bool Activated = false;
     public Vector2 MovingCharOffset;
     public readonly float Delay;
     public readonly float SpeedMultiplier;
@@ -36,14 +36,12 @@ public partial class CinematicText : Entity
 
     public int Cur = 0;
 
-    public readonly TextEffectData EffectData;
-
     public readonly SoundSource SoundSource;
 
     public readonly string ActivationTag;
     public readonly string NextTextTag;
 
-    public readonly Regex NoSound = new(@"\.|!|,| |\?|\/|'|\*");
+    public readonly Regex NoSound = NoSoundRegex();
 
     public readonly float Scale;
     public readonly bool Hud;
@@ -74,6 +72,8 @@ public partial class CinematicText : Entity
     public readonly Vector2 RenderOffset;
 
     public Coroutine ActualSequence = null;
+
+    private readonly bool legacy;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
 
@@ -90,10 +90,10 @@ public partial class CinematicText : Entity
 
         Str = Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"));
 
-        if(!Dialog.Has(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")))
+        if (!Dialog.Has(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")))
         {
             Nodes.Add(new PlutoniumTextNodes.Text(Str));
-        } 
+        }
         else
         {
             Nodes = PlutoniumTextNodes.Parse(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"), TruncateSliders, Decimals);
@@ -105,16 +105,38 @@ public partial class CinematicText : Entity
         Depth = data.Int("depth", -100);
 
         Shadow = data.Bool("shadow", false);
-        Spacing = data.Int("spacing", 7);
 
-        string path = data.Attr("fontPath", "objects/FemtoHelper/PlutoniumText/example");
-        string list = data.Attr("charList", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\".,ç");
+        string list = data.Attr("charList", "");
+        legacy = !string.IsNullOrWhiteSpace(list);
 
-        Vector2 size = new Vector2(data.Int("fontWidth", 7), data.Int("fontHeight", 7));
+        string fontFilePath = data.Attr("fontDataPath", data.Attr("fontPath", "objects/FemtoHelper/PlutoniumText/example"));
 
-        Add(Text = new PlutoniumTextComponent(path, list, size));
+        Vector2 size = new(data.Int("fontWidth", 7), data.Int("fontHeight", 7));
 
-        Add(new BeforeRenderHook(BeforeRender));
+        Spacing = legacy ? data.Int("spacing", 7) - (int)size.X : 0;
+        Spacing += data.Int("extraSpacing", 0);
+
+        Hud = data.Bool("hud", false);
+
+        TextEffectData effectData = new TextEffectData();
+
+        if (data.Bool("effects", false)) {
+            effectData = new TextEffectData(
+                data.Bool("wave", false),
+                new Vector2(data.Float("waveX", 0), data.Float("waveY", 2)),
+                data.Float("wavePhaseOffset", 90) * Calc.DegToRad,
+                data.Bool("shake", false),
+                data.Float("shakeAmount", 2),
+                data.Bool("obfuscated", false),
+                data.Bool("twitch", false),
+                data.Float("twitchChance", 5f) / 100f,
+                data.Float("phaseIncrement", 25f) * Calc.DegToRad,
+                data.Float("waveSpeed", 5f)
+            );
+        }
+
+        //Add(Text = new PlutoniumTextComponent(path, list, size, Hud ? PlutoniumText.TextLayer.HUD : PlutoniumText.TextLayer.Gameplay, BeforeRenderCallback, RenderCallback));
+        Add(Text = new PlutoniumTextComponent(fontFilePath, Hud ? PlutoniumText.TextLayer.HUD : PlutoniumText.TextLayer.Gameplay, BeforeRenderCallback, RenderCallback, effectData, list, size));
 
         Parallax = data.Float("parallax", 1);
 
@@ -128,20 +150,6 @@ public partial class CinematicText : Entity
 
         DisappearDelay = data.Float("disappearTime", 3f);
 
-        if (data.Bool("effects", false)) EffectData = new TextEffectData(
-            data.Bool("wave", false),
-            new Vector2(data.Float("waveX", 0), data.Float("waveY", 2)),
-            data.Float("wavePhaseOffset", 90) * Calc.DegToRad,
-            data.Bool("shake", false),
-            data.Float("shakeAmount", 2),
-            data.Bool("obfuscated", false),
-            data.Bool("twitch", false),
-            data.Float("twitchChance", 5f) / 100f,
-            data.Float("phaseIncrement", 25f) * Calc.DegToRad,
-            data.Float("waveSpeed", 5f)
-            );
-        else EffectData = new TextEffectData();
-
         SoundSource = new SoundSource()
         {
             Position = Position
@@ -151,7 +159,7 @@ public partial class CinematicText : Entity
         NextTextTag = data.Attr("nextTextTag", "");
 
         Scale = data.Float("scale", 1);
-        Hud = data.Bool("hud", false);
+
         if (Hud)
         {
             Tag |= TagsExt.SubHUD;
@@ -170,6 +178,8 @@ public partial class CinematicText : Entity
         Retriggerable = data.Bool("retriggerable", false);
 
         VisibilityFlag = data.Attr("visibilityFlag", "");
+
+        Add(new BeforeRenderHook(BeforeRender));
 
         Id = id;
     }
@@ -191,14 +201,14 @@ public partial class CinematicText : Entity
     public void DoInstantReload(float extra)
     {
         if (HasInstantReloaded) return;
-        Active = Entered = HasInstantReloaded = true;
+        Activated = Entered = HasInstantReloaded = true;
         Str = PlutoniumTextNodes.ConstructString(Nodes, Scene as Level);
         FinalStringLen = Str.Length;
         Add(new Coroutine(InstaSequence()));
         foreach (CinematicText t in Scene.Tracker.GetEntities<CinematicText>())
         {
             if (t.ActivationTag != NextTextTag) continue;
-            
+
             float extraTime = extra + 1 / (t.SpeedMultiplier == 0 ? t.SpeedMultiplier : float.Epsilon) * (t.Str.Length - t.Str.Count(f => f == ' '));
             t.DisappearDelay += extraTime;
             t.DoInstantReload(extraTime);
@@ -216,15 +226,15 @@ public partial class CinematicText : Entity
     public override void Update()
     {
         base.Update();
-        if (!Entered || Active) return;
+        if (!Entered || Activated) return;
         if (Timer > 0)
         {
             Timer = Math.Max(Timer - Engine.DeltaTime, 0);
             return;
         }
-        Active = true;
-        if(ActualSequence == null) Add(ActualSequence = new Coroutine(Sequence()));
-        if(InstantReload) (Scene as Level)?.Session.SetFlag("PlutoniumInstaReload_" + Id);
+        Activated = true;
+        if (ActualSequence == null) Add(ActualSequence = new Coroutine(Sequence()));
+        if (InstantReload) (Scene as Level)?.Session.SetFlag("PlutoniumInstaReload_" + Id);
     }
 
     public IEnumerator Sequence()
@@ -254,7 +264,7 @@ public partial class CinematicText : Entity
         }
         Finished = true;
         float count = 0f;
-        while(count < DisappearDelay || (int)DisappearDelay == -1)
+        while (count < DisappearDelay || (int)DisappearDelay == -1)
         {
             if (StopText) break;
             count += Engine.DeltaTime;
@@ -268,7 +278,7 @@ public partial class CinematicText : Entity
         if (Retriggerable)
         {
             StopText = false;
-            Active = Entered = false;
+            Activated = Entered = false;
             DisappearPercent = 1f;
             FinalStringLen = 0;
             Finished = false;
@@ -294,7 +304,7 @@ public partial class CinematicText : Entity
         if (Retriggerable)
         {
             StopText = false;
-            Active = Entered = false;
+            Activated = Entered = false;
             DisappearPercent = 1f;
             FinalStringLen = 0;
             Finished = false;
@@ -304,22 +314,33 @@ public partial class CinematicText : Entity
 
     public void BeforeRender()
     {
+        if (Text.Layer == PlutoniumText.TextLayer.Gameplay) BeforeRenderCallback(SceneAs<Level>());
+    }
+
+
+    public override void Render()
+    {
+        if (Text.Layer == PlutoniumText.TextLayer.Gameplay) RenderCallback(SceneAs<Level>());
+    }
+
+    public void BeforeRenderCallback(Level level)
+    {
 
         string finalString2 = Str[0..FinalStringLen];
         if (Finished) finalString2 = PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>());
 
-        if (!Active) return;
+        if (!Activated) return;
 
         Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
         Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
 
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
-        Vector2 position = (Scene as Level).Camera.Position;
+        Vector2 position = level.Camera.Position;
         Vector2 vector = position + new Vector2(160f, 90f);
         Vector2 position2 = Position - position + (Position - vector) * (Parallax - 1) + position;
 
-        int offset = FinalStringLen * Spacing;
+        Vector2 offset = Text.Font.StringSize(finalString2, Spacing);
 
         float scale2 = Scale;
 
@@ -333,24 +354,24 @@ public partial class CinematicText : Entity
 
         //outlines
 
-        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1), finalString2, Shadow, Spacing, Color.Transparent, Color2, EffectData, scale2);
-        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1) + MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2 + Vector2.UnitX * offset * scale2, MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * MovingCharPercent, EffectData, scale2, Cur);
+        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1), finalString2, Shadow, Spacing, Color.Transparent, Color2, scale2);
+        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1) + MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2 + offset * scale2, MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * MovingCharPercent, scale2, Cur);
 
         //main text
 
-        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1), finalString2, Shadow, Spacing, Color1, Color.Transparent, EffectData, scale2);
-        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1) + MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2 + Vector2.UnitX * offset * scale2, MovingChar.ToString(), Shadow, Spacing, Color1 * MovingCharPercent, Color.Transparent, EffectData, scale2, Cur);
+        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1), finalString2, Shadow, Spacing, Color1, Color.Transparent, scale2);
+        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1) + MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2 + offset * scale2, MovingChar.ToString(), Shadow, Spacing, Color1 * MovingCharPercent, Color.Transparent, scale2, Cur);
 
         Draw.SpriteBatch.End();
     }
 
-    public override void Render()
+    public void RenderCallback(Level level)
     {
-        MTexture orDefault = GFX.ColorGrades.GetOrDefault((Scene as Level).lastColorGrade, GFX.ColorGrades["none"]);
-        MTexture orDefault2 = GFX.ColorGrades.GetOrDefault((Scene as Level).Session.ColorGrade, GFX.ColorGrades["none"]);
-        if ((Scene as Level).colorGradeEase > 0f && orDefault != orDefault2)
+        MTexture orDefault = GFX.ColorGrades.GetOrDefault(level.lastColorGrade, GFX.ColorGrades["none"]);
+        MTexture orDefault2 = GFX.ColorGrades.GetOrDefault(level.Session.ColorGrade, GFX.ColorGrades["none"]);
+        if (level.colorGradeEase > 0f && orDefault != orDefault2)
         {
-            ColorGrade.Set(orDefault, orDefault2, (Scene as Level).colorGradeEase);
+            ColorGrade.Set(orDefault, orDefault2, level.colorGradeEase);
         }
         else
         {
@@ -359,7 +380,7 @@ public partial class CinematicText : Entity
 
         base.Render();
 
-        if (!Active || !(Scene as Level).FancyCheckFlag(VisibilityFlag)) return;
+        if (!Activated || !level.FancyCheckFlag(VisibilityFlag)) return;
 
         float alpha = Ease.SineInOut(DisappearPercent);
 
@@ -370,7 +391,7 @@ public partial class CinematicText : Entity
             Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Engine.ScreenMatrix.M11 * 6 < 6 ? Matrix.Identity : Engine.ScreenMatrix);
         }
 
-        Draw.SpriteBatch.Draw(Buffer, Hud ? Vector2.Zero : (Scene as Level).Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, SaveData.Instance.Assists.MirrorMode && Hud ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+        Draw.SpriteBatch.Draw(Buffer, Hud ? Vector2.Zero : level.Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, SaveData.Instance.Assists.MirrorMode && Hud ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
 
         if (Hud)
         {
@@ -390,5 +411,8 @@ public partial class CinematicText : Entity
     }
 
     [GeneratedRegex("(\\s|\\{|\\})")]
-    private static partial Regex MyRegex();
+    private static partial Regex ParseRegex();
+
+    [GeneratedRegex(@"\.|!|,| |\?|\/|'|\*")]
+    private static partial Regex NoSoundRegex();
 }

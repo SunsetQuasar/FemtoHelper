@@ -2,6 +2,7 @@ using Celeste.Mod.FemtoHelper.Utils;
 using Celeste.Mod.UI;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
@@ -24,16 +25,18 @@ public partial class SimpleText : Entity
     public readonly string VisibilityFlag;
 
     public readonly Vector2 RenderOffset;
+
+    private readonly bool legacy;
     public SimpleText(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         TruncateSliders = data.Bool("truncateSliderValues", false);
         Decimals = data.Int("decimals", -1);
 
         Nodes = [];
-        if(!Dialog.Has(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")))
+        if (!Dialog.Has(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")))
         {
             Nodes.Add(new PlutoniumTextNodes.Text(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"))));
-        } 
+        }
         else
         {
             Nodes = PlutoniumTextNodes.Parse(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"), TruncateSliders, Decimals);
@@ -43,35 +46,45 @@ public partial class SimpleText : Entity
         Color2 = Calc.HexToColorWithAlpha(data.Attr("outlineColor", "000000ff"));
         Depth = data.Int("depth", -100);
         Shadow = data.Bool("shadow", false);
-        Spacing = data.Int("spacing", 7);
-        string path = data.Attr("fontPath", "objects/FemtoHelper/PlutoniumText/example");
-        string list = data.Attr("charList", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\".,ç");
-        Vector2 size = new Vector2(data.Int("fontWidth", 7), data.Int("fontHeight", 7));
-        Add(Text = new PlutoniumTextComponent(path, list, size));
-        Parallax = data.Float("parallax", 1);
+        string list = data.Attr("charList", "");
+        legacy = !string.IsNullOrWhiteSpace(list);
+        Vector2 size = new(data.Int("fontWidth", 8), data.Int("fontHeight", 12));
         Hud = data.Bool("hud", false);
+
+        string fontFilePath = data.Attr("fontDataPath", data.Attr("fontPath", "objects/FemtoHelper/PlutoniumText/example"));
+
+        Spacing = legacy ? data.Int("spacing", 7) - (int)size.X : 0;
+        Spacing += data.Int("extraSpacing", 0);
+
+        Add(Text = new PlutoniumTextComponent(fontFilePath, Hud ? PlutoniumText.TextLayer.HUD : PlutoniumText.TextLayer.Gameplay, null, RenderCallback, new(), list, size));
+        Parallax = data.Float("parallax", 1);
         Scale = data.Float("scale", 1);
         VisibilityFlag = data.Attr("visibilityFlag", "");
-        
+
         RenderOffset = (data.FirstNodeNullable(offset) ?? Position) - Position;
-        
+
         if (Hud) Tag |= TagsExt.SubHUD;
     }
 
     public override void Render()
     {
-        MTexture orDefault = GFX.ColorGrades.GetOrDefault((Scene as Level).lastColorGrade, GFX.ColorGrades["none"]);
-        MTexture orDefault2 = GFX.ColorGrades.GetOrDefault((Scene as Level).Session.ColorGrade, GFX.ColorGrades["none"]);
-        if ((Scene as Level).colorGradeEase > 0f && orDefault != orDefault2)
+        if (Text.Layer == PlutoniumText.TextLayer.Gameplay) RenderCallback(SceneAs<Level>());
+    }
+
+    public void RenderCallback(Level level)
+    {
+        MTexture orDefault = GFX.ColorGrades.GetOrDefault(level.lastColorGrade, GFX.ColorGrades["none"]);
+        MTexture orDefault2 = GFX.ColorGrades.GetOrDefault(level.Session.ColorGrade, GFX.ColorGrades["none"]);
+        if (level.colorGradeEase > 0f && orDefault != orDefault2)
         {
-            ColorGrade.Set(orDefault, orDefault2, (Scene as Level).colorGradeEase);
+            ColorGrade.Set(orDefault, orDefault2, level.colorGradeEase);
         }
         else
         {
             ColorGrade.Set(orDefault2);
         }
 
-        if (!(Scene as Level).FancyCheckFlag(VisibilityFlag)) return;
+        if (!level.FancyCheckFlag(VisibilityFlag)) return;
 
         string str2 = PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>());
         base.Render();
@@ -83,7 +96,7 @@ public partial class SimpleText : Entity
             Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Matrix.Identity);
         }
 
-        Vector2 position = (Scene as Level).Camera.Position;
+        Vector2 position = level.Camera.Position;
         Vector2 vector = position + new Vector2(160f, 90f);
         Vector2 position2 = Position - position + (Position - vector) * (Parallax - 1) + position;
 
