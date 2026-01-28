@@ -22,6 +22,7 @@ using System.Reflection;
 using static Celeste.Mod.FemtoHelper.Entities.SparkRefill;
 using System.Diagnostics.CodeAnalysis;
 using Celeste.Mod.FemtoHelper.CustomFancyText;
+using Celeste.Mod.FemtoHelper.PlutoniumText;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -551,6 +552,7 @@ public class FemtoModule : EverestModule
         base.LoadContent(firstLoad);
         FemtoSpriteBank = new SpriteBank(GFX.Game, "Graphics/FemtoHelper/Sprites.xml");
         PlutoniumTextComponent.LoadContent();
+        ColorGradeNoPremultiply.LoadContent();
     }
 
     // Unload the entirety of your mod's content. Free up any native resources.

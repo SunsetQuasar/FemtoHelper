@@ -184,8 +184,11 @@ public class TextEffectData
     public readonly bool Twitchy;
     public readonly float TwitchChance;
 
-    public bool Empty => !(Twitchy || Shakey || Obfuscated || Wavey);
-    public TextEffectData(bool wavey = false, Vector2 amp = default, float offset = 0, bool shakey = false, float amount = 0, bool obfs = false, bool twitchy = false, float twitchChance = 0, float phaseIncrement = 0, float waveSpeed = 0)
+    public readonly bool Rainbow;
+    public Vector2 RainbowAnchor;
+
+    public bool Empty => !(Twitchy || Shakey || Obfuscated || Wavey || Rainbow);
+    public TextEffectData(bool wavey = false, Vector2 amp = default, float offset = 0, bool shakey = false, float amount = 0, bool obfs = false, bool twitchy = false, float twitchChance = 0, float phaseIncrement = 0, float waveSpeed = 0, bool rainbow = false, Vector2 rainbowAnchor = default)
     {
         Wavey = wavey;
         if (wavey)
@@ -202,6 +205,8 @@ public class TextEffectData
         Obfuscated = obfs;
         Twitchy = twitchy;
         TwitchChance = twitchChance;
+        Rainbow = rainbow;
+        RainbowAnchor = rainbowAnchor;
     }
 
     public TextEffectData()
@@ -211,7 +216,7 @@ public class TextEffectData
 
 public struct PlutoniumFont
 {
-    public static Dictionary<string, PlutoniumFont> FontCache = [];
+    public static Dictionary<string, PlutoniumFont> FontCache { get; private set; } = [];
 
     public struct Character
     {
@@ -231,6 +236,7 @@ public struct PlutoniumFont
         public MTexture Sprite;
         public VirtualRenderTarget Outline;
         public VirtualRenderTarget Shadow;
+        public Dictionary<char, Point> KerningData = [];
 
         public Character(PlutoniumFont parent, char character, MTexture source, Rectangle rect, Point preOffset, Point postOffset)
         {
@@ -270,6 +276,15 @@ public struct PlutoniumFont
             Sprite.Draw(Vector2.One);
             Draw.SpriteBatch.End();
         }
+
+        public Point GetKerning(char afterThisChar)
+        {
+            if (KerningData.TryGetValue(afterThisChar, out var result))
+            {
+                return result;
+            }
+            else return Point.Zero;
+        }
     }
 
     public Dictionary<char, Character> Chars = [];
@@ -279,6 +294,8 @@ public struct PlutoniumFont
     public MTexture SourceTexture;
 
     public string SourcePath = "";
+
+    public int LargestCharWidth = 0;
 
     public PlutoniumFont(string path, string legacyCharList = "", Vector2 legacySize = default)
     {
@@ -352,7 +369,31 @@ public struct PlutoniumFont
                 throw new Exception($"'{path}': 'Character' element is missing one or more attributes!");
             }
 
-            Chars.Add(id, new Character(this, id, SourceTexture, source, pre, post));
+            Character chr;
+
+            Chars.Add(id, chr = new Character(this, id, SourceTexture, source, pre, post));
+
+            foreach(XmlElement kerning in character.GetElementsByTagName("CharSpecificOffset"))
+            {
+                if(kerning.HasAttr("after") && kerning.HasAttr("x") && kerning.HasAttr("y"))
+                {
+                    string set = kerning.Attr("after");
+                    Point offset = kerning.Position().ToPoint();
+                    foreach (char ch in set)
+                    {
+                        chr.KerningData.Add(ch, offset);
+                    }
+                } 
+                else
+                {
+                    throw new Exception($"'{path}': Malformed 'CharSpecificOffset' element!");
+                }
+            }
+
+            if(chr.Outline.Width > LargestCharWidth)
+            {
+                LargestCharWidth = chr.Outline.Width;
+            }
 
             CharList += id;
         }
@@ -381,27 +422,43 @@ public struct PlutoniumFont
     public readonly Vector2 StringSize(string str, int extraSpacing)
     {
         Vector2 size = Vector2.Zero;
+        float tallestChar = 0f;
+        char before = ' ';
+        bool firstchar = true;
         foreach(char c in str)
         {
             Character? ch = GetCharacter(c);
             if (ch is { } ch2)
             {
+                if (!firstchar)
+                {
+                    size += ch2.GetKerning(before).ToVector2();
+                }
+                else firstchar = false;
                 size += new Vector2(ch2.Sprite.Width, 0) + ch2.PreDrawOffset.ToVector2() + ch2.PostDrawOffset.ToVector2() + (Vector2.UnitX * extraSpacing);
+
+                if(ch2.Sprite.Height > tallestChar)
+                {
+                    tallestChar = ch2.Sprite.Height;
+                }
+
+                before = c;
             }
         }
-        return size;
+        return size + (Vector2.UnitY * tallestChar);
     }
 }
 
 public class PlutoniumTextComponent : Component
 {
     //public readonly List<MTexture> CharTextures;
-    public float Seed;
+    public long Seed;
     public string FontPath;
     public readonly Action<Level> BeforeRenderCallback, RenderCallback;
     public readonly TextLayer Layer;
     public PlutoniumFont Font;
     public TextEffectData EffectData;
+    public float Timer;
     public PlutoniumTextComponent(string fontPath, TextLayer layer = TextLayer.Gameplay, Action<Level> beforeRender = null, Action<Level> render = null, TextEffectData data = default, string legacyCharList = "", Vector2 legacyFontSize = default) : base(true, true)
     {
         Layer = layer;
@@ -437,22 +494,35 @@ public class PlutoniumTextComponent : Component
         base.Update();
         if (Scene.OnInterval(0.04f))
         {
-            Seed = Calc.Random.NextFloat() * 12801;
+            Seed = Calc.Random.NextFloat().GetHashCode();
         }
+        Timer += Engine.DeltaTime;
     }
-    public void PrintCentered(Vector2 pos, string str, bool shadow, int extraSpacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
+    public void PrintCentered(Vector2 pos, string str, bool shadow, int extraSpacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0, bool flipped = false)
     {
-        Vector2 stringSize = Font.StringSize(str, extraSpacing) * scale;
-        Print(pos - stringSize / 2f, str, shadow, extraSpacing, mainColor, outlineColor, scale, id);
+        Print(pos, str, shadow, extraSpacing, mainColor, outlineColor, new Vector2(0.5f, 0.5f), scale, id, flipped);
     }
 
-    public void Print(Vector2 pos, string str, bool shadow, int extraSpacing, Color mainColor, Color outlineColor, float scale = 1, int id = 0)
+    public void Print(Vector2 pos, string str, bool shadow, int extraSpacing, Color mainColor, Color outlineColor, Vector2 justify = default, float scale = 1, int id = 0, bool flipped = false)
     {
+        RainbowHelper.GenerateSpinner(Entity.Scene);
+
+        Vector2 stringSize = Font.StringSize(str, extraSpacing) * scale;
+
+        pos.X -= stringSize.X * justify.X;
+
+        int factor = 1;
+        SpriteEffects seffect = SpriteEffects.None;
+        if(flipped)
+        {
+            seffect = SpriteEffects.FlipHorizontally;
+            factor = -1;
+        }
 
         List<Vector2> effectOffsets = [];
         List<char> useChar = [];
 
-        pos = pos.Floor();
+        pos = pos.Round();
 
         if (!EffectData.Empty)
         {
@@ -463,7 +533,7 @@ public class PlutoniumTextComponent : Component
 
                 float i2 = i + id;
 
-                Calc.PushRandom((int)(Seed + 82 * i2 * i));
+                Calc.PushRandom((int)(Seed + (i2 - 5).GetHashCode()));
                 if (EffectData.Shakey || (EffectData.Twitchy && Calc.Random.Chance(EffectData.TwitchChance)))
                 {
                     Vector2 num = new Vector2(Calc.Random.NextFloat(2f * EffectData.ShakeAmount) - EffectData.ShakeAmount, Calc.Random.NextFloat(2f * EffectData.ShakeAmount) - EffectData.ShakeAmount) * scale;
@@ -474,96 +544,161 @@ public class PlutoniumTextComponent : Component
                 {
                     Vector2 num = new Vector2
                         (
-                        (float)Math.Sin(Scene.TimeActive * EffectData.WaveSpeed + EffectData.PhaseOffset + i2 * EffectData.PhaseIncrement) * EffectData.WaveAmp.X,
-                        (float)Math.Sin(Scene.TimeActive * EffectData.WaveSpeed + i2 * EffectData.PhaseIncrement) * EffectData.WaveAmp.Y
+                        (float)Math.Sin(Timer * EffectData.WaveSpeed + EffectData.PhaseOffset + i2 * EffectData.PhaseIncrement) * EffectData.WaveAmp.X,
+                        (float)Math.Sin(Timer * EffectData.WaveSpeed + i2 * EffectData.PhaseIncrement) * EffectData.WaveAmp.Y
                         ) * scale;
                     effectOffsets[(int)i] += num;
                 }
 
                 if (!EffectData.Obfuscated) continue;
 
-                Calc.PushRandom((int)(Seed + 47 * i2));
+                Calc.PushRandom((int)(Seed + i2.GetHashCode()));
                 useChar[(int)i] = Font.CharList[Calc.Random.Next(Font.CharList.Length)];
                 Calc.PopRandom();
             }
         }
 
-        int index = 0;
-        Vector2 offset = Vector2.Zero;
-
         if (outlineColor != Color.Transparent)
         {
-            foreach (char c in str) //draw all outlines/shadows
+            Vector2 offset = flipped ? (Vector2.UnitX * Font.StringSize(str, extraSpacing) * scale) : Vector2.Zero;
+            char before = ' ';
+            bool firstChar = true;
+            for (int i = 0; i < str.Length; i++)
             {
+                char origc;
+                char c = origc = str[i];
 
-                char actualChar = c;
-
-                if(!EffectData.Empty && index < useChar.Count)
+                if (!EffectData.Empty && i < useChar.Count && useChar[i] != ' ' && c != ' ')
                 {
-                    if (useChar[index] != ' ' && c != ' ')
-                    {
-                        actualChar = useChar[index];
-                    }
+                    c = useChar[i];
                 }
 
-                Character? ch = Font.GetCharacter(actualChar);
-                if(ch is { } ch2)
+                Character? origCharNullable = Font.GetCharacter(origc);
+                Character? charNullable = Font.GetCharacter(c);
+                if ((charNullable is { } @char) && (origCharNullable is { } origChar))
                 {
-                    offset += ch2.PreDrawOffset.ToVector2() * scale;
-                    Vector2 charpos = pos + offset;
-                    charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
-                    if (!EffectData.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
-
-                    if (shadow)
+                    if (firstChar)
                     {
-                        Draw.SpriteBatch.Draw(ch2.Shadow, new Rectangle((int)(charpos.X - scale), (int)(charpos.Y - scale), (int)(ch2.Shadow.Width * scale), (int)(ch2.Shadow.Height * scale)), outlineColor);
+                        firstChar = false;
                     }
                     else
                     {
-                        Draw.SpriteBatch.Draw(ch2.Outline, new Rectangle((int)(charpos.X - scale), (int)(charpos.Y - scale), (int)(ch2.Shadow.Width * scale), (int)(ch2.Shadow.Height * scale)), outlineColor);
+                        offset += origChar.GetKerning(before).ToVector2() * scale * factor;
                     }
 
-                    offset += ((Vector2.UnitX * (ch2.Sprite.Width + extraSpacing)) + ch2.PostDrawOffset.ToVector2()) * scale;
+                    offset += origChar.PreDrawOffset.ToVector2() * scale * factor;
+
+                    Vector2 charpos = pos + offset;
+
+                    if (flipped) charpos -= Vector2.UnitX * origChar.Sprite.Width;
+
+                    if (!EffectData.Empty && i < effectOffsets.Count) charpos += effectOffsets[i];
+
+                    Color color = outlineColor;
+
+                    if (EffectData.Rainbow)
+                    {
+                        color = outlineColor.Multiply(RainbowHelper.GetRainbowColorAt(Scene, EffectData.RainbowAnchor + (offset / (scale == 0 ? float.Epsilon : scale))));
+                    }
+
+                    if (shadow)
+                    {
+                        Draw.SpriteBatch.Draw(@char.Shadow, new Rectangle((int)MathF.Floor(charpos.X - scale), (int)(MathF.Floor(charpos.Y - scale) - (justify.Y * @char.Shadow.Height * scale)), (int)(@char.Shadow.Width * scale), (int)(@char.Shadow.Height * scale)), null, color, 0, Vector2.Zero, seffect, 0f);
+                    }
+                    else
+                    {
+                        Draw.SpriteBatch.Draw(@char.Outline, new Rectangle((int)MathF.Floor(charpos.X - scale), (int)(MathF.Floor(charpos.Y - scale) - (justify.Y * @char.Shadow.Height * scale)), (int)(@char.Shadow.Width * scale), (int)(@char.Shadow.Height * scale)), null, color, 0, Vector2.Zero, seffect, 0f);
+                    }
+
+                    offset += ((Vector2.UnitX * (origChar.Sprite.Width + extraSpacing)) + origChar.PostDrawOffset.ToVector2()) * scale * factor;
                 }
 
-                index++;
+                before = origc;
             }
         }
 
-        if (mainColor == Color.Transparent) return;
-
-        index = 0;
-        offset = Vector2.Zero;
-
-        foreach (char c in str) //draw all characters
+        if (mainColor != Color.Transparent)
         {
-
-            char actualChar = c;
-
-            if (!EffectData.Empty && index < useChar.Count)
+            Vector2 offset = flipped ? (Vector2.UnitX * Font.StringSize(str, extraSpacing) * scale) : Vector2.Zero;
+            char before = ' ';
+            bool firstChar = true;
+            for (int i = 0; i < str.Length; i++)
             {
-                if (useChar[index] != ' ' && c != ' ')
+                char origc;
+                char c = origc = str[i];
+
+                if (!EffectData.Empty && i < useChar.Count && useChar[i] != ' ' && c != ' ')
                 {
-                    actualChar = useChar[index];
+                    c = useChar[i];
                 }
+
+                Character? charNullable = Font.GetCharacter(c);
+                Character? origCharNullable = Font.GetCharacter(origc);
+                if (charNullable is { } @char && origCharNullable is { } origChar)
+                {
+                    if (firstChar)
+                    {
+                        firstChar = false;
+                    }
+                    else
+                    {
+                        offset += origChar.GetKerning(before).ToVector2() * scale * factor;
+                    }
+
+                    offset += origChar.PreDrawOffset.ToVector2() * scale * factor;
+
+                    Vector2 charpos = pos + offset;
+
+                    Color color = mainColor;
+
+                    if (EffectData.Rainbow)
+                    {
+                        color = mainColor.Multiply(RainbowHelper.GetRainbowColorAt(Scene, EffectData.RainbowAnchor + (offset / (scale == 0 ? float.Epsilon : scale))));
+                    }
+
+                    if (flipped) charpos -= Vector2.UnitX * origChar.Sprite.Width;
+
+                    if (!EffectData.Empty && i < effectOffsets.Count) charpos += effectOffsets[i];
+
+                    @char.Sprite.Draw((charpos - (justify.Y * @char.Shadow.Height * Vector2.UnitY * scale)).Floor(), Vector2.Zero, color, scale, 0f, seffect);
+                    //Draw.Rect((charpos - (justify.Y * @char.Shadow.Height * Vector2.UnitY * scale)).Floor(), 1, 1, Color.Red);
+
+                    offset += ((Vector2.UnitX * (origChar.Sprite.Width + extraSpacing)) + origChar.PostDrawOffset.ToVector2()) * scale * factor;
+                }
+
+                before = origc;
             }
+        }
+    }
 
-            Character? ch = Font.GetCharacter(actualChar);
-            if (ch is { } ch2)
-            {
-                offset += ch2.PreDrawOffset.ToVector2() * scale;
-                Vector2 charpos = pos + offset;
-                charpos = new Vector2((float)Math.Floor(charpos.X), (float)Math.Floor(charpos.Y));
-                if (!EffectData.Empty && index < effectOffsets.Count) charpos += effectOffsets[index];
+    public Rectangle GetVisibilityRectangle(Vector2 pos, string str, int spacing = 0, float scale = 1f, Vector2 justify = default)
+    {
+        Vector2 size = Font.StringSize(str, spacing) * scale;
 
-                ch2.Sprite.Draw(charpos.Floor(), Vector2.Zero, mainColor, scale, 0, SpriteEffects.None);
+        //start off as just the size of the text entity
+        Rectangle visRect = new((int)pos.X, (int)pos.Y, (int)MathF.Ceiling(size.X), (int)MathF.Ceiling(size.Y));
 
-                offset += ((Vector2.UnitX * (ch2.Sprite.Width + extraSpacing)) + ch2.PostDrawOffset.ToVector2()) * scale;
-            }
+        //apply justification
+        visRect.X -= (int)MathF.Ceiling(visRect.Width * justify.X);
+        visRect.Y -= (int)MathF.Ceiling(visRect.Height * justify.Y);
 
-            index++;
+        //add 1 pixel to each side to account for the outlines
+        visRect.Inflate((int)MathF.Ceiling(scale), (int)MathF.Ceiling(scale));
+
+        //now onto the effects:
+        //sine wave
+        visRect.Inflate((int)MathF.Ceiling(MathF.Abs(EffectData.WaveAmp.X) * scale), (int)MathF.Ceiling(MathF.Abs(EffectData.WaveAmp.Y) * scale));
+
+        //shaking
+        visRect.Inflate((int)MathF.Ceiling(MathF.Abs(EffectData.ShakeAmount) * scale), (int)MathF.Ceiling(MathF.Abs(EffectData.ShakeAmount) * scale));
+
+        //in the rare case the last character is very thin and gets replaced by a wider character, expand it by the worst case scenario. better safe than sorry (better underperforming than ugly?)
+        if (EffectData.Obfuscated)
+        {
+            visRect.Width += Font.LargestCharWidth;
         }
 
+        return visRect;
     }
 
     public static void LoadContent()

@@ -27,18 +27,16 @@ FemtoHelperCinematicText.fieldInformation = {
 FemtoHelperCinematicText.placements = {
     name = "default",
     data = {
+        fontDataPath = "Graphics/FemtoHelper/PlutoniumText/Example.xml",
+        justifyX = 0.5,
+        justifyY = 0.5,
         activationTag = "tag",
-        charList = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\\\".,",
         charOriginX = 0,
         charOriginY = -2,
         delay = 0,
         depth = -10000,
         dialogID = "FemtoHelper_PlutoniumText_Example",
         disappearTime = 2,
-        effects = true,
-        fontHeight = 12,
-        fontPath = "objects/FemtoHelper/PlutoniumText/example",
-        fontWidth = 8,
         hud = true,
         ignoreAudioRegex = false,
 	    instantReload = false,
@@ -55,7 +53,7 @@ FemtoHelperCinematicText.placements = {
         shadow = false,
         shake = false,
         shakeAmount = 1,
-        spacing = 8,
+        extraSpacing = 0,
         speed = 16,
         textSound = "event:/FemtoHelper/example_text_sound",
         twitch = false,
@@ -68,6 +66,7 @@ FemtoHelperCinematicText.placements = {
         retriggerable = false,
         visibilityFlag = "",
         decimals = -1,
+        rainbow = false,
     }
 }
 
@@ -85,6 +84,19 @@ function FemtoHelperCinematicText.nodeSprite(room, entity, node, nodeIndex)
     return spr
 end
 
+function FemtoHelperCinematicText.sprite(room, entity, node, nodeIndex)
+    local main = drawableSprite.fromTexture("loenn/FemtoHelper/cinematictext", entity)
+    local outline = drawableSprite.fromTexture("loenn/FemtoHelper/cinematictextOutline", entity)
+
+    main:setColor(entity.mainColor)
+    outline:setColor(entity.outlineColor)
+
+    return {
+        main,
+        outline
+    }
+end
+
 function FemtoHelperCinematicText.selection(room, entity)
     local nodelist = {}
     for i, node in ipairs(entity.nodes) do
@@ -92,13 +104,13 @@ function FemtoHelperCinematicText.selection(room, entity)
         local rect = utils.rectangle(node.x - 4, node.y - 4, 8, 8)
 
         if (i == 1) then
-            rect = utils.rectangle(node.x - 16, node.y - 4, 32, 8)
+            rect = utils.rectangle(node.x - 8, node.y - 4, 16, 8)
         end
 
         table.insert(nodelist, rect)
 
     end
-    return utils.rectangle(entity.x - 16, entity.y - 4, 32, 8), nodelist
+    return utils.rectangle(entity.x - 8, entity.y - 4, 16, 8), nodelist
 end
 
 return FemtoHelperCinematicText

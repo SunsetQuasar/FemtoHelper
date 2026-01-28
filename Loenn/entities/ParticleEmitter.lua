@@ -1,6 +1,20 @@
 local drawableSprite = require("structs.drawable_sprite")
 local drawing = require("utils.drawing")
 local utils = require("utils")
+local drawableRectangle = require("structs.drawable_rectangle")
+
+local drawableText = require("structs.drawable_text")
+
+local function split(inputstr, sep)
+  if sep == nil then
+    sep = "%s"
+  end
+  local t = {}
+  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+    table.insert(t, str)
+  end
+  return t
+end
 
 local FemtoHelperParticleEmitter = {}
 
@@ -86,41 +100,46 @@ FemtoHelperParticleEmitter.placements = {
     }
 }
 
-function FemtoHelperParticleEmitter.drawSelected(room, layer, entity, color)
-  local x, y = entity.x, entity.y
-  local spawnspread = entity.particleSpawnSpread
-  drawing.callKeepOriginalColor(function()
-    love.graphics.setColor(1.0, 0.3, 0.0, 0.4)
-
-    love.graphics.rectangle("fill", x - (spawnspread), y - (spawnspread), spawnspread * 2, spawnspread * 2)
-  end)
+local function getColor(color)
+    local success, r, g, b = utils.parseHexColor(color)
+    return success and {r, g, b} or {1, 1, 1}
 end
 
 function FemtoHelperParticleEmitter.sprite(room, entity)
   local emitter_texture = "loenn/FemtoHelper/ParticleEmitter"
-  local particle_texture = split(entity.particleTexture, ",")[1];
-  local color1 = entity.particleColor
-  local color2 = entity.particleColor2
+  local emitter_textureOutline = "loenn/FemtoHelper/ParticleEmitterOutline"
+  local particle_texture = entity.particleTexture
+  
+  local color1 = getColor(entity.particleColor)
+  local color2 = getColor(entity.particleColor2)
 
   local MainSprite = drawableSprite.fromTexture(emitter_texture, entity)
-  local Particle1 = drawableSprite.fromTexture(particle_texture, entity, color1)
-  local Particle2 = drawableSprite.fromTexture(particle_texture, entity, color2)
+  local MainSpriteOutline = drawableSprite.fromTexture(emitter_textureOutline, entity)
 
-  Particle1:addPosition(-8, -8)
-  Particle2:addPosition(8, -8)
+  MainSprite:setColor(color1)
+  MainSpriteOutline:setColor(color2)
 
-  Particle1:setColor(color1)
-  Particle2:setColor(color2)
+  local Particle1 = drawableSprite.fromTexture(particle_texture, entity)
+  local Particle2 = drawableSprite.fromTexture(particle_texture, entity)
 
-  Particle1:setScale(entity.particleSize - entity.particleSizeRange)
-  Particle2:setScale(entity.particleSize + entity.particleSizeRange)
+  if Particle1 and Particle2 then
+    Particle1:addPosition(-8, -8)
+    Particle2:addPosition(8, -8)
 
-  local sprites = {
+    Particle1:setColor(color1)
+    Particle2:setColor(color2)
+
+    Particle1:setScale(entity.particleSize - entity.particleSizeRange)
+    Particle2:setScale(entity.particleSize + entity.particleSizeRange)
+  end
+
+  return {
+    drawableRectangle.fromRectangle("bordered", entity.x - entity.particleSpawnSpread, entity.y - entity.particleSpawnSpread, entity.particleSpawnSpread * 2, entity.particleSpawnSpread * 2, {color2[1], color2[2], color2[3], 0.25}, {color1[1], color1[2], color1[3], 0.25}),
     MainSprite,
+    MainSpriteOutline,
     Particle1,
-    Particle2
+    Particle2,
   }
-  return sprites
 end
 
 function FemtoHelperParticleEmitter.selection(room, entity)
@@ -128,17 +147,6 @@ function FemtoHelperParticleEmitter.selection(room, entity)
 
     local mainRectangle = utils.rectangle(x-6, y-6, 12, 12)
     return mainRectangle
-end
-
-function split(inputstr, sep)
-  if sep == nil then
-    sep = "%s"
-  end
-  local t = {}
-  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-    table.insert(t, str)
-  end
-  return t
 end
 
 return FemtoHelperParticleEmitter

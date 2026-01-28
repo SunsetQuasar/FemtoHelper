@@ -26,12 +26,11 @@ FemtoHelperSimpleText.fieldInformation = {
 FemtoHelperSimpleText.placements = {
     name = "default",
     data = {
-        charList = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?'\\\".,",
         depth = -10000,
+        fontDataPath = "Graphics/FemtoHelper/PlutoniumText/Example.xml",
+        justifyX = 0.5,
+        justifyY = 0.5,
         dialogID = "FemtoHelper_PlutoniumText_Example",
-        fontHeight = 12,
-        fontPath = "objects/FemtoHelper/PlutoniumText/example",
-        fontWidth = 8,
         hud = true,
         truncateSliderValues = false,
         mainColor = "FFFFFFFF",
@@ -39,7 +38,7 @@ FemtoHelperSimpleText.placements = {
         parallax = 1,
         scale = 1,
         shadow = false,
-        spacing = 8,
+        extraSpacing = 0,
         visibilityFlag = "",
         decimals = -1,
     }
@@ -56,6 +55,19 @@ function FemtoHelperSimpleText.nodeSprite(room, entity, node)
     return spr
 end
 
+function FemtoHelperSimpleText.sprite(room, entity, node, nodeIndex)
+    local main = drawableSprite.fromTexture("loenn/FemtoHelper/simpletext", entity)
+    local outline = drawableSprite.fromTexture("loenn/FemtoHelper/simpletextOutline", entity)
+
+    main:setColor(entity.mainColor)
+    outline:setColor(entity.outlineColor)
+
+    return {
+        main,
+        outline
+    }
+end
+
 function FemtoHelperSimpleText.selection(room, entity)
     local nodelist = {}
     for _, node in ipairs(entity.nodes) do
@@ -63,7 +75,7 @@ function FemtoHelperSimpleText.selection(room, entity)
         table.insert(nodelist, utils.rectangle(node.x - 4, node.y - 4, 8, 8))
 
     end
-    return utils.rectangle(entity.x - 16, entity.y - 4, 32, 8), nodelist
+    return utils.rectangle(entity.x - 8, entity.y - 4, 16, 8), nodelist
 end
 
 return FemtoHelperSimpleText

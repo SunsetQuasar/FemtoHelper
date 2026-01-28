@@ -1,4 +1,5 @@
 using Celeste.Mod.FemtoHelper.Utils;
+using Celeste.Mod.Helpers;
 using Celeste.Mod.UI;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -6,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -74,6 +76,9 @@ public partial class CinematicText : Entity
     public Coroutine ActualSequence = null;
 
     private readonly bool legacy;
+
+    public readonly Vector2 Justify;
+    public readonly Vector2 Anchor;
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
 
@@ -85,6 +90,8 @@ public partial class CinematicText : Entity
         {
             RenderOffset = data.NodesOffset(offset)[1] - Position;
         }
+
+        Anchor = Position;
 
         Nodes = [];
 
@@ -106,6 +113,8 @@ public partial class CinematicText : Entity
 
         Shadow = data.Bool("shadow", false);
 
+        Justify = data.Vector2("justifyX", "justifyY", Vector2.Zero);
+
         string list = data.Attr("charList", "");
         legacy = !string.IsNullOrWhiteSpace(list);
 
@@ -118,9 +127,10 @@ public partial class CinematicText : Entity
 
         Hud = data.Bool("hud", false);
 
-        TextEffectData effectData = new TextEffectData();
+        TextEffectData effectData = new();
 
-        if (data.Bool("effects", false)) {
+        if (data.Bool("effects", true))
+        {
             effectData = new TextEffectData(
                 data.Bool("wave", false),
                 new Vector2(data.Float("waveX", 0), data.Float("waveY", 2)),
@@ -131,7 +141,9 @@ public partial class CinematicText : Entity
                 data.Bool("twitch", false),
                 data.Float("twitchChance", 5f) / 100f,
                 data.Float("phaseIncrement", 25f) * Calc.DegToRad,
-                data.Float("waveSpeed", 5f)
+                data.Float("waveSpeed", 5f),
+                data.Bool("rainbow", false),
+                Position
             );
         }
 
@@ -152,7 +164,7 @@ public partial class CinematicText : Entity
 
         SoundSource = new SoundSource()
         {
-            Position = Position
+            Position = this.Position
         };
 
         ActivationTag = data.Attr("activationTag", "tag1");
@@ -326,88 +338,89 @@ public partial class CinematicText : Entity
     public void BeforeRenderCallback(Level level)
     {
 
-        string finalString2 = Str[0..FinalStringLen];
-        if (Finished) finalString2 = PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>());
-
-        if (!Activated) return;
-
-        Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
-        Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
-
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
-
-        Vector2 position = level.Camera.Position;
-        Vector2 vector = position + new Vector2(160f, 90f);
-        Vector2 position2 = Position - position + (Position - vector) * (Parallax - 1) + position;
-
-        Vector2 offset = Text.Font.StringSize(finalString2, Spacing);
-
-        float scale2 = Scale;
-
-        position2 -= position;
-
-        if (Hud)
-        {
-            position2 *= 6;
-            scale2 *= 6;
-        }
-
-        //outlines
-
-        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1), finalString2, Shadow, Spacing, Color.Transparent, Color2, scale2);
-        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1) + MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2 + offset * scale2, MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * MovingCharPercent, scale2, Cur);
-
-        //main text
-
-        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1), finalString2, Shadow, Spacing, Color1, Color.Transparent, scale2);
-        Text.Print(position2 + RenderOffset * (Hud ? 6 : 1) + MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent) * scale2 + offset * scale2, MovingChar.ToString(), Shadow, Spacing, Color1 * MovingCharPercent, Color.Transparent, scale2, Cur);
-
-        Draw.SpriteBatch.End();
     }
 
     public void RenderCallback(Level level)
     {
-        MTexture orDefault = GFX.ColorGrades.GetOrDefault(level.lastColorGrade, GFX.ColorGrades["none"]);
-        MTexture orDefault2 = GFX.ColorGrades.GetOrDefault(level.Session.ColorGrade, GFX.ColorGrades["none"]);
-        if (level.colorGradeEase > 0f && orDefault != orDefault2)
-        {
-            ColorGrade.Set(orDefault, orDefault2, level.colorGradeEase);
-        }
-        else
-        {
-            ColorGrade.Set(orDefault2);
-        }
-
-        base.Render();
+        string finalString2 = Str[0..FinalStringLen];
+        if (Finished) finalString2 = PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>());
 
         if (!Activated || !level.FancyCheckFlag(VisibilityFlag)) return;
 
-        float alpha = Ease.SineInOut(DisappearPercent);
+        if (!level.FancyCheckFlag(VisibilityFlag)) return;
 
-        if (Hud)
+        bool flip = (SaveData.Instance?.Assists.MirrorMode ?? false);
+
+        bool hudFlip = flip && Text.Layer == PlutoniumText.TextLayer.HUD;
+
+        Vector2 camPos = level.Camera.Position;
+        Vector2 camCenter = camPos + new Vector2(160f, 90f);
+        Vector2 position2 = ((Position - camCenter) * Parallax * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
+
+        Rectangle vis = Text.GetVisibilityRectangle(position2, Str, Spacing, Scale, Justify);
+
+        if (!vis.IsVisible()) return;
+
+        float scale2 = Scale;
+
+        if (Text.Layer == PlutoniumText.TextLayer.HUD)
         {
-            SubHudRenderer.EndRender();
-
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Engine.ScreenMatrix.M11 * 6 < 6 ? Matrix.Identity : Engine.ScreenMatrix);
+            position2 *= 6f;
+            scale2 *= 6;
         }
 
-        Draw.SpriteBatch.Draw(Buffer, Hud ? Vector2.Zero : level.Camera.Position, null, Color.White * alpha, 0, Vector2.Zero, 1, SaveData.Instance.Assists.MirrorMode && Hud ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+        float alpha = Ease.SineInOut(DisappearPercent);
 
-        if (Hud)
+        float offset = Text.Font.StringSize(finalString2, Spacing).X + (string.IsNullOrEmpty(finalString2) ? 0f : (Text.Font.GetCharacter(MovingChar)?.GetKerning(finalString2.Last()).X ?? 0f));
+
+        Vector2 stringSize = Text.Font.StringSize(Str, Spacing) * scale2;
+
+        position2.X -= stringSize.X * Justify.X;
+
+        if(flip && (Text.Layer != PlutoniumText.TextLayer.HUD))
         {
-            SubHudRenderer.EndRender();
+            string rest = Str[FinalStringLen..Str.Length];
+            position2.X += (Text.Font.StringSize(rest, Spacing).X + (string.IsNullOrEmpty(rest) ? 0f : (Text.Font.GetCharacter(MovingChar)?.GetKerning(rest.Last()).X ?? 0f))) * scale2;
+            offset = Text.Font.StringSize(rest, Spacing).X - (string.IsNullOrEmpty(rest) ? 0f : (Text.Font.GetCharacter(MovingChar)?.GetKerning(rest.Last()).X ?? 0f));
+            offset -= Text.Font.StringSize(rest, Spacing).X;
+            offset -= Text.Font.StringSize(MovingChar.ToString(), Spacing).X;
+        }
 
-            SubHudRenderer.BeginRender();
+        Text.Print(position2 + RenderOffset, finalString2, Shadow, Spacing, Color.Transparent, Color2 * alpha, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != PlutoniumText.TextLayer.HUD));
+
+        if (!Finished)
+        {
+            Text.EffectData.RainbowAnchor = Anchor + (offset * Vector2.UnitX);
+            Text.Print(position2 + RenderOffset + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * alpha * MovingCharPercent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != PlutoniumText.TextLayer.HUD));
+            Text.EffectData.RainbowAnchor = Anchor;
+        }
+
+        Text.Print(position2 + RenderOffset, finalString2, Shadow, Spacing, Color1 * alpha, Color.Transparent, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != PlutoniumText.TextLayer.HUD));
+
+        if (!Finished)
+        {
+            Text.EffectData.RainbowAnchor = Anchor + (offset * Vector2.UnitX);
+            Text.Print(position2 + RenderOffset + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color1 * alpha * MovingCharPercent, Color.Transparent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != PlutoniumText.TextLayer.HUD));
+            Text.EffectData.RainbowAnchor = Anchor;
         }
     }
 
     public override void DebugRender(Camera camera)
     {
         base.DebugRender(camera);
-        Vector2 position = (Scene as Level).Camera.Position;
-        Vector2 vector = position + new Vector2(160f, 90f);
-        Vector2 position2 = Position - position + (Position - vector) * (Parallax - 1) + position;
+        bool flip = (SaveData.Instance?.Assists.MirrorMode ?? false);
+
+        bool hudFlip = flip && Text.Layer == PlutoniumText.TextLayer.HUD;
+
+        Vector2 camPos = camera.Position;
+        Vector2 camCenter = camPos + new Vector2(160f, 90f);
+        Vector2 position2 = ((Position - camCenter) * Parallax * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
+
+        Vector2 p2f = position2.Floor();
+
         Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
+
+        Draw.HollowRect(Text.GetVisibilityRectangle(p2f, Str, Spacing, Scale, Justify), Color.MediumOrchid * 0.5f);
     }
 
     [GeneratedRegex("(\\s|\\{|\\})")]

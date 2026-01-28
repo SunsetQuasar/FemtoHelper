@@ -1,5 +1,5 @@
 ﻿using Celeste.Mod.FemtoHelper.Entities;
-using IL.MonoMod;
+using Celeste.Mod.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -257,6 +257,11 @@ public static class Vector2Extensions
     {
         return new Vector2(pnt.X, pnt.Y);
     }
+
+    public static bool IsVisible(this Rectangle rec, float lenience = 4, Camera camera = null)
+    {
+        return CullHelper.IsRectangleVisible(rec.X, rec.Y, rec.Width, rec.Height, lenience, camera);
+    }
 }
 
 public static class PlayerExtensions
@@ -279,5 +284,28 @@ public static class PlayerExtensions
         {
             player.Dashes = dashes;
         }
+    }
+}
+
+public static class RainbowHelper
+{
+    private static CrystalStaticSpinner Spinner = null;
+
+    public static void GenerateSpinner(Scene scene)
+    {
+        Spinner ??= new(Vector2.Zero, false, CrystalColor.Rainbow);
+        Spinner.Scene = scene;
+    }
+
+    public static Color GetRainbowColorAt(Scene scene, Vector2 pos)
+    {
+        GenerateSpinner(scene);
+
+        return Spinner.GetHue(pos);
+    }
+
+    public static Color Multiply(this Color color1, Color color2)
+    {
+        return new Color(color1.R * color2.R / 255, color1.G * color2.G / 255, color1.B * color2.B / 255, color1.A * color2.A / 255);
     }
 }

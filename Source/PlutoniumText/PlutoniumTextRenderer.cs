@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics.PackedVector;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Celeste.Mod.UI;
+using static Celeste.GaussianBlur;
 
 namespace Celeste.Mod.FemtoHelper.PlutoniumText;
 
@@ -22,10 +26,32 @@ public class PlutoniumTextRenderer : Entity
 
     public override void Render()
     {
+        Level level = Scene as Level;
         base.Render();
-        foreach (PlutoniumTextComponent ptc in texts)
+        if(Layer == TextLayer.HUD)
         {
-            if (ptc.Scene is Level l) ptc.RenderCallback?.Invoke(l);
+            MTexture orDefault = GFX.ColorGrades.GetOrDefault(level.lastColorGrade, GFX.ColorGrades["none"]);
+            MTexture orDefault2 = GFX.ColorGrades.GetOrDefault(level.Session.ColorGrade, GFX.ColorGrades["none"]);
+
+            if (level.colorGradeEase > 0f && orDefault != orDefault2)
+            {
+                ColorGradeNoPremultiply.Set(orDefault, orDefault2, level.colorGradeEase);
+            }
+            else
+            {
+                ColorGradeNoPremultiply.Set(orDefault2);
+            }
+
+            SubHudRenderer.EndRender();
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGradeNoPremultiply.Effect, Matrix.CreateTranslation(SceneAs<Level>().Camera.Matrix.Translation * 6f) * (SubHudRenderer.DrawToBuffer ? Matrix.Identity : Engine.ScreenMatrix));
+
+            foreach (PlutoniumTextComponent ptc in texts)
+            {
+                ptc.RenderCallback?.Invoke(level);
+            }
+
+            SubHudRenderer.EndRender();
+            SubHudRenderer.BeginRender();
         }
     }
 
