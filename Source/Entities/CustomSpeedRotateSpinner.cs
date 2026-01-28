@@ -1,9 +1,6 @@
 // Celeste.CustomSpeedRotateSpinner
 using Celeste;
 using System;
-using Microsoft.Xna.Framework;
-using Monocle;
-using Celeste.Mod.Entities;
 
 [CustomEntity("FemtoHelper/CustomSpeedRotateSpinner")]
 

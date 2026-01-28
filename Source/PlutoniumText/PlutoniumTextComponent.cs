@@ -1,13 +1,9 @@
-﻿using Celeste.Mod.FemtoHelper.Code.Effects;
-using Celeste.Mod.FemtoHelper.Entities;
+﻿using Celeste.Mod.FemtoHelper.Entities;
 using Celeste.Mod.FemtoHelper.PlutoniumText;
 using Celeste.Mod.FemtoHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Xml;
 using static Celeste.Mod.FemtoHelper.PlutoniumFont;
 

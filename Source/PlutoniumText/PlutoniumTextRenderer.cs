@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics.PackedVector;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Celeste.Mod.UI;
-using static Celeste.GaussianBlur;
 
 namespace Celeste.Mod.FemtoHelper.PlutoniumText;
 

@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using Celeste;
-using Microsoft.Xna.Framework;
-using Monocle;
-using MonoMod.RuntimeDetour;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/LimitRefill")]

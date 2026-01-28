@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using Celeste;
-using Microsoft.Xna.Framework;
-using Monocle;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/MinusRefill")]

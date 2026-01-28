@@ -2,7 +2,6 @@
 using MonoMod.ModInterop;
 using Celeste.Mod.FemtoHelper.Entities;
 using System;
-using Celeste.Mod.FemtoHelper.PlutoniumText;
 
 namespace Celeste.Mod.FemtoHelper;
 

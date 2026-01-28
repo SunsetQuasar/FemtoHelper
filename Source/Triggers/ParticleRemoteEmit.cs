@@ -1,9 +1,5 @@
 ﻿
 using Celeste;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using Celeste.Mod.FemtoHelper;
-using Monocle;
 using System;
 
 [CustomEntity("FemtoHelper/ParticleRemoteEmit")]

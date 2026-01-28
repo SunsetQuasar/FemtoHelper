@@ -1,12 +1,6 @@
-﻿using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

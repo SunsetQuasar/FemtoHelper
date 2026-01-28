@@ -5,9 +5,7 @@ using System.Collections;
 using Celeste.Mod.FemtoHelper.Utils;
 using MonoMod.Utils;
 using MonoMod.Cil;
-using Celeste.Mod.Helpers;
 using System.Text.RegularExpressions;
-using static Celeste.WindController;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

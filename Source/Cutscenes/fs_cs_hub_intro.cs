@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Celeste;
 using FMOD.Studio;
-using Microsoft.Xna.Framework;
-using Monocle;
 
 public class FsCs0HubIntro : CutsceneEntity
 {

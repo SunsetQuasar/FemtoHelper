@@ -4,12 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Celeste.Mod;
 using FMOD.Studio;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Monocle;
-using MonoMod;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

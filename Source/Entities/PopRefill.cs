@@ -4,9 +4,6 @@
 // Celeste.Refill
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using Celeste;
-using Celeste.Mod.Entities;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

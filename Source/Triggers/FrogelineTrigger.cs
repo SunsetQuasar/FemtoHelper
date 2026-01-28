@@ -1,12 +1,7 @@
 ﻿
 // FactoryHelper.Triggers.FactoryEventTrigger
 using Celeste;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using Monocle;
 using System.Collections;
-using Celeste.Pico8;
-using Celeste.Mod.FemtoHelper;
 
 [CustomEntity("FemtoHelper/FrogelineTrigger")]
 internal class FrogelineTrigger(EntityData data, Vector2 offset) : Trigger(data, offset)

@@ -1,13 +1,9 @@
 using Celeste.Mod.FemtoHelper.Utils;
-using Celeste.Mod.Helpers;
-using Celeste.Mod.UI;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

@@ -12,7 +12,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Celeste.Mod.FemtoHelper.Entities;
 using MonoMod.Utils;
 using MonoMod.ModInterop;
-using System.Collections.Generic;
 using Celeste.Mod.FemtoHelper.Code.Effects;
 using System.Linq;
 using Celeste.Mod.FemtoHelper.Wipes;

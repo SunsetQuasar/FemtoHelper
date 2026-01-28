@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection.Metadata;
-using Celeste.Mod.FemtoHelper.Utils;
-using MonoMod.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

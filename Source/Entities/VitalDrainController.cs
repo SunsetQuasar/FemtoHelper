@@ -1,10 +1,7 @@
 ﻿using Celeste.Mod.FemtoHelper.Triggers;
-using Microsoft.Xna.Framework;
-using Monocle;
 using System;
 using System.Collections;
 using System.Linq;
-using Celeste.Mod.FemtoHelper.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

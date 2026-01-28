@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using Celeste;
-using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
-using Monocle;
 using MonoMod.Cil;
 
 namespace Celeste.Mod.FemtoHelper.Entities;

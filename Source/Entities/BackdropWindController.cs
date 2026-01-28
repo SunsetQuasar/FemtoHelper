@@ -1,9 +1,4 @@
-﻿using System;
-using Celeste;
-using Celeste.Mod;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using Monocle;
+﻿using Celeste;
 
 [CustomEntity("FemtoHelper/BackdropWindController")]
 

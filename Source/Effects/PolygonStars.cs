@@ -1,12 +1,7 @@
 ﻿// Celeste.DreamStars
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Celeste;
-using Celeste.Mod.Entities;
-using FMOD;
-using Microsoft.Xna.Framework;
-using Monocle;
 
 public class PolygonStars : Backdrop
 {

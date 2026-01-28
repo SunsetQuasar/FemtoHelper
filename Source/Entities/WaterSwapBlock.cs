@@ -1,11 +1,7 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.CompilerServices;
 using Celeste;
 using Celeste.Mod.FemtoHelper.Entities;
 using FMOD.Studio;
-using Microsoft.Xna.Framework;
-using Monocle;
 
 [TrackedAs(typeof(Water))]
 [CustomEntity("FemtoHelper/WaterSwapBlock")]

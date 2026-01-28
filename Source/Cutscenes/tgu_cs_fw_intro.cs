@@ -1,9 +1,6 @@
 // Celeste.CS10_MoonIntro
-using System;
 using System.Collections;
 using Celeste;
-using Microsoft.Xna.Framework;
-using Monocle;
 
 public class TguCs0Intro : CutsceneEntity
 {

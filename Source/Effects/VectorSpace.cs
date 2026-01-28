@@ -2,8 +2,6 @@
 using System;
 using System.Linq;
 using Celeste;
-using Microsoft.Xna.Framework;
-using Monocle;
 public class VectorSpace : Backdrop
 {
 	private struct Vectand

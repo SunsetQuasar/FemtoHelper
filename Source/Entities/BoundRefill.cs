@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using Celeste;
-using Microsoft.Xna.Framework;
-using Monocle;
-using static Celeste.Mod.FemtoHelper.Entities.SparkRefill;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/BoundRefill")]

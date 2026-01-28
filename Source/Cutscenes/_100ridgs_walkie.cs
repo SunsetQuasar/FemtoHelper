@@ -1,7 +1,6 @@
 ﻿// Celeste.CS10_Gravestone
 using System.Collections;
 using Celeste;
-using Monocle;
 
 public class _100ridgs_walkie(Player player) : CutsceneEntity
 {

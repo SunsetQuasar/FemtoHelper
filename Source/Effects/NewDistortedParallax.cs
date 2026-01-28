@@ -1,11 +1,7 @@
 ﻿using Celeste.Mod.Backdrops;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Monocle;
-using On.Celeste.Mod;
 using System;
 using System.Collections.Generic;
-using static MonoMod.InlineRT.MonoModRule;
 
 namespace Celeste.Mod.FemtoHelper.Code.Effects;
 

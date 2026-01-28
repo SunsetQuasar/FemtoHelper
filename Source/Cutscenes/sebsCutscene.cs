@@ -1,8 +1,6 @@
 ﻿// Celeste.CS10_Gravestone
 using System.Collections;
 using Celeste;
-using Microsoft.Xna.Framework;
-using Monocle;
 
 public class SebsCutscene(Player player) : CutsceneEntity
 {

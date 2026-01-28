@@ -1,10 +1,8 @@
 ﻿// Celeste.CS10_Farewell
-		using System;
-		using System.Collections;
-		using Celeste;
-		using FMOD.Studio;
-		using Microsoft.Xna.Framework;
-		using Monocle;
+using System;
+using System.Collections;
+using Celeste;
+using FMOD.Studio;
 
 public class CsFunnyAsHell : CutsceneEntity
 	{

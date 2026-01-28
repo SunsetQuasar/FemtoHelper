@@ -1,11 +1,9 @@
 ﻿using Celeste.Mod.FemtoHelper.Utils;
 using Celeste.Mod.Helpers;
-using Mono.Cecil.Cil;
 using MonoMod;
 using MonoMod.Cil;
 using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 [TrackedAs(typeof(Water))]

@@ -1,5 +1,4 @@
 ﻿using Celeste;
-using Celeste.Mod;
 
 [CustomEntity("FemtoHelper/RemixMakerFinishCondition")]
 

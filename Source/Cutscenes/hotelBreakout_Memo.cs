@@ -3,9 +3,7 @@ using System;
 using System.Collections;
 using System.IO;
 using Celeste;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Monocle;
 
 public class HotelBreakoutMemo(Player player, int totind, float txtoffset, float txtsize)
 	: CutsceneEntity
