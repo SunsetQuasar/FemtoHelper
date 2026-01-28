@@ -353,7 +353,7 @@ public partial class CinematicText : Entity
         Vector2 camCenter = camPos + new Vector2(160f, 90f);
         Vector2 position2 = ((Position - camCenter) * Parallax * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
 
-        Rectangle vis = Text.GetVisibilityRectangle(position2, Str, Spacing, Scale, Justify);
+        Rectangle vis = Text.GetVisibilityRectangle(position2 + RenderOffset, Finished ? finalString2 : Str, Spacing, Scale, Justify);
 
         if (!vis.IsVisible()) return;
 
@@ -369,7 +369,7 @@ public partial class CinematicText : Entity
 
         float offset = Text.Font.StringSize(finalString2, Spacing).X + (string.IsNullOrEmpty(finalString2) ? 0f : (Text.Font.GetCharacter(MovingChar)?.GetKerning(finalString2.Last()).X ?? 0f));
 
-        Vector2 stringSize = Text.Font.StringSize(Str, Spacing) * scale2;
+        Vector2 stringSize = Text.Font.StringSize(Finished ? finalString2 : Str, Spacing) * scale2;
 
         position2.X -= stringSize.X * Justify.X;
 
@@ -416,7 +416,7 @@ public partial class CinematicText : Entity
 
         Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
 
-        Draw.HollowRect(Text.GetVisibilityRectangle(p2f, Str, Spacing, Scale, Justify), Color.MediumOrchid * 0.5f);
+        Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify), Color.MediumOrchid * 0.5f);
     }
 
     [GeneratedRegex("(\\s|\\{|\\})")]

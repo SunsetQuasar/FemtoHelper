@@ -81,13 +81,17 @@ public partial class SimpleText : Entity
 
         bool hudFlip = flip && Text.Layer == PlutoniumText.TextLayer.HUD;
 
-        string str2 = PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>());
-
-        float scale2 = Scale;
-
         Vector2 camPos = level.Camera.Position;
         Vector2 camCenter = camPos + new Vector2(160f, 90f);
         Vector2 position2 = ((Position - camCenter) * Parallax * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
+
+        string str2 = PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>());
+
+        Rectangle visRect = Text.GetVisibilityRectangle(position2 + RenderOffset, str2, Spacing, Scale, Justify);
+
+        if (!visRect.IsVisible()) return;
+
+        float scale2 = Scale;
 
         if (Text.Layer == PlutoniumText.TextLayer.HUD)
         {
@@ -96,6 +100,24 @@ public partial class SimpleText : Entity
         }
 
         Text.Print(position2 + RenderOffset, str2, Shadow, Spacing, Color1, Color2, Justify, scale2, 0, flip && (Text.Layer != PlutoniumText.TextLayer.HUD));
+    }
+
+    public override void DebugRender(Camera camera)
+    {
+        base.DebugRender(camera);
+        bool flip = (SaveData.Instance?.Assists.MirrorMode ?? false);
+
+        bool hudFlip = flip && Text.Layer == PlutoniumText.TextLayer.HUD;
+
+        Vector2 camPos = camera.Position;
+        Vector2 camCenter = camPos + new Vector2(160f, 90f);
+        Vector2 position2 = ((Position - camCenter) * Parallax * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
+
+        Vector2 p2f = position2.Floor();
+
+        Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
+
+        Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify), Color.MediumOrchid * 0.5f);
     }
 
     [GeneratedRegex(@"(\{|\})")]

@@ -681,6 +681,8 @@ public class PlutoniumTextComponent : Component
         //add 1 pixel to each side to account for the outlines
         visRect.Inflate((int)MathF.Ceiling(scale), (int)MathF.Ceiling(scale));
 
+        if (EffectData.Empty) return visRect;
+
         //now onto the effects:
         //sine wave
         visRect.Inflate((int)MathF.Ceiling(MathF.Abs(EffectData.WaveAmp.X) * scale), (int)MathF.Ceiling(MathF.Abs(EffectData.WaveAmp.Y) * scale));
