@@ -268,6 +268,7 @@ public class FemtoModule : EverestModule
         BoostingBoosterSorryIStoleFromCommunalHelper.Load();
         EvilTheoCrystal.Load();
         AssistHazardController.Load();
+        PlutoniumTextRenderer.Load();
     }
 
     public override void Unload()
@@ -309,6 +310,7 @@ public class FemtoModule : EverestModule
         BoostingBoosterSorryIStoleFromCommunalHelper.Unload();
         EvilTheoCrystal.Unload();
         AssistHazardController.Unload();
+        PlutoniumTextRenderer.Unload();
     }
 
 
@@ -551,6 +553,7 @@ public class FemtoModule : EverestModule
         base.LoadContent(firstLoad);
         FemtoSpriteBank = new SpriteBank(GFX.Game, "Graphics/FemtoHelper/Sprites.xml");
         PlutoniumTextComponent.LoadContent();
+        PlutoniumTextRenderer.LoadContent();
         ColorGradeNoPremultiply.LoadContent();
     }
 

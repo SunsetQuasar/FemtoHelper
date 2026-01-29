@@ -599,11 +599,11 @@ public class PlutoniumTextComponent : Component
 
                     if (shadow)
                     {
-                        Draw.SpriteBatch.Draw(@char.Shadow, new Rectangle((int)MathF.Floor(charpos.X - scale), (int)(MathF.Floor(charpos.Y - scale) - (justify.Y * @char.Shadow.Height * scale)), (int)(@char.Shadow.Width * scale), (int)(@char.Shadow.Height * scale)), null, color, 0, Vector2.Zero, seffect, 0f);
+                        Draw.SpriteBatch.Draw(@char.Shadow, new Rectangle((int)MathF.Round(charpos.X - scale), (int)(MathF.Round(charpos.Y - scale) - (justify.Y * @char.Shadow.Height * scale)), (int)(@char.Shadow.Width * scale), (int)(@char.Shadow.Height * scale)), null, color, 0, Vector2.Zero, seffect, 0f);
                     }
                     else
                     {
-                        Draw.SpriteBatch.Draw(@char.Outline, new Rectangle((int)MathF.Floor(charpos.X - scale), (int)(MathF.Floor(charpos.Y - scale) - (justify.Y * @char.Shadow.Height * scale)), (int)(@char.Shadow.Width * scale), (int)(@char.Shadow.Height * scale)), null, color, 0, Vector2.Zero, seffect, 0f);
+                        Draw.SpriteBatch.Draw(@char.Outline, new Rectangle((int)MathF.Round(charpos.X - scale), (int)(MathF.Round(charpos.Y - scale) - (justify.Y * @char.Shadow.Height * scale)), (int)(@char.Shadow.Width * scale), (int)(@char.Shadow.Height * scale)), null, color, 0, Vector2.Zero, seffect, 0f);
                     }
 
                     offset += ((Vector2.UnitX * (origChar.Sprite.Width + extraSpacing)) + origChar.PostDrawOffset.ToVector2()) * scale * factor;
@@ -656,7 +656,7 @@ public class PlutoniumTextComponent : Component
 
                     if (!EffectData.Empty && i < effectOffsets.Count) charpos += effectOffsets[i];
 
-                    @char.Sprite.Draw((charpos - (justify.Y * @char.Shadow.Height * Vector2.UnitY * scale)).Floor(), Vector2.Zero, color, scale, 0f, seffect);
+                    @char.Sprite.Draw((charpos - (justify.Y * @char.Shadow.Height * Vector2.UnitY * scale)).Round(), Vector2.Zero, color, scale, 0f, seffect);
                     //Draw.Rect((charpos - (justify.Y * @char.Shadow.Height * Vector2.UnitY * scale)).Floor(), 1, 1, Color.Red);
 
                     offset += ((Vector2.UnitX * (origChar.Sprite.Width + extraSpacing)) + origChar.PostDrawOffset.ToVector2()) * scale * factor;
@@ -726,7 +726,7 @@ public class PlutoniumTextComponent : Component
         {
             if (to.Format == "xml")
             {
-                if (PlutoniumFont.FontCache.TryGetValue(to.PathVirtual + "." + to.Format, out PlutoniumFont found))
+                if (FontCache.TryGetValue(to.PathVirtual + "." + to.Format, out PlutoniumFont found))
                 {
                     foreach (var c in found.Chars)
                     {

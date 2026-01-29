@@ -1,3 +1,4 @@
+using Celeste.Mod.FemtoHelper.PlutoniumText;
 using Celeste.Mod.FemtoHelper.Utils;
 using System;
 using System.Collections;
@@ -42,7 +43,7 @@ public partial class CinematicText : Entity
     public readonly Regex NoSound = NoSoundRegex();
 
     public readonly float Scale;
-    public readonly bool Hud;
+    public bool Hud => Text?.Layer == TextLayer.HUD;
 
     public readonly bool TruncateSliders;
     public readonly int Decimals;
@@ -121,7 +122,7 @@ public partial class CinematicText : Entity
         Spacing = legacy ? data.Int("spacing", 7) - (int)size.X : 0;
         Spacing += data.Int("extraSpacing", 0);
 
-        Hud = data.Bool("hud", false);
+        //Hud = data.Bool("hud", false);
 
         TextEffectData effectData = new();
 
@@ -143,8 +144,9 @@ public partial class CinematicText : Entity
             );
         }
 
+        TextLayer layer = data.Enum("layer", data.Bool("hud", false) ? TextLayer.HUD : TextLayer.Gameplay);
         //Add(Text = new PlutoniumTextComponent(path, list, size, Hud ? PlutoniumText.TextLayer.HUD : PlutoniumText.TextLayer.Gameplay, BeforeRenderCallback, RenderCallback));
-        Add(Text = new PlutoniumTextComponent(fontFilePath, Hud ? PlutoniumText.TextLayer.HUD : PlutoniumText.TextLayer.Gameplay, BeforeRenderCallback, RenderCallback, effectData, list, size));
+        Add(Text = new PlutoniumTextComponent(fontFilePath, layer, BeforeRenderCallback, RenderCallback, effectData, list, size));
 
         Parallax = data.Float("parallax", 1);
 
@@ -322,13 +324,13 @@ public partial class CinematicText : Entity
 
     public void BeforeRender()
     {
-        if (Text.Layer == PlutoniumText.TextLayer.Gameplay) BeforeRenderCallback(SceneAs<Level>());
+        if (Text.Layer == TextLayer.Gameplay) BeforeRenderCallback(SceneAs<Level>());
     }
 
 
     public override void Render()
     {
-        if (Text.Layer == PlutoniumText.TextLayer.Gameplay) RenderCallback(SceneAs<Level>());
+        if (Text.Layer == TextLayer.Gameplay) RenderCallback(SceneAs<Level>());
     }
 
     public void BeforeRenderCallback(Level level)
@@ -347,7 +349,7 @@ public partial class CinematicText : Entity
 
         bool flip = (SaveData.Instance?.Assists.MirrorMode ?? false);
 
-        bool hudFlip = flip && Text.Layer == PlutoniumText.TextLayer.HUD;
+        bool hudFlip = flip && Text.Layer == TextLayer.HUD;
 
         Vector2 camPos = level.Camera.Position;
         Vector2 camCenter = camPos + new Vector2(160f, 90f);
@@ -359,7 +361,7 @@ public partial class CinematicText : Entity
 
         float scale2 = Scale;
 
-        if (Text.Layer == PlutoniumText.TextLayer.HUD)
+        if (Text.Layer == TextLayer.HUD)
         {
             position2 *= 6f;
             scale2 *= 6;
@@ -373,7 +375,7 @@ public partial class CinematicText : Entity
 
         position2.X -= stringSize.X * Justify.X;
 
-        if(flip && (Text.Layer != PlutoniumText.TextLayer.HUD))
+        if(flip && (Text.Layer != TextLayer.HUD))
         {
             string rest = Str[FinalStringLen..Str.Length];
             position2.X += (Text.Font.StringSize(rest, Spacing).X + (string.IsNullOrEmpty(rest) ? 0f : (Text.Font.GetCharacter(MovingChar)?.GetKerning(rest.Last()).X ?? 0f))) * scale2;
@@ -382,21 +384,21 @@ public partial class CinematicText : Entity
             offset -= Text.Font.StringSize(MovingChar.ToString(), Spacing).X;
         }
 
-        Text.Print(position2 + RenderOffset, finalString2, Shadow, Spacing, Color.Transparent, Color2 * alpha, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != PlutoniumText.TextLayer.HUD));
+        Text.Print(position2 + RenderOffset, finalString2, Shadow, Spacing, Color.Transparent, Color2 * alpha, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
 
         if (!Finished)
         {
             Text.EffectData.RainbowAnchor = Anchor + (offset * Vector2.UnitX);
-            Text.Print(position2 + RenderOffset + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * alpha * MovingCharPercent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != PlutoniumText.TextLayer.HUD));
+            Text.Print(position2 + RenderOffset + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * alpha * MovingCharPercent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
             Text.EffectData.RainbowAnchor = Anchor;
         }
 
-        Text.Print(position2 + RenderOffset, finalString2, Shadow, Spacing, Color1 * alpha, Color.Transparent, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != PlutoniumText.TextLayer.HUD));
+        Text.Print(position2 + RenderOffset, finalString2, Shadow, Spacing, Color1 * alpha, Color.Transparent, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
 
         if (!Finished)
         {
             Text.EffectData.RainbowAnchor = Anchor + (offset * Vector2.UnitX);
-            Text.Print(position2 + RenderOffset + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color1 * alpha * MovingCharPercent, Color.Transparent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != PlutoniumText.TextLayer.HUD));
+            Text.Print(position2 + RenderOffset + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color1 * alpha * MovingCharPercent, Color.Transparent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
             Text.EffectData.RainbowAnchor = Anchor;
         }
     }
@@ -406,7 +408,7 @@ public partial class CinematicText : Entity
         base.DebugRender(camera);
         bool flip = (SaveData.Instance?.Assists.MirrorMode ?? false);
 
-        bool hudFlip = flip && Text.Layer == PlutoniumText.TextLayer.HUD;
+        bool hudFlip = flip && Text.Layer == TextLayer.HUD;
 
         Vector2 camPos = camera.Position;
         Vector2 camCenter = camPos + new Vector2(160f, 90f);

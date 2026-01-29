@@ -14,6 +14,17 @@ FemtoHelperCinematicText.nodeRenderType = "line"
 FemtoHelperCinematicText.nodeLimits = {0, 2}
 
 FemtoHelperCinematicText.fieldInformation = {
+    layer = {
+        options = {
+            {"BelowBG", "BelowBG"},
+            {"AboveBG", "AboveBG"},
+            {"Gameplay", "Gameplay"},
+            {"BelowFG", "BelowFG"},
+            {"AboveFG", "AboveFG"},
+            {"HUD", "HUD"}
+        },
+        editable = false
+    },
     mainColor = {
         fieldType = "color",
         useAlpha = true
@@ -37,7 +48,7 @@ FemtoHelperCinematicText.placements = {
         depth = -10000,
         dialogID = "FemtoHelper_PlutoniumText_Example",
         disappearTime = 2,
-        hud = true,
+        --hud = true,
         ignoreAudioRegex = false,
 	    instantReload = false,
 	    instantLoad = false,
@@ -67,6 +78,7 @@ FemtoHelperCinematicText.placements = {
         visibilityFlag = "",
         decimals = -1,
         rainbow = false,
+        layer = "AboveFG",
     }
 }
 

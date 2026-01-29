@@ -13,6 +13,17 @@ FemtoHelperSimpleText.nodeVisibility = "always"
 FemtoHelperSimpleText.nodeRenderType = "fan"
 
 FemtoHelperSimpleText.fieldInformation = {
+    layer = {
+        options = {
+            {"BelowBG", "BelowBG"},
+            {"AboveBG", "AboveBG"},
+            {"Gameplay", "Gameplay"},
+            {"BelowFG", "BelowFG"},
+            {"AboveFG", "AboveFG"},
+            {"HUD", "HUD"}
+        },
+        editable = false
+    },
     mainColor = {
         fieldType = "color",
         useAlpha = true
@@ -31,7 +42,7 @@ FemtoHelperSimpleText.placements = {
         justifyX = 0.5,
         justifyY = 0.5,
         dialogID = "FemtoHelper_PlutoniumText_Example",
-        hud = true,
+        --hud = true,
         truncateSliderValues = false,
         mainColor = "FFFFFFFF",
         outlineColor = "000000FF",
@@ -41,6 +52,7 @@ FemtoHelperSimpleText.placements = {
         extraSpacing = 0,
         visibilityFlag = "",
         decimals = -1,
+        layer = "AboveFG",
     }
 }
 
