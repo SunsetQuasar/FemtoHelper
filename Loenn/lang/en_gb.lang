@@ -444,7 +444,7 @@ entities.FemtoHelper/VitalDrainController.attributes.description.sliderName=Ties
 
 entities.FemtoHelper/SimpleText.placements.name.default=Simple Text
 entities.FemtoHelper/SimpleText.attributes.description.charList=The list of all existing characters in the font.\nThe font image must match this list, and the list must start with a space.
-entities.FemtoHelper/SimpleText.attributes.description.depth=The entity's depth. Higher values are further back, lower values are in front, and the Player has depth 0.
+entities.FemtoHelper/SimpleText.attributes.description.depth=The entity's depth in its respective Layer. Higher values are further back, lower values are in front, and the Player has depth 0.
 entities.FemtoHelper/SimpleText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support vanilla FancyText dialog effects.\nBrackets within the dialog entry can be used to display counters and flags;\ndialog_key = {my_counter} displays "my_counter"'s value;\ndialog_key = {my_flag;value_if_on;value_if_off} displays "value_if_on" if the flag "my_flag" is on, and "value_if_off" if the flag is off.
 entities.FemtoHelper/SimpleText.attributes.description.fontHeight=The height of a character in the given font.
 entities.FemtoHelper/SimpleText.attributes.description.fontPath=The font image.\nThe characters in this image must match 1 to 1 with the charList attribute and be of the correct size or the text will appear garbled.
@@ -458,12 +458,15 @@ entities.FemtoHelper/SimpleText.attributes.description.shadow=Draws a small shad
 entities.FemtoHelper/SimpleText.attributes.description.spacing=Spacing between characters.
 entities.FemtoHelper/SimpleText.attributes.description.visibilityFlag=The flag that determines if the text should be visible or not;\nPrecede with "!" to invert the flag.
 entities.FemtoHelper/SimpleText.attributes.description.decimals=How many decimals displayed slider values should have.\nLeave -1 for no truncating.
+entities.FemtoHelper/SimpleText.attributes.description.fontDataPath=The font data file.\nSee the default path for reference.\nShould include the .xml extension.
+entities.FemtoHelper/SimpleText.attributes.description.extraSpacing=Applies an additional spacing between characters.
+entities.FemtoHelper/SimpleText.attributes.description.layer=The layer the text is drawn on.\nBelowBG: Renders below all background stylegrounds. Text is affected by bloom and glitch effects.\nAboveBG: Renders above all background stylegrounds, but behind everything else. Text is affected by bloom and glitch effects.\nGameplay: Renders just like any other entity. Text is affected by bloom, darkness and glitch effects.\nBelowFG: Renders below all foreground stylegrounds. Text is affected by glitch effects.\nAboveFG: Renders above all foreground stylegrounds, but behind the HUD layers. Text is affected by glitch effects.\nHUD: Renders above every non-HUD element. Unbound to the pixel grid.
 
 # Cinematic Text
 
 entities.FemtoHelper/CinematicText.placements.name.default=Cinematic Text
 entities.FemtoHelper/CinematicText.attributes.description.charList=The list of all existing characters in the font.\nThe font image must match this list, and the list must start with a space.
-entities.FemtoHelper/CinematicText.attributes.description.depth=The entity's depth. Higher values are further back, lower values are in front, and the Player has depth 0.
+entities.FemtoHelper/CinematicText.attributes.description.depth=The entity's depth in its respective Layer. Higher values are further back, lower values are in front, and the Player has depth 0.
 entities.FemtoHelper/CinematicText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support vanilla FancyText dialog effects.\nBrackets within the dialog entry can be used to display counters and flags;\ndialog_key = {my_counter} displays "my_counter"'s value;\ndialog_key = {my_flag;value_if_on;value_if_off} displays "value_if_on" if the flag "my_flag" is on, and "value_if_off" if the flag is off.
 entities.FemtoHelper/CinematicText.attributes.description.fontHeight=The height of a character in the given font.
 entities.FemtoHelper/CinematicText.attributes.description.fontPath=The font image.\nThe characters in this image must match 1 to 1 with the charList attribute and be of the correct size or the text will appear garbled.
@@ -495,13 +498,18 @@ entities.FemtoHelper/CinematicText.attributes.description.textSound=FMOD event f
 entities.FemtoHelper/CinematicText.attributes.description.twitch=Makes the characters occasionally twitch by the shake amount.
 entities.FemtoHelper/CinematicText.attributes.description.twitchChance=(Twitch) The percent chance for a character to twitch.
 entities.FemtoHelper/CinematicText.attributes.description.wave=Makes the characters wave around.
-entities.FemtoHelper/CinematicText.attributes.description.wavePhaseOffset=(Wave) The initial wave angle offset, in degrees.
+entities.FemtoHelper/CinematicText.attributes.description.wavePhaseOffset=(Wave) The X wave's angle offset from the Y wave, in degrees.
 entities.FemtoHelper/CinematicText.attributes.description.waveSpeed=(Wave) The wave angle variation, in degrees/sec.
 entities.FemtoHelper/CinematicText.attributes.description.waveX=(Wave) The horizontal wave amplitude, in pixels.
 entities.FemtoHelper/CinematicText.attributes.description.waveY=(Wave) The vertical wave amplitude, in pixels.
 entities.FemtoHelper/CinematicText.attributes.description.retriggerable=Allows the text to be triggered again after it fades out.
 entities.FemtoHelper/CinematicText.attributes.description.visibilityFlag=The flag that determines if the text should be visible or not;\nPrecede with "!" to invert the flag.
 entities.FemtoHelper/CinematicText.attributes.description.decimals=How many decimals displayed slider values should have.\nLeave -1 for no truncating.
+entities.FemtoHelper/CinematicText.attributes.description.fontDataPath=The font data file.\nSee the default path for reference.\nShould include the .xml extension.
+entities.FemtoHelper/CinematicText.attributes.description.extraSpacing=Applies an additional spacing between characters.
+entities.FemtoHelper/CinematicText.attributes.description.layer=The layer the text is drawn on.\nBelowBG: Renders below all background stylegrounds. Text is affected by bloom and glitch effects.\nAboveBG: Renders above all background stylegrounds, but behind everything else. Text is affected by bloom and glitch effects.\nGameplay: Renders just like any other entity. Text is affected by bloom, darkness and glitch effects.\nBelowFG: Renders below all foreground stylegrounds. Text is affected by glitch effects.\nAboveFG: Renders above all foreground stylegrounds, but behind the HUD layers. Text is affected by glitch effects.\nHUD: Renders above every non-HUD element. Unbound to the pixel grid.
+entities.FemtoHelper/CinematicText.attributes.description.rainbow=Gives the text a rainbow tint.
+
 
 # Boosting Booster
 
