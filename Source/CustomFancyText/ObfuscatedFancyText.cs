@@ -16,6 +16,7 @@ public static class ObfuscatedFancyText
     public const string ObfuscatedCommand = "femto_obfuscated";
     public const string ObfuscatedDynDataKey = "FemtoHelper_CurrentObfuscated";
     public const string ObfuscatedDynDataNoOrigChance = "FemtoHelper_CurrentObfuscated_NoOrigChance";
+    public const string ObfuscatedDynDataFullObfuscation = "FemtoHelper_CurrentObfuscated_FullObfuscation";
 
     /// <summary>
     ///   Characters of a <see cref="PixelFontSize"/> grouped by their width.
@@ -25,6 +26,7 @@ public static class ObfuscatedFancyText
     ///   avoid having to cast.
     /// </remarks>
     private static readonly Dictionary<PixelFontSize, Dictionary<int, List<int>>> CharWidthMap = [];
+    private static readonly HashSet<char> chars;
 
     private static ILHook Hook_FancyText_AddWord;
 
@@ -56,9 +58,10 @@ public static class ObfuscatedFancyText
         Vector2 scale,
         float alpha)
     {
-        if (self is ObfuscatedChar corruptedChar)
-            corruptedChar.BeforeDraw(font, baseSize, scale);
+        ObfuscatedChar corruptedChar = self as ObfuscatedChar;
+        corruptedChar?.BeforeDraw(font, baseSize, scale);
         orig(self, font, baseSize, position, scale, alpha);
+        corruptedChar?.AfterDraw(font, baseSize, scale);
     }
 
     /// <summary>
@@ -109,13 +112,20 @@ public static class ObfuscatedFancyText
                 selfData.Set(ObfuscatedDynDataKey, true);
 
                 float noOrigChance = 0.5f;
+                bool full = false;
 
                 if(list.Count > 0 && float.TryParse(list[0], out var result))
                 {
                     noOrigChance = result / 100f;
                 }
 
+                if (list.Count > 1 && list[1].Equals("full", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    full = true;
+                }
+
                 selfData.Set(ObfuscatedDynDataNoOrigChance, noOrigChance);
+                selfData.Set(ObfuscatedDynDataFullObfuscation, full);
                 return true;
             case "/" + ObfuscatedCommand:
                 selfData.Set(ObfuscatedDynDataKey, false);
@@ -147,7 +157,7 @@ public static class ObfuscatedFancyText
     {
         DynamicData selfData = DynamicData.For(self);
         return selfData.Get(ObfuscatedDynDataKey) is true
-            ? ObfuscatedChar.FromChar(node, (float)(selfData.Get(ObfuscatedDynDataNoOrigChance) ?? 0.5f))
+            ? ObfuscatedChar.FromChar(node, (float)(selfData.Get(ObfuscatedDynDataNoOrigChance) ?? 0.5f), (bool)selfData.Get(ObfuscatedDynDataFullObfuscation))
             : node;
     }
 
@@ -200,9 +210,15 @@ public static class ObfuscatedFancyText
         public float NoOriginalCharacterChance;
 
         /// <summary>
+        ///   Whether the <see cref="ObfuscatedChar"/> can be drawn as any character, rather than only characters with similar width.
+        ///   Will cause character overlap.
+        /// </summary>
+        public bool FullObfuscation;
+
+        /// <summary>
         ///   Clones the passed <see cref="FancyText.Char"/> and turns it into an <see cref="ObfuscatedChar"/>.
         /// </summary>
-        internal static ObfuscatedChar FromChar(FancyText.Char character, float chance)
+        internal static ObfuscatedChar FromChar(FancyText.Char character, float chance, bool full)
             => new()
             {
                 Index = character.Index,
@@ -223,6 +239,7 @@ public static class ObfuscatedFancyText
                 Impact = character.Impact,
                 IsPunctuation = character.IsPunctuation,
                 NoOriginalCharacterChance = chance,
+                FullObfuscation = full,
             };
 
         /// <summary>
@@ -238,6 +255,12 @@ public static class ObfuscatedFancyText
 
             List<int> choices = GetSimilarWidthChars(pixelFontSize, ActualCharacter);
 
+            if(FullObfuscation)
+            {
+                //i love linq (keep emoji out)
+                choices = [.. pixelFontSize.Characters.Select(kvp => kvp.Key).Where(c => c < '\ue000')];
+            }
+
             if (Rng.Chance(1 - NoOriginalCharacterChance))
             {
                 choices.Remove(ActualCharacter);
@@ -247,6 +270,26 @@ public static class ObfuscatedFancyText
             else
             {
                 Character = Rng.Choose(choices);
+            }
+
+            if (FullObfuscation)
+            {
+                float difference = pixelFontSize.Measure((char)Character).X - pixelFontSize.Measure((char)ActualCharacter).X;
+
+                Position -= difference / 2f;
+            }
+        }
+
+        internal void AfterDraw(PixelFont font, float baseSize, Vector2 scale)
+        {
+            Vector2 vector = scale * ((Impact ? 2f - Fade : 1f) * Scale);
+            PixelFontSize pixelFontSize = font.Get(baseSize * Math.Max(vector.X, vector.Y));
+
+            if (FullObfuscation)
+            {
+                float difference = pixelFontSize.Measure((char)Character).X - pixelFontSize.Measure((char)ActualCharacter).X;
+
+                Position += difference / 2f;
             }
         }
     }
