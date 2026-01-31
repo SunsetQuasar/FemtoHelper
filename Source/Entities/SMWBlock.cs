@@ -146,6 +146,7 @@ public class GenericSmwBlock : Solid
     public readonly int HitFlagBehavior;
 
     public readonly bool SwitchMode;
+    public readonly bool Retriggerable;
 
     public readonly bool GiveCoyoteFramesOnHit;
 
@@ -174,8 +175,14 @@ public class GenericSmwBlock : Solid
     private readonly HashSet<string> whitelist;
     private readonly HashSet<string> blacklist;
 
+    public readonly string BlockMessage;
+    public bool HasMessage => !string.IsNullOrWhiteSpace(BlockMessage);
+
     public readonly float TurnBlockReturnTime;
     public float TurnBlockReturnTimer;
+
+    public readonly float HitCooldown;
+    private bool onCooldown;
 
     private HashSet<StaticMover> exemptFromRenderThingy = [];
 
@@ -295,6 +302,10 @@ public class GenericSmwBlock : Solid
         EjectToPoint = data.Bool("ejectToPoint", false);
 
         SpriteOffset = new Vector2(data.Float("spriteOffsetX", 0), data.Float("spriteOffsetY", 0));
+
+        BlockMessage = data.String("message");
+        Retriggerable = data.Bool("retriggerable", SwitchMode);
+        HitCooldown = data.Float("hitCooldown", 0f);
 
         Component crystalCollider = FemtoModule.CavernHelperSupport.GetCrystalBombExplosionCollider?.Invoke(OnCrystalExplosion, Collider);
 
@@ -540,12 +551,19 @@ public class GenericSmwBlock : Solid
         }
         else
         {
-            if (HasIndicator) TryDrawTiled(Indicator[(int)Math.Floor(Inditimer)], color);
+            if (HasIndicator) TryDrawTiled(Indicator[(int)Math.Floor(Inditimer)], color, BounceOffset);
         }
     }
     public void Hit(Player player, Direction dir)
     {
-        if (!Neededflagplus) return;
+        if (!Neededflagplus || onCooldown) return;
+
+        if (HitCooldown > 0)
+        {
+            onCooldown = true;
+            Alarm.Set(this, HitCooldown, () => onCooldown = false);
+        }
+
 
         Bumpdir = dir;
 
@@ -556,7 +574,7 @@ public class GenericSmwBlock : Solid
         if (HitFlag != "") (Scene as Level).Session.SetFlag(HitFlag, HitFlagBehavior == 0 ? true : HitFlagBehavior == 1 ? false : !(Scene as Level).Session.GetFlag(HitFlag));
 
         HasBeenHitOnce = true;
-        if (!SwitchMode) Activated = true;
+        if (!Retriggerable) Activated = true;
         EnableStaticMovers();
         Bouncetimer = 8;
         if (player != null)
@@ -614,6 +632,14 @@ public class GenericSmwBlock : Solid
             {
                 Audio.Play(AudioPath + "blockswitch");
             }
+            else if (HasMessage)
+            {
+                Alarm.Set(this, 0.09f, () =>
+                {
+                    Audio.Play(AudioPath + "blockmessage");
+                    Scene.Add(new SMWMessage(BlockMessage));
+                });
+            }
             else if (SolidAfterHit)
             {
                 Audio.Play(AudioPath + "blockcoin");
@@ -649,7 +675,7 @@ public class GenericSmwBlock : Solid
             }
         }
 
-        if(!SolidAfterHit)
+        if (!SolidAfterHit || HasMessage)
         {
             Rewards = [];
         }
@@ -1011,12 +1037,12 @@ public class GenericSmwBlock : Solid
         if (((FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1 ? direction.Y > 0 : direction.Y < 0) && direction.X == 0) || !Neededflagplus)
         {
             return DashCollisionResults.NormalCollision;
-
         }
 
-        if (!SolidBeforeHit) return DashCollisionResults.NormalCollision;
+        if (!SolidBeforeHit || onCooldown) return DashCollisionResults.NormalCollision;
 
         if (Activated || Bouncetimer > 0) return DashCollisionResults.NormalCollision;
+
         switch (direction.X)
         {
             case > 0 when CanHitLeft:

@@ -8,6 +8,9 @@ public class LimitRefill : Entity
     public class DirectionConstraint : Component
     {
         public bool[,] Dirs = new bool[3, 3];
+
+        public Vector2? lastAim = null;
+        public Vector2? dashOverrideReturn = null;
         public DirectionConstraint(Directions dir) : base(false, false)
         {
             for (int i = 0; i < 3; i++)
@@ -100,7 +103,6 @@ public class LimitRefill : Entity
 
     private Directions direction;
 
-    
     public LimitRefill(Vector2 position, EntityData data)
         : base(position)
     {
@@ -134,7 +136,7 @@ public class LimitRefill : Entity
             flash.Visible = false;
         };
         flash.CenterOrigin();
-        Add(wiggler = Wiggler.Create(1f, 4f,  (float v) =>
+        Add(wiggler = Wiggler.Create(1f, 4f, (float v) =>
         {
             sprite.Scale = (flash.Scale = Vector2.One * (1f + v * 0.2f));
         }));
@@ -148,20 +150,17 @@ public class LimitRefill : Entity
         respawnTime = data.Float("respawnTime", 2.5f);
     }
 
-    
     public LimitRefill(EntityData data, Vector2 offset)
         : this(data.Position + offset, data)
     {
     }
 
-    
     public override void Added(Scene scene)
     {
         base.Added(scene);
         level = SceneAs<Level>();
     }
 
-    
     public override void Update()
     {
         base.Update();
@@ -186,8 +185,6 @@ public class LimitRefill : Entity
             flash.Visible = true;
         }
     }
-
-    
     private void Respawn()
     {
         if (!Collidable)
@@ -201,8 +198,6 @@ public class LimitRefill : Entity
             level.ParticlesFG.Emit(_pRegen, 16, Position, Vector2.One * 2f);
         }
     }
-
-    
     private void UpdateY()
     {
         Sprite obj = flash;
@@ -211,8 +206,6 @@ public class LimitRefill : Entity
         float y = (obj2.Y = num2);
         obj.Y = y;
     }
-
-    
     public override void Render()
     {
         if (sprite.Visible)
@@ -221,8 +214,6 @@ public class LimitRefill : Entity
         }
         base.Render();
     }
-
-    
     private void OnPlayer(Player player)
     {
         player.UseRefill(false);
@@ -234,8 +225,6 @@ public class LimitRefill : Entity
         Add(new Coroutine(LimitRefillRoutine(player)));
         respawnTimer = respawnTime;
     }
-
-    
     private IEnumerator LimitRefillRoutine(Player player)
     {
         Celeste.Freeze(0.05f);
@@ -261,20 +250,40 @@ public class LimitRefill : Entity
             RemoveSelf();
         }
     }
-
     public static void Load()
     {
         On.Celeste.Player.DashBegin += Player_DashBegin;
+        On.Celeste.Player.DashCoroutine += Player_DashCoroutine;
+    }
+
+    private static IEnumerator Player_DashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self)
+    {
+        Vector2 temp = self.lastAim;
+        if (self.Get<DirectionConstraint>() is { } d && d.lastAim is not null)
+        {
+            self.OverrideDashDirection = d.lastAim ?? default;
+            self.lastAim = d.lastAim ?? default;
+        }
+        yield return new SwapImmediately(orig(self));
+        self.lastAim = temp;
     }
 
     private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
     {
-        if (self.Get<DirectionConstraint>() is { } d) d.RemoveSelf();
+        if (self.Get<DirectionConstraint>() is { } d) {
+            d.lastAim = self.lastAim;
+            d.dashOverrideReturn = self.OverrideDashDirection;
+            Alarm.Set(self, 0f, () =>
+            {
+                d.RemoveSelf();
+                self.OverrideDashDirection = d.dashOverrideReturn;
+            });
+        }
         orig(self);
     }
-
     public static void Unload()
     {
         On.Celeste.Player.DashBegin -= Player_DashBegin;
+        On.Celeste.Player.DashCoroutine -= Player_DashCoroutine;
     }
 }

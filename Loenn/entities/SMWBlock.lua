@@ -32,7 +32,7 @@ FemtoHelperSMWBlock.fieldInformation = {
     }
 }
 FemtoHelperSMWBlock.placements = {
-        {
+    {
         name = "smwblockdefault",
         data = {
             width = 16,
@@ -76,6 +76,9 @@ FemtoHelperSMWBlock.placements = {
             launchMultiplier = 0,
             solidAfterHit = true,
             turnBlockReturnTime = 4.27,
+            hitCooldown = 0,
+            message = "",
+            retriggerable = false,
         },
     },
     {
@@ -122,6 +125,9 @@ FemtoHelperSMWBlock.placements = {
             launchMultiplier = 0,
             solidAfterHit = true,
             turnBlockReturnTime = 4.27,
+            hitCooldown = 0,
+            message = "",
+            retriggerable = false,
         }
     },
     {
@@ -168,6 +174,9 @@ FemtoHelperSMWBlock.placements = {
             launchMultiplier = 0,
             solidAfterHit = true,
             turnBlockReturnTime = 4.27,
+            hitCooldown = 0,
+            message = "",
+            retriggerable = true,
         }
     },
     {
@@ -192,7 +201,7 @@ FemtoHelperSMWBlock.placements = {
             canHitBottom = true,
             canHitLeft = true,
             canHitRight = true,
-            hitFlag = "smwblock_flag",
+            hitFlag = "",
             switchAppearanceFlag = "",
             hitFlagBehavior = 2,
             switchMode = false,
@@ -214,6 +223,58 @@ FemtoHelperSMWBlock.placements = {
             launchMultiplier = 0,
             solidAfterHit = false,
             turnBlockReturnTime = 4.27,
+            hitCooldown = 0,
+            message = "",
+            retriggerable = true,
+        }
+    },
+    {
+        name = "smwblockmessage",
+        data = {
+            width = 16,
+            height = 16,
+            animationRate = 8,
+            ejectDistance = 24,
+            ejectOffsetX = 0,
+            ejectOffsetY = 0,
+            ejectDestinationOffsetX = 0,
+            ejectDestinationOffsetY = 0,
+            indicate = true,
+    	    ejectDuration = 0.5,
+            path = "objects/FemtoHelper/SMWBlock/message/",
+            solidBeforeHit = true,
+            ejectDirection = 4,
+            rewardContainerWidth = 16,
+            rewardContainerHeight = 16,
+            canHitTop = true,
+            canHitBottom = true,
+            canHitLeft = true,
+            canHitRight = true,
+            hitFlag = "",
+            switchAppearanceFlag = "",
+            hitFlagBehavior = 2,
+            switchMode = false,
+            giveCoyoteFramesOnHit = false,
+            audioPath = "event:/FemtoHelper/",
+            neededFlag = "",
+            ejectFromPoint = true,
+            ejectToPoint = false,
+            spriteOffsetX = 0,
+            spriteOffsetY = 0,
+            depth = -15000,
+            specialEntityHandling = true,
+            affectVisible = true,
+            affectActive = true,
+            affectCollidable = false,
+            dashableKaizo = false,
+            whitelist = "",
+            blacklist = "@triggers",
+            launchMultiplier = 0,
+            solidAfterHit = true,
+            turnBlockReturnTime = 4.27,
+            hitCooldown = 0,
+            message = "FemtoHelper_SMWMessageBlock_Example",
+            retriggerable = true,
         }
     }
 }
@@ -228,9 +289,11 @@ function FemtoHelperSMWBlock.sprite(room, entity)
     if entity.nodes then
         node = entity.nodes[1]
 
-        local color1 = entity.switchMode and {0.3, 0.3, 0.3, 0.1} or {1, 0, 0.5, 0.4}
-        local color2 = entity.switchMode and {0.4, 0.4, 0.4, 0.2} or {1, 0.5, 0.7, 0.6}
-        local color3 = entity.switchMode and {0.3, 0.3, 0.3, 0.07} or {1, 0, 0.5, 0.3}
+        local flag = (entity.switchMode or entity.message ~= "")
+
+        local color1 = flag and {0.3, 0.3, 0.3, 0.1} or {1, 0, 0.5, 0.4}
+        local color2 = flag and {0.4, 0.4, 0.4, 0.2} or {1, 0.5, 0.7, 0.6}
+        local color3 = flag and {0.3, 0.3, 0.3, 0.07} or {1, 0, 0.5, 0.3}
 
         spr = {
             drawableLine.fromPoints({entity.x + (entity.width/2), entity.y + (entity.height/2), node.x + (rWidth/2), node.y + (rHeight/2)}, color3, 1),

@@ -101,7 +101,7 @@ public class GloriousPassage : Entity
             }
         }
         base.Update();
-        if (PlayerInside && !Done && !InteractToOpen && Player != null && Player.OnGround() && Input.MoveY.Value == -1 && Lastinput != -1)
+        if (PlayerInside && !Done && !InteractToOpen && Player != null && !Player.Dead && (Player?.OnGround() ?? false) && Input.MoveY.Value == -1 && Lastinput != -1)
         {
             Add(new Coroutine(Routine(Player)));
         }

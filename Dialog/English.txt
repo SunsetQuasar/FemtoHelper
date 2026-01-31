@@ -1,3 +1,5 @@
+FemtoHelper_SMWMessageBlock_Example= Sample Message
+
 FemtoHelper_PlutoniumText_Example= Sample Text
 FemtoHelper_PlutoniumText_Example2= O
 

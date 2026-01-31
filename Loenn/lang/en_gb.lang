@@ -364,6 +364,7 @@ entities.FemtoHelper/SMWBlock.placements.name.smwblockdefault=SMW Block (Default
 entities.FemtoHelper/SMWBlock.placements.name.smwblockhidden=SMW Block (Kaizo/Hidden)
 entities.FemtoHelper/SMWBlock.placements.name.smwblockswitch=SMW Block (Switch)
 entities.FemtoHelper/SMWBlock.placements.name.smwblockturn=SMW Block (Turn Block)
+entities.FemtoHelper/SMWBlock.placements.name.smwblockmessage=SMW Block (Message Block)
 entities.FemtoHelper/SMWBlock.attributes.description.animationRate=Framerate for the block animations.
 entities.FemtoHelper/SMWBlock.attributes.description.ejectDistance=How far the reward gets ejected in the outwards direction.\nHigher values don't go a specific direction, but farther outwards from the block.
 entities.FemtoHelper/SMWBlock.attributes.description.ejectOffsetX=Horizontal offset of the rewards at the START of the animation.\nChanges where they come from, but not where they end up.
@@ -384,7 +385,7 @@ entities.FemtoHelper/SMWBlock.attributes.description.canHitRight=Whether the blo
 entities.FemtoHelper/SMWBlock.attributes.description.hitFlag=The flag that gets modified when the block is hit. Leave blank for no flag.
 entities.FemtoHelper/SMWBlock.attributes.description.switchAppearanceFlag=The flag that determines the look of the switch mode block;\nLeave empty to use Hit Flag instead.
 entities.FemtoHelper/SMWBlock.attributes.description.hitFlagBehavior=How the flag should be modified when the block is hit. Does nothing if hitFlag is blank.
-entities.FemtoHelper/SMWBlock.attributes.description.switchMode=Allows the block to be hit multiple times, but disables its reward feature entirely, focusing more on its flag modifying behavior.
+entities.FemtoHelper/SMWBlock.attributes.description.switchMode=Displays its sprite depending on its Hit Flag (or Switch Appearance Flag).\nDisables the reward feature.
 entities.FemtoHelper/SMWBlock.attributes.description.giveCoyoteFramesOnHit=Whether the block should give the player ground coyote frames when hit. Unrealistic, but allows the player to perform tech akin to Dream Hypers and Core Hypers from the block.
 entities.FemtoHelper/SMWBlock.attributes.description.audioPath=Path for the FMOD folder containing the audio events the block will use. This indicates a folder, which means this string should always end with a forward slash.\nInside that path, the block uses audio events with these names: "blockreward", "blockcoin", "blockswitch" and "blockhit".
 entities.FemtoHelper/SMWBlock.attributes.description.neededFlag=The flag that the block requires to be hittable/active. Leave blank for always active.\nPrecede the flag name with an exclamation point to negate the flag. (e.g. "!myflag" will only activate the block if "myflag" is NOT active)
@@ -403,6 +404,9 @@ entities.FemtoHelper/SMWBlock.attributes.description.solidAfterHit=Whether the b
 entities.FemtoHelper/SMWBlock.attributes.description.turnBlockReturnTime=The time it takes for a block with "Solid After Hit" disabled to reset.\nSet to a negative value for the block to never reset.\nDoes nothing if "Solid After Hit" is set.
 entities.FemtoHelper/SMWBlock.attributes.description.whitelist=Comma-separated list of entity class names and/or entity placement names allowed to be caught by the block.\nAllows wildcards (*). Use "@triggers" to match all triggers.\nTakes priority over Blacklist.
 entities.FemtoHelper/SMWBlock.attributes.description.blacklist=Comma-separated list of entity class names and/or entity placement names to exclude from being caught by the block.\nAllows wildcards (*). Use "@triggers" to match all triggers.\nDoes nothing if a whitelist is set.
+entities.FemtoHelper/SMWBlock.attributes.description.message=If not empty, the block displays a message with this dialog ID when hit.\nDisables the reward feature.
+entities.FemtoHelper/SMWBlock.attributes.description.hitCooldown=The time, in seconds, before you can hit the block again after hitting it once.
+entities.FemtoHelper/SMWBlock.attributes.description.retriggerable=Allows the block to be hit multiple times.
 
 # SMW Fish
 

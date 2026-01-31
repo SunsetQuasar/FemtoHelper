@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Celeste.Mod.Helpers;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -18,6 +19,9 @@ public static class ObfuscatedFancyText
     public const string ObfuscatedDynDataNoOrigChance = "FemtoHelper_CurrentObfuscated_NoOrigChance";
     public const string ObfuscatedDynDataFullObfuscation = "FemtoHelper_CurrentObfuscated_FullObfuscation";
 
+    public const string CaseShiftCommand = "femto_caseshift";
+    public const string CaseShiftDynDataKey = "FemtoHelper_CurrentCaseShift";
+
     /// <summary>
     ///   Characters of a <see cref="PixelFontSize"/> grouped by their width.
     /// </summary>
@@ -26,7 +30,6 @@ public static class ObfuscatedFancyText
     ///   avoid having to cast.
     /// </remarks>
     private static readonly Dictionary<PixelFontSize, Dictionary<int, List<int>>> CharWidthMap = [];
-    private static readonly HashSet<char> chars;
 
     private static ILHook Hook_FancyText_AddWord;
 
@@ -36,7 +39,7 @@ public static class ObfuscatedFancyText
         IL.Celeste.FancyText.Parse += ParseObfuscatedCommandHook;
         Hook_FancyText_AddWord = new ILHook(
             typeof(FancyText).GetMethod("orig_AddWord", BindingFlags.NonPublic | BindingFlags.Instance)!,
-            InjectObfuscatedCharHook);
+            InjectSpecialCharHook);
     }
 
     internal static void Unload()
@@ -47,8 +50,11 @@ public static class ObfuscatedFancyText
     }
 
     /// <summary>
-    ///   Enable swapping the characters in obfuscated text before they get rendered.
+    ///     Runs before and after Draw callbacks for <see cref="ISpecialChar"/>s
     /// </summary>
+    /// <remarks>
+    ///     Enables swapping the characters in obfuscated text and case shift text before they get rendered.
+    /// </remarks>
     private static void AddBeforeDrawCallHook(
         On.Celeste.FancyText.Char.orig_Draw orig,
         FancyText.Char self,
@@ -58,14 +64,15 @@ public static class ObfuscatedFancyText
         Vector2 scale,
         float alpha)
     {
-        ObfuscatedChar corruptedChar = self as ObfuscatedChar;
-        corruptedChar?.BeforeDraw(font, baseSize, scale);
+        ISpecialChar specialChar = self as ISpecialChar;
+        //ObfuscatedChar corruptedChar = self as ObfuscatedChar;
+        specialChar?.BeforeDraw(font, baseSize, scale);
         orig(self, font, baseSize, position, scale, alpha);
-        corruptedChar?.AfterDraw(font, baseSize, scale);
+        specialChar?.AfterDraw(font, baseSize, scale);
     }
 
     /// <summary>
-    ///   Inject the text obfuscation command check.
+    ///   Inject the custom text command checks
     /// </summary>
     private static void ParseObfuscatedCommandHook(ILContext il)
     {
@@ -97,7 +104,7 @@ public static class ObfuscatedFancyText
     }
 
     /// <summary>
-    ///   Attempt to match the text obfuscation command.
+    ///   Attempt to match custom text commands
     /// </summary>
     /// <returns>
     ///   Whether the start or end marker for the obfuscated command has been matched.
@@ -114,7 +121,7 @@ public static class ObfuscatedFancyText
                 float noOrigChance = 0.5f;
                 bool full = false;
 
-                if(list.Count > 0 && float.TryParse(list[0], out var result))
+                if (list.Count > 0 && float.TryParse(list[0], out var result))
                 {
                     noOrigChance = result / 100f;
                 }
@@ -130,14 +137,20 @@ public static class ObfuscatedFancyText
             case "/" + ObfuscatedCommand:
                 selfData.Set(ObfuscatedDynDataKey, false);
                 return true;
+            case CaseShiftCommand:
+                selfData.Set(CaseShiftDynDataKey, true);
+                return true;
+            case "/" + CaseShiftCommand:
+                selfData.Set(CaseShiftDynDataKey, false);
+                return true;
         }
         return false;
     }
 
     /// <summary>
-    ///   Inject <see cref="SwapForObfuscatedChar"/>.
+    ///   Inject <see cref="SwapForSpecialChar"/>.
     /// </summary>
-    private static void InjectObfuscatedCharHook(ILContext il)
+    private static void InjectSpecialCharHook(ILContext il)
     {
         ILCursor cursor = new(il);
 
@@ -147,18 +160,26 @@ public static class ObfuscatedFancyText
             return;
         }
         cursor.EmitLdarg0();
-        cursor.EmitDelegate(SwapForObfuscatedChar);
+        cursor.EmitDelegate(SwapForSpecialChar);
     }
 
     /// <summary>
-    ///   Replace <see cref="FancyText.Char"/>s for <see cref="ObfuscatedChar"/>s if text obfuscation is enabled.
+    ///   Replace <see cref="FancyText.Char"/>s for <see cref="ISpecialChar"/> types depending on the command matched in <cee cref="TryMatchObfuscatedCommand"/>
     /// </summary>
-    private static FancyText.Char SwapForObfuscatedChar(FancyText.Char node, FancyText self)
+    private static FancyText.Char SwapForSpecialChar(FancyText.Char node, FancyText self)
     {
         DynamicData selfData = DynamicData.For(self);
-        return selfData.Get(ObfuscatedDynDataKey) is true
-            ? ObfuscatedChar.FromChar(node, (float)(selfData.Get(ObfuscatedDynDataNoOrigChance) ?? 0.5f), (bool)selfData.Get(ObfuscatedDynDataFullObfuscation))
-            : node;
+
+        if (selfData.Get(ObfuscatedDynDataKey) is true)
+        {
+            return ObfuscatedChar.FromChar(node, (float)(selfData.Get(ObfuscatedDynDataNoOrigChance) ?? 0.5f), (bool)selfData.Get(ObfuscatedDynDataFullObfuscation));
+        }
+        else if (selfData.Get(CaseShiftDynDataKey) is true)
+        {
+            return CaseShiftChar.FromChar(node);
+        }
+
+        return node;
     }
 
     /// <summary>
@@ -194,7 +215,67 @@ public static class ObfuscatedFancyText
         CharWidthMap[pixelFontSize] = widthToCharsMap;
     }
 
-    public class ObfuscatedChar : FancyText.Char
+    public interface ISpecialChar
+    {
+        public void BeforeDraw(PixelFont font, float baseSize, Vector2 scale);
+        public void AfterDraw(PixelFont font, float baseSize, Vector2 scale);
+    }
+
+    public class CaseShiftChar : FancyText.Char, ISpecialChar
+    {
+        private static readonly Random Rng = new();
+
+        /// <summary>
+        ///   The true character from the parsed text.
+        /// </summary>
+        public int ActualCharacter;
+
+        internal static CaseShiftChar FromChar(FancyText.Char character)
+        => new()
+        {
+            Index = character.Index,
+            Character = character.Character,
+            ActualCharacter = character.Character,
+            Position = character.Position,
+            Line = character.Line,
+            Page = character.Page,
+            Delay = character.Delay,
+            LineWidth = character.LineWidth,
+            Color = character.Color,
+            Scale = character.Scale,
+            Rotation = character.Rotation,
+            YOffset = character.YOffset,
+            Fade = character.Fade,
+            Shake = character.Shake,
+            Wave = character.Wave,
+            Impact = character.Impact,
+            IsPunctuation = character.IsPunctuation,
+        };
+
+        public void BeforeDraw(PixelFont font, float baseSize, Vector2 scale)
+        {
+            if(Engine.Scene.OnRawInterval(0.05f))Character = Rng.Chance(0.5f) ? char.ToLower((char)ActualCharacter) : char.ToUpper((char)ActualCharacter);
+            
+
+            Vector2 vector = scale * ((Impact ? 2f - Fade : 1f) * Scale);
+            PixelFontSize pixelFontSize = font.Get(baseSize * Math.Max(vector.X, vector.Y));
+
+            float difference = pixelFontSize.Measure((char)Character).X - pixelFontSize.Measure((char)ActualCharacter).X;
+
+            Position -= difference / 2f;
+        }
+        public void AfterDraw(PixelFont font, float baseSize, Vector2 scale)
+        {
+            Vector2 vector = scale * ((Impact ? 2f - Fade : 1f) * Scale);
+            PixelFontSize pixelFontSize = font.Get(baseSize * Math.Max(vector.X, vector.Y));
+
+            float difference = pixelFontSize.Measure((char)Character).X - pixelFontSize.Measure((char)ActualCharacter).X;
+
+            Position += difference / 2f;
+        }
+    }
+
+    public class ObfuscatedChar : FancyText.Char, ISpecialChar
     {
         private static readonly Random Rng = new();
 
@@ -211,8 +292,10 @@ public static class ObfuscatedFancyText
 
         /// <summary>
         ///   Whether the <see cref="ObfuscatedChar"/> can be drawn as any character, rather than only characters with similar width.
-        ///   Will cause character overlap.
         /// </summary>
+        /// <remarks>
+        ///   Will cause character overlap.
+        /// </remarks>
         public bool FullObfuscation;
 
         /// <summary>
@@ -245,7 +328,7 @@ public static class ObfuscatedFancyText
         /// <summary>
         ///   Pick a random character before getting rendered.
         /// </summary>
-        internal void BeforeDraw(PixelFont font, float baseSize, Vector2 scale)
+        public void BeforeDraw(PixelFont font, float baseSize, Vector2 scale)
         {
             // copy-pasted from orig_Draw
             Vector2 vector = scale * ((Impact ? 2f - Fade : 1f) * Scale);
@@ -255,7 +338,7 @@ public static class ObfuscatedFancyText
 
             List<int> choices = GetSimilarWidthChars(pixelFontSize, ActualCharacter);
 
-            if(FullObfuscation)
+            if (FullObfuscation)
             {
                 //i love linq (keep emoji out)
                 choices = [.. pixelFontSize.Characters.Select(kvp => kvp.Key).Where(c => c < '\ue000')];
@@ -266,31 +349,25 @@ public static class ObfuscatedFancyText
                 choices.Remove(ActualCharacter);
                 Character = Rng.Choose(choices);
                 choices.Add(ActualCharacter);
-            } 
+            }
             else
             {
                 Character = Rng.Choose(choices);
             }
 
-            if (FullObfuscation)
-            {
-                float difference = pixelFontSize.Measure((char)Character).X - pixelFontSize.Measure((char)ActualCharacter).X;
+            float difference = pixelFontSize.Measure((char)Character).X - pixelFontSize.Measure((char)ActualCharacter).X;
 
-                Position -= difference / 2f;
-            }
+            Position -= difference / 2f;
         }
 
-        internal void AfterDraw(PixelFont font, float baseSize, Vector2 scale)
+        public void AfterDraw(PixelFont font, float baseSize, Vector2 scale)
         {
             Vector2 vector = scale * ((Impact ? 2f - Fade : 1f) * Scale);
             PixelFontSize pixelFontSize = font.Get(baseSize * Math.Max(vector.X, vector.Y));
 
-            if (FullObfuscation)
-            {
-                float difference = pixelFontSize.Measure((char)Character).X - pixelFontSize.Measure((char)ActualCharacter).X;
+            float difference = pixelFontSize.Measure((char)Character).X - pixelFontSize.Measure((char)ActualCharacter).X;
 
-                Position += difference / 2f;
-            }
+            Position += difference / 2f;
         }
     }
 }
