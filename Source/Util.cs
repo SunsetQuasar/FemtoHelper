@@ -225,6 +225,13 @@ public static class EntityExtensions
         }
         return false;
     }
+
+    public static void DefaultChangeStatusCB(this Entity e, int visible, int collidable, int active)
+    {
+        e.Visible = visible == 1 || (visible != -1 && e.Visible);
+        e.Collidable = collidable == 1 || (collidable != -1 && e.Collidable);
+        e.Active = active == 1 || (active != -1 && e.Active);
+    }
 }
 
 public static class Vector2Extensions

@@ -6,6 +6,7 @@ using Celeste.Mod.FemtoHelper.Utils;
 using MonoMod.Utils;
 using MonoMod.Cil;
 using System.Text.RegularExpressions;
+using Celeste.Mod.FemtoHelper.AuspiciousInterop;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -447,14 +448,14 @@ public class GenericSmwBlock : Solid
 
         if (Bouncetimer > 0)
         {
-            Bouncetimer -= Engine.DeltaTime * 60;
+            Bouncetimer = Calc.Approach(Bouncetimer, 0f, Engine.DeltaTime * 60);
         }
         else if (Collidable && Activated && !SolidAfterHit)
         {
             Collidable = false;
             TurnBlockReturnTimer = MathF.Max(TurnBlockReturnTime, 0);
         }
-        if (!Collidable && Activated)
+        if (!Collidable && Activated && !SolidAfterHit)
         {
             if (TurnBlockReturnTimer < 0)
             {
@@ -519,7 +520,7 @@ public class GenericSmwBlock : Solid
 
         Color color = Neededflagplus ? Color.White : Calc.HexToColor("808080");
 
-        if (Activated || SwitchMode)
+        if (Bouncetimer > 0 || Activated || SwitchMode)
         {
             if (Bouncetimer <= 0)
             {
@@ -619,7 +620,7 @@ public class GenericSmwBlock : Solid
 
             if (GiveCoyoteFramesOnHit) player.StartJumpGraceTime();
         }
-        Collidable = true;
+        Collidable = (!SolidBeforeHit && Retriggerable) ? false : true;
         Celeste.Freeze(0.05f);
 
         if (Rewards.Count != 0)
@@ -1122,5 +1123,26 @@ public class GenericSmwBlock : Solid
     {
         On.Celeste.TriggerSpikes.Render -= TriggerSpikes_Render;
         IL.Celeste.DustEdges.BeforeRender -= DustEdges_BeforeRender;
+    }
+
+    public TemplateIop.TemplateChildComponent TemplateChildComp = null;
+    public TemplateIop.TemplateChildComponent MakeComponent()
+    {
+        TemplateChildComp = new(this) {
+            RepositionCB = (newpos, lift) =>
+            {
+                MoveTo(newpos, lift);
+            },
+            ChangeStatusCB = (visible, collidable, active) =>
+            {
+                this.DefaultChangeStatusCB(visible, collidable, active);
+
+                if (collidable == 1 && !SolidBeforeHit && !Activated)
+                {
+                    Collidable = false;
+                }
+            }
+        };
+        return TemplateChildComp;
     }
 }

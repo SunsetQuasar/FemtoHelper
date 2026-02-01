@@ -2,6 +2,7 @@ using Celeste.Mod.FemtoHelper.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -748,6 +749,24 @@ public class SmwShell : Actor
 
     private void OnCollideH(CollisionData data)
     {
+        if (speed.Y == 0f && speed.X != 0f)
+        {
+            for (int i = 1; i <= 4; i++)
+            {
+                for (int num = 1; num >= -1; num -= 2)
+                {
+                    Vector2 vector = new(Math.Sign(speed.X), i * num);
+                    Vector2 vector2 = Position + vector;
+                    if (!CollideCheck<Solid>(vector2) && CollideCheck<Solid>(vector2 - Vector2.UnitY * num) /*&& !DashCorrectCheck(vector)*/) // probably don't care about ledge blockers
+                    {
+                        MoveVExact(i * num);
+                        MoveHExact(Math.Sign(speed.X));
+                        return;
+                    }
+                }
+            }
+        }
+
         if (data.Hit is DashSwitch)
         {
             (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitX * Math.Sign(speed.X));
@@ -758,6 +777,33 @@ public class SmwShell : Actor
 
     private void OnCollideV(CollisionData data)
     {
+        if (speed.Y < 0f)
+        {
+            int num3 = 4;
+            if (speed.X <= 0.01f)
+            {
+                for (int j = 1; j <= num3; j++)
+                {
+                    if (!CollideCheck<Solid>(Position + new Vector2(-j, -1f)))
+                    {
+                        Position += new Vector2(-j, -1f);
+                        return;
+                    }
+                }
+            }
+            if (speed.X >= -0.01f)
+            {
+                for (int k = 1; k <= num3; k++)
+                {
+                    if (!CollideCheck<Solid>(Position + new Vector2(k, -1f)))
+                    {
+                        Position += new Vector2(k, -1f);
+                        return;
+                    }
+                }
+            }
+        }
+
         if (data.Hit is DashSwitch)
         {
             (data.Hit as DashSwitch).OnDashCollide(null, Vector2.UnitY * Math.Sign(speed.Y));

@@ -221,7 +221,7 @@ public class TheContraption : Actor
         public override void Update()
         {
             base.Update();
-            Collidable = !Parent.Hold.IsHeld;
+            //Collidable = !Parent.Hold.IsHeld;
         }
 
         public override void MoveHExact(int move)
@@ -282,9 +282,11 @@ public class TheContraption : Actor
 
     private readonly bool reducedDebris;
 
+    private Collider colliderStorage;
+
     public TheContraption(EntityData data, Vector2 offset) : base(data.Position + offset + new Vector2((float)data.Width / 2f, data.Height))
     {
-        Depth = -5;
+        Depth = -9998;
         Child = new ChildSolid(this, Position, data.Width, data.Height);
         Collider = new Hitbox(data.Width, data.Height);
         Collider.Position = new Vector2((0f - Width) / 2f, 0f - Height);
@@ -328,6 +330,8 @@ public class TheContraption : Actor
             Add(new Coroutine(ExaustSteam()));
         }
         reducedDebris = data.Bool("reducedDebris", false);
+
+        SquishCallback = OnSquishNew;
     }
 
     public IEnumerator IdleSteam()
@@ -366,6 +370,14 @@ public class TheContraption : Actor
 
     public override void Render()
     {
+        bool returnCollider = false;
+        if(Collider == null)
+        {
+            Collider = colliderStorage;
+            colliderStorage = null;
+            returnCollider = true;
+        }
+
         Vector2 position = Position;
         Position = Child.TopLeft + Child.Shake;
         for (int k = 0; (float)k < Width / 8f; k++)
@@ -386,12 +398,23 @@ public class TheContraption : Actor
 
         base.Render();
         Position = position;
+
+        if (returnCollider)
+        {
+            colliderStorage = Collider;
+            Collider = null;
+        }
     }
 
     private void OnPickup()
     {
         highFrictionTimer = 0.5f;
+        Collidable = false;
         Child.Collidable = false;
+
+        colliderStorage = Collider;
+        Collider = null;
+
         speed = Vector2.Zero;
         AddTag(Tags.Persistent);
         Child.AddTag(Tags.Persistent);
@@ -411,13 +434,13 @@ public class TheContraption : Actor
         return !(solid is ChildSolid) && base.IsRiding(solid);
     }
 
-    public override void OnSquish(CollisionData data)
+    public void OnSquishNew(CollisionData data)
     {
         if (Collidable)
         {
             if (!TryBigSquishWiggle(data))
             {
-                Die();
+                Explode();
             }
         }
     }
@@ -596,21 +619,23 @@ public class TheContraption : Actor
 
     private void OnRelease(Vector2 force)
     {
-
+        Collider = colliderStorage;
+        colliderStorage = null;
         if (CollideCheck<Solid>())
         {
             if (!ReleasedSquishWiggle())
             {
-                Die();
+                Explode();
             }
             force = Vector2.Zero;
         }
+        Collidable = true;
+        Child.Collidable = true;
 
         if (force.X == 0f)
         {
             Audio.Play("event:/new_content/char/madeline/glider_drop", Position);
         }
-        Child.Collidable = true;
         RemoveTag(Tags.Persistent);
         Child.RemoveTag(Tags.Persistent);
         foreach (StaticMover e in Child.staticMovers)
@@ -623,7 +648,10 @@ public class TheContraption : Actor
             force.Y = -0.4f;
         }
         speed = force * 100f;
-        MoveTo(Position - Vector2.UnitY * 4);
+        if (!OnGround())
+        {
+            MoveTo(Position - Vector2.UnitY * 4);
+        }
         Child.MoveTo(Position);
     }
 
@@ -855,7 +883,6 @@ public class TheContraption : Actor
         base.Added(scene);
         scene.Add(Child);
     }
-
 
     public static void Load()
     {

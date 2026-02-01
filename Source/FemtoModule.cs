@@ -22,6 +22,7 @@ using static Celeste.Mod.FemtoHelper.Entities.SparkRefill;
 using System.Diagnostics.CodeAnalysis;
 using Celeste.Mod.FemtoHelper.CustomFancyText;
 using Celeste.Mod.FemtoHelper.PlutoniumText;
+using Celeste.Mod.FemtoHelper.AuspiciousInterop;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -241,7 +242,14 @@ public class FemtoModule : EverestModule
 
         typeof(CavernHelperSupport).ModInterop(); //:333
 
-        typeof(FrostHelperSupport).ModInterop();
+        typeof(FrostHelperSupport).ModInterop(); //:3333
+
+        typeof(TemplateIop).ModInterop(); //:33333
+
+        TemplateIop.customClarify("FemtoHelper/SMWBlock", (level, leveldata, offset, entitydata) =>
+        {
+            return new GenericSmwBlock(entitydata, offset).MakeComponent();
+        });
 
         Everest.Events.Level.OnLoadBackdrop += Level_OnLoadBackdrop;
         On.Celeste.Puffer.OnCollideH += Puffer_KaizoCollideHHook;
