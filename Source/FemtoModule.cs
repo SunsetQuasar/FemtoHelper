@@ -246,7 +246,7 @@ public class FemtoModule : EverestModule
 
         typeof(TemplateIop).ModInterop(); //:33333
 
-        TemplateIop.customClarify("FemtoHelper/SMWBlock", (level, leveldata, offset, entitydata) =>
+        TemplateIop.customClarify?.Invoke("FemtoHelper/SMWBlock", (level, leveldata, offset, entitydata) =>
         {
             return new GenericSmwBlock(entitydata, offset).MakeComponent();
         });
