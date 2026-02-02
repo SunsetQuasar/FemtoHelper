@@ -1,10 +1,12 @@
 - Name: FemtoHelper
-  Version: 1.15.0
+  Version: 1.15.1
   DLL: bin/FemtoHelper.dll
   Dependencies:
     - Name: Everest
       Version: 1.5935.0
   OptionalDependencies:
+    - Name: auspicioushelper
+      Version: 0.3.13
     - Name: GravityHelper
       Version: 1.1.38
     - Name: CommunalHelper
