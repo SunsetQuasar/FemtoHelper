@@ -82,34 +82,32 @@ public class PlutoniumTextRenderer : Entity
     {
         ILCursor cursor = new(il);
 
-        if (cursor.TryGotoNextBestFit(MoveType.After, instr => instr.MatchLdarg0(), instr => instr.MatchLdfld<Level>("Background"), instr => instr.MatchLdarg0(), instr => instr.MatchCallOrCallvirt<Renderer>("Render")))
+        if (cursor.TryGotoNextBestFit(MoveType.Before, instr => instr.MatchLdarg0(), instr => instr.MatchLdfld<Level>("Background"), instr => instr.MatchLdarg0()))
         {
-            cursor.Index--;
-
             cursor.EmitLdarg0();
             cursor.EmitLdcI4(0);
             cursor.EmitDelegate(RenderThis);
 
-            cursor.Index++;
-
-            cursor.EmitLdarg0();
-            cursor.EmitLdcI4(1);
-            cursor.EmitDelegate(RenderThis);
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallOrCallvirt<Renderer>("Render")))
+            {
+                cursor.EmitLdarg0();
+                cursor.EmitLdcI4(1);
+                cursor.EmitDelegate(RenderThis);
+            }
         }
 
-        if (cursor.TryGotoNextBestFit(MoveType.After, instr => instr.MatchLdarg0(), instr => instr.MatchLdfld<Level>("Foreground"), instr => instr.MatchLdarg0(), instr => instr.MatchCallOrCallvirt<Renderer>("Render")))
+        if (cursor.TryGotoNextBestFit(MoveType.Before, instr => instr.MatchLdarg0(), instr => instr.MatchLdfld<Level>("Foreground"), instr => instr.MatchLdarg0()))
         {
-            cursor.Index--;
-
             cursor.EmitLdarg0();
             cursor.EmitLdcI4(2);
             cursor.EmitDelegate(RenderThis);
 
-            cursor.Index++;
-
-            cursor.EmitLdarg0();
-            cursor.EmitLdcI4(3);
-            cursor.EmitDelegate(RenderThis);
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallOrCallvirt<Renderer>("Render")))
+            {
+                cursor.EmitLdarg0();
+                cursor.EmitLdcI4(3);
+                cursor.EmitDelegate(RenderThis);
+            }
         }
     }
     private static void LevelLoader_OnLoadingThread(Level level)
