@@ -341,7 +341,7 @@ public static class ObfuscatedFancyText
             if (FullObfuscation)
             {
                 //i love linq (keep emoji out)
-                choices = [.. pixelFontSize.Characters.Select(kvp => kvp.Key).Where(c => c < '\ue000')];
+                choices = [.. pixelFontSize.Characters.Keys.Where(c => c < '\ue000')];
             }
 
             if (Rng.Chance(1 - NoOriginalCharacterChance))
