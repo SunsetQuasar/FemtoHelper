@@ -17,12 +17,6 @@ public class PlutoniumTextRenderer : Entity
 
     private static VirtualRenderTarget belowBG, aboveBG, belowFG, aboveFG;
 
-    private static readonly Comparison<PlutoniumTextComponent> compareDepth = (a, b) => (int)(b.Entity.actualDepth - a.Entity.actualDepth);
-    public void SortEntities()
-    {
-        texts.Sort(compareDepth);
-    }
-
     public VirtualRenderTarget Buffer => Layer switch
     {
         TextLayer.BelowBG => belowBG,
@@ -31,6 +25,12 @@ public class PlutoniumTextRenderer : Entity
         TextLayer.AboveFG => aboveFG,
         _ => null
     };
+
+    private static readonly Comparison<PlutoniumTextComponent> compareDepth = (a, b) => (int)(b.Entity.actualDepth - a.Entity.actualDepth);
+    public void SortEntities()
+    {
+        texts.Sort(compareDepth);
+    }
 
     public static void LoadContent()
     {
@@ -131,7 +131,6 @@ public class PlutoniumTextRenderer : Entity
 
         //Log($"index is {index}");
 
-
         PlutoniumTextRenderer renderer = GetRenderer(level, layer);
 
         if (renderer is null) return;
@@ -139,27 +138,21 @@ public class PlutoniumTextRenderer : Entity
         renderer.DrawBuffer(level);
     }
 
+
+
     public void DrawBuffer(Level level)
     {
-        //Level level = Scene as Level;
-
-        MTexture orDefault = GFX.ColorGrades.GetOrDefault(level.lastColorGrade, GFX.ColorGrades["none"]);
-        MTexture orDefault2 = GFX.ColorGrades.GetOrDefault(level.Session.ColorGrade, GFX.ColorGrades["none"]);
-
-        if (level.colorGradeEase > 0f && orDefault != orDefault2)
+        foreach (PlutoniumTextComponent ptc in texts)
         {
-            ColorGradeNoPremultiply.Set(orDefault, orDefault2, level.colorGradeEase);
-        }
-        else
-        {
-            ColorGradeNoPremultiply.Set(orDefault2);
+            if (ptc.Scene is Level l) ptc.BeforeRenderCallback?.Invoke(l);
         }
 
-        //Log($"Hi! I'm {Layer}");
+        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, SceneAs<Level>().Camera.Matrix);
 
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, ColorGradeNoPremultiply.Effect, Matrix.Identity);
-
-        Draw.SpriteBatch.Draw(Buffer, Vector2.Zero, Color.White);
+        foreach (PlutoniumTextComponent ptc in texts)
+        {
+            if (ptc.Scene is Level l) ptc.RenderCallback?.Invoke(l);
+        }
 
         Draw.SpriteBatch.End();
     }
@@ -169,7 +162,6 @@ public class PlutoniumTextRenderer : Entity
         this.Layer = layer;
         AddTag(Tags.Global);
         if (layer == TextLayer.HUD) AddTag(TagsExt.SubHUD);
-        Add(new BeforeRenderHook(BeforeRender));
     }
 
     public override void Removed(Scene scene)
@@ -182,31 +174,30 @@ public class PlutoniumTextRenderer : Entity
         base.SceneEnd(scene);
     }
 
-    public void BeforeRender()
+    private static VirtualRenderTarget EnsureValidBuffer(VirtualRenderTarget buffer)
     {
-        foreach (PlutoniumTextComponent ptc in texts)
+        var gpBuffer = GameplayBuffers.Gameplay;
+
+        string name = buffer.Name;
+
+        int targetWidth = gpBuffer?.Width ?? 320;
+        int targetHeight = gpBuffer?.Height ?? 180;
+
+        if (gpBuffer is null || gpBuffer.Width == 320 || gpBuffer.Width == 321)
         {
-            if (ptc.Scene is Level l) ptc.BeforeRenderCallback?.Invoke(l);
+            buffer ??= VirtualContent.CreateRenderTarget(name, targetWidth, targetHeight);
+            return buffer;
         }
 
-        //actual rendering of these layers happens in beforerender !? preposterous
-
-        if (Buffer is not null)
+        // We need a bigger buffer due to zoomout.
+        // We'll keep the 320x180 buffer around, in case some other cloudscape wants to render with ZoomBehavior=StaySame
+        if (buffer is null || buffer.IsDisposed || buffer.Width != gpBuffer.Width)
         {
-            Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
-            Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
-
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, SceneAs<Level>().Camera.Matrix);
-
-            foreach (PlutoniumTextComponent ptc in texts)
-            {
-                if (ptc.Scene is Level l) ptc.RenderCallback?.Invoke(l);
-            }
-
-            Draw.SpriteBatch.End();
-
-            Engine.Graphics.GraphicsDevice.SetRenderTarget(null);
+            buffer?.Dispose();
+            buffer ??= VirtualContent.CreateRenderTarget(name, targetWidth, targetHeight);
         }
+
+        return buffer;
     }
 
     public override void Render()
@@ -231,7 +222,11 @@ public class PlutoniumTextRenderer : Entity
             }
 
             SubHudRenderer.EndRender();
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGradeNoPremultiply.Effect, Matrix.CreateTranslation(SceneAs<Level>().Camera.Matrix.Translation * 6f) * (SubHudRenderer.DrawToBuffer ? Matrix.Identity : Engine.ScreenMatrix));
+
+            //am i stupid? works for now
+            float scale = GameplayBuffers.Gameplay.Width / 320;
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGradeNoPremultiply.Effect, Matrix.CreateScale(scale) * Matrix.CreateTranslation(SceneAs<Level>().Camera.Matrix.Translation * 6f) * (SubHudRenderer.DrawToBuffer ? Matrix.Identity : Engine.ScreenMatrix));
 
             foreach (PlutoniumTextComponent ptc in texts)
             {

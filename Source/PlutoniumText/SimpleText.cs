@@ -107,7 +107,7 @@ public partial class SimpleText : Entity
             scale2 *= 6;
         }
 
-        Text.Print(position2 + RenderOffset, str2, Shadow, Spacing, Color1, Color2, Justify, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
+        Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)), str2, Shadow, Spacing, Color1, Color2, Justify, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
     }
 
     public override void DebugRender(Camera camera)

@@ -384,21 +384,21 @@ public partial class CinematicText : Entity
             offset -= Text.Font.StringSize(MovingChar.ToString(), Spacing).X;
         }
 
-        Text.Print(position2 + RenderOffset, finalString2, Shadow, Spacing, Color.Transparent, Color2 * alpha, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
+        Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)), finalString2, Shadow, Spacing, Color.Transparent, Color2 * alpha, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
 
         if (!Finished)
         {
             Text.EffectData.RainbowAnchor = Anchor + (offset * Vector2.UnitX);
-            Text.Print(position2 + RenderOffset + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * alpha * MovingCharPercent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
+            Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)) + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * alpha * MovingCharPercent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
             Text.EffectData.RainbowAnchor = Anchor;
         }
 
-        Text.Print(position2 + RenderOffset, finalString2, Shadow, Spacing, Color1 * alpha, Color.Transparent, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
+        Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)), finalString2, Shadow, Spacing, Color1 * alpha, Color.Transparent, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
 
         if (!Finished)
         {
             Text.EffectData.RainbowAnchor = Anchor + (offset * Vector2.UnitX);
-            Text.Print(position2 + RenderOffset + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color1 * alpha * MovingCharPercent, Color.Transparent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
+            Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)) + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color1 * alpha * MovingCharPercent, Color.Transparent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
             Text.EffectData.RainbowAnchor = Anchor;
         }
     }
