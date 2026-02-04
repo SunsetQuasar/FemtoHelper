@@ -518,7 +518,7 @@ public class PlutoniumTextComponent : Component
         List<Vector2> effectOffsets = [];
         List<char> useChar = [];
 
-        pos = pos.Round();
+        pos = pos.Floor();
 
         if (!EffectData.Empty)
         {

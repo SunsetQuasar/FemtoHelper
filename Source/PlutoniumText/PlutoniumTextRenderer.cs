@@ -224,9 +224,8 @@ public class PlutoniumTextRenderer : Entity
             SubHudRenderer.EndRender();
 
             //am i stupid? works for now
-            float scale = GameplayBuffers.Gameplay.Width / 320;
 
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGradeNoPremultiply.Effect, Matrix.CreateScale(scale) * Matrix.CreateTranslation(SceneAs<Level>().Camera.Matrix.Translation * 6f) * (SubHudRenderer.DrawToBuffer ? Matrix.Identity : Engine.ScreenMatrix));
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGradeNoPremultiply.Effect, Matrix.CreateTranslation(SceneAs<Level>().Camera.Matrix.Translation * 6f) * Matrix.CreateScale(level.Zoom) * (SubHudRenderer.DrawToBuffer ? Matrix.Identity : Engine.ScreenMatrix));
 
             foreach (PlutoniumTextComponent ptc in texts)
             {
