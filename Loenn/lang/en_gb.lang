@@ -465,6 +465,7 @@ entities.FemtoHelper/SimpleText.attributes.description.decimals=How many decimal
 entities.FemtoHelper/SimpleText.attributes.description.fontDataPath=The font data file.\nSee the default path for reference.\nShould include the .xml extension.
 entities.FemtoHelper/SimpleText.attributes.description.extraSpacing=Applies an additional spacing between characters.
 entities.FemtoHelper/SimpleText.attributes.description.layer=The layer the text is drawn on.\nBelowBG: Renders below all background stylegrounds. Text is affected by bloom and glitch effects.\nAboveBG: Renders above all background stylegrounds, but behind everything else. Text is affected by bloom and glitch effects.\nGameplay: Renders just like any other entity. Text is affected by bloom, darkness and glitch effects.\nBelowFG: Renders below all foreground stylegrounds. Text is affected by glitch effects.\nAboveFG: Renders above all foreground stylegrounds, but behind the HUD layers. Text is affected by glitch effects.\nHUD: Renders above every non-HUD element. Unbound to the pixel grid. Color is premultiplied.\nAdditiveHUD: Renders above every non-HUD element. Unbound to the pixel grid. Renders with additive blending.
+entities.FemtoHelper/SimpleText.attributes.description.hudZoomSupport=Whether HUD entities should scale with zoom.\nUseful for more UI oriented use cases.
 
 # Cinematic Text
 
@@ -513,6 +514,7 @@ entities.FemtoHelper/CinematicText.attributes.description.fontDataPath=The font 
 entities.FemtoHelper/CinematicText.attributes.description.extraSpacing=Applies an additional spacing between characters.
 entities.FemtoHelper/CinematicText.attributes.description.layer=The layer the text is drawn on.\nBelowBG: Renders below all background stylegrounds. Text is affected by bloom and glitch effects.\nAboveBG: Renders above all background stylegrounds, but behind everything else. Text is affected by bloom and glitch effects.\nGameplay: Renders just like any other entity. Text is affected by bloom, darkness and glitch effects.\nBelowFG: Renders below all foreground stylegrounds. Text is affected by glitch effects.\nAboveFG: Renders above all foreground stylegrounds, but behind the HUD layers. Text is affected by glitch effects.\nHUD: Renders above every non-HUD element. Unbound to the pixel grid. Color is premultiplied.\nAdditiveHUD: Renders above every non-HUD element. Unbound to the pixel grid. Renders with additive blending.
 entities.FemtoHelper/CinematicText.attributes.description.rainbow=Gives the text a rainbow tint.
+entities.FemtoHelper/CinematicText.attributes.description.hudZoomSupport=Whether HUD entities should scale with zoom.\nUseful for more UI oriented use cases.
 
 
 # Boosting Booster
