@@ -667,7 +667,7 @@ public class PlutoniumTextComponent : Component
         }
     }
 
-    public Rectangle GetVisibilityRectangle(Vector2 pos, string str, int spacing = 0, float scale = 1f, Vector2 justify = default)
+    public Rectangle GetVisibilityRectangle(Vector2 pos, string str, int spacing = 0, float scale = 1f, Vector2 justify = default, float zoomFactor = 1)
     {
         Vector2 size = Font.StringSize(str, spacing) * scale;
 
@@ -681,20 +681,28 @@ public class PlutoniumTextComponent : Component
         //add 1 pixel to each side to account for the outlines
         visRect.Inflate((int)MathF.Ceiling(scale), (int)MathF.Ceiling(scale));
 
-        if (EffectData.Empty) return visRect;
-
-        //now onto the effects:
-        //sine wave
-        visRect.Inflate((int)MathF.Ceiling(MathF.Abs(EffectData.WaveAmp.X) * scale), (int)MathF.Ceiling(MathF.Abs(EffectData.WaveAmp.Y) * scale));
-
-        //shaking
-        visRect.Inflate((int)MathF.Ceiling(MathF.Abs(EffectData.ShakeAmount) * scale), (int)MathF.Ceiling(MathF.Abs(EffectData.ShakeAmount) * scale));
-
-        //in the rare case the last character is very thin and gets replaced by a wider character, expand it by the worst case scenario. better safe than sorry (better underperforming than ugly?)
-        if (EffectData.Obfuscated)
+        if (!EffectData.Empty)
         {
-            visRect.Width += Font.LargestCharWidth;
+            //now onto the effects:
+            //sine wave
+            visRect.Inflate((int)MathF.Ceiling(MathF.Abs(EffectData.WaveAmp.X) * scale), (int)MathF.Ceiling(MathF.Abs(EffectData.WaveAmp.Y) * scale));
+
+            //shaking
+            visRect.Inflate((int)MathF.Ceiling(MathF.Abs(EffectData.ShakeAmount) * scale), (int)MathF.Ceiling(MathF.Abs(EffectData.ShakeAmount) * scale));
+
+            //in the rare case the last character is very thin and gets replaced by a wider character, expand it by the worst case scenario. better safe than sorry (better underperforming than ugly?)
+            if (EffectData.Obfuscated)
+            {
+                visRect.Width += Font.LargestCharWidth;
+            }
         }
+
+        //account for zoom when Hud Zoom Support is off;
+        Point delta = new(visRect.Width - (int)((float)visRect.Width / zoomFactor), visRect.Height - (int)((float)visRect.Height / zoomFactor));
+        visRect.X += (int)((float)delta.X / 2f);
+        visRect.Y += (int)((float)delta.Y / 2f);
+        visRect.Width = (int)((float)visRect.Width / zoomFactor);
+        visRect.Height = (int)((float)visRect.Height / zoomFactor);
 
         return visRect;
     }

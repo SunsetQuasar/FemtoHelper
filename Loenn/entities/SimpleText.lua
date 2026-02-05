@@ -20,7 +20,8 @@ FemtoHelperSimpleText.fieldInformation = {
             {"Gameplay", "Gameplay"},
             {"BelowFG", "BelowFG"},
             {"AboveFG", "AboveFG"},
-            {"HUD", "HUD"}
+            {"HUD", "HUD"},
+            {"AdditiveHUD", "AdditiveHUD"}
         },
         editable = false
     },
@@ -53,6 +54,7 @@ FemtoHelperSimpleText.placements = {
         visibilityFlag = "",
         decimals = -1,
         layer = "AboveFG",
+        hudZoomSupport = true,
     }
 }
 

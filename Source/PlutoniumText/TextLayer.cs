@@ -7,5 +7,6 @@ public enum TextLayer
     Gameplay,
     BelowFG,
     AboveFG,
-    HUD
+    HUD,
+    AdditiveHUD,
 }

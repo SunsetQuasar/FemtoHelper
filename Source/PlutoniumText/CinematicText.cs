@@ -43,7 +43,7 @@ public partial class CinematicText : Entity
     public readonly Regex NoSound = NoSoundRegex();
 
     public readonly float Scale;
-    public bool Hud => Text?.Layer == TextLayer.HUD;
+    public bool Hud => Text?.Layer == TextLayer.HUD || Text?.Layer == TextLayer.AdditiveHUD;
 
     public readonly bool TruncateSliders;
     public readonly int Decimals;
@@ -60,8 +60,6 @@ public partial class CinematicText : Entity
 
     public readonly List<PlutoniumTextNodes.Node> Nodes;
 
-    public readonly VirtualRenderTarget Buffer;
-
     public bool Finished;
 
     public bool StopText;
@@ -76,6 +74,9 @@ public partial class CinematicText : Entity
 
     public readonly Vector2 Justify;
     public readonly Vector2 Anchor;
+
+    public readonly bool HudCanZoom;
+    public float ZoomFactor => !Hud ? 1 : (HudCanZoom ? 1 : SceneAs<Level>().Zoom);
     public CinematicText(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
 
@@ -168,17 +169,9 @@ public partial class CinematicText : Entity
         ActivationTag = data.Attr("activationTag", "tag1");
         NextTextTag = data.Attr("nextTextTag", "");
 
-        Scale = data.Float("scale", 1);
+        HudCanZoom = data.Bool("hudZoomSupport", false);
 
-        if (Hud)
-        {
-            Tag |= TagsExt.SubHUD;
-            Buffer = VirtualContent.CreateRenderTarget("plutoniumText_" + id.ToString(), 1920, 1080);
-        }
-        else
-        {
-            Buffer = VirtualContent.CreateRenderTarget("plutoniumText_" + id.ToString(), 320, 180);
-        }
+        Scale = data.Float("scale", 1);
 
         IgnoreRegex = data.Bool("ignoreAudioRegex", false);
         OnlyOnce = data.Bool("onlyOnce", false);
@@ -349,22 +342,25 @@ public partial class CinematicText : Entity
 
         bool flip = (SaveData.Instance?.Assists.MirrorMode ?? false);
 
-        bool hudFlip = flip && Text.Layer == TextLayer.HUD;
+        bool hudFlip = flip && Hud;
+
+        float ww = 160f / level.Zoom;
+        float hh = 90f / level.Zoom;
 
         Vector2 camPos = level.Camera.Position;
-        Vector2 camCenter = camPos + new Vector2(160f, 90f);
-        Vector2 position2 = ((Position - camCenter) * Parallax * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
+        Vector2 camCenter = camPos + new Vector2(ww, hh);
+        Vector2 position2 = (((Position - camCenter) * Parallax / ZoomFactor) * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
 
-        Rectangle vis = Text.GetVisibilityRectangle(position2 + RenderOffset, Finished ? finalString2 : Str, Spacing, Scale, Justify);
+        Rectangle vis = Text.GetVisibilityRectangle(position2 + RenderOffset, Finished ? finalString2 : Str, Spacing, Scale, Justify, ZoomFactor);
 
         if (!vis.IsVisible()) return;
 
         float scale2 = Scale;
 
-        if (Text.Layer == TextLayer.HUD)
+        if (Hud)
         {
             position2 *= 6f;
-            scale2 *= 6;
+            scale2 *= 6f / ZoomFactor;
         }
 
         float alpha = Ease.SineInOut(DisappearPercent);
@@ -408,17 +404,22 @@ public partial class CinematicText : Entity
         base.DebugRender(camera);
         bool flip = (SaveData.Instance?.Assists.MirrorMode ?? false);
 
-        bool hudFlip = flip && Text.Layer == TextLayer.HUD;
+        bool hudFlip = flip && Hud;
+
+        Level level = SceneAs<Level>();
+
+        float ww = 160f / level.Zoom;
+        float hh = 90f / level.Zoom;
 
         Vector2 camPos = camera.Position;
-        Vector2 camCenter = camPos + new Vector2(160f, 90f);
-        Vector2 position2 = ((Position - camCenter) * Parallax * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
+        Vector2 camCenter = camPos + new Vector2(ww, hh);
+        Vector2 position2 = (((Position - camCenter) * Parallax / ZoomFactor) * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
 
         Vector2 p2f = position2.Floor();
 
         Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
 
-        Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify), Color.MediumOrchid * 0.5f);
+        Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify, ZoomFactor), Color.MediumOrchid * 0.5f);
     }
 
     [GeneratedRegex("(\\s|\\{|\\})")]

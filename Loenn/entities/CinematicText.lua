@@ -21,7 +21,8 @@ FemtoHelperCinematicText.fieldInformation = {
             {"Gameplay", "Gameplay"},
             {"BelowFG", "BelowFG"},
             {"AboveFG", "AboveFG"},
-            {"HUD", "HUD"}
+            {"HUD", "HUD"},
+            {"AdditiveHUD", "AdditiveHUD"}
         },
         editable = false
     },
@@ -79,6 +80,7 @@ FemtoHelperCinematicText.placements = {
         decimals = -1,
         rainbow = false,
         layer = "AboveFG",
+        hudZoomSupport = true,
     }
 }
 
