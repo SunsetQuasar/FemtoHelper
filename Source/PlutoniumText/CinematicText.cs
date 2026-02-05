@@ -351,7 +351,7 @@ public partial class CinematicText : Entity
         Vector2 camCenter = camPos + new Vector2(ww, hh);
         Vector2 position2 = (((Position - camCenter) * Parallax / ZoomFactor) * new Vector2(hudFlip ? -1 : 1, 1)) + camCenter;
 
-        Rectangle vis = Text.GetVisibilityRectangle(position2 + RenderOffset, Finished ? finalString2 : Str, Spacing, Scale, Justify, ZoomFactor);
+        Rectangle vis = Text.GetVisibilityRectangle(position2 + RenderOffset / ZoomFactor, Finished ? finalString2 : Str, Spacing, Scale, Justify, ZoomFactor);
 
         if (!vis.IsVisible()) return;
 
@@ -380,21 +380,21 @@ public partial class CinematicText : Entity
             offset -= Text.Font.StringSize(MovingChar.ToString(), Spacing).X;
         }
 
-        Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)), finalString2, Shadow, Spacing, Color.Transparent, Color2 * alpha, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
+        Text.Print(position2 + (RenderOffset * ((Hud ? 6f : 1f) / ZoomFactor)), finalString2, Shadow, Spacing, Color.Transparent, Color2 * alpha, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
 
         if (!Finished)
         {
             Text.EffectData.RainbowAnchor = Anchor + (offset * Vector2.UnitX);
-            Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)) + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * alpha * MovingCharPercent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
+            Text.Print(position2 + (RenderOffset * ((Hud ? 6f : 1f) / ZoomFactor)) + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color.Transparent, Color2 * alpha * MovingCharPercent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
             Text.EffectData.RainbowAnchor = Anchor;
         }
 
-        Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)), finalString2, Shadow, Spacing, Color1 * alpha, Color.Transparent, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
+        Text.Print(position2 + (RenderOffset * ((Hud ? 6f : 1f) / ZoomFactor)), finalString2, Shadow, Spacing, Color1 * alpha, Color.Transparent, Justify * Vector2.UnitY, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
 
         if (!Finished)
         {
             Text.EffectData.RainbowAnchor = Anchor + (offset * Vector2.UnitX);
-            Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)) + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color1 * alpha * MovingCharPercent, Color.Transparent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
+            Text.Print(position2 + (RenderOffset * ((Hud ? 6f : 1f) / ZoomFactor)) + (((MovingCharOffset * Ease.SineInOut(1 - MovingCharPercent)) + offset * Vector2.UnitX) * scale2), MovingChar.ToString(), Shadow, Spacing, Color1 * alpha * MovingCharPercent, Color.Transparent, Justify * Vector2.UnitY, scale2, Cur, flip && (Text.Layer != TextLayer.HUD));
             Text.EffectData.RainbowAnchor = Anchor;
         }
     }
@@ -419,7 +419,7 @@ public partial class CinematicText : Entity
 
         Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
 
-        Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify, ZoomFactor), Color.MediumOrchid * 0.5f);
+        Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset / ZoomFactor, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify, ZoomFactor), Color.MediumOrchid * 0.5f);
     }
 
     [GeneratedRegex("(\\s|\\{|\\})")]

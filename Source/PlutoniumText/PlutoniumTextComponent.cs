@@ -699,10 +699,10 @@ public class PlutoniumTextComponent : Component
 
         //account for zoom when Hud Zoom Support is off;
         Point delta = new(visRect.Width - (int)((float)visRect.Width / zoomFactor), visRect.Height - (int)((float)visRect.Height / zoomFactor));
-        visRect.X += (int)((float)delta.X / 2f);
-        visRect.Y += (int)((float)delta.Y / 2f);
-        visRect.Width = (int)((float)visRect.Width / zoomFactor);
-        visRect.Height = (int)((float)visRect.Height / zoomFactor);
+        visRect.X += (int)MathF.Round((float)delta.X  * justify.X);
+        visRect.Y += (int)MathF.Round((float)delta.Y * justify.Y);
+        visRect.Width = (int)MathF.Round((float)visRect.Width / zoomFactor);
+        visRect.Height = (int)MathF.Round((float)visRect.Height / zoomFactor);
 
         return visRect;
     }

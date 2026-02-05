@@ -105,7 +105,7 @@ public partial class SimpleText : Entity
 
         string str2 = PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>());
 
-        Rectangle visRect = Text.GetVisibilityRectangle(position2 + RenderOffset, str2, Spacing, Scale, Justify, ZoomFactor);
+        Rectangle visRect = Text.GetVisibilityRectangle(position2 + RenderOffset / ZoomFactor, str2, Spacing, Scale, Justify, ZoomFactor);
 
         if (!visRect.IsVisible()) return;
 
@@ -117,7 +117,7 @@ public partial class SimpleText : Entity
             scale2 *= 6f / ZoomFactor;
         }
 
-        Text.Print(position2 + (RenderOffset * (Hud ? 6f : 1f)), str2, Shadow, Spacing, Color1, Color2, Justify, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
+        Text.Print(position2 + (RenderOffset * ((Hud ? 6f : 1f) / ZoomFactor)), str2, Shadow, Spacing, Color1, Color2, Justify, scale2, 0, flip && (Text.Layer != TextLayer.HUD));
     }
 
     public override void DebugRender(Camera camera)
@@ -140,7 +140,7 @@ public partial class SimpleText : Entity
 
         Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
 
-        Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify, ZoomFactor), Color.MediumOrchid * 0.5f);
+        Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset / ZoomFactor, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify, ZoomFactor), Color.MediumOrchid * 0.5f);
     }
 
     [GeneratedRegex(@"(\{|\})")]
