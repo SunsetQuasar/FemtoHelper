@@ -238,7 +238,7 @@ public class SmwShell : Actor
 
         string digs = "0123456789";
 
-        digits = new Dictionary<char, MTexture>();
+        digits = [];
 
         foreach (char c in digs)
         {

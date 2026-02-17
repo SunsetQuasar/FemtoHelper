@@ -4,10 +4,13 @@ mods.FemtoHelper.name=Femto Helper
 
 # Solid No Squish Controller
 entities.FemtoHelper/AssistHazardController.placements.name.controller=Solid No Squish Controller
+entities.FemtoHelper/AssistHazardController.placements.description.controller=Prevents solids from squishing the player and dream block impact deaths.
 
 # Touch Platform
 entities.FemtoHelper/TouchPlatform.placements.name.default=Touch Platform (Fall)
-entities.FemtoHelper/TouchPlatform.placements.name.rise=Touch Platform (Fall-rise)
+entities.FemtoHelper/TouchPlatform.placements.description.default=A platform that falls when touched.
+entities.FemtoHelper/TouchPlatform.placements.name.rise=Touch Platform (Sink-rise)
+entities.FemtoHelper/TouchPlatform.placements.description.rise=A platform that sinks when touched, then rises.
 entities.FemtoHelper/TouchPlatform.attributes.description.gravity=The platform's gravity, in px/s².\nOnly active after something has touched the platform.
 entities.FemtoHelper/TouchPlatform.attributes.description.speedOnTriggerX=The platform's horiozontal speed when it is triggered.
 entities.FemtoHelper/TouchPlatform.attributes.description.speedOnTriggerY=The platform's vertical speed when it is triggered.
@@ -16,6 +19,7 @@ entities.FemtoHelper/TouchPlatform.attributes.description.surfaceIndex=The sound
 
 # Clutter Shadow Controller
 entities.FemtoHelper/ClutterShadowController.placements.name.default=Clutter Shadow Controller
+entities.FemtoHelper/ClutterShadowController.placements.description.default=Alters the color and transparency of clutter block shadows.
 entities.FemtoHelper/ClutterShadowController.attributes.description.enabledColor=The shadow's color when the clutter is still present.
 entities.FemtoHelper/ClutterShadowController.attributes.description.disabledColor=The shadow's color when the clutter is gone.
 entities.FemtoHelper/ClutterShadowController.attributes.description.enabledAlpha=The shadow's opacity when the clutter is still present.
@@ -23,6 +27,7 @@ entities.FemtoHelper/ClutterShadowController.attributes.description.disabledAlph
 
 # La Creatura
 entities.FemtoHelper/LaCreatura.placements.name.creatura=La Creatura
+entities.FemtoHelper/LaCreatura.placements.description.creatura=Glowing butterfly creature.
 entities.FemtoHelper/LaCreatura.attributes.description.acceleration=How fast the butterflies can change their speed.
 entities.FemtoHelper/LaCreatura.attributes.description.maxSpeed=The maximum speed the butterflies can move.
 entities.FemtoHelper/LaCreatura.attributes.description.bloomRadius=The butterfly's bloom radius.
@@ -38,11 +43,13 @@ entities.FemtoHelper/LaCreatura.attributes.description.maxFollowTime=The maximum
 
 # Backdrop Wind Controller
 entities.FemtoHelper/BackdropWindController.placements.name.default=Backdrop Wind Controller
+entities.FemtoHelper/BackdropWindController.placements.description.default=Lets stylegrounds be affected by wind.
 entities.FemtoHelper/BackdropWindController.attributes.description.tag=The styleground tag to apply wind to.
 entities.FemtoHelper/BackdropWindController.attributes.description.strengthMultiplier=A multiplier for the strength of the wind effect.
 
 # Extra Holdable Interactions Controller
 entities.FemtoHelper/EHIController.placements.name.default=Extra Holdable Interactions Controller
+entities.FemtoHelper/EHIController.placements.description.default=Lets holdable entities interact with a range of vanilla entities.
 entities.FemtoHelper/EHIController.attributes.description.breakDashBlocks=Whether the controller should allow Holdable entities to break Dash Blocks.
 entities.FemtoHelper/EHIController.attributes.description.activateKevins=Whether the controller should allow Holdable entities to activate Kevin Blocks.
 entities.FemtoHelper/EHIController.attributes.description.flipCoreSwitches=Whether the controller should allow Holdable entities to flip Core Switches.
@@ -68,7 +75,9 @@ entities.FemtoHelper/EHIController.attributes.description.exactSpeedTolerance=Ho
 
 # GD Boost Orb
 entities.FemtoHelper/GDDashOrb.placements.name.default=GD Boost Orb (Green)
+entities.FemtoHelper/GDDashOrb.placements.description.default=Orb that boosts the player when pressing jump.
 entities.FemtoHelper/GDDashOrb.placements.name.pink=GD Boost Orb (Pink)
+entities.FemtoHelper/GDDashOrb.placements.description.pink=Orb that boosts the player when pressing jump. Inverts gravity.
 entities.FemtoHelper/GDDashOrb.attributes.description.angle=The angle the orb points, in degrees.
 entities.FemtoHelper/GDDashOrb.attributes.description.speed=The speed boost the orb gives after the player activates it by pressing jump.
 entities.FemtoHelper/GDDashOrb.attributes.description.pink=Whether the orb should flip the player's gravity after being activated.\nDoes nothing if GravityHelper isn't installed.
@@ -76,16 +85,20 @@ entities.FemtoHelper/GDDashOrb.attributes.description.additive=Whether the orb s
 
 # Waterfall Blocker
 entities.FemtoHelper/WaterfallBlocker.placements.name.default=Waterfall Blocker
+entities.FemtoHelper/WaterfallBlocker.placements.description.default=Invisible entity that blocks waterfalls.
 
 # Pop Refill
 entities.FemtoHelper/PopRefill.placements.name.PopRefill=Pop Refill
+entities.FemtoHelper/PopRefill.placements.description.PopRefill=Refill that spawns some time only after being touched.
 entities.FemtoHelper/PopRefill.placements.name.PopRefillTwo=Pop Refill (Two Dashes)
+entities.FemtoHelper/PopRefill.placements.description.PopRefillTwo=Refill that spawns some time only after being touched.
 entities.FemtoHelper/PopRefill.attributes.description.twoDash=Gives two dashes instead of one.
 entities.FemtoHelper/PopRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/PopRefill.attributes.description.spawnTime=The time it takes for the refill to spawn once triggered.
 
 # Spark Refill
 entities.FemtoHelper/SparkRefill.placements.name.spark=Spark Refill
+entities.FemtoHelper/SparkRefill.placements.description.spark=From KAERRA's Furry Week. Grants the player a double-speed dash.
 entities.FemtoHelper/SparkRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/SparkRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
 
@@ -94,18 +107,25 @@ entities.FemtoHelper/AvertRefill.placements.name.avertUp=Avert Refill (Up)
 entities.FemtoHelper/AvertRefill.placements.name.avertDown=Avert Refill (Down)
 entities.FemtoHelper/AvertRefill.placements.name.avertLeft=Avert Refill (Left)
 entities.FemtoHelper/AvertRefill.placements.name.avertRight=Avert Refill (Right)
+entities.FemtoHelper/AvertRefill.placements.description.avertUp=From KAERRA's Furry Week. Redirects the player's momentum upwards.
+entities.FemtoHelper/AvertRefill.placements.description.avertDown=From KAERRA's Furry Week. Redirects the player's momentum downwards.
+entities.FemtoHelper/AvertRefill.placements.description.avertLeft=From KAERRA's Furry Week. Redirects the player's momentum leftwards.
+entities.FemtoHelper/AvertRefill.placements.description.avertRight=From KAERRA's Furry Week. Redirects the player's momentum rightwards.
 entities.FemtoHelper/AvertRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/AvertRefill.attributes.description.direction=The direction of momentum redirection.
 entities.FemtoHelper/AvertRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
 
 # Minus Refill
 entities.FemtoHelper/MinusRefill.placements.name.minus=Minus Refill
+entities.FemtoHelper/MinusRefill.placements.description.minus=From KAERRA's Furry Week. Removes a dash from the player, killing them if they have none.
 entities.FemtoHelper/MinusRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/MinusRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
 
 # Upend Refill
 entities.FemtoHelper/UpendRefill.placements.name.upendHorizontal=Upend Refill (Horizontal)
+entities.FemtoHelper/UpendRefill.placements.description.upendHorizontal=From KAERRA's Furry Week. Reflects the player's horiozontal momentum and doubles it.
 entities.FemtoHelper/UpendRefill.placements.name.upendVertical=Upend Refill (Vertical)
+entities.FemtoHelper/UpendRefill.placements.description.upendVertical=From KAERRA's Furry Week. Reflects the player's vertical momentum and doubles it.
 entities.FemtoHelper/UpendRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/UpendRefill.attributes.description.type=Axis of momentum reversion.
 entities.FemtoHelper/UpendRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
@@ -119,18 +139,29 @@ entities.FemtoHelper/LimitRefill.placements.name.limitUpRight=Limit Refill (Up-R
 entities.FemtoHelper/LimitRefill.placements.name.limitDownLeft=Limit Refill (Down-Left)
 entities.FemtoHelper/LimitRefill.placements.name.limitUpLeft=Limit Refill (Up-Left)
 entities.FemtoHelper/LimitRefill.placements.name.limitDownRight=Limit Refill (Down-Right)
+entities.FemtoHelper/LimitRefill.placements.description.limitUp=From KAERRA's Furry Week. Limit's the player's dashing direction.
+entities.FemtoHelper/LimitRefill.placements.description.limitDown=From KAERRA's Furry Week. Limit's the player's dashing direction.
+entities.FemtoHelper/LimitRefill.placements.description.limitLeft=From KAERRA's Furry Week. Limit's the player's dashing direction.
+entities.FemtoHelper/LimitRefill.placements.description.limitRight=From KAERRA's Furry Week. Limit's the player's dashing direction.
+entities.FemtoHelper/LimitRefill.placements.description.limitUpRight=From KAERRA's Furry Week. Limit's the player's dashing direction.
+entities.FemtoHelper/LimitRefill.placements.description.limitDownLeft=From KAERRA's Furry Week. Limit's the player's dashing direction.
+entities.FemtoHelper/LimitRefill.placements.description.limitUpLeft=From KAERRA's Furry Week. Limit's the player's dashing direction.
+entities.FemtoHelper/LimitRefill.placements.description.limitDownRight=From KAERRA's Furry Week. Limit's the player's dashing direction.
 entities.FemtoHelper/LimitRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/LimitRefill.attributes.description.direction=The direction the dash is limited to.
 entities.FemtoHelper/LimitRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
 
 # Bound Refill
 entities.FemtoHelper/BoundRefill.placements.name.bound=Bound Refill
+entities.FemtoHelper/BoundRefill.placements.description.bound=From KAERRA's Furry Week. Grants the player a spring-like dash.
 entities.FemtoHelper/BoundRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/BoundRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
 
 # Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.boolean=Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.booleanTwo=Timed Flag Refill (Two Dashes)
+entities.FemtoHelper/TimedFlagRefill.placements.description.boolean=When touched, affects a flag for a limited time.
+entities.FemtoHelper/TimedFlagRefill.placements.description.booleanTwo=When touched, affects a flag for a limited time.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.twoDash=Gives two dashes instead of one.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.flag=The flag the refill controls.
@@ -146,6 +177,7 @@ entities.FemtoHelper/TimedFlagRefill.attributes.description.respawnTime=The time
 
 # Directional Sprites Line
 entities.FemtoHelper/DirectionalLine.placements.name.default=Directional Sprites Line
+entities.FemtoHelper/DirectionalLine.placements.description.default=Displays a line of sprites moving from its position to its node.
 entities.FemtoHelper/DirectionalLine.attributes.description.activationTime=The time it takes for the line's elements to fade in when activated by a flag.
 entities.FemtoHelper/DirectionalLine.attributes.description.alphaOutPercent=How much of the line, from the end, should have the elements fading out;\n0 for no fade out, 1 for the entire line.
 entities.FemtoHelper/DirectionalLine.attributes.description.deactivationFlag=When this flag is active, the line deactivates, and its elements fade out.\nTakes priority over the activation flag.\nLeave empty for no deactivation.
@@ -165,8 +197,11 @@ entities.FemtoHelper/DirectionalLine.attributes.description.color=The element's 
 
 # Teleport Door
 entities.FemtoHelper/GloriousPassage.placements.name.passage=Teleport Door
+entities.FemtoHelper/GloriousPassage.placements.description.passage=Interactable door that teleports the player with a screen wipe transision.
 entities.FemtoHelper/GloriousPassage.placements.name.passageUp=Teleport Door (Up Press)
+entities.FemtoHelper/GloriousPassage.placements.description.passageUp=Interactable door that teleports the player with a screen wipe transision.
 entities.FemtoHelper/GloriousPassage.placements.name.passageSimple=Teleport Door (Simple Area)
+entities.FemtoHelper/GloriousPassage.placements.description.passageSimple=Invisible area that teleports the player with a screen wipe transision.
 entities.FemtoHelper/GloriousPassage.attributes.description.roomName=The room the door should lead to.\nInvalid room names will cause the door to lead to the same room it is from.
 entities.FemtoHelper/GloriousPassage.attributes.description.spawnpointIndex=Which spawnpoint the player should be teleported to.\nComes from the room's list of spawnpoints, and depends on the order they were placed.\nThe first placed spawnpoint will have index 0, the second will have index 1, and so on.
 entities.FemtoHelper/GloriousPassage.attributes.description.faceLeft=Whether the player should spawn facing left after using the door.
@@ -187,6 +222,7 @@ entities.FemtoHelper/GloriousPassage.attributes.description.visibleFlag=If this 
 
 # Custom Cliffside Wind Flag
 entities.FemtoHelper/CustomCliffsideWindFlag.placements.name.default=Custom Wind Flag
+entities.FemtoHelper/CustomCliffsideWindFlag.placements.description.default=Wind flag with customizable properties.
 entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.index=The index of the sprite to use. For example, index 0 of sprite "flag" would use "flag00.png".
 entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.spritesPath=The path of the sprite to use, relative to Graphics/Atlases/Gameplay.
 entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.sineFrequency=The frequency of the flag's wave.
@@ -196,6 +232,7 @@ entities.FemtoHelper/CustomCliffsideWindFlag.attributes.description.depth=The en
 
 # Custom Fake Heart
 entities.FemtoHelper/CustomFakeHeart.placements.name.default=Custom Fake Heart
+entities.FemtoHelper/CustomFakeHeart.placements.description.default=Highly customizable Fake Heart.
 entities.FemtoHelper/CustomFakeHeart.attributes.description.respawnTime=The time for the heart to respawn after being broken./nSet to -1 for it to never respawn (the entity stays, just inactive).
 entities.FemtoHelper/CustomFakeHeart.attributes.description.heartBehavior=The behavior of the heart when dashed into.\nShatter: the heart will break.\nKill & Shatter: the heart will break and kill the player.\nBounce: the player will bounce off the heart without breaking it.\nPhase Through: the player will dash through the heart.
 entities.FemtoHelper/CustomFakeHeart.attributes.description.setFlag=The value to set the custom flag to after dashing into the heart.
@@ -243,6 +280,7 @@ entities.FemtoHelper/CustomFakeHeart.attributes.description.silentPulse=Whether 
 
 # Custom Moon Creature
 entities.FemtoHelper/CustomMoonCreature.placements.name.default=Custom Moon Creature 
+entities.FemtoHelper/CustomMoonCreature.placements.description.default=Highly customizable Moon Creature.
 entities.FemtoHelper/CustomMoonCreature.attributes.description.acceleration=The base acceleration of the moon creature.
 entities.FemtoHelper/CustomMoonCreature.attributes.description.colors=A comma-separated list of hex color codes. Used to randomly select the primary color of the moon creature, which is used to tint the trail, and sprite if "Tint Sprite" is selected.
 entities.FemtoHelper/CustomMoonCreature.attributes.description.sprite=The sprite ID to use for the moon creature.
@@ -278,6 +316,8 @@ entities.FemtoHelper/CustomMoonCreature.attributes.description.lightEndFade=The 
 # Custom Parallax Big Waterfall
 entities.FemtoHelper/CustomParallaxBigWaterfall.placements.name.fg=Custom Big Waterfall (FG)
 entities.FemtoHelper/CustomParallaxBigWaterfall.placements.name.bg=Custom Big Waterfall (BG)
+entities.FemtoHelper/CustomParallaxBigWaterfall.placements.description.fg=Allows for parallax and color customization.
+entities.FemtoHelper/CustomParallaxBigWaterfall.placements.description.bg=Allows for parallax and color customization.
 entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.parallax=The strength of the waterfall's parallax.
 entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.fallSpeedMultiplier=A multiplier for the speed of the waterfall.
 entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.surfaceOpacity=The alpha of the waterfall's edges.
@@ -293,6 +333,14 @@ entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.dust_clockwise=Cus
 entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.dust_counter_clockwise=Custom Speed Dust (Counter-Clockwise)
 entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.starfish_clockwise=Custom Speed Starfish (Clockwise)
 entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.starfish_counter_clockwise=Custom Speed Starfish (Counter-Clockwise)
+
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.description.blade_clockwise=Allows for speed and scale customization.
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.description.blade_counter_clockwise=Allows for speed and scale customization.
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.description.dust_clockwise=Allows for speed and scale customization.
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.description.dust_counter_clockwise=Allows for speed and scale customization.
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.description.starfish_clockwise=Allows for speed and scale customization.
+entities.FemtoHelper/CustomSpeedRotateSpinner.placements.description.starfish_counter_clockwise=Allows for speed and scale customization.
+
 entities.FemtoHelper/CustomSpeedRotateSpinner.attributes.description.clockwise=The spinner will run clockwise.
 entities.FemtoHelper/CustomSpeedRotateSpinner.attributes.description.isDust=Changes the appearance of the spinner to be a dust sprite.
 entities.FemtoHelper/CustomSpeedRotateSpinner.attributes.description.isBlade=Changes the appearance of the spinner to be a blade.
@@ -300,6 +348,7 @@ entities.FemtoHelper/CustomSpeedRotateSpinner.attributes.description.rotateTime=
 
 # Fool Space Custom Checkpoint
 entities.FemtoHelper/FoolSpaceCustomCheckpoint.placements.name.default=Custom Summit Checkpoint
+entities.FemtoHelper/FoolSpaceCustomCheckpoint.placements.description.default=Custom checkpoint that allows for custom textures.
 entities.FemtoHelper/FoolSpaceCustomCheckpoint.attributes.description.digitA=The first digit of the summit flag.
 entities.FemtoHelper/FoolSpaceCustomCheckpoint.attributes.description.digitB=The second digit of the summit flag.
 entities.FemtoHelper/FoolSpaceCustomCheckpoint.attributes.description.spriteRoot=The directory of the checkpoint sprites relative to Graphics/Atlases/Gameplay.\nThe sprites need to match the vanilla format in ..Gameplay/scenery/summitcheckpoints.
@@ -308,12 +357,15 @@ entities.FemtoHelper/FoolSpaceCustomCheckpoint.attributes.description.colors=The
 # Oshiro Caller
 entities.FemtoHelper/OshiroCaller.placements.name.call=Oshiro Caller (Call)
 entities.FemtoHelper/OshiroCaller.placements.name.repel=Oshiro Caller (Repel)
+entities.FemtoHelper/OshiroCaller.placements.description.call=A dashable entity that calls an Oshiro boss.
+entities.FemtoHelper/OshiroCaller.placements.description.repel=A dashable entity that destroys or repels a present Oshiro boss.
 entities.FemtoHelper/OshiroCaller.attributes.name.repell=Repel
 entities.FemtoHelper/OshiroCaller.attributes.description.repell=Whether the caller should make Oshiro explode (or leave) instead of calling him.
 entities.FemtoHelper/OshiroCaller.attributes.description.justMakeOshiroLeave=Whether Oshiro should just leave instead of exploding.
 
 # Particle Emitter
 entities.FemtoHelper/ParticleEmitter.placements.name.default=Particle Emitter
+entities.FemtoHelper/ParticleEmitter.placements.description.default=An entity that continuously emits particles, with full customization.
 entities.FemtoHelper/ParticleEmitter.attributes.description.particleColor=The primary hex color code of the particle (see Particle Color Mode).
 entities.FemtoHelper/ParticleEmitter.attributes.description.particleColor2=The secondary hex color code of the particle (see Particle Color Mode).
 entities.FemtoHelper/ParticleEmitter.attributes.description.particleTexture=A comma-separated list of textures for the particle, relative to Graphics/Atlases/Gameplay/.
@@ -352,6 +404,7 @@ entities.FemtoHelper/ParticleEmitter.attributes.description.attachToPlayerOffset
 
 # Pseudo Polyhedron
 entities.FemtoHelper/PseudoPolyhedron.placements.name.default=Polyhedron Wireframe
+entities.FemtoHelper/PseudoPolyhedron.placements.description.default=A spinning wireframe pyramid/prism.
 entities.FemtoHelper/PseudoPolyhedron.attributes.description.rotationOffset=The amount to offset the initial rotation timer.
 entities.FemtoHelper/PseudoPolyhedron.attributes.description.rotationSpeed=The rotation speed of the polyhedron.
 entities.FemtoHelper/PseudoPolyhedron.attributes.description.baseWidth=The width of the polyhedron's base.
@@ -374,6 +427,13 @@ entities.FemtoHelper/SMWBlock.placements.name.smwblockhidden=SMW Block (Kaizo/Hi
 entities.FemtoHelper/SMWBlock.placements.name.smwblockswitch=SMW Block (Switch)
 entities.FemtoHelper/SMWBlock.placements.name.smwblockturn=SMW Block (Turn Block)
 entities.FemtoHelper/SMWBlock.placements.name.smwblockmessage=SMW Block (Message Block)
+
+entities.FemtoHelper/SMWBlock.placements.description.smwblockdefault=A block that can eject entities when hit. 
+entities.FemtoHelper/SMWBlock.placements.description.smwblockhidden=A hidden block that can eject entities when hit. 
+entities.FemtoHelper/SMWBlock.placements.description.smwblockswitch=A block that can toggle a flag on and off.
+entities.FemtoHelper/SMWBlock.placements.description.smwblockturn=A block that becomes intangible shortly when hit.
+entities.FemtoHelper/SMWBlock.placements.description.smwblockmessage=A block that displays a message when hit.
+
 entities.FemtoHelper/SMWBlock.attributes.description.animationRate=Framerate for the block animations.
 entities.FemtoHelper/SMWBlock.attributes.description.ejectDistance=How far the reward gets ejected in the outwards direction.\nHigher values don't go a specific direction, but farther outwards from the block.
 entities.FemtoHelper/SMWBlock.attributes.description.ejectOffsetX=Horizontal offset of the rewards at the START of the animation.\nChanges where they come from, but not where they end up.
@@ -421,6 +481,10 @@ entities.FemtoHelper/SMWBlock.attributes.description.retriggerable=Allows the bl
 
 entities.FemtoHelper/SMWFish.placements.name.smwfishdefault=SMW Fish
 entities.FemtoHelper/SMWFish.placements.name.smwfishblurp=SMW Fish (Blurp)
+
+entities.FemtoHelper/SMWFish.placements.description.smwfishdefault=A fish entity that starts moving when an entity is set.
+entities.FemtoHelper/SMWFish.placements.description.smwfishblurp=A fish entity that starts moving when an entity is set.
+
 entities.FemtoHelper/SMWFish.attributes.description.path=The folder path for the fish sprites. This indicates a folder, which means this string should always end with a forward slash.\nInside that path, the fish takes either "cheep.png" or "blurp.png" as its texture.\nThe textures can (but do not need to) be sliced into square shaped animation frames, as wide as the texture's height. This allows the block to store all its animation frames inside of a single texture.
 entities.FemtoHelper/SMWFish.attributes.description.audioPath=Path for the FMOD folder containing the audio events the fish will use. The fish uses the "enemykill" event inside the specified folder.
 entities.FemtoHelper/SMWFish.attributes.description.blurp=Whether the fish should be a Blurp. As in SMW, blurps cannot be jumped on.
@@ -435,6 +499,7 @@ entities.FemtoHelper/SMWFish.attributes.description.harmless=Removes the fish's 
 # Vital Drain Controller
 
 entities.FemtoHelper/VitalDrainController.placements.name.gaseous=Vital Drain Controller
+entities.FemtoHelper/VitalDrainController.placements.description.gaseous=Implements an oxygen meter-like system, with Vital Safety Controllers as safe spots.
 entities.FemtoHelper/VitalDrainController.attributes.description.colorgradeA=The colorgrade that is set when you're safe (maximum vitality value).
 entities.FemtoHelper/VitalDrainController.attributes.description.colorgradeB=The colorgrade that is faded to as your vitality is drained.
 entities.FemtoHelper/VitalDrainController.attributes.description.debugView=Enables a simple debug vitality bar.
@@ -456,6 +521,7 @@ entities.FemtoHelper/VitalDrainController.attributes.description.sliderName=Ties
 # Simple Text
 
 entities.FemtoHelper/SimpleText.placements.name.default=Simple Text
+entities.FemtoHelper/SimpleText.placements.description.default=Displays a static string of text using FemtoHelper's Plutonium Text System.
 entities.FemtoHelper/SimpleText.attributes.description.charList=The list of all existing characters in the font.\nThe font image must match this list, and the list must start with a space.
 entities.FemtoHelper/SimpleText.attributes.description.depth=The entity's depth in its respective Layer. Higher values are further back, lower values are in front, and the Player has depth 0.
 entities.FemtoHelper/SimpleText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support vanilla FancyText dialog effects.\nBrackets within the dialog entry can be used to display counters and flags;\ndialog_key = {my_counter} displays "my_counter"'s value;\ndialog_key = {my_flag;value_if_on;value_if_off} displays "value_if_on" if the flag "my_flag" is on, and "value_if_off" if the flag is off.
@@ -479,6 +545,7 @@ entities.FemtoHelper/SimpleText.attributes.description.hudZoomSupport=Whether HU
 # Cinematic Text
 
 entities.FemtoHelper/CinematicText.placements.name.default=Cinematic Text
+entities.FemtoHelper/CinematicText.placements.description.default=Displays an animated string of text using FemtoHelper's Plutonium Text System. Activated with a Cinematic Text Activator.
 entities.FemtoHelper/CinematicText.attributes.description.charList=The list of all existing characters in the font.\nThe font image must match this list, and the list must start with a space.
 entities.FemtoHelper/CinematicText.attributes.description.depth=The entity's depth in its respective Layer. Higher values are further back, lower values are in front, and the Player has depth 0.
 entities.FemtoHelper/CinematicText.attributes.description.dialogID=The dialog ID the entity pulls its text from.\nPlutonium Text System does not support vanilla FancyText dialog effects.\nBrackets within the dialog entry can be used to display counters and flags;\ndialog_key = {my_counter} displays "my_counter"'s value;\ndialog_key = {my_flag;value_if_on;value_if_off} displays "value_if_on" if the flag "my_flag" is on, and "value_if_off" if the flag is off.
@@ -529,11 +596,14 @@ entities.FemtoHelper/CinematicText.attributes.description.hudZoomSupport=Whether
 
 entities.FemtoHelper/BoostingBooster.placements.name.green=Boosting Booster (Green)
 entities.FemtoHelper/BoostingBooster.placements.name.red=Boosting Booster (Red)
+entities.FemtoHelper/BoostingBooster.placements.description.green=A Green Booster that gives the player an additional boost after a short time.
+entities.FemtoHelper/BoostingBooster.placements.description.red=A Red Booster that gives the player an additional boost after a short time.
 entities.FemtoHelper/BoostingBooster.attributes.description.red=Acts like a Red Booster.
 
 # Movement Modifier
 
 entities.FemtoHelper/MovementModifier.placements.name.default=Movement Modifier
+entities.FemtoHelper/MovementModifier.placements.description.default=Modifies only the movement of Actors inside the entity, but not their speed.
 entities.FemtoHelper/MovementModifier.attributes.description.outlineColor=Color of the area's outline.\nSupports alpha for premultiplied colors, as RRGGBBAA;
 entities.FemtoHelper/MovementModifier.attributes.description.fillColor=Color of the area.\nSupports alpha for premultiplied colors, as RRGGBBAA;
 entities.FemtoHelper/MovementModifier.attributes.description.outlineAlpha=Adjusts the transparecy for the area's outline.
@@ -547,6 +617,7 @@ entities.FemtoHelper/MovementModifier.attributes.description.attachToSolid=Allow
 # Entity Kill Zone
 
 entities.FemtoHelper/EntityKillZone.placements.name.default=Entity Kill Zone
+entities.FemtoHelper/EntityKillZone.placements.description.default=Kills entities according to the Whitelist and Blacklist, turning them into a puff of smoke.
 entities.FemtoHelper/EntityKillZone.attributes.description.outlineColor=Color of the area's outline.\nSupports alpha for premultiplied colors, as RRGGBBAA;
 entities.FemtoHelper/EntityKillZone.attributes.description.fillColor=Color of the area.\nSupports alpha for premultiplied colors, as RRGGBBAA;
 entities.FemtoHelper/EntityKillZone.attributes.description.outlineAlpha=Adjusts the transparecy for the area's outline.
@@ -558,7 +629,9 @@ entities.FemtoHelper/EntityKillZone.attributes.description.blacklist=Comma-separ
 # Circle Mover
 
 entities.FemtoHelper/CircleMover.placements.name.circleMover=Circle Mover
+entities.FemtoHelper/CircleMover.placements.description.circleMover=A Zip Mover that moves in a circular manner.
 entities.FemtoHelper/CircleMover.placements.name.circleMoverNoReturn=Circle Mover (No Return)
+entities.FemtoHelper/CircleMover.placements.description.circleMover=A No Return Zip Mover that moves in a circular manner.
 entities.FemtoHelper/CircleMover.attributes.description.counterClockwise=Whether the Circle Mover moves clockwise or counter-clockwise.
 entities.FemtoHelper/CircleMover.attributes.description.angle=How much along the circle the Circle Mover moves, in degrees.
 entities.FemtoHelper/CircleMover.attributes.description.behavior=This controls how the Circle Mover behaves.\nDefault: Moves like a regular Zip Mover; Charges to the endpoint, then slowly returns.\nNoReturn: Regular No Return behavior; Charges to the endpoint but doesn't return, waiting for the player to activate it again.\nPermanent: Charges to the endpoint and then deactivates.
@@ -568,8 +641,10 @@ entities.FemtoHelper/CircleMover.attributes.description.activateFallingBlocks=Ma
 
 # Water Circle Mover
 
-entities.FemtoHelper/WaterCircleMover.placements.name.circleMover=Water Circle Mover
-entities.FemtoHelper/WaterCircleMover.placements.name.circleMoverNoReturn=Water Circle Mover (No Return)
+entities.FemtoHelper/WaterCircleMover.placements.name.waterCircleMover=Water Circle Mover
+entities.FemtoHelper/WaterCircleMover.placements.description.waterCircleMover=A Water Zip Mover that moves in a circular manner.
+entities.FemtoHelper/WaterCircleMover.placements.name.waterCircleMoverNoReturn=Water Circle Mover (No Return)
+entities.FemtoHelper/WaterCircleMover.placements.description.waterCircleMoverNoReturn=A No Return Water Zip Mover that moves in a circular manner.
 entities.FemtoHelper/WaterCircleMover.attributes.description.counterClockwise=Whether the Water Circle Mover moves clockwise or counter-clockwise.
 entities.FemtoHelper/WaterCircleMover.attributes.description.angle=How much along the circle the Water Circle Mover moves, in degrees.
 entities.FemtoHelper/WaterCircleMover.attributes.description.behavior=This controls how the Water Circle Mover behaves.\nDefault: Moves like a regular Zip Mover; Charges to the endpoint, then slowly returns.\nNoReturn: Regular No Return behavior; Charges to the endpoint but doesn't return, waiting for the player to activate it again.\nPermanent: Charges to the endpoint and then deactivates.
@@ -581,6 +656,7 @@ entities.FemtoHelper/WaterCircleMover.attributes.description.canCarry=Whether th
 # Water Move Block
 
 entities.FemtoHelper/MovingWaterBlock.placements.name.waterMoveBlock=Water Move Block
+entities.FemtoHelper/MovingWaterBlock.placements.description.waterMoveBlock=A block of water that moves like a Move Block.
 entities.FemtoHelper/MovingWaterBlock.attributes.description.spritePath=The sprite directory for the Water Move Block.
 entities.FemtoHelper/MovingWaterBlock.attributes.description.angle=The Move Block's travel angle, in degrees.
 entities.FemtoHelper/MovingWaterBlock.attributes.description.canCarry=Whether the Water Move Block can carry the player with it and give liftboost or not. 
@@ -590,7 +666,8 @@ entities.FemtoHelper/MovingWaterBlock.attributes.description.ignoreBarriers=Whet
 
 # Water Block
 
-entities.FemtoHelper/WaterBlock.placements.name.waterMoveBlock=Water Block
+entities.FemtoHelper/WaterBlock.placements.name.waterBlock=Water Block
+entities.FemtoHelper/WaterBlock.placements.description.waterBlock=A block of water, rendered like other FemtoHelper water blocks.
 entities.FemtoHelper/WaterBlock.attributes.description.spritePath=The sprite directory for the Water Block.
 
 # Water Falling Block
@@ -599,6 +676,10 @@ entities.FemtoHelper/WaterFallingBlock.placements.name.waterFallingBlockD=Water 
 entities.FemtoHelper/WaterFallingBlock.placements.name.waterFallingBlockR=Water Falling Block (Right)
 entities.FemtoHelper/WaterFallingBlock.placements.name.waterFallingBlockU=Water Falling Block (Up)
 entities.FemtoHelper/WaterFallingBlock.placements.name.waterFallingBlockL=Water Falling Block (Left)
+entities.FemtoHelper/WaterFallingBlock.placements.description.waterFallingBlockD=A block of water that falls like a Falling Block.
+entities.FemtoHelper/WaterFallingBlock.placements.description.waterFallingBlockR=A block of water that falls like a Falling Block.
+entities.FemtoHelper/WaterFallingBlock.placements.description.waterFallingBlockU=A block of water that falls like a Falling Block.
+entities.FemtoHelper/WaterFallingBlock.placements.description.waterFallingBlockL=A block of water that falls like a Falling Block.
 entities.FemtoHelper/WaterFallingBlock.attributes.description.canCarry=Whether the Water Falling Block can carry the player with it and give liftboost or not.
 entities.FemtoHelper/WaterFallingBlock.attributes.description.direction=The Water Falling Block's falling direction.
 entities.FemtoHelper/WaterFallingBlock.attributes.description.spritePath=The sprite directory for the Water Falling Block.
@@ -606,7 +687,9 @@ entities.FemtoHelper/WaterFallingBlock.attributes.description.spritePath=The spr
 # Water Zip Mover
 
 entities.FemtoHelper/WaterZipMover.placements.name.waterZipMover=Water Zip Mover
+entities.FemtoHelper/WaterZipMover.placements.description.waterZipMover=A block of water that moves like a Zip Mover.
 entities.FemtoHelper/WaterZipMover.placements.name.waterZipMoverNoReturn=Water Zip Mover (No Return)
+entities.FemtoHelper/WaterZipMover.placements.description.waterZipMoverNoReturn=A block of water that moves like a No Return Zip Mover.
 entities.FemtoHelper/WaterZipMover.attributes.description.behavior=This controls how the Water Zip Mover behaves.\nDefault: Moves like a regular Zip Mover; Charges to the endpoint, then slowly returns.\nNoReturn: Regular No Return behavior; Charges to the endpoint but doesn't return, waiting for the player to activate it again.\nPermanent: Charges to the endpoint and then deactivates.
 entities.FemtoHelper/WaterZipMover.attributes.description.canCarry=Whether the Water Zip Mover can carry the player with it and give liftboost or not.
 entities.FemtoHelper/WaterZipMover.attributes.description.spritePath=The sprite directory for the Water Zip Mover.
@@ -614,7 +697,9 @@ entities.FemtoHelper/WaterZipMover.attributes.description.spritePath=The sprite 
 # Water Swap Block
 
 entities.FemtoHelper/WaterSwapBlock.placements.name.waterSwapBlock=Water Swap Block
+entities.FemtoHelper/WaterSwapBlock.placements.description.waterSwapBlock=A block of water that moves like a Swap Block.
 entities.FemtoHelper/WaterSwapBlock.placements.name.waterSwapBlockToggle=Water Swap Block (Toggle)
+entities.FemtoHelper/WaterSwapBlock.placements.description.waterSwapBlockToggle=A block of water that moves like a Toggle Swap Block.
 entities.FemtoHelper/WaterSwapBlock.attributes.description.canCarry=Whether the Water Swap Block can carry the player with it and give liftboost or not.
 entities.FemtoHelper/WaterSwapBlock.attributes.description.toggle=Whether the Water Swap Block toggles between two positions or returns after moving.
 entities.FemtoHelper/WaterSwapBlock.attributes.description.spritePath=The sprite directory for the Water Swap Block.
@@ -622,6 +707,7 @@ entities.FemtoHelper/WaterSwapBlock.attributes.description.spritePath=The sprite
 # Water Switch Gate
 
 entities.FemtoHelper/WaterSwitchGate.placements.name.waterSwitchGate=Water Switch Gate
+entities.FemtoHelper/WaterSwitchGate.placements.description.waterSwitchGate=A block of water that moves like a Switch Gate.
 entities.FemtoHelper/WaterSwitchGate.attributes.description.canCarry=Whether the Water Switch Gate can carry the player with it and give liftboost or not.
 entities.FemtoHelper/WaterSwitchGate.attributes.description.spritePath=The sprite directory for the Water Switch Gate.
 entities.FemtoHelper/WaterSwitchGate.attributes.description.persistent=Will stay open once activated, even if the player dies.
@@ -629,6 +715,7 @@ entities.FemtoHelper/WaterSwitchGate.attributes.description.persistent=Will stay
 # Rotate Dash Refill
 
 entities.FemtoHelper/RotateDashRefill.placements.name.rotate_refill=Rotate Dash Refill
+entities.FemtoHelper/RotateDashRefill.placements.description.rotate_refill=Grants the player a dash that rotates their momentum.
 entities.FemtoHelper/RotateDashRefill.attributes.description.oneUse=Whether the refill should respawn after being used.
 entities.FemtoHelper/RotateDashRefill.attributes.description.scalar=How much the player's velocity is multiplied Rotate Dashing.
 entities.FemtoHelper/RotateDashRefill.attributes.description.texture=The texture path for the refill's sprite.
@@ -639,6 +726,7 @@ entities.FemtoHelper/RotateDashRefill.attributes.description.angle=How much the 
 # Monopticon
 
 entities.FemtoHelper/Monopticon.placements.name.monopticon=Monopticon
+entities.FemtoHelper/Monopticon.placements.description.monopticon=The special Watchtower from Secret Santa Collab 2024's Watchtower Contest.
 entities.FemtoHelper/Monopticon.attributes.description.onlyY=Makes it so the screen can only be panned horizontally.
 entities.FemtoHelper/Monopticon.attributes.description.interactFlag=This flag is activated while the player is using the Monopticon.
 entities.FemtoHelper/Monopticon.attributes.description.blockDash=Whether the player can dash while outside of bino state.
@@ -656,6 +744,7 @@ entities.FemtoHelper/Monopticon.attributes.description.binoMaxSpeed=The Monoptic
 # Ocular Barrier
 
 entities.FemtoHelper/OcularBarrier.placements.name.ocularBarrier=Ocular Barrier
+entities.FemtoHelper/OcularBarrier.placements.description.ocularBarrier=A block toggled by a set flag. From Secret Santa Collab 2024's Watchtower Contest.
 entities.FemtoHelper/OcularBarrier.placements.name.ocularBarrierInverted=Ocular Barrier (Inverted)
 entities.FemtoHelper/OcularBarrier.attributes.description.flag=Controls the barrier's On/Off state.\nShould be the same as the Monopticon's interaction flag.
 entities.FemtoHelper/OcularBarrier.attributes.description.invert=Determines if the barrier should activate with the flag or deactivate with the flag.
@@ -668,13 +757,15 @@ entities.FemtoHelper/OcularBarrier.attributes.description.texturePath=The textur
 # Switch Movet
 
 entities.FemtoHelper/SwitchMovet.placements.name.SwitchMovet=Switch Movet
+entities.FemtoHelper/SwitchMovet.placements.description.SwitchMovet=A colored block that moves when activated by a Switch Movet Box of the same color.
 entities.FemtoHelper/SwitchMovet.attributes.description.color=The color of the Switch Movet.\nSwitch Movets are only activated by Switch Movet Boxes of the same color.
 entities.FemtoHelper/SwitchMovet.attributes.description.path=The sprite path of the Switch Movet.
 entities.FemtoHelper/SwitchMovet.attributes.description.speedMultiplier=Adjusts the Switch Movet's movement speed.
 
 # Switch Movet Box
 
-entities.FemtoHelper/SwitchMovetBox.placements.name.SwitchMovet=Switch Movet Box
+entities.FemtoHelper/SwitchMovetBox.placements.name.SwitchMovetBox=Switch Movet Box
+entities.FemtoHelper/SwitchMovetBox.placements.description.SwitchMovetBox=A colored box that activates Switch Movets of the same color when dashed onto.
 entities.FemtoHelper/SwitchMovetBox.attributes.description.color=The color of the Switch Movet Box.\nSwitch Movet Boxes only activate Switch Movets of the same color.
 entities.FemtoHelper/SwitchMovetBox.attributes.description.path=The sprite path of the Switch Movet Box.
 entities.FemtoHelper/SwitchMovetBox.attributes.description.floaty=Whether the Switch Movet Box should float or not.
@@ -683,8 +774,10 @@ entities.FemtoHelper/SwitchMovetBox.attributes.description.destroyAttached=Destr
 
 # Node Puffer
 
-entities.FemtoHelper/NodePuffer.placements.name.NodePufferLeft=Node Puffer (Left)
-entities.FemtoHelper/NodePuffer.placements.name.NodePufferRight=Node Puffer (Right)
+entities.FemtoHelper/NodePuffer.placements.name.nodePufferLeft=Node Puffer (Left)
+entities.FemtoHelper/NodePuffer.placements.name.nodePufferRight=Node Puffer (Right)
+entities.FemtoHelper/NodePuffer.placements.description.nodePufferLeft=A Puffer that moves between set nodes when interacted with.
+entities.FemtoHelper/NodePuffer.placements.description.nodePufferRight=A Puffer that moves between set nodes when interacted with.
 entities.FemtoHelper/NodePuffer.attributes.description.speed=The speed the puffer moves between nodes.
 entities.FemtoHelper/NodePuffer.attributes.description.right=The initial direction of the puffer.
 entities.FemtoHelper/NodePuffer.attributes.description.lineColor=The idle color of the node lines.
@@ -693,6 +786,7 @@ entities.FemtoHelper/NodePuffer.attributes.description.activeLineColor=The color
 # The Contraption
 
 entities.FemtoHelper/TheContraption.placements.name.TheContraption=The Contraption
+entities.FemtoHelper/TheContraption.placements.description.TheContraption=Why don't you figure out what this one does?
 entities.FemtoHelper/TheContraption.attributes.description.particles=Toggles smoke particles for the contraption.
 entities.FemtoHelper/TheContraption.attributes.description.reducedDebris=Reduces the amount of debris created by the contraption when breaking.
 entities.FemtoHelper/TheContraption.attributes.description.spritePath=The sprite path of the contraption.
@@ -700,12 +794,18 @@ entities.FemtoHelper/TheContraption.attributes.description.spritePath=The sprite
 # Geen Block
 entities.FemtoHelper/GeenBlock.placements.name.geen=Geen Block
 entities.FemtoHelper/GeenBlock.placements.name.geenInv=Geen Block (Inverted)
+entities.FemtoHelper/GeenBlock.placements.description.geen=A block that gives the player massive Liftboost in the input direction. Best used with uncapped Liftboost (via Extended Variants).
+entities.FemtoHelper/GeenBlock.placements.description.geenInv=A block that gives the player massive Liftboost opposite the input direction. Best used with uncapped Liftboost (via Extended Variants).
 entities.FemtoHelper/GeenBlock.attributes.description.speed=The lift speed the Geen Block grants the player.\nNote that the game enforces a lift speed cap that can be changed via Extended Variants.
 entities.FemtoHelper/GeenBlock.attributes.description.inverse=Makes the block give lift speed opposite to the player's input direction.
 
 # SMW Shell
 entities.FemtoHelper/SMWShell.placements.name.smw_shell=SMW Shell
 entities.FemtoHelper/SMWShell.placements.name.smw_shell_disco=SMW Shell (Disco)
+
+entities.FemtoHelper/SMWShell.placements.description.smw_shell=A somewhat SMW-accurate Koopa Shell that can be thrown and bounced on.
+entities.FemtoHelper/SMWShell.placements.description.smw_shell_disco=A somewhat SMW-accurate Disco Shell that can be bounced on.
+
 entities.FemtoHelper/SMWShell.attributes.description.doSplashEffect=Toggles the splash effect when an impact happens.
 entities.FemtoHelper/SMWShell.attributes.description.texturesPrefix=The texture path prefix for the Shell.\nMust have the Shell sprites as <texturesPrefix>/<sprite>_idle00.png, and <texturesPrefix>/<sprite>_kickedXX.png.\nShould also contain digitX.png for hit count text, and splash.png for the impact splash.
 entities.FemtoHelper/SMWShell.attributes.description.ignoreOtherShells=If true, this Shell ignores interactions with any other Shells.
@@ -744,6 +844,7 @@ entities.FemtoHelper/SMWShell.attributes.description.bounceLengthMultiplier=Alte
 
 # Evil Theo Crystal
 entities.FemtoHelper/EvilTheoCrystal.placements.name.evil_theo_crystal=Evil Theo Crystal
+entities.FemtoHelper/EvilTheoCrystal.placements.description.evil_theo_crystal=A Theo Crystal but he's evil.
 entities.FemtoHelper/EvilTheoCrystal.attributes.description.preserveSpeedOnThrow=If set, the player's horizontal speed is preserved when they are thrown by the Crystal.
 
 # ---------- Triggers ----------
@@ -751,9 +852,11 @@ entities.FemtoHelper/EvilTheoCrystal.attributes.description.preserveSpeedOnThrow
 # Remote Particle Emitter Activator (please spare my soul its the best name i could come up with)
 
 triggers.FemtoHelper/ParticleRemoteEmit.placements.name.default=Remote Particle Emitter Activator
+triggers.FemtoHelper/ParticleRemoteEmit.placements.description.default=Activates all Particle Emitters with a specific tag.
 triggers.FemtoHelper/ParticleRemoteEmit.attributes.description.tag=Any Particle Emitters with this tag will be activated on entry.
 
 triggers.FemtoHelper/CinematicTextTrigger.placements.name.default=Cinematic Text Activator
+triggers.FemtoHelper/CinematicTextTrigger.placements.description.default=Activates all Cinematic Text entities with a specific tag.
 triggers.FemtoHelper/CinematicTextTrigger.attributes.description.activationTag=Any Cinematic Text entity with this tag will be activated on entry.
 triggers.FemtoHelper/CinematicTextTrigger.attributes.description.stopText=Stops the text entity with this tag instead of activating it.
 triggers.FemtoHelper/CinematicTextTrigger.attributes.description.stopImmediately=Stops the text immediately, instead of fading it out.\nDoes nothing if "Stop Text" isn't checked.
@@ -761,6 +864,7 @@ triggers.FemtoHelper/CinematicTextTrigger.attributes.description.stopImmediately
 # Vital Safety Trigger
 
 triggers.FemtoHelper/VitalSafetyTrigger.placements.name.default=Vital Safety Trigger
+triggers.FemtoHelper/VitalSafetyTrigger.placements.description.default=Provides safety from the Vital Drain Controller mechanic.
 triggers.FemtoHelper/VitalSafetyTrigger.attributes.description.flagToggle=Flag that toggles the trigger.\nSupports session expressions if Frost Helper is enabled.
 triggers.FemtoHelper/VitalSafetyTrigger.attributes.description.override=Overrides the Vital Drain Controller's drain/recovery rates while inside the trigger.
 triggers.FemtoHelper/VitalSafetyTrigger.attributes.description.overrideValue=The overriden drain/recovery rate.\nVitality value ranges from 0 - 500.

@@ -5,14 +5,14 @@ FemtoHelperOshiroCaller.depth = -1000000
 FemtoHelperOshiroCaller.justification = {0.5, 0.5}
 FemtoHelperOshiroCaller.placements = {
     {
-        name = "Oshiro Caller (Call) [Femto Helper]",
+        name = "call",
         data = {
             repell = false,
             justMakeOshiroLeave = false
         }
     },
     {
-        name = "Oshiro Caller (Repell) [Femto Helper]",
+        name = "repel",
         data = {
             repell = true,
             justMakeOshiroLeave = false

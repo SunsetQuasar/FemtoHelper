@@ -36,7 +36,10 @@ for typeName, typeAttributes in pairs(FemtoHelperCustomSpeedRotateSpinnerTypes) 
                 isDust = dust,
                 isBlade = star,
                 rotateTime = 1.8,
-                noParticles = false
+                noParticles = false,
+                scaleX = 1,
+                scaleY = 1,
+                attach = true,
             }
         })
     end
