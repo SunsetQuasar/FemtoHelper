@@ -129,8 +129,8 @@ function FemtoHelperParticleEmitter.sprite(room, entity)
     Particle1:setColor(color1)
     Particle2:setColor(color2)
 
-    Particle1:setScale(entity.particleSize - entity.particleSizeRange)
-    Particle2:setScale(entity.particleSize + entity.particleSizeRange)
+    Particle1:setScale(entity.particleSize - entity.particleSizeRange, entity.particleSize - entity.particleSizeRange)
+    Particle2:setScale(entity.particleSize + entity.particleSizeRange, entity.particleSize + entity.particleSizeRange)
   end
 
   return {

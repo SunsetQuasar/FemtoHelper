@@ -205,6 +205,7 @@
 {6a3f7aaf-bea3-4ac6-a919-d4b6eef81ae7} event:/env/state/underwater
 {0cb02205-2cff-4eae-b8ab-5086a3269dad} event:/FemtoHelper/blockcoin
 {56fc99af-ec5a-44cb-b24e-c0fda3ab40bd} event:/FemtoHelper/blockhit
+{35328fe2-c49f-4dc3-be84-0ad7e3c23ad9} event:/FemtoHelper/blockmessage
 {4fa4d508-b807-4840-bea5-060e4e50c27a} event:/FemtoHelper/blockreward
 {c8f24441-2b04-4c1d-9df8-dc12566c929f} event:/FemtoHelper/blockswitch
 {1b556f6b-2abd-4740-8313-3279024850d3} event:/FemtoHelper/boss_spikes_burst_quiet
@@ -230,7 +231,7 @@
 {193bd06f-83ff-4122-8a88-e5d3d1e0aa76} event:/FemtoHelper/water_fallblock_first_shake
 {07f56f1e-2d37-4dc9-b9f0-0f16038d48fe} event:/FemtoHelper/water_zip_mover
 {ad791c49-9640-41e6-8201-269dcb2c67b7} event:/FemtoHelper/water_zip_mover_permanent
-{35328fe2-c49f-4dc3-be84-0ad7e3c23ad9} event:/FemtoHelper/blockmessage
+{093f6167-bc15-49d2-b63c-f966234dd351} event:/FemtoHelper/stomp_poof
 {3f2d088f-f438-42c1-b9e9-6e6a44203865} event:/game/00_prologue/bridge_rumble_loop
 {fb47d655-bc4f-4361-b4a2-d19e30518d24} event:/game/00_prologue/bridge_support_break
 {319ecd12-335d-44ff-94ca-07fe499d4a87} event:/game/00_prologue/car_down
@@ -565,6 +566,7 @@
 {289d19ab-09df-4d52-a413-ae80f40e73cf} event:/modded/sunset_gaythreequel/realmario
 {c482560c-6017-475f-be22-dcd96dc3ab0d} event:/modded/sunset_gaythreequel/westmansion
 {5f73cb0a-ece6-4d4e-821f-1a344c54e2d0} event:/modded/sunset_geencontest/cheri
+{1e8ada60-1663-44b8-b370-68cc88301626} event:/modded/sunset_kaizo/empty
 {0a929a1f-d7f8-4605-904b-57cdd3408ca1} event:/modded/sunset_lastnano/dreamer
 {a89fcb30-6520-4395-bff2-9851e37b2012} event:/modded/sunset_loveunano/altsummit
 {54e50af6-c986-4e43-bdb3-d12b6841f5c9} event:/modded/sunset_marchmap/rebel
@@ -1130,6 +1132,7 @@
 {06a4e717-adff-47b2-91cd-ebc2b710194d} bank:/sunset_febmap
 {7ac1f176-568c-4b39-88f3-0b7c3d85603a} bank:/sunset_gaythreequel
 {fadb6412-4df5-41db-97ce-a53232d40b72} bank:/sunset_geencontest
+{333c6e63-dbc8-4d57-b15d-c9cdbe19dc60} bank:/sunset_kaizo
 {ed2bff40-4c94-40b1-9da4-a4689d5ddbda} bank:/sunset_lastnano
 {961c1fd6-73b3-44d4-9b2a-23df73c8862f} bank:/sunset_loveunano
 {fc81229f-28a2-44bc-9f89-1a28415bdb4c} bank:/sunset_marchmap

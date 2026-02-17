@@ -277,6 +277,7 @@ public class FemtoModule : EverestModule
         EvilTheoCrystal.Load();
         AssistHazardController.Load();
         PlutoniumTextRenderer.Load();
+        MovementModifier.Load();
     }
 
     public override void Unload()
@@ -319,6 +320,7 @@ public class FemtoModule : EverestModule
         EvilTheoCrystal.Unload();
         AssistHazardController.Unload();
         PlutoniumTextRenderer.Unload();
+        MovementModifier.Unload();
     }
 
 

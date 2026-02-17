@@ -39,7 +39,7 @@ public partial class SimpleText : Entity
         Nodes = [];
         if (!Dialog.Has(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example")))
         {
-            Nodes.Add(new PlutoniumTextNodes.Text(Dialog.Get(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"))));
+            Nodes.Add(new PlutoniumTextNodes.Text(Dialog.Clean(data.Attr("dialogID", "FemtoHelper_PlutoniumText_Example"))));
         }
         else
         {
@@ -140,7 +140,7 @@ public partial class SimpleText : Entity
 
         Draw.HollowRect(position2.X - 2f, position2.Y - 2f, 4f, 4f, Color.BlueViolet);
 
-        Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset / ZoomFactor, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify, ZoomFactor), Color.MediumOrchid * 0.5f);
+        if (level.Session.GetFlag("femto_textboundingbox")) Draw.HollowRect(Text.GetVisibilityRectangle(p2f + RenderOffset / ZoomFactor, PlutoniumTextNodes.ConstructString(Nodes, SceneAs<Level>()), Spacing, Scale, Justify, ZoomFactor), Color.MediumOrchid * 0.5f);
     }
 
     [GeneratedRegex(@"(\{|\})")]

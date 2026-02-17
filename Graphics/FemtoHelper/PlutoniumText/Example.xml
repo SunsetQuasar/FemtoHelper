@@ -7,7 +7,7 @@
         </Character>
 
         <Character id="B" x="16" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\}" x="-1" y="0"/>
         </Character>
 
         <Character id="C" x="24" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
@@ -15,19 +15,19 @@
         </Character>
 
         <Character id="D" x="32" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\}" x="-1" y="0"/>
         </Character>
 
         <Character id="E" x="40" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\}" x="-1" y="0"/>
         </Character>
 
         <Character id="F" x="48" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\}" x="-1" y="0"/>
         </Character>
 
         <Character id="G" x="56" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquIJ1~" x="-1" y="0"/>
+            <CharSpecificOffset after="adilquIJ1~{" x="-1" y="0"/>
         </Character>
 
         <Character id="H" x="64" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
@@ -35,20 +35,20 @@
         </Character>
 
         <Character id="I" x="74" y="0" width="5" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\}" x="-1" y="0"/>
         </Character>
 
         <Character id="J" x="80" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgijlquxITY17!*+-&apos;&quot;&gt;" x="-1" y="0"/>
-            <CharSpecificOffset after="frFP~^?" x="-2" y="0"/>
+            <CharSpecificOffset after="adgijlquxITY17!*+-&apos;&quot;&gt;{" x="-1" y="0"/>
+            <CharSpecificOffset after="frFP~^?}" x="-2" y="0"/>
         </Character>
         
         <Character id="K" x="88" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\}" x="-1" y="0"/>
         </Character>
 
         <Character id="L" x="96" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\}" x="-1" y="0"/>
         </Character>
 
         <Character id="M" x="104" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
@@ -60,27 +60,28 @@
         </Character>
 
         <Character id="O" x="120" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquIJ1~" x="-1" y="0"/>
+            <CharSpecificOffset after="adilquIJ1~{" x="-1" y="0"/>
         </Character>
 
         <Character id="P" x="128" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\}" x="-1" y="0"/>
         </Character>
 
         <Character id="Q" x="136" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquIJ1~" x="-1" y="0"/>
+            <CharSpecificOffset after="adilquIJ1~{" x="-1" y="0"/>
         </Character>
 
         <Character id="R" x="144" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefgopqrstvwBCDOPQS36890^)!@#$%*&gt;+-=?\}" x="-1" y="0"/>
         </Character>
 
         <Character id="S" x="152" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgiklquIJ1~*+-&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adgiklquIJ1~*+-&gt;}{" x="-1" y="0"/>
         </Character>
 
         <Character id="T" x="161" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="abcdehilmnopqsuL14&amp;*+-\.,&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="}" x="-2" y="0"/>
         </Character>
 
         <Character id="U" x="168" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
@@ -97,67 +98,69 @@
 
         <Character id="X" x="192" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="gqrv@*+-&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="}" x="-2" y="0"/>
         </Character>
 
         <Character id="Y" x="201" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquL14\.," x="-1" y="0"/>
+            <CharSpecificOffset after="adilquL14\.,}" x="-1" y="0"/>
         </Character>
 
         <Character id="Z" x="208" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="q*+-" x="-1" y="0"/>
+            <CharSpecificOffset after="}" x="-2" y="0"/>
         </Character>
 
         <Character id="a" x="216" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adfgiklqruxFIJPTY17~!^&amp;*+-?&apos;&quot;&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adfgiklqruxFIJPTY17~!^&amp;*+-?&apos;&quot;&gt;}{" x="-1" y="0"/>
         </Character>
 
         <Character id="b" x="224" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="abcdeghiklmnoprstuvwxyzL14!@#$%&amp;*)+-=\.,&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="abcdeghiklmnoprstuvwxyzL14!@#$%&amp;*)+-=\.,&gt;}" x="-1" y="0"/>
             <CharSpecificOffset after="q" x="-2" y="0"/>
         </Character>
 
         <Character id="c" x="232" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;" x="-1" y="0"/>
+            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;{" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
         <Character id="d" x="240" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adfgilquxFIJPTY17~!^?&apos;&quot;" x="-1" y="0"/>
+            <CharSpecificOffset after="adfgilquxFIJPTY17~!^?&apos;&quot;{" x="-1" y="0"/>
         </Character>
 
         <Character id="e" x="248" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;" x="-1" y="0"/>
+            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;{" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
         <Character id="f" x="257" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefopqsCFJST7~%^?&apos;&quot;&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefopqsCFJST7~%^?&apos;&quot;&gt;}" x="-1" y="0"/>
         </Character>
 
         <Character id="g" x="264" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgiklqtuxIJKPTXY127~!^(?&apos;&quot;" x="-1" y="0"/>
+            <CharSpecificOffset after="adgiklqtuxIJKPTXY127~!^(?&apos;&quot;{" x="-1" y="0"/>
             <CharSpecificOffset after="fF" x="-2" y="0"/>
         </Character>
 
         <Character id="h" x="272" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="abcdegpqrstvw!@#$%*)+-=\&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="abcdegpqrstvw!@#$%*)+-=\&gt;}" x="-1" y="0"/>
         </Character>
 
         <Character id="i" x="282" y="0" width="5" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcefopqsCFJST7~%^?&apos;&quot;&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="bcefopqsCFJST7~%^?&apos;&quot;&gt;}" x="-1" y="0"/>
         </Character>
 
         <Character id="j" x="288" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="bcegopqstvwBCDJOSTUVY356890!@#$%)" x="-1" y="0"/>
-            <CharSpecificOffset after="frFP7~^*+-=?&apos;&quot;&gt;" x="-2" y="0"/>
+            <CharSpecificOffset after="frFP7~^*+-=?&apos;&quot;&gt;}" x="-2" y="0"/>
         </Character>
 
         <Character id="k" x="296" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="abcdegpqrstvw!@#$%*)+-=\&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="abcdegpqrstvw!@#$%*)+-=\&gt;}" x="-1" y="0"/>
         </Character>
 
         <Character id="l" x="306" y="0" width="5" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bcdegpqrstvw!@#$%*)+-=\&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="bcdegpqrstvw!@#$%*)+-=\&gt;}" x="-1" y="0"/>
         </Character>
 
         <Character id="m" x="312" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
@@ -166,64 +169,64 @@
         </Character>
 
         <Character id="n" x="320" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="abcdehilmnopsuCFIJKLTSXZ124567~^\&apos;&quot;.,&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="abcdehilmnopsuCFIJKLTSXZ124567~^\&apos;&quot;.,&gt;}{" x="-1" y="0"/>
             <CharSpecificOffset after="fq" x="-2" y="0"/>
         </Character>
 
         <Character id="o" x="328" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;" x="-1" y="0"/>
+            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;{" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
         <Character id="p" x="336" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="_" x="1" y="0"/>
-            <CharSpecificOffset after="abcdehilmnopsuCFIJKLTSXZ124567~^\&apos;&quot;.,&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="abcdehilmnopsuCFIJKLTSXZ124567~^\&apos;&quot;.,&gt;}{" x="-1" y="0"/>
             <CharSpecificOffset after="fq" x="-2" y="0"/>
         </Character>
 
         <Character id="q" x="344" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;" x="-1" y="0"/>
+            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;{" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
         <Character id="r" x="352" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bceopqsCFJST7~%^?&apos;&quot;&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="bceopqsCFJST7~%^?&apos;&quot;&gt;}" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
         <Character id="s" x="360" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;" x="-1" y="0"/>
+            <CharSpecificOffset after="adgilquxFIJPTY17~!^?&apos;&quot;{" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
         <Character id="t" x="368" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="abcdehilmnopqsuCEFIJKSTX" x="-1" y="0"/>
-            <CharSpecificOffset after="fL" x="-2" y="0"/>
+            <CharSpecificOffset after="abcdehilmnopqsuCEFIJKSTX}" x="-1" y="0"/>
+            <CharSpecificOffset after="fL{" x="-2" y="0"/>
         </Character>
 
         <Character id="u" x="376" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquFIJT17~^?&apos;&quot;" x="-1" y="0"/>
+            <CharSpecificOffset after="adilquFIJT17~^?&apos;&quot;{" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
         <Character id="v" x="384" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="adilquCEFIJKSTX127~^(?&apos;&quot;\.,&lt;" x="-1" y="0"/>
-            <CharSpecificOffset after="f" x="-2" y="0"/>
+            <CharSpecificOffset after="f{" x="-2" y="0"/>
         </Character>
 
         <Character id="w" x="392" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquFIJT17~^?&apos;&quot;" x="-1" y="0"/>
+            <CharSpecificOffset after="adilquFIJT17~^?&apos;&quot;{" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
         <Character id="x" x="400" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="bceopqsCFJST7~%^?&apos;&quot;&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="bceopqsCFJST7~%^?&apos;&quot;&gt;}" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
         <Character id="y" x="408" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="_" x="1" y="0"/>
-            <CharSpecificOffset after="adiluFIJKTX127~^(?&apos;&quot;&lt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adiluFIJKTX127~^(?&apos;&quot;&lt;{" x="-1" y="0"/>
             <CharSpecificOffset after="f" x="-2" y="0"/>
         </Character>
 
@@ -233,95 +236,100 @@
         </Character>
 
         <Character id="0" x="424" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquIJ1~" x="-1" y="0"/>
+            <CharSpecificOffset after="adilquIJ1~{" x="-1" y="0"/>
         </Character>
 
         <Character id="1" x="433" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="bcefgopqrstvwJ56~@^*+-&apos;&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="}" x="-2" y="0"/>
         </Character>
 
         <Character id="2" x="440" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="gqrvJ~@#*+-&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="}" x="-2" y="0"/>
         </Character>
 
         <Character id="3" x="448" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgiklpqruvxIJ14~@#&amp;*(+-&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adgiklpqruvxIJ14~@#&amp;*(+-&gt;{" x="-1" y="0"/>
+            <CharSpecificOffset after="}" x="-2" y="0"/>
         </Character>
 
         <Character id="4" x="456" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="adgiklqtuxCEFIJKLPRSTXYZ27!%?&apos;&quot;\.,&lt;" x="-1" y="0"/>
-            <CharSpecificOffset after="f1~^(" x="-2" y="0"/>
+            <CharSpecificOffset after="f1~^({" x="-2" y="0"/>
         </Character>
 
         <Character id="5" x="464" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilqu14&amp;" x="-1" y="0"/>
+            <CharSpecificOffset after="adilqu14&amp;}" x="-1" y="0"/>
         </Character>
 
         <Character id="6" x="472" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquIJ1~" x="-1" y="0"/>
+            <CharSpecificOffset after="adilquIJ1~{" x="-1" y="0"/>
         </Character>
 
         <Character id="7" x="480" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="dilA4@#$&amp;*+-.,&gt;" x="-1" y="0"/>
-            <CharSpecificOffset after="abceghkmnopqrstuvwxyzL1\" x="-2" y="0"/>
+            <CharSpecificOffset after="abceghkmnopqrstuvwxyzL1\}" x="-2" y="0"/>
         </Character>
 
         <Character id="8" x="488" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquIJ1~" x="-1" y="0"/>
+            <CharSpecificOffset after="adilquIJ1~}{" x="-1" y="0"/>
         </Character>
 
         <Character id="9" x="496" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adilquIJ1~&amp;*(+-&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adilquIJ1~&amp;*(+-&gt;}{" x="-1" y="0"/>
         </Character>
 
         <Character id="~" x="504" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="abcdeghiklmnopqrstuvwxyzAIJL14~@#$&amp;*(+-\&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="}" x="-2" y="0"/>
         </Character>
 
         <Character id="!" x="514" y="0" width="5" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="abcdehilmnopqsuIJL14~&amp;(\.,&lt;" x="-1" y="0"/>
+            <CharSpecificOffset after="abcdehilmnopqsuIJL14~&amp;(\.,&lt;}{" x="-1" y="0"/>
         </Character>
 
         <Character id="@" x="520" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="1" postOffsetY="0">
-            <CharSpecificOffset after="adfilquFIJKTX127~^(&apos;&quot;&lt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adfilquFIJKTX127~^(&apos;&quot;&lt;{" x="-1" y="0"/>
         </Character>
 
         <Character id="#" x="528" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="acdfgiklqrstuxzIJKLX1~^&amp;*(\.,&lt;" x="-1" y="0"/>
+            <CharSpecificOffset after="acdfgiklqrstuxzIJKLX1~^&amp;*(\.,&lt;}{" x="-1" y="0"/>
         </Character>
 
         <Character id="$" x="536" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adfilquIJKX14~^&amp;*+-&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adfilquIJKX14~^&amp;*+-&gt;}{" x="-1" y="0"/>
         </Character>
 
         <Character id="%" x="544" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adgiklqruvxIJ14~@&amp;*(+-&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adgiklqruvxIJ14~@&amp;*(+-&gt;}{" x="-1" y="0"/>
         </Character>
 
         <Character id="^" x="552" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="abcdeghiklmnopqrstuvwxyzAIJL14~@#$&amp;*(+-\&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="}" x="-2" y="0"/>
         </Character>
 
         <Character id="&amp;" x="560" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adfgiklqruxFIJPTY17~!^&amp;*(+-?&apos;&quot;&lt;&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adfgiklqruxFIJPTY17~!^&amp;*(+-?&apos;&quot;&lt;&gt;}{" x="-1" y="0"/>
         </Character>
 
         <Character id="*" x="568" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="1" postOffsetY="0">
             <CharSpecificOffset after="adgiklqtuxBCEFGIJLPRSTYZ~!#$%^?&apos;\&quot;.,:;" x="-1" y="0"/>
-            <CharSpecificOffset after="fKX(&lt;" x="-2" y="0"/>
+            <CharSpecificOffset after="fKX(&lt;{" x="-2" y="0"/>
         </Character>
 
         <Character id="(" x="578" y="0" width="5" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="adfilquIJKX1~^(&lt;" x="-1" y="0"/>
+            <CharSpecificOffset after="adfilquIJKX1~^(&lt;{" x="-1" y="0"/>
         </Character>
 
         <Character id=")" x="586" y="0" width="5" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="bcefgopqrstwBCDOPQS36890!@#$%^)=?\" x="-1" y="0"/>
-            <CharSpecificOffset after="v*+-&gt;" x="-2" y="0"/>
+            <CharSpecificOffset after="v*+-&gt;}" x="-2" y="0"/>
         </Character>
 
         <Character id="_" x="592" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="abcdeghijklmnostuvwxyzABCDEGHIJKLMNORSTUVWXYZ123456890~!@#$%^&amp;*()+-=?&apos;\&quot;.,:;&lt;&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="abcdeghijklmnostuvwxyzABCDEGHIJKLMNORSTUVWXYZ123456890~!@#$%^&amp;*()+-=?&apos;\&quot;.,:;&lt;&gt;{" x="-1" y="0"/>
             <CharSpecificOffset after="fprFP7" x="-2" y="0"/>
         </Character>
 
@@ -342,50 +350,60 @@
 
         <Character id="?" x="624" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="bcdeghiklmnopqrstuvwxyzIJ4~@&amp;*(+-&gt;" x="-1" y="0"/>
-            <CharSpecificOffset after="aL1\.," x="-2" y="0"/>
+            <CharSpecificOffset after="aL1\.,}" x="-2" y="0"/>
         </Character>
 
         <Character id="&apos;" x="635" y="0" width="3" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="abcdefghiklmnopqrstuvwxyz46@^*+-\&gt;" x="-1" y="0"/>
-            <CharSpecificOffset after="L1" x="-2" y="0"/>
+            <CharSpecificOffset after="L1}" x="-2" y="0"/>
         </Character>
 
         <Character id="\" x="640" y="0" width="8" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="bcdeghikmnopqrstuvwxyzA4@#$&amp;*+-.,&gt;" x="-1" y="0"/>
-            <CharSpecificOffset after="aL1\" x="-2" y="0"/>
+            <CharSpecificOffset after="aL1\}" x="-2" y="0"/>
         </Character>
 
         <Character id="&quot;" x="649" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="bcdeghikmnopqrstuvwxyzA4@#$&amp;*+-.,&gt;" x="-1" y="0"/>
-            <CharSpecificOffset after="aL1\" x="-2" y="0"/>
+            <CharSpecificOffset after="aL1\}" x="-2" y="0"/>
         </Character>
 
         <Character id="." x="658" y="0" width="3" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="gqvJTVY!@#*+-&gt;" x="-1" y="0"/>
-            <CharSpecificOffset after="frFP7?" x="-2" y="0"/>
+            <CharSpecificOffset after="frFP7?}" x="-2" y="0"/>
         </Character>
 
         <Character id="," x="666" y="0" width="3" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="gqvJTVY!@#*+-&gt;" x="-1" y="0"/>
-            <CharSpecificOffset after="frFP7?" x="-2" y="0"/>
+            <CharSpecificOffset after="frFP7?}" x="-2" y="0"/>
         </Character>
 
         <Character id=":" x="674" y="0" width="3" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="gqrvJ~@*+-&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="gqrvJ~@*+-&gt;}" x="-1" y="0"/>
         </Character>
         
         <Character id="&lt;" x="681" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="adgiklqtuxzBCEFGIJLPRSTYZ234678!#$%^?&apos;\&quot;.," x="-1" y="0"/>
-            <CharSpecificOffset after="fKX1~(&lt;" x="-2" y="0"/>
+            <CharSpecificOffset after="fKX1~(&lt;{" x="-2" y="0"/>
         </Character>
 
         <Character id="&gt;" x="689" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
             <CharSpecificOffset after="bcefgqrtvwBCDOPQRS36890@#$%^)=?" x="-1" y="0"/>
-            <CharSpecificOffset after="*+-&gt;" x="-2" y="0"/>
+            <CharSpecificOffset after="*+-&gt;}" x="-2" y="0"/>
         </Character>
 
         <Character id=";" x="698" y="0" width="3" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
-            <CharSpecificOffset after="gqrvJ~@*+-&gt;" x="-1" y="0"/>
+            <CharSpecificOffset after="gqrvJ~@*+-&gt;}" x="-1" y="0"/>
+        </Character>
+
+        <Character id="{" x="704" y="0" width="7" height="12" preOffsetX="0" preOffsetY="0" postOffsetX="0" postOffsetY="0">
+            <CharSpecificOffset after="adikltuxzBGIJPRSY234678!#$%_=?\&quot;:;" x="-1" y="0"/>
+            <CharSpecificOffset after="fCEFKLTXZ1~^(&apos;.,&lt;{" x="-2" y="0"/>
+        </Character>
+
+        <Character id="}" x="713" y="0" width="8" height="12" preOffsetX="-1" preOffsetY="0" postOffsetX="0" postOffsetY="0">
+            <CharSpecificOffset after="bcefgopqstwBCDOPQS36890!#$%^-=?" x="-1" y="0"/>
+            <CharSpecificOffset after="rv@*)+&gt;}" x="-2" y="0"/>
         </Character>
     </Font>
 </Data>

@@ -2,6 +2,8 @@ using Celeste.Mod.FemtoHelper.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using static Celeste.DreamStars;
+using static Celeste.Mod.FemtoHelper.Entities.EntityKillZone;
 using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
@@ -21,6 +23,15 @@ public class SmwShell : Actor
             //AddTag(TagsExt.SubHUD);
             if (parent.displayConfig == BounceCountDisplay.Hud) AddTag(TagsExt.SubHUD);
             Depth = parent.Depth;
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            if(parent == null || Scene.Entities.removing.Contains(parent))
+            {
+                RemoveSelf();
+            }
         }
 
         public override void Render()
@@ -49,7 +60,7 @@ public class SmwShell : Actor
                         i += tex.Width;
                     }
                 }
-            } 
+            }
             else if (parent.displayConfig == BounceCountDisplay.Hud)
             {
                 if (parent.bounceCount == 0)
@@ -65,7 +76,7 @@ public class SmwShell : Actor
     }
     public class SplashEffect : Entity
     {
-        private Image img;
+        internal Image img;
         public SplashEffect(Vector2 pos, MTexture texture) : base(pos)
         {
             Add(img = new Image(texture));
@@ -90,28 +101,28 @@ public class SmwShell : Actor
         }
     }
 
-    private enum States
+    internal enum States
     {
         Dropped = 0,
         Kicked = 1,
         Dead = 2
     }
-    
-    private enum TouchKickBehaviors
+
+    internal enum TouchKickBehaviors
     {
         Normal = 0,
         Ignore = 1,
         Kill = 2
     }
 
-    private enum BounceCountDisplay
+    internal enum BounceCountDisplay
     {
         None = 0,
         Hud = 1,
         SpriteText = 2
     }
 
-    private enum OutlineTextureType
+    internal enum OutlineTextureType
     {
         None = 0,
         Black = 1,
@@ -119,90 +130,94 @@ public class SmwShell : Actor
         Tiny = 3
     }
 
-    private BounceCountDisplay displayConfig;
+    internal BounceCountDisplay displayConfig;
 
-    private States state = States.Dropped;
+    internal States state = States.Dropped;
 
-    private SmwHoldable hold;
-    private Vector2 speed;
-    private readonly Collision onCollideH;
-    private readonly Collision onCollideV;
-    private float noGravityTimer;
-    private Vector2 prevLiftSpeed;
-    private float prevLiftSpeedTimer;
+    internal SmwHoldable hold;
+    internal Vector2 speed;
+    internal readonly Collision onCollideH;
+    internal readonly Collision onCollideV;
+    internal float noGravityTimer;
+    internal Vector2 prevLiftSpeed;
+    internal float prevLiftSpeedTimer;
 
-    private int bounceCount = 0;
-    private readonly int initialBounceCount;
+    internal int bounceCount = 0;
+    internal readonly int initialBounceCount;
 
-    private float dontKillTimer;
-    private float dontTouchKickTimer;
-    private readonly float noInteractionDuration;
+    internal float dontKillTimer;
+    internal float dontTouchKickTimer;
+    internal readonly float noInteractionDuration;
 
-    private readonly float gravity;
+    internal readonly float gravity;
 
-    private readonly Sprite sprite;
+    internal readonly Sprite sprite;
 
-    private readonly MTexture splash;
-    private readonly bool doNotSplash;
-    private readonly bool doFreezeFrames;
-    private readonly string audioPath;
+    internal readonly MTexture splash;
+    internal readonly bool doNotSplash;
+    internal readonly bool doFreezeFrames;
+    internal readonly string audioPath;
 
-    private readonly bool isDisco;
-    private readonly string[] animations;
-    private int currentSpriteIndex;
-    private string currentSpriteTrimmedName;
-    private float discoTarget;
-    private readonly bool ignoreOtherShells;
+    internal readonly bool isDisco;
+    internal readonly string[] animations;
+    internal int currentSpriteIndex;
+    internal string currentSpriteTrimmedName;
+    internal float discoTarget;
+    internal readonly bool ignoreOtherShells;
 
-    private readonly bool canBeBouncedOn;
-    private readonly TouchKickBehaviors touchKickBehavior;
-    private readonly bool isCarriable;
+    internal readonly bool canBeBouncedOn;
+    internal readonly TouchKickBehaviors touchKickBehavior;
+    internal readonly bool isCarriable;
 
-    private readonly float shellSpeed;
-    private readonly float discoSpeed;
-    private readonly float discoAcceleration;
-    private readonly float airFriction;
-    private readonly float groundFriction;
-    private readonly float maxFallSpeed;
-    private readonly float upwardsThrowSpeed;
-    private readonly bool idleActivateTouchSwitches;
-    private readonly bool capSpeed;
-    private readonly bool dontRefill;
+    internal readonly float shellSpeed;
+    internal readonly float discoSpeed;
+    internal readonly float discoAcceleration;
+    internal readonly float airFriction;
+    internal readonly float groundFriction;
+    internal readonly float maxFallSpeed;
+    internal readonly float upwardsThrowSpeed;
+    internal readonly bool idleActivateTouchSwitches;
+    internal readonly bool capSpeed;
+    internal readonly bool dontRefill;
 
-    private readonly bool discoSleep;
+    internal readonly bool discoSleep;
 
-    private bool playerHasMoved = false;
+    internal bool playerHasMoved = false;
 
-    private Coroutine pMoveRoutine;
+    internal Coroutine pMoveRoutine;
 
-    private Component gravityListener;
-    private int gravityState = 0;
+    internal Component gravityListener;
+    internal int gravityState = 0;
 
-    private PlayerCollider bonkCollider;
+    internal PlayerCollider bonkCollider;
 
-    private Dictionary<char, MTexture> digits;
+    internal Dictionary<char, MTexture> digits;
 
-    private BounceDisplay counter;
+    internal BounceDisplay counter;
 
-    private readonly float discoSpriteRate;
+    internal readonly float discoSpriteRate;
 
-    private bool bubble;
+    internal bool bubble;
 
-    private readonly float downwardsLeniencySpeed;
-    
-    private bool useFixedThrowSpeeds;
-    private float fixedNeutralThrowSpeed;
-    private float fixedForwardThrowSpeed;
+    internal readonly float downwardsLeniencySpeed;
 
-    private OutlineTextureType outlineTextureType;
+    internal bool useFixedThrowSpeeds;
+    internal float fixedNeutralThrowSpeed;
+    internal float fixedForwardThrowSpeed;
 
-    private float playerThrownUpTimer;
+    internal OutlineTextureType outlineTextureType;
+
+    internal float playerThrownUpTimer;
 
     public static readonly MTexture OutlineTextureBlack = GFX.Game["objects/FemtoHelper/SMWShell/outline_black"];
 
     public static readonly MTexture OutlineTextureWhite = GFX.Game["objects/FemtoHelper/SMWShell/outline_white"];
 
     public static readonly MTexture OutlineTextureTiny = GFX.Game["objects/FemtoHelper/SMWShell/outline_tiny"];
+
+    public readonly bool OneUse;
+    public readonly float BounceSpeedMultiplier;
+    public readonly float BounceLengthMultiplier;
 
     public SmwShell(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
@@ -265,6 +280,9 @@ public class SmwShell : Actor
 
         outlineTextureType = data.Enum("outlineTextureType", OutlineTextureType.None);
 
+        BounceSpeedMultiplier = data.Float("bounceSpeedMultiplier", 1f);
+        BounceLengthMultiplier = data.Float("bounceLengthMultiplier", 1f);
+
         bubble = data.Bool("bubble", false);
 
         Add(sprite = new Sprite(GFX.Game, prefix));
@@ -323,6 +341,8 @@ public class SmwShell : Actor
 
         gravityListener = FemtoModule.GravityHelperSupport.CreateGravityListener?.Invoke(this, OnGravityChange);
         if (gravityListener != null) Add(gravityListener);
+
+        OneUse = data.Bool("oneUse", false);
     }
 
     public void OnGravityChange(Entity self, int newValue, float momentumMultiplier)
@@ -332,7 +352,7 @@ public class SmwShell : Actor
         {
             sprite.Position.Y = -8f;
             bonkCollider.Collider.Position.Y = -8f;
-        } 
+        }
         else // inverted
         {
             sprite.Position.Y = 8f;
@@ -344,15 +364,15 @@ public class SmwShell : Actor
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        if (initialBounceCount > 1) Scene.Add(counter = new BounceDisplay(this));
+        if (initialBounceCount > (OneUse ? 0 : 1)) Scene.Add(counter = new BounceDisplay(this));
     }
 
-    private IEnumerator PlayerMovedCheck()
+    internal IEnumerator PlayerMovedCheck()
     {
         while (true)
         {
             Player p = Scene.Tracker.GetEntity<Player>();
-            if(p != null && p.Speed != Vector2.Zero && p.StateMachine.state != Player.StIntroRespawn)
+            if (p != null && p.Speed != Vector2.Zero && p.StateMachine.state != Player.StIntroRespawn)
             {
                 playerHasMoved = true;
                 break;
@@ -361,7 +381,7 @@ public class SmwShell : Actor
         }
     }
 
-    private void OnPlayerBonk(Player p)
+    internal void OnPlayerBonk(Player p)
     {
         if (!canBeBouncedOn)
         {
@@ -390,9 +410,9 @@ public class SmwShell : Actor
         {
             if (bubble) UnBubble();
             p.PointBounceMaybeRefill(Center, !dontRefill);
-            p.Speed *= new Vector2(0.5f, 0.75f);
+            p.Speed *= new Vector2(0.5f, 0.75f * BounceSpeedMultiplier);
             p.varJumpSpeed = p.Speed.Y;
-            p.varJumpTimer = 0.25f;
+            p.varJumpTimer *= 1.25f * BounceLengthMultiplier;
             p.jumpGraceTimer = 0f;
             p.AutoJump = true;
             p.AutoJumpTimer = 0.1f;
@@ -408,18 +428,35 @@ public class SmwShell : Actor
         if (doFreezeFrames) Celeste.Freeze(0.05f);
         Input.Rumble(RumbleStrength.Light, RumbleLength.Short);
         p.BounceMaybeRefill(gravityState == 0 ? Top : Bottom, !dontRefill);
+        p.Speed.Y *= BounceSpeedMultiplier;
+        p.varJumpSpeed = p.Speed.Y;
+        p.varJumpTimer *= 1.25f * BounceLengthMultiplier;
         bounceCount--;
         if (bounceCount == 0)
         {
             hold.cannotHoldTimer = 0.2f;
             Drop();
+            if (OneUse)
+            {
+                Audio.Play("event:/FemtoHelper/stomp_poof", Center);
+
+                Scene.Add(new Poof(Center));
+
+                SceneAs<Level>().ParticlesFG.Emit(EntityKillZone.Stars, Center, (-22.5f).ToRad());
+                SceneAs<Level>().ParticlesFG.Emit(EntityKillZone.Stars, Center, (22.5f).ToRad());
+                SceneAs<Level>().ParticlesFG.Emit(EntityKillZone.Stars, Center, (180 - 22.5f).ToRad());
+                SceneAs<Level>().ParticlesFG.Emit(EntityKillZone.Stars, Center, (180 + 22.5f).ToRad());
+
+                RemoveSelf();
+                return;
+            }
         }
         else dontKillTimer = 0.15f;
         Splash(gravityState != 0 ? (BottomCenter + Vector2.UnitY * 6) : (TopCenter - Vector2.UnitY * 6));
         Audio.Play($"{audioPath}enemykill", Center);
     }
 
-    private void OnAnotherShell(Holdable h)
+    internal void OnAnotherShell(Holdable h)
     {
         if (h is not SmwHoldable holdable) return;
         if (holdable.Entity is not SmwShell otherShell) return;
@@ -427,11 +464,12 @@ public class SmwShell : Actor
 
         float dir = CenterX > otherShell.CenterX ? 1 : CenterX == otherShell.CenterX ? 0 : -1;
 
-        if(otherShell.speed.LengthSquared() > 0)
+        if (otherShell.speed.LengthSquared() > 0)
         {
             if (speed.LengthSquared() > 0) otherShell.Die(-dir);
             Die(dir);
-        } else
+        }
+        else
         {
             if (speed.LengthSquared() <= 0) Die(dir);
             otherShell.Die(-dir);
@@ -439,7 +477,7 @@ public class SmwShell : Actor
         if (hold.IsHeld) Die(dir);
     }
 
-    private void OnPlayer(Player p)
+    internal void OnPlayer(Player p)
     {
         if (state == States.Kicked)
         {
@@ -461,23 +499,23 @@ public class SmwShell : Actor
         }
     }
 
-    private IEnumerator DiscoRoutine()
+    internal IEnumerator DiscoRoutine()
     {
         while (true)
         {
-            yield return 1/(discoSpriteRate * (Settings.Instance.DisableFlashes ? 0.25f : 1f));
+            yield return 1 / (discoSpriteRate * (Settings.Instance.DisableFlashes ? 0.25f : 1f));
             currentSpriteIndex = Mod(currentSpriteIndex + 1, animations.Length);
             ChangeSprite($"{currentSpriteTrimmedName}", true);
         }
     }
 
-    private void ChangeSprite(string path, bool keep = false)
+    internal void ChangeSprite(string path, bool keep = false)
     {
         sprite.PlayDontRestart($"{path}_{animations[currentSpriteIndex]}", !keep);
         currentSpriteTrimmedName = path;
     }
 
-    private void TouchKick(Player p)
+    internal void TouchKick(Player p)
     {
         if (touchKickBehavior == TouchKickBehaviors.Kill)
         {
@@ -509,7 +547,7 @@ public class SmwShell : Actor
         Kick(new Vector2(1 * kickSpeed, speed.Y));
     }
 
-    private void Kick(Vector2? spd = null)
+    internal void Kick(Vector2? spd = null)
     {
         if (bubble) UnBubble();
         if (spd != null) hold.SetSpeed(Vector2.One * spd ?? Vector2.Zero);
@@ -522,7 +560,24 @@ public class SmwShell : Actor
         LiftSpeed = prevLiftSpeed = Vector2.Zero;
     }
 
-    private void OnClipDeath(Vector2 force)
+    public void StunFlip(Vector2 direction)
+    {
+        Splash(Center);
+        if (Math.Abs(direction.X) > 0)
+        {
+            Kick(direction * shellSpeed);
+        }
+        else
+        {
+            if (bubble) UnBubble();
+            hold.SetSpeed(direction * 240f);
+            sprite.FlipY = true;
+            Audio.Play($"{audioPath}enemykill", Center);
+            LiftSpeed = prevLiftSpeed = Vector2.Zero;
+        }
+    }
+
+    internal void OnClipDeath(Vector2 force)
     {
         Die(force.X);
     }
@@ -548,7 +603,7 @@ public class SmwShell : Actor
         return base.IsRiding(solid);
     }
 
-    private void Die(float f)
+    internal void Die(float f)
     {
         if (state == States.Dead) return;
         state = States.Dead;
@@ -564,14 +619,14 @@ public class SmwShell : Actor
         Audio.Play($"{audioPath}enemykill", Center);
         Collidable = false;
         TreatNaive = true;
-        speed.Y = -Calc.Random.Range(100,120);
+        speed.Y = -Calc.Random.Range(100, 120);
         speed.X = f * -Calc.Random.Range(90, 110);
         hold.cannotHoldTimer = 0.02f;
         Depth = -10000;
         sprite.FlipY = true;
     }
 
-    private void Splash(Vector2 pos)
+    internal void Splash(Vector2 pos)
     {
         if (doNotSplash) return;
         Scene.Add(new SplashEffect(pos, splash));
@@ -597,7 +652,8 @@ public class SmwShell : Actor
         if (prevLiftSpeedTimer > 0)
         {
             prevLiftSpeedTimer -= Engine.DeltaTime;
-        } else
+        }
+        else
         {
             prevLiftSpeed = Vector2.Zero;
         }
@@ -747,7 +803,7 @@ public class SmwShell : Actor
         hold.CheckAgainstColliders();
     }
 
-    private void OnCollideH(CollisionData data)
+    internal void OnCollideH(CollisionData data)
     {
         if (speed.Y == 0f && speed.X != 0f)
         {
@@ -775,7 +831,7 @@ public class SmwShell : Actor
         Audio.Play($"{audioPath}blockhit", Center);
     }
 
-    private void OnCollideV(CollisionData data)
+    internal void OnCollideV(CollisionData data)
     {
         if (speed.Y < 0f)
         {
@@ -819,7 +875,7 @@ public class SmwShell : Actor
         if (state != States.Kicked) speed.X *= 0.5f;
     }
 
-    private bool HitSpring(Spring spring)
+    internal bool HitSpring(Spring spring)
     {
         if (hold.IsHeld) return false;
         switch (spring.Orientation)
@@ -843,7 +899,7 @@ public class SmwShell : Actor
         }
     }
 
-    private void OnPickup()
+    internal void OnPickup()
     {
         if (bubble) UnBubble();
         hold.SetSpeed(Vector2.Zero);
@@ -853,14 +909,14 @@ public class SmwShell : Actor
         TreatNaive = true;
     }
 
-    private void Drop()
+    internal void Drop()
     {
         state = States.Dropped;
         ChangeSprite("idle");
         dontTouchKickTimer = 0.15f;
     }
 
-    private void OnRelease(Vector2 force)
+    internal void OnRelease(Vector2 force)
     {
         Player player = Scene.Tracker.GetNearestEntity<Player>(Position);
         if (player == null) return;
@@ -930,6 +986,14 @@ public class SmwShell : Actor
         if (counter != null) counter.RemoveTag(Tags.Persistent);
         Position = new(MathF.Round(Position.X), MathF.Round(Position.Y));
         TreatNaive = false;
+
+        foreach (JumpThru entity in base.Scene.Tracker.GetEntities<JumpThru>())
+        {
+            if (CollideCheck(entity) && base.Bottom - entity.Top <= 6f)
+            {
+                MoveVExact((int)(entity.Top - base.Bottom));
+            }
+        }
     }
 
     public override void Render()
@@ -954,12 +1018,12 @@ public class SmwShell : Actor
         }
     }
 
-    private Vector2 PlatformAdd(int num)
+    internal Vector2 PlatformAdd(int num)
     {
         return new Vector2(-12 + num, 2 + (int)Math.Round(Math.Sin(Scene.TimeActive + (float)num * 0.2f) * 1.7999999523162842));
     }
 
-    private Color PlatformColor(int num)
+    internal Color PlatformColor(int num)
     {
         if (num <= 1 || num >= 22)
         {
@@ -968,7 +1032,7 @@ public class SmwShell : Actor
         return Color.White * 0.8f;
     }
 
-    private void UnBubble()
+    internal void UnBubble()
     {
         for (int i = 0; i < 24; i++)
         {
@@ -977,7 +1041,7 @@ public class SmwShell : Actor
         bubble = false;
     }
 
-    private int Mod(int x, int m)
+    internal int Mod(int x, int m)
     {
         return (x % m + m) % m;
     }

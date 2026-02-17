@@ -232,6 +232,17 @@ public static class EntityExtensions
         e.Collidable = collidable == 1 || (collidable != -1 && e.Collidable);
         e.Active = active == 1 || (active != -1 && e.Active);
     }
+
+    public static bool CollideGet<T>(this Entity self, out T ret) where T : Entity
+    {
+        Entity entity = ret = null;
+        bool @return = self.CollideDo<T>((e) =>
+        {
+            entity = e;
+        });
+        ret = entity as T;
+        return @return;
+    }
 }
 
 public static class Vector2Extensions
@@ -239,11 +250,11 @@ public static class Vector2Extensions
     public static Vector2 FourWayNormalHorizontalBias(this Vector2 vec)
     {
         float angle = vec.Angle().ToDeg();
-        
+
         if (angle >= -45 && angle <= 45)
         {
             vec = new(1, 0);
-        } 
+        }
         else if ((angle <= -135 && angle >= -180) || (angle >= 135 && angle <= 180))
         {
             vec = new(-1, 0);

@@ -5,6 +5,15 @@ mods.FemtoHelper.name=Femto Helper
 # Solid No Squish Controller
 entities.FemtoHelper/AssistHazardController.placements.name.controller=Solid No Squish Controller
 
+# Touch Platform
+entities.FemtoHelper/TouchPlatform.placements.name.default=Touch Platform (Fall)
+entities.FemtoHelper/TouchPlatform.placements.name.rise=Touch Platform (Fall-rise)
+entities.FemtoHelper/TouchPlatform.attributes.description.gravity=The platform's gravity, in px/s².\nOnly active after something has touched the platform.
+entities.FemtoHelper/TouchPlatform.attributes.description.speedOnTriggerX=The platform's horiozontal speed when it is triggered.
+entities.FemtoHelper/TouchPlatform.attributes.description.speedOnTriggerY=The platform's vertical speed when it is triggered.
+entities.FemtoHelper/TouchPlatform.attributes.description.sprite=The platform's sprite, relative to "objects/FemtoHelper/TouchPlatform/".
+entities.FemtoHelper/TouchPlatform.attributes.description.surfaceIndex=The sound surface ID the platform makes when stepped on.\nLeave as -1 to use the texture's default.
+
 # Clutter Shadow Controller
 entities.FemtoHelper/ClutterShadowController.placements.name.default=Clutter Shadow Controller
 entities.FemtoHelper/ClutterShadowController.attributes.description.enabledColor=The shadow's color when the clutter is still present.
@@ -516,12 +525,35 @@ entities.FemtoHelper/CinematicText.attributes.description.layer=The layer the te
 entities.FemtoHelper/CinematicText.attributes.description.rainbow=Gives the text a rainbow tint.
 entities.FemtoHelper/CinematicText.attributes.description.hudZoomSupport=Whether HUD entities should scale with zoom.\nUseful for more UI oriented use cases.
 
-
 # Boosting Booster
 
 entities.FemtoHelper/BoostingBooster.placements.name.green=Boosting Booster (Green)
 entities.FemtoHelper/BoostingBooster.placements.name.red=Boosting Booster (Red)
 entities.FemtoHelper/BoostingBooster.attributes.description.red=Acts like a Red Booster.
+
+# Movement Modifier
+
+entities.FemtoHelper/MovementModifier.placements.name.default=Movement Modifier
+entities.FemtoHelper/MovementModifier.attributes.description.outlineColor=Color of the area's outline.\nSupports alpha for premultiplied colors, as RRGGBBAA;
+entities.FemtoHelper/MovementModifier.attributes.description.fillColor=Color of the area.\nSupports alpha for premultiplied colors, as RRGGBBAA;
+entities.FemtoHelper/MovementModifier.attributes.description.outlineAlpha=Adjusts the transparecy for the area's outline.
+entities.FemtoHelper/MovementModifier.attributes.description.fillAlpha=Adjusts the transparecy for the area.
+entities.FemtoHelper/MovementModifier.attributes.description.valueX=The modifier value for horizontal movement.\nValues are in px/s when applicable.
+entities.FemtoHelper/MovementModifier.attributes.description.valueY=The modifier value for vertical movement.\nValues are in px/s when applicable.
+entities.FemtoHelper/MovementModifier.attributes.description.operationX=The modifier operator for horizontal movement.\nSet: Movement = Value X\nAdd: Movement = Movement + Value X\nAddSigned: Movement = Movement + (Value X * Sign(Movement))\nSubtract: Movement = Movement - Value X\nSubtractSigned: Movement = Movement - (Value X * Sign(Movement))\nMultiply: Movement = Movement * Value X\nDivide: Movement = Movement / Value\nMax: Movement = Max(Movement, Value X)\nMin: Movement = Min(Movement, Value X)
+entities.FemtoHelper/MovementModifier.attributes.description.operationY=The modifier operator for vertical movement.\nSet: Movement = Value Y\nAdd: Movement = Movement + Value Y\nAddSigned: Movement = Movement + (Value Y * Sign(Movement))\nSubtract: Movement = Movement - Value Y\nSubtractSigned: Movement = Movement - (Value Y * Sign(Movement))\nMultiply: Movement = Movement * Value Y\nDivide: Movement = Movement / Value\nMax: Movement = Max(Movement, Value Y)\nMin: Movement = Min(Movement, Value Y)
+entities.FemtoHelper/MovementModifier.attributes.description.attachToSolid=Allows the area to be attached to solids.
+
+# Entity Kill Zone
+
+entities.FemtoHelper/EntityKillZone.placements.name.default=Entity Kill Zone
+entities.FemtoHelper/EntityKillZone.attributes.description.outlineColor=Color of the area's outline.\nSupports alpha for premultiplied colors, as RRGGBBAA;
+entities.FemtoHelper/EntityKillZone.attributes.description.fillColor=Color of the area.\nSupports alpha for premultiplied colors, as RRGGBBAA;
+entities.FemtoHelper/EntityKillZone.attributes.description.outlineAlpha=Adjusts the transparecy for the area's outline.
+entities.FemtoHelper/EntityKillZone.attributes.description.fillAlpha=Adjusts the transparecy for the area.
+entities.FemtoHelper/EntityKillZone.attributes.description.attachToSolid=Allows the area to be attached to solids.
+entities.FemtoHelper/EntityKillZone.attributes.description.whitelist=Comma-separated list of entity class names and/or entity placement names allowed to be killed.\nAllows wildcards (*). Use "@triggers" to match all triggers.\nTakes priority over Blacklist.
+entities.FemtoHelper/EntityKillZone.attributes.description.blacklist=Comma-separated list of entity class names and/or entity placement names to exclude from being killed.\nAllows wildcards (*). Use "@triggers" to match all triggers.\nDoes nothing if a whitelist is set.
 
 # Circle Mover
 

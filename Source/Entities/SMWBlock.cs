@@ -187,6 +187,8 @@ public class GenericSmwBlock : Solid
 
     private HashSet<StaticMover> exemptFromRenderThingy = [];
 
+    public readonly bool PushHoldablesOnHit;
+
     //public float BounceOffset => MathF.Sin(Bouncetimer / 10f * MathF.PI) * 6f;
 
     private Vector2 bounceOffset;
@@ -252,12 +254,12 @@ public class GenericSmwBlock : Solid
 
         Bouncetimer = 0;
 
-        Collidable = SolidBeforeHit = data.Bool("solidBeforeHit", false);
+        SolidBeforeHit = data.Bool("solidBeforeHit", false);
         SolidAfterHit = data.Bool("solidAfterHit", true);
         TurnBlockReturnTime = data.Float("turnBlockReturnTime", 4.27f);
 
         dashableKaizo = data.Bool("dashableKaizo", false);
-        if (!Collidable) DisableStaticMovers();
+        //if (!Collidable) TurnOffStaticMovers();
         PlCol = new Hitbox(Width - 2, 2, 1, Height);
 
         Add(new PlayerCollider(OnPlayerCollide, PlCol));
@@ -308,6 +310,8 @@ public class GenericSmwBlock : Solid
         Retriggerable = data.Bool("retriggerable", SwitchMode);
         HitCooldown = data.Float("hitCooldown", 0f);
 
+        PushHoldablesOnHit = data.Bool("pushHoldablesOnHit", false);
+
         Component crystalCollider = FemtoModule.CavernHelperSupport.GetCrystalBombExplosionCollider?.Invoke(OnCrystalExplosion, Collider);
 
 
@@ -317,6 +321,7 @@ public class GenericSmwBlock : Solid
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
+
         foreach (StaticMover s in staticMovers)
         {
             if (s.Entity.Any(c => c is DustEdge))
@@ -325,6 +330,54 @@ public class GenericSmwBlock : Solid
                 continue;
             }
             s.Entity.Visible = false;
+        }
+
+        AlterCollidable(SolidBeforeHit);
+    }
+
+    public void AlterCollidable(bool collidable)
+    {
+        if (Collidable != collidable)
+        {
+            if (collidable)
+            {
+                TurnOnStaticMovers();
+            }
+            else
+            {
+                TurnOffStaticMovers();
+            }
+        }
+        Collidable = collidable;
+    }
+
+    public void TurnOffStaticMovers()
+    {
+        DisableStaticMovers();
+        foreach (StaticMover staticMover in staticMovers)
+        {
+            foreach (Component component in staticMover.Entity)
+            {
+                if (component is GraphicsComponent graphicsComponent)
+                {
+                    graphicsComponent.Color *= 0.5f;
+                }
+            }
+        }
+    }
+
+    public void TurnOnStaticMovers()
+    {
+        EnableStaticMovers();
+        foreach (StaticMover staticMover in staticMovers)
+        {
+            foreach (Component component in staticMover.Entity)
+            {
+                if (component is GraphicsComponent graphicsComponent)
+                {
+                    graphicsComponent.Color *= 2f;
+                }
+            }
         }
     }
 
@@ -346,7 +399,7 @@ public class GenericSmwBlock : Solid
                     {
                         string pattern = "^" + Regex.Escape(str).Replace("\\*", ".*") + "$";
 
-                        if (Regex.IsMatch(entity.GetType().FullName, pattern) || Regex.IsMatch(entity.SourceData.Name, pattern) || (whitelist.Contains("@triggers") && entity is Trigger))
+                        if (Regex.IsMatch(entity.GetType().FullName, pattern) || (entity.SourceData is not null && Regex.IsMatch(entity.SourceData.Name, pattern)) || (whitelist.Contains("@triggers") && entity is Trigger))
                         {
                             whitelisted = true;
                             break;
@@ -360,8 +413,7 @@ public class GenericSmwBlock : Solid
                     foreach (string str in blacklist)
                     {
                         string pattern = "^" + Regex.Escape(str).Replace("\\*", ".*") + "$";
-
-                        if (Regex.IsMatch(entity.GetType().FullName, pattern) || Regex.IsMatch(entity.SourceData.Name, pattern) || (blacklist.Contains("@triggers") && entity is Trigger))
+                        if (Regex.IsMatch(entity.GetType().FullName, pattern) || (entity.SourceData is not null && Regex.IsMatch(entity.SourceData.Name, pattern)) || (blacklist.Contains("@triggers") && entity is Trigger))
                         {
                             blacklisted = true;
                             break;
@@ -452,7 +504,7 @@ public class GenericSmwBlock : Solid
         }
         else if (Collidable && Activated && !SolidAfterHit)
         {
-            Collidable = false;
+            AlterCollidable(false);
             TurnBlockReturnTimer = MathF.Max(TurnBlockReturnTime, 0);
         }
         if (!Collidable && Activated && !SolidAfterHit)
@@ -461,7 +513,7 @@ public class GenericSmwBlock : Solid
             {
                 if (!CollideCheck<Actor>())
                 {
-                    Collidable = true;
+                    AlterCollidable(true);
                     Activated = false;
                 }
             }
@@ -483,11 +535,6 @@ public class GenericSmwBlock : Solid
             Direction.Down => Vector2.UnitY * distance,
             _ => -Vector2.UnitY * distance
         };
-
-        if (!Collidable)
-        {
-            DisableStaticMovers();
-        }
 
         Inditimer += Engine.DeltaTime * AnimationRate * (Neededflagplus ? 1 : 0);
         Usedtimer += Engine.DeltaTime * AnimationRate * (Neededflagplus ? 1 : 0);
@@ -565,7 +612,6 @@ public class GenericSmwBlock : Solid
             Alarm.Set(this, HitCooldown, () => onCooldown = false);
         }
 
-
         Bumpdir = dir;
 
         Direction dir2 = EjectDirection == Direction.Opposite ? dir : EjectDirection;
@@ -575,8 +621,8 @@ public class GenericSmwBlock : Solid
         if (HitFlag != "") (Scene as Level).Session.SetFlag(HitFlag, HitFlagBehavior == 0 ? true : HitFlagBehavior == 1 ? false : !(Scene as Level).Session.GetFlag(HitFlag));
 
         HasBeenHitOnce = true;
-        if (!Retriggerable) Activated = true;
-        EnableStaticMovers();
+        if (!Retriggerable || !SolidAfterHit) Activated = true;
+        TurnOnStaticMovers();
         Bouncetimer = 8;
         if (player != null)
         {
@@ -620,7 +666,31 @@ public class GenericSmwBlock : Solid
 
             if (GiveCoyoteFramesOnHit) player.StartJumpGraceTime();
         }
-        Collidable = (!SolidBeforeHit && Retriggerable) ? false : true;
+        AlterCollidable(SolidBeforeHit || !Retriggerable);
+
+        if (PushHoldablesOnHit)
+        {
+            Vector2 direction = dir switch
+            {
+                Direction.Up => -Vector2.UnitY,
+                Direction.Down => Vector2.UnitY,
+                Direction.Right => Vector2.UnitX,
+                Direction.Left => -Vector2.UnitX,
+                _ => Vector2.Zero
+            };
+            CollideDoByComponent<Holdable>(holdable =>
+            {
+                if (holdable.Entity is SmwShell s)
+                {
+                    s.StunFlip(direction);
+                }
+                else
+                {
+                    holdable.SetSpeed(direction * 240f);
+                }
+            }, Position + direction * 4);
+        }
+
         Celeste.Freeze(0.05f);
 
         if (Rewards.Count != 0)
@@ -1128,7 +1198,8 @@ public class GenericSmwBlock : Solid
     public TemplateIop.TemplateChildComponent TemplateChildComp = null;
     public TemplateIop.TemplateChildComponent MakeComponent()
     {
-        TemplateChildComp = new(this) {
+        TemplateChildComp = new(this)
+        {
             RepositionCB = (newpos, lift) =>
             {
                 MoveTo(newpos, lift);
@@ -1139,7 +1210,7 @@ public class GenericSmwBlock : Solid
 
                 if (collidable == 1 && !SolidBeforeHit && !Activated)
                 {
-                    Collidable = false;
+                    AlterCollidable(false);
                 }
             }
         };
