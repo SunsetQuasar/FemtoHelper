@@ -715,7 +715,7 @@ entities.FemtoHelper/SMWShell.attributes.description.discoSprites=The Disco Shel
 entities.FemtoHelper/SMWShell.attributes.description.audioPath=The event prefix for the Shell's sound effects.
 entities.FemtoHelper/SMWShell.attributes.description.mainSprite=The Shell's sprite prefix. should contain a <sprite>_idle00.png image, and a series of <sprite>_kickedXX.png sprites for the kicked animation.
 entities.FemtoHelper/SMWShell.attributes.description.canBeBouncedOn=If false, the player cannot bounce on the Shell. Instead the player dies.
-entities.FemtoHelper/SMWShell.attributes.description.touchKickBehavior=What happens when the Shell is touch kicked (touched by the player when idle and not grabbing).\nNormal: The shell is kicked away from the player.\nKill: Kills the player.\nIgnore: Ignores the player completely.
+entities.FemtoHelper/SMWShell.attributes.description.touchKickBehavior=What happens when the Shell is touch kicked (touched by the player when idle and not grabbing).\nNormal: The Shell is kicked away from the player.\nKill: Kills the player.\nIgnore: Ignores the player completely.
 entities.FemtoHelper/SMWShell.attributes.description.carriable=Whether the player can carry the Shell.
 entities.FemtoHelper/SMWShell.attributes.description.shellSpeed=The kicked speed of the Shell.
 entities.FemtoHelper/SMWShell.attributes.description.discoSpeed=The chase speed of the Disco Shell.
@@ -730,7 +730,7 @@ entities.FemtoHelper/SMWShell.attributes.description.bounceCount=How many times 
 entities.FemtoHelper/SMWShell.attributes.description.bounceCountDisplay=Which kind of bounce count display the Shell uses.\nNone: Nothing is displayed.\nHUD: The bounce count is displayed using high resolution text. \nSpriteText: The bounce count is displayed using sprite digits.
 entities.FemtoHelper/SMWShell.attributes.description.discoSpriteRate=The rate in which the sprites in the Disco Shell cycle.\nNote: this value is divided by 4 if photosensitivity mode is enabled.
 entities.FemtoHelper/SMWShell.attributes.description.bubble=Whether the Shell should be hovering in the air before being interacted with.
-entities.FemtoHelper/SMWShell.attributes.description.downwardsLeniencySpeed=If the player is moving faster than this speed treshold and moving downwards, the shell cannot kill the player.\nUseful for more lenient high-speed tech.
+entities.FemtoHelper/SMWShell.attributes.description.downwardsLeniencySpeed=If the player is moving faster than this speed treshold and moving downwards, the Shell cannot kill the player.\nUseful for more lenient high-speed tech.
 entities.FemtoHelper/SMWShell.attributes.description.useFixedThrowSpeeds=Makes the Shell's speed upon being thrown unbound to the player's speed.
 entities.FemtoHelper/SMWShell.attributes.description.fixedNeutralThrowSpeed=The fixed Shell speed when being thrown with neutral horizontal input.\nDoes nothing if "Use Fixed Throw Speeds" isn't set.
 entities.FemtoHelper/SMWShell.attributes.description.fixedForwardThrowSpeed=The fixed Shell speed when being thrown forwards.\nDoes nothing if "Use Fixed Throw Speeds" isn't set.
@@ -738,6 +738,9 @@ entities.FemtoHelper/SMWShell.attributes.description.noInteractionDuration=The a
 entities.FemtoHelper/SMWShell.attributes.description.outlineTextureType=The indicator sprite for when a Shell is above the screen. 
 entities.FemtoHelper/SMWShell.attributes.description.upwardsThrowSpeed=The Shell's speed upon being thrown upwards.
 entities.FemtoHelper/SMWShell.attributes.description.dontRefill=Makes the Shell not refill the player's dash when bounced on.
+entities.FemtoHelper/SMWShell.attributes.description.oneUse=Makes the Shell disappear on its last stomp.
+entities.FemtoHelper/SMWShell.attributes.description.bounceSpeedMultiplier=Alters the player's upwards speed once they bounce on the Shell.
+entities.FemtoHelper/SMWShell.attributes.description.bounceLengthMultiplier=Alters how long the player moves upwards when bouncing on the Shell while holding jump.
 
 # Evil Theo Crystal
 entities.FemtoHelper/EvilTheoCrystal.placements.name.evil_theo_crystal=Evil Theo Crystal

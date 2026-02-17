@@ -64,6 +64,9 @@ FemtoHelperSMWShell.placements = {
             outlineTextureType = "Tiny",
             upwardsThrowSpeed = -400,
             dontRefill = false,
+            oneUse = false,
+            bounceSpeedMultiplier = 1,
+            bounceLengthMultiplier = 1,
         }
     },
     {
@@ -103,6 +106,9 @@ FemtoHelperSMWShell.placements = {
             outlineTextureType = "Tiny",
             upwardsThrowSpeed = -400,
             dontRefill = false,
+            oneUse = false,
+            bounceSpeedMultiplier = 1,
+            bounceLengthMultiplier = 1,
         }
     }
 }
