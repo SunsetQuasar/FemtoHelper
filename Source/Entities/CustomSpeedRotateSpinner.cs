@@ -131,6 +131,9 @@ public class CustomSpeedRotateSpinner : RotateSpinner
     public override void OnPlayer(Player player)
     {
         base.OnPlayer(player);
-        dusty.OnHitPlayer();
+        if(IsDust)
+        {
+            dusty.OnHitPlayer();
+        }
     }
 }
