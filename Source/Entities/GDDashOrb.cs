@@ -9,7 +9,6 @@ public class GdDashOrb : Entity
 
     public readonly float Angle;
     public readonly float Speed;
-    public bool LastJump;
     public bool Yeahforsure;
     public bool Lastforsure;
 
@@ -117,7 +116,7 @@ public class GdDashOrb : Entity
         Cooldown = Math.Max(Cooldown - Engine.DeltaTime, 0);
         if (Yeahforsure && Cooldown <= 0)
         {
-            if (Input.Jump.Pressed && !LastJump)
+            if (Input.Jump.Pressed)
             {
                 Input.Jump.ConsumeBuffer();
                 if (Player != null)
@@ -150,7 +149,6 @@ public class GdDashOrb : Entity
                 }
             }
         }
-        LastJump = Input.Jump.Pressed;
         Lastforsure = Yeahforsure;
         Yeahforsure = false;
     }
