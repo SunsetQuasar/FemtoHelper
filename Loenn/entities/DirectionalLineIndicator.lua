@@ -143,6 +143,22 @@ function FemtoHelperDirectionalLineIndicator.depth(room, entity)
     return entity.depth
 end
 
+function customAtan2(xx, yy) 
+    if (xx > 0) then
+        return math.atan(yy/xx)
+    elseif (xx < 0 and yy >= 0) then
+        return math.atan(yy/xx) + math.pi
+    elseif (xx < 0 and yy < 0) then
+        return math.atan(yy/xx) - math.pi
+    elseif (xx == 0 and yy > 0) then
+        return math.pi / 2
+    elseif (xx == 0 and yy < 0) then
+        return -math.pi / 2
+    else return 0 end
+end
+
+math.atan2 = function(yy, xx) return customAtan2(xx, yy) end
+
 function FemtoHelperDirectionalLineIndicator.sprite(room, entity)
     local sprites = {}
 
@@ -165,7 +181,7 @@ function FemtoHelperDirectionalLineIndicator.sprite(room, entity)
                     arrow:setPosition(entity.x + ((i / entity.spriteCount) * xx), entity.y + ((i / entity.spriteCount) * yy))
                     arrow:setColor(entity.color)
                     arrow:setAlpha(entity.alphaMultiplier)
-                    if entity.orientSprite then arrow.rotation = math.atan2(yy, xx) end
+                    if entity.orientSprite then arrow.rotation = customAtan2(xx, yy) end--math.atan2(yy, xx) end
                     table.insert(sprites, arrow)
                 end
             end
