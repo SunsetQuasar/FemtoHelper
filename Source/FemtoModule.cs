@@ -581,7 +581,7 @@ public class FemtoModule : EverestModule
         }
         if (child.Name.Equals("FemtoHelper/PolygonStars", StringComparison.OrdinalIgnoreCase))
         {
-            return new PolygonStars(child.AttrInt("sideCount", 10), child.AttrFloat("pointinessMultiplier", 2f), child.AttrFloat("minRotationSpeed", 1f), child.AttrFloat("maxRotationSpeed", 2f), child.AttrFloat("minSize", 2f), child.AttrFloat("maxSize", 8f), child.AttrFloat("loopBorder", 64f), child.Attr("colors", "008080"), child.AttrFloat("angle", 270f), child.AttrFloat("alpha", 1f), child.AttrFloat("minSpeed", 24f), child.AttrFloat("maxSpeed", 48f), child.AttrInt("amount", 50), child.AttrFloat("scroll", 0.5f));
+            return new PolygonStars(child.AttrInt("sideCount", 10), child.AttrFloat("pointinessMultiplier", 2f), child.AttrFloat("minRotationSpeed", 1f), child.AttrFloat("maxRotationSpeed", 2f), child.AttrFloat("minSize", 2f), child.AttrFloat("maxSize", 8f), child.AttrFloat("loopBorder", 64f), child.Attr("colors", "008080"), child.AttrFloat("angle", 270f), child.AttrFloat("alpha", 1f), child.AttrFloat("minSpeed", 24f), child.AttrFloat("maxSpeed", 48f), child.AttrInt("amount", 50), child.AttrFloat("scroll", 0.5f), child.AttrBool("filled", false));
         }
         if (child.Name.Equals("FemtoHelper/FadingNorthernLights", StringComparison.OrdinalIgnoreCase))
         {

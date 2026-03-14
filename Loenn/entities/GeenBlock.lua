@@ -12,7 +12,11 @@ FemtoHelperGeenBlock.placements = {
             width = 16, 
             height = 16,
             speed = 400,
-            inverse = false
+            inverse = false,
+            oneUse = false,
+	        respawnTime = 2.65,
+	        disappearTime = 1.1,
+	        disappear = true,
         }
     },
     {
@@ -21,7 +25,11 @@ FemtoHelperGeenBlock.placements = {
             width = 16, 
             height = 16,
             speed = 400,
-            inverse = true
+            inverse = true,
+            oneUse = false,
+	        respawnTime = 2.65,
+	        disappearTime = 1.1,
+	        disappear = true,
         }
     },
 }

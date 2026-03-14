@@ -798,6 +798,10 @@ entities.FemtoHelper/GeenBlock.placements.description.geen=A block that gives th
 entities.FemtoHelper/GeenBlock.placements.description.geenInv=A block that gives the player massive Liftboost opposite the input direction. Best used with uncapped Liftboost (via Extended Variants).
 entities.FemtoHelper/GeenBlock.attributes.description.speed=The lift speed the Geen Block grants the player.\nNote that the game enforces a lift speed cap that can be changed via Extended Variants.
 entities.FemtoHelper/GeenBlock.attributes.description.inverse=Makes the block give lift speed opposite to the player's input direction.
+entities.FemtoHelper/GeenBlock.attributes.description.oneUse=Whether the block can respawn after disappearing.\nDoes nothing if "Disappear" isn't set.
+entities.FemtoHelper/GeenBlock.attributes.description.respawnTime=How long the block takes to respawn after disappearing.\nDoes nothing if "Disappear" isn't set.
+entities.FemtoHelper/GeenBlock.attributes.description.disappearTime=How long the block takes to disappear after being touched\nDoes nothing if "Disappear" isn't set.
+entities.FemtoHelper/GeenBlock.attributes.description.disappear=Whether the block disappears some time after being touched.
 
 # SMW Shell
 entities.FemtoHelper/SMWShell.placements.name.smw_shell=SMW Shell
@@ -907,6 +911,7 @@ style.effects.FemtoHelper/PolygonStars.description.minSpeed=The minimum speed of
 style.effects.FemtoHelper/PolygonStars.description.maxSpeed=The maximum speed of the polygons.
 style.effects.FemtoHelper/PolygonStars.description.amount=The number of polygons to render at a time.
 style.effects.FemtoHelper/PolygonStars.description.scroll=The parallax scrolling of the effect.
+style.effects.FemtoHelper/PolygonStars.description.filled=Draws the polygon as a filled shape rather than boundary lines.
 
 # Vector Space
 style.effects.FemtoHelper/VectorSpace.name=Vector Space

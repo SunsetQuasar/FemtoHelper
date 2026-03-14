@@ -3,6 +3,7 @@ using Celeste.Mod.Helpers;
 using System;
 
 namespace Celeste.Mod.FemtoHelper.Utils;
+
 public class Util
 {
     public static float VectorToAngle(Vector2 vector)
@@ -55,6 +56,55 @@ public class Util
     public static void Log(object obj, LogLevel level = LogLevel.Debug)
     {
         Logger.Log(level, nameof(FemtoModule), obj.ToString());
+    }
+
+    public static Vector2 ParametricRoundedSquare(float p, float radiusX, float radiusY, float radiusC)
+    {
+        Vector2 @return = new();
+        p *= 8;
+
+        if (p >= 0 && p <= 1)
+        {
+            @return.X = radiusX;
+            @return.Y = -(radiusY - radiusC) * ((2 * p) - 1);
+        }
+        else if (p > 1 && p <= 2)
+        {
+            @return.X = radiusX - radiusC + (radiusC * MathF.Cos(0.5f * MathF.PI * (p - 1)));
+            @return.Y = -radiusY + radiusC - (radiusC * MathF.Sin(0.5f * MathF.PI * (p - 1)));
+        }
+        else if (p > 2 && p <= 3)
+        {
+            @return.X = -(radiusX - radiusC) * ((2 * p) - 5);
+            @return.Y = -radiusY;
+        }
+        else if (p > 3 && p <= 4)
+        {
+            @return.X = -radiusX + radiusC - (radiusC * MathF.Sin(0.5f * MathF.PI * (p - 3)));
+            @return.Y = -radiusY + radiusC - (radiusC * MathF.Cos(0.5f * MathF.PI * (p - 3)));
+        }
+        else if (p > 4 && p <= 5)
+        {
+            @return.X = -radiusX;
+            @return.Y = (radiusY - radiusC) * ((2 * p) - 9);
+        }
+        else if (p > 5 && p <= 6)
+        {
+            @return.X = -radiusX + radiusC - (radiusC * MathF.Cos(0.5f * MathF.PI * (p - 5)));
+            @return.Y = radiusY - radiusC + (radiusC * MathF.Sin(0.5f * MathF.PI * (p - 5)));
+        }
+        else if (p > 6 && p <= 7)
+        {
+            @return.X = (radiusX - radiusC) * ((2 * p) - 13);
+            @return.Y = radiusY;
+        }
+        else if (p > 7 && p <= 8)
+        {
+            @return.X = radiusX - radiusC + (radiusC * MathF.Sin(0.5f * MathF.PI * (p - 7)));
+            @return.Y = radiusY - radiusC + (radiusC * MathF.Cos(0.5f * MathF.PI * (p - 7)));
+        }
+
+        return @return;
     }
 }
 

@@ -4,7 +4,7 @@ using MonoMod;
 using System;
 
 [CustomEntity("FemtoHelper/CustomSpeedRotateSpinner")]
-
+[TrackedAs(typeof(RotateSpinner))]
 public class CustomSpeedRotateSpinner : RotateSpinner
 {
     public readonly Sprite Sprite;

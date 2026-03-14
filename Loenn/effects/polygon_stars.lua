@@ -24,7 +24,8 @@ polygon_stars.defaultData = {
     minSpeed = 24.0,
     maxSpeed = 48.0,
     amount = 50,
-    scroll = 0.5
+    scroll = 0.5,
+    filled = false,
 }
 
 return polygon_stars

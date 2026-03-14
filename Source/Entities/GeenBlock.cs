@@ -31,6 +31,7 @@ public class GeenBlock : Solid
     private float spd;
     private Image arrow;
     private SineWave arrowWiggle;
+    private LightOcclude occlude;
     private float angleTarget;
     private MTexture[,] edges = new MTexture[4, 4];
     private float awesomei;
@@ -41,6 +42,16 @@ public class GeenBlock : Solid
     private bool deactivated;
 
     private bool staticMoverSignal;
+
+    private float respawnPercent;
+
+    private readonly bool oneUse;
+    private readonly bool doesBreak;
+
+    private readonly float respawnTime;
+    private readonly float disappearTime;
+
+    private SoundSource sound;
 
     private Vector2 boostDir
     {
@@ -60,7 +71,7 @@ public class GeenBlock : Solid
         }
     }
 
-    public float ChooseClosestAngle(float angle, float target)
+    public static float ChooseClosestAngle(float angle, float target)
     {
         return Math.Abs(angle - target) < Math.Abs(angle - target - 360) ? target : target - 360;
     }
@@ -73,7 +84,8 @@ public class GeenBlock : Solid
         arrow.Position = new Vector2(Width, Height) / 2;
         arrow.CenterOrigin();
         Add(arrowWiggle = new SineWave(1.2f));
-        Add(new LightOcclude());
+        Add(occlude = new LightOcclude());
+        Add(sound = new SoundSource());
 
         Depth = -9999;
 
@@ -88,35 +100,83 @@ public class GeenBlock : Solid
         }
         SurfaceSoundIndex = 7;
         Add(new Coroutine(Sequence()));
+
+        oneUse = data.Bool("oneUse", true);
+        respawnTime = data.Float("respawnTime", 2.65f);
+        disappearTime = data.Float("disappearTime", 1.1f);
+        doesBreak = data.Bool("disappear", true);
     }
 
     public IEnumerator Sequence()
     {
-        while (!(HasPlayerRider() || staticMoverSignal))
+        if (!doesBreak) yield break;
+
+        float sliceSmall = respawnTime < 2.65f ? Calc.LerpClamp(0.55f, 0, respawnTime / 2.65f) : 0.55f;
+        float sliceSmaller = respawnTime < 2.65f ? Calc.LerpClamp(0.1f, 0, respawnTime / 2.65f) : 0.1f;
+
+        while (true)
         {
-            yield return null;
+            while (!(HasPlayerRider() || staticMoverSignal))
+            {
+                yield return null;
+            }
+            int count = 0;
+            while (count < 4)
+            {
+                StartShaking(0.1f);
+                count++;
+                sound.Play("event:/char/madeline/landing", "surface_index", 7f).instance.setPitch(1 + (count / 3));
+                yield return disappearTime / 5f;
+            }
+            Depth = 8000;
+            foreach (StaticMover staticMover in staticMovers)
+            {
+                staticMover.Entity.Depth = Depth + 1;
+            }
+            Audio.Play("event:/game/03_resort/fallblock_wood_impact", "surface_index", 7f);
+            StartShaking(0.4f);
+            Collidable = false;
+            deactivated = true;
+            occlude.Alpha = 0f;
+            arrow.Visible = false;
+            DisableStaticMovers();
+            child.Visible = false;
+
+            if(oneUse)
+            {
+                child.RemoveSelf();
+                Remove(arrow);
+                Remove(occlude);
+                yield break;
+            }
+
+            respawnPercent = 0f;
+            Tween.Set(this, Tween.TweenMode.Oneshot, respawnTime, Ease.CubeInOut, (t) =>
+            {
+                respawnPercent = t.Eased;
+            });
+            yield return respawnTime - sliceSmall - sliceSmaller;
+            sound.Play("event:/game/04_cliffside/arrowblock_reform_begin");
+            yield return sliceSmall;
+            StartShaking(sliceSmaller);
+            yield return sliceSmaller;
+            while (CollideCheck<Actor>())
+            {
+                yield return null;
+            }
+
+            StartShaking(0.4f - sliceSmaller);
+            sound.Play("event:/game/04_cliffside/arrowblock_reappear");
+
+            deactivated = false;
+            Collidable = true;
+            child.Visible = true;
+            arrow.Visible = true;
+            EnableStaticMovers();
+            occlude.Alpha = 1f;
+            Depth = -9999;
+
         }
-        int count = 0;
-        while (count < 4)
-        {
-            StartShaking(0.1f);
-            count++;
-            Audio.Play("event:/char/madeline/landing", Center, "surface_index", 7f).setPitch(1 + (count / 3));
-            yield return 0.22f;
-        }
-        Depth = 8000;
-        foreach (StaticMover staticMover in staticMovers)
-        {
-            staticMover.Entity.Depth = Depth + 1;
-        }
-        Audio.Play("event:/game/03_resort/fallblock_wood_impact", Center, "surface_index", 7f);
-        StartShaking(0.4f);
-        Collidable = false;
-        deactivated = true;
-        Remove(Get<LightOcclude>());
-        Remove(arrow);
-        DisableStaticMovers();
-        child.RemoveSelf();
     }
 
     public override void OnStaticMoverTrigger(StaticMover sm)
@@ -172,11 +232,32 @@ public class GeenBlock : Solid
 
     public override void Render()
     {
+        Vector2 pos = Position;
         Position += Shake;
         DrawBlock(Vector2.Zero, deactivated ? Color.Gray : Color.White);
-        if (!deactivated) arrow.DrawOutline(Calc.HexToColor("070719"));
+        if (!deactivated)
+        {
+            arrow.DrawOutline(Calc.HexToColor("070719"));
+        } 
+        else if (!oneUse)
+        {
+            int SegmentCount = 128;
+
+            float ww = (Width / 2) - 1;
+            float hh = (Height / 2) - 1;
+
+            for (int i = 0; i < SegmentCount; i++)
+            {
+                if (respawnPercent * 128f < i) break;
+
+                float fi = (float)i / SegmentCount;
+                float nextfi = ((float)(i + 1) / SegmentCount) % 1;
+
+                Draw.Line(Center + ParametricRoundedSquare(fi, ww, hh, 4), Center + ParametricRoundedSquare(nextfi, ww, hh, 4), new Color(0.4f, 0.4f, 0.4f, 0f));
+            }
+        }
         base.Render();
-        Position -= Shake;
+        Position = pos;
     }
 
     public override void MoveHExact(int move)
@@ -187,7 +268,7 @@ public class GeenBlock : Solid
 
     public override void MoveVExact(int move)
     {
-        LiftSpeed = (new Vector2(Input.MoveX, Input.MoveY).EightWayNormal() * spd);
+        LiftSpeed = (boostDir.EightWayNormal() * spd);
         base.MoveVExact(move);
     }
 
