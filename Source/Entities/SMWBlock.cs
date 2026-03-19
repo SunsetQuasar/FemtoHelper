@@ -666,7 +666,7 @@ public class GenericSmwBlock : Solid
 
             if (GiveCoyoteFramesOnHit) player.StartJumpGraceTime();
         }
-        AlterCollidable(true);
+        AlterCollidable(!(!SolidBeforeHit && Retriggerable) || SwitchMode);
 
         if (PushHoldablesOnHit)
         {
