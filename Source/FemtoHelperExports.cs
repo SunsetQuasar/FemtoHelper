@@ -47,9 +47,10 @@ public static class FemtoHelperExports
         return collider;
     }
 
-    public static Holdable CreateSmwHoldable(int yOffset, int crouchYOffset)
+    public static Holdable CreateSmwHoldable(int yOffset, int crouchYOffset, Action<Vector2> onClipDeath = null)
     {
-        Holdable holdable = new SmwHoldable(yOffset, crouchYOffset);
+        var holdable = new SmwHoldable(yOffset, crouchYOffset);
+        holdable.OnClipDeath = onClipDeath;
         return holdable;
     }
 }
