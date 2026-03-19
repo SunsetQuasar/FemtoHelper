@@ -442,7 +442,7 @@ public class GenericSmwBlock : Solid
 
         base.Update();
 
-        if (!SolidBeforeHit && player != null)
+        if ((!SolidBeforeHit || Retriggerable) && player != null)
         {
             //bottom (top in inverted gravity)
 
@@ -666,7 +666,7 @@ public class GenericSmwBlock : Solid
 
             if (GiveCoyoteFramesOnHit) player.StartJumpGraceTime();
         }
-        AlterCollidable(SolidBeforeHit || !Retriggerable);
+        AlterCollidable(true);
 
         if (PushHoldablesOnHit)
         {
@@ -759,7 +759,7 @@ public class GenericSmwBlock : Solid
 
     public void OnPlayerCollide(Player player)
     {
-        if (!SolidBeforeHit) return;
+        if (!SolidBeforeHit && !Retriggerable) return;
         if (FemtoModule.GravityHelperSupport.GetPlayerGravity?.Invoke() == 1)
         {
             if (!(player.Bottom - 2 <= Top) || Activated || Bouncetimer > 0) return;
@@ -1110,7 +1110,7 @@ public class GenericSmwBlock : Solid
             return DashCollisionResults.NormalCollision;
         }
 
-        if (!SolidBeforeHit || onCooldown) return DashCollisionResults.NormalCollision;
+        if ((!SolidBeforeHit && !Retriggerable) || onCooldown) return DashCollisionResults.NormalCollision;
 
         if (Activated || Bouncetimer > 0) return DashCollisionResults.NormalCollision;
 
