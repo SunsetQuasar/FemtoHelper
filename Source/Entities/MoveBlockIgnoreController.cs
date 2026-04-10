@@ -9,7 +9,7 @@ using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
-[CustomEntity("FemtoHelper/MoveBlockCornerCorrectIgnoreController")]
+[CustomEntity("FemtoHelper/MoveBlockIgnoreController")]
 [Tracked]
 internal class MoveBlockIgnoreController(EntityData data, Vector2 offset) : Entity()
 {

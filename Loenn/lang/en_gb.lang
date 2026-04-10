@@ -6,6 +6,11 @@ mods.FemtoHelper.name=Femto Helper
 entities.FemtoHelper/AssistHazardController.placements.name.controller=Solid No Squish Controller
 entities.FemtoHelper/AssistHazardController.placements.description.controller=Prevents solids from squishing the player and dream block impact deaths.
 
+# Solid No Squish Controller
+entities.FemtoHelper/MoveBlockIgnoreController.placements.name.controller=Move Block Ignore Controller
+entities.FemtoHelper/MoveBlockIgnoreController.placements.description.controller=Allows vanilla Move Blocks to ignore specified solids.
+entities.FemtoHelper/MoveBlockIgnoreController.attributes.description.ignore=A comma-separated list of entity placement names to ignore.
+
 # Touch Platform
 entities.FemtoHelper/TouchPlatform.placements.name.default=Touch Platform (Fall)
 entities.FemtoHelper/TouchPlatform.placements.description.default=A platform that falls when touched.
