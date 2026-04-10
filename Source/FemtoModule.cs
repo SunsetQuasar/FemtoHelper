@@ -278,6 +278,7 @@ public class FemtoModule : EverestModule
         AssistHazardController.Load();
         PlutoniumTextRenderer.Load();
         MovementModifier.Load();
+        MoveBlockIgnoreController.Load();
     }
 
     public override void Unload()
@@ -321,6 +322,7 @@ public class FemtoModule : EverestModule
         AssistHazardController.Unload();
         PlutoniumTextRenderer.Unload();
         MovementModifier.Unload();
+        MoveBlockIgnoreController.Unload();
     }
 
 
