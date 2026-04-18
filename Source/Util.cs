@@ -2,7 +2,7 @@
 using Celeste.Mod.Helpers;
 using System;
 
-namespace Celeste.Mod.FemtoHelper.Utils;
+namespace Celeste.Mod.FemtoHelper;
 
 public class Util
 {

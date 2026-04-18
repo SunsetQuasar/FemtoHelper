@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using Celeste.Mod.FemtoHelper.Utils;
 using Celeste.Mod.Helpers;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;

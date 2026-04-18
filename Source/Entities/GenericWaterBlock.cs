@@ -1,5 +1,4 @@
-﻿using Celeste.Mod.FemtoHelper.Utils;
-using Celeste.Mod.Helpers;
+﻿using Celeste.Mod.Helpers;
 using MonoMod;
 using MonoMod.Cil;
 using System;

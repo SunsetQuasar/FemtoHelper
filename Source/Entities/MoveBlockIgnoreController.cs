@@ -1,11 +1,4 @@
-﻿using Celeste.Mod.Helpers;
-using MonoMod.Cil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Celeste.TrackSpinner;
+﻿using System.Collections.Generic;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

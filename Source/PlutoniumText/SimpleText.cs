@@ -1,5 +1,4 @@
 using Celeste.Mod.FemtoHelper.PlutoniumText;
-using Celeste.Mod.FemtoHelper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;

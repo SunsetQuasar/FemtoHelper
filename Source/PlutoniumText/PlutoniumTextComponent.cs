@@ -1,6 +1,5 @@
 ﻿using Celeste.Mod.FemtoHelper.Entities;
 using Celeste.Mod.FemtoHelper.PlutoniumText;
-using Celeste.Mod.FemtoHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

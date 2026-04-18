@@ -2,14 +2,12 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using Celeste.Mod.FemtoHelper.Utils;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
-
 
 public class PointFourCircle(Color color) : Component(true, true)
 {

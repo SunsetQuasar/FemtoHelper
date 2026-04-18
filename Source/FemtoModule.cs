@@ -1,7 +1,7 @@
 ﻿global using Monocle;
 global using Microsoft.Xna.Framework;
 global using Celeste.Mod.Entities;
-global using static Celeste.Mod.FemtoHelper.Utils.Util;
+global using static Celeste.Mod.FemtoHelper.Util;
 
 using System;
 using MonoMod.Cil;

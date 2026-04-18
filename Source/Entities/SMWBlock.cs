@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
-using Celeste.Mod.FemtoHelper.Utils;
 using MonoMod.Utils;
 using MonoMod.Cil;
 using System.Text.RegularExpressions;

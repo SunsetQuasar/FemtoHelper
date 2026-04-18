@@ -1,6 +1,4 @@
-﻿
-using Celeste.Mod.FemtoHelper.Utils;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper.Code.Entities;
 
