@@ -5,37 +5,37 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/AvertRefill")]
 public class AvertRefill : Entity
 {
-    private Sprite sprite;
+    private readonly Sprite sprite;
 
-    private Sprite flash;
+    private readonly Sprite flash;
 
-    private Image outline;
+    private readonly Image outline;
 
-    private Wiggler wiggler;
+    private readonly Wiggler wiggler;
 
-    private BloomPoint bloom;
+    private readonly BloomPoint bloom;
 
-    private VertexLight light;
+    private readonly VertexLight light;
 
     private Level level;
 
-    private SineWave sine;
+    private readonly SineWave sine;
 
-    private bool oneUse;
+    private readonly bool oneUse;
 
-    private static ParticleType _pShatter = new(Refill.P_Shatter)
+    private static readonly ParticleType _pShatter = new(Refill.P_Shatter)
     {
         Color = Calc.HexToColor("ffadb3"),
         Color2 = Calc.HexToColor("ffadb3")
     };
 
-    private static ParticleType _pRegen = new(Refill.P_Regen)
+    private static readonly ParticleType _pRegen = new(Refill.P_Regen)
     {
         Color = Calc.HexToColor("ff606b"),
         Color2 = Calc.HexToColor("ff606b")
     };
 
-    private static ParticleType _pGlow = new(Refill.P_Glow)
+    private static readonly ParticleType _pGlow = new(Refill.P_Glow)
     {
         Color = Calc.HexToColor("ff606b"),
         Color2 = Calc.HexToColor("ff606b")
@@ -56,7 +56,7 @@ public class AvertRefill : Entity
         UpLeft = 315,
     }
 
-    private Directions direction;
+    private readonly Directions direction;
 
     
     public AvertRefill(Vector2 position, EntityData data)
@@ -64,7 +64,7 @@ public class AvertRefill : Entity
     {
         Collider = new Hitbox(16f, 16f, -8f, -8f);
         Add(new PlayerCollider(OnPlayer));
-        this.oneUse = data.Bool("oneUse", false);
+        oneUse = data.Bool("oneUse", false);
         direction = data.Enum("direction", Directions.Up);
         string text;
         text = "objects/FemtoHelper/bubbleRedirect/";

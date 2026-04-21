@@ -35,37 +35,37 @@ public class BoundRefill : Entity
         Audio.Play("event:/game/general/spring", player.Center);
     }
 
-    private Sprite sprite;
+    private readonly Sprite sprite;
 
-    private Sprite flash;
+    private readonly Sprite flash;
 
-    private Image outline;
+    private readonly Image outline;
 
-    private Wiggler wiggler;
+    private readonly Wiggler wiggler;
 
-    private BloomPoint bloom;
+    private readonly BloomPoint bloom;
 
-    private VertexLight light;
+    private readonly VertexLight light;
 
     private Level level;
 
-    private SineWave sine;
+    private readonly SineWave sine;
 
-    private bool oneUse;
+    private readonly bool oneUse;
 
-    private static ParticleType _pShatter = new(Refill.P_Shatter)
+    private static readonly ParticleType _pShatter = new(Refill.P_Shatter)
     {
         Color = Calc.HexToColor("ffc3fe"),
         Color2 = Calc.HexToColor("ffc3fe")
     };
 
-    private static ParticleType _pRegen = new(Refill.P_Regen)
+    private static readonly ParticleType _pRegen = new(Refill.P_Regen)
     {
         Color = Calc.HexToColor("b95fb7"),
         Color2 = Calc.HexToColor("b95fb7")
     };
 
-    private static ParticleType _pGlow = new(Refill.P_Glow)
+    private static readonly ParticleType _pGlow = new(Refill.P_Glow)
     {
         Color = Calc.HexToColor("b95fb7"),
         Color2 = Calc.HexToColor("b95fb7")
@@ -80,7 +80,7 @@ public class BoundRefill : Entity
     {
         Collider = new Hitbox(16f, 16f, -8f, -8f);
         Add(new PlayerCollider(OnPlayer));
-        this.oneUse = data.Bool("oneUse", false);
+        oneUse = data.Bool("oneUse", false);
         string text;
         text = "objects/FemtoHelper/boundRefill/";
         Add(outline = new Image(GFX.Game[text + "outline"]));

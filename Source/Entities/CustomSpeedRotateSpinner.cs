@@ -13,7 +13,7 @@ public class CustomSpeedRotateSpinner : RotateSpinner
 
     private int colorId;
 
-    private bool fixAngle;
+    private readonly bool fixAngle;
 
     private readonly Vector2 startCenter;
 

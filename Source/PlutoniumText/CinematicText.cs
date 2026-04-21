@@ -162,7 +162,7 @@ public partial class CinematicText : Entity
 
         SoundSource = new SoundSource()
         {
-            Position = this.Position
+            Position = Position
         };
 
         ActivationTag = data.Attr("activationTag", "tag1");

@@ -14,8 +14,8 @@ public class SwitchMovetBeam : Entity
     public SwitchMovetBeam(SwitchMovet target, SwitchMovetBox parent) : base(Vector2.Zero)
     {
         Depth = -500;
-        this.Target = target;
-        this.Parent = parent;
+        Target = target;
+        Parent = parent;
         Add(new Coroutine(Sequence()));
     }
     public IEnumerator Sequence()
@@ -67,11 +67,11 @@ public class SwitchMovetBeam : Entity
 public class SwitchMovetBox : Solid
 {
     public string Color;
-    private SineWave sine;
-    private SineWave sine2;
+    private readonly SineWave sine;
+    private readonly SineWave sine2;
     private float sink;
     private Vector2 bounceDir;
-    private Wiggler bounce;
+    private readonly Wiggler bounce;
     public Vector2 Start;
     public Sprite Cover;
     public Image Back, BackOneUse, Crystal, Glow;
@@ -191,7 +191,7 @@ public class SwitchMovetBox : Solid
         bool flag = false;
         foreach (SwitchMovet s in Scene.Tracker.GetEntities<SwitchMovet>())
         {
-            if (s.Color == this.Color)
+            if (s.Color == Color)
             {
                 if (!s.Activated)
                 {
@@ -285,11 +285,11 @@ public class SwitchMovetPathRenderer : Entity
     public float Timer;
     public Player Player;
 
-    private ParticleType movetPath = new(Seeker.P_Regen);
+    private readonly ParticleType movetPath = new(Seeker.P_Regen);
     public SwitchMovetPathRenderer(SwitchMovet parent) : base()
     {
         Depth = 5000;
-        this.Parent = parent;
+        Parent = parent;
         Timer = Calc.Random.NextFloat(MathF.Tau);
 
         movetPath = new(Seeker.P_Regen)

@@ -12,9 +12,9 @@ public class WaterCircleMover : GenericWaterBlock
     {
         public WaterCircleMover CircleMover;
 
-        private MTexture cog;
+        private readonly MTexture cog;
 
-        private List<MTexture> glob;
+        private readonly List<MTexture> glob;
 
         private Vector2 from;
 
@@ -22,13 +22,13 @@ public class WaterCircleMover : GenericWaterBlock
 
         private Vector2 sparkAdd;
 
-        private float sparkDirFromA;
+        private readonly float sparkDirFromA;
 
-        private float sparkDirFromB;
+        private readonly float sparkDirFromB;
 
-        private float sparkDirToA;
+        private readonly float sparkDirToA;
 
-        private float sparkDirToB;
+        private readonly float sparkDirToB;
 
         public Wiggler CogWiggler;
         public Vector2 CogScale = Vector2.One;
@@ -85,7 +85,7 @@ public class WaterCircleMover : GenericWaterBlock
         public WaterCircleMover Parent;
         public DebugVisual(WaterCircleMover parent) : base()
         {
-            this.Parent = parent;
+            Parent = parent;
             AddTag(TagsExt.SubHUD);
         }
 
@@ -117,9 +117,9 @@ public class WaterCircleMover : GenericWaterBlock
     private readonly SoundSource sfx = new SoundSource();
 
     private readonly Image centerGem;
-    private Image centerRing;
+    private readonly Image centerRing;
 
-    private BloomPoint gemGlow;
+    private readonly BloomPoint gemGlow;
 
     private bool idle = true;
     private float glowPercent = 0;
@@ -139,7 +139,7 @@ public class WaterCircleMover : GenericWaterBlock
 
     private readonly Wiggler bubbleWiggler;
 
-    private BloomPoint bloomStart, bloomTarget;
+    private readonly BloomPoint bloomStart, bloomTarget;
 
     public string Prefix;
 
@@ -150,7 +150,7 @@ public class WaterCircleMover : GenericWaterBlock
         Permanent
     }
 
-    private Behaviors behavior;
+    private readonly Behaviors behavior;
 
     public WaterCircleMover(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
@@ -201,11 +201,11 @@ public class WaterCircleMover : GenericWaterBlock
 
         Add(bloomStart = new BloomPoint(0.5f, 12f)
         {
-            Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position
+            Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - Position
         });
         Add(bloomTarget = new BloomPoint(0.5f, 12f)
         {
-            Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position
+            Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - Position
         });
     }
 
@@ -286,8 +286,8 @@ public class WaterCircleMover : GenericWaterBlock
                 }
                 Vector2 pos = centerNode - Calc.AngleToVector(angle, length);
                 MoveTo(pos);
-                bloomStart.Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position;
-                bloomTarget.Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position;
+                bloomStart.Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - Position;
+                bloomTarget.Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - Position;
             }
             percent = 1;
             Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
@@ -353,8 +353,8 @@ public class WaterCircleMover : GenericWaterBlock
                     }
                     Vector2 pos = centerNode - Calc.AngleToVector(angle, length);
                     MoveTo(pos);
-                    bloomStart.Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position;
-                    bloomTarget.Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position;
+                    bloomStart.Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - Position;
+                    bloomTarget.Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - Position;
                 }
                 percent = 0;
                 Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
@@ -399,8 +399,8 @@ public class WaterCircleMover : GenericWaterBlock
                     angle = Calc.LerpClamp(angleStart, angleEnd, percent);
                     Vector2 pos = centerNode - Calc.AngleToVector(angle, length);
                     MoveTo(pos);
-                    bloomStart.Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - this.Position;
-                    bloomTarget.Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - this.Position;
+                    bloomStart.Position = ((centerNode - Calc.AngleToVector(angleStart, length)) + new Vector2(Width, Height) / 2) - Position;
+                    bloomTarget.Position = ((centerNode - Calc.AngleToVector(angleEnd, length)) + new Vector2(Width, Height) / 2) - Position;
                 }
                 percent = 0;
                 WiggleEverything(0.4f, 2f);

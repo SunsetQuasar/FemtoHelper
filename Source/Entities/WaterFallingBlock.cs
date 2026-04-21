@@ -8,14 +8,14 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/WaterFallingBlock")]
 public class WaterFallingBlock : GenericWaterBlock
 {
-    private WaterSprite waterSprite;
+    private readonly WaterSprite waterSprite;
 
     public float FallDelay;
     public bool HasStartedFalling { get; private set; }
 
     private readonly Vector2 direction;
 
-    private Shaker shake;
+    private readonly Shaker shake;
 
     private readonly List<Tuple<Image, int>> arrows;
 

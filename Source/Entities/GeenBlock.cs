@@ -12,7 +12,7 @@ public class GeenBlock : Solid
         public GeenBlock Parent;
         public AfterImages(GeenBlock parent)
         {
-            this.Parent = parent;
+            Parent = parent;
             Active = false;
             Depth = 5000;
         }
@@ -28,12 +28,12 @@ public class GeenBlock : Solid
         }
     }
 
-    private float spd;
-    private Image arrow;
-    private SineWave arrowWiggle;
-    private LightOcclude occlude;
+    private readonly float spd;
+    private readonly Image arrow;
+    private readonly SineWave arrowWiggle;
+    private readonly LightOcclude occlude;
     private float angleTarget;
-    private MTexture[,] edges = new MTexture[4, 4];
+    private readonly MTexture[,] edges = new MTexture[4, 4];
     private float awesomei;
     private readonly bool inverse;
 
@@ -51,7 +51,7 @@ public class GeenBlock : Solid
     private readonly float respawnTime;
     private readonly float disappearTime;
 
-    private SoundSource sound;
+    private readonly SoundSource sound;
 
     private Vector2 boostDir
     {

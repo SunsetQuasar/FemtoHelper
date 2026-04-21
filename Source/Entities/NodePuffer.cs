@@ -25,7 +25,7 @@ public class NodePuffer : Entity
 
     private const float CantExplodeTime = 0.5f;
 
-    private Sprite sprite;
+    private readonly Sprite sprite;
 
     private States state;
 
@@ -37,13 +37,13 @@ public class NodePuffer : Entity
 
     private Vector2 lastSinePosition;
 
-    private Circle pushRadius;
+    private readonly Circle pushRadius;
 
-    private Circle breakWallsRadius;
+    private readonly Circle breakWallsRadius;
 
-    private Circle detectRadius;
+    private readonly Circle detectRadius;
 
-    private SineWave idleSine;
+    private readonly SineWave idleSine;
 
     private Vector2 hitSpeed;
 
@@ -53,9 +53,9 @@ public class NodePuffer : Entity
 
     private float alertTimer;
 
-    private Wiggler bounceWiggler;
+    private readonly Wiggler bounceWiggler;
 
-    private Wiggler inflateWiggler;
+    private readonly Wiggler inflateWiggler;
 
     private Vector2 scale;
 
@@ -71,8 +71,8 @@ public class NodePuffer : Entity
 
     private float eyeSpin;
 
-    private Vector2[] nodes;
-    private float[] nodeLens;
+    private readonly Vector2[] nodes;
+    private readonly float[] nodeLens;
 
     private int nodeIndex;
     private bool moveSignal;
@@ -80,7 +80,7 @@ public class NodePuffer : Entity
 
     private bool returnSoundPlayed;
     private float timer;
-    private ParticleType pufferPath = new(Seeker.P_Regen)
+    private readonly ParticleType pufferPath = new(Seeker.P_Regen)
     {
         Color = Calc.HexToColor("fccbde") * 0.4f,
         Color2 = Calc.HexToColor("d957c1") * 0.3f,
@@ -137,7 +137,7 @@ public class NodePuffer : Entity
         nodeLens = new float[nodes.Length];
         for (int i = nodes.Length - 1; i >= 0; i--)
         {
-            nodeLens[i] = Vector2.Distance(nodes[i], nodes[Celeste.Mod.FemtoHelper.Util.Mod(i + 1, nodes.Length)]);
+            nodeLens[i] = Vector2.Distance(nodes[i], nodes[Utils.Mod(i + 1, nodes.Length)]);
         }
 
         timer = Calc.Random.NextFloat(500f);
@@ -296,10 +296,10 @@ public class NodePuffer : Entity
 
         for (int i = 0; i < nodes.Length - 1; i++)
         {
-            float nextFactor = nodeIndex == i ? Ease.SineInOut(1 - sequenceTimer) : nodeIndex == Celeste.Mod.FemtoHelper.Util.Mod(i - 1, nodes.Length - 1) ? Ease.SineInOut(sequenceTimer) : 0;
+            float nextFactor = nodeIndex == i ? Ease.SineInOut(1 - sequenceTimer) : nodeIndex == Utils.Mod(i - 1, nodes.Length - 1) ? Ease.SineInOut(sequenceTimer) : 0;
             Color col = Color.Lerp(lineColor1, lineColor2, nextFactor);
             col.A = 0;
-            float count = MathF.Round(nodeLens[Celeste.Mod.FemtoHelper.Util.Mod(i - 1, nodes.Length - 1)] / 8f);
+            float count = MathF.Round(nodeLens[Utils.Mod(i - 1, nodes.Length - 1)] / 8f);
             for (float j = 0; j < count; j++)
             {
                 float percent = j / count;

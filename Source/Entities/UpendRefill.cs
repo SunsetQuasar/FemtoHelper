@@ -5,37 +5,37 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/UpendRefill")]
 public class UpendRefill : Entity
 {
-    private Sprite sprite;
+    private readonly Sprite sprite;
 
-    private Sprite flash;
+    private readonly Sprite flash;
 
-    private Image outline;
+    private readonly Image outline;
 
-    private Wiggler wiggler;
+    private readonly Wiggler wiggler;
 
-    private BloomPoint bloom;
+    private readonly BloomPoint bloom;
 
-    private VertexLight light;
+    private readonly VertexLight light;
 
     private Level level;
 
-    private SineWave sine;
+    private readonly SineWave sine;
 
-    private bool oneUse;
+    private readonly bool oneUse;
 
-    private static ParticleType _pShatter = new(Refill.P_Shatter)
+    private static readonly ParticleType _pShatter = new(Refill.P_Shatter)
     {
         Color = Calc.HexToColor("ffbdb0"),
         Color2 = Calc.HexToColor("ffbdb0")
     };
 
-    private static ParticleType _pRegen = new(Refill.P_Regen)
+    private static readonly ParticleType _pRegen = new(Refill.P_Regen)
     {
         Color = Calc.HexToColor("ff8770"),
         Color2 = Calc.HexToColor("ff8770")
     };
 
-    private static ParticleType _pGlow = new(Refill.P_Glow)
+    private static readonly ParticleType _pGlow = new(Refill.P_Glow)
     {
         Color = Calc.HexToColor("ff8770"),
         Color2 = Calc.HexToColor("ff8770")
@@ -58,7 +58,7 @@ public class UpendRefill : Entity
     {
         Collider = new Hitbox(16f, 16f, -8f, -8f);
         Add(new PlayerCollider(OnPlayer));
-        this.oneUse = data.Bool("oneUse", false);
+        oneUse = data.Bool("oneUse", false);
         type = data.Enum("type", Types.Horizontal);
         string text;
         text = "objects/FemtoHelper/upendRefill/" + (type == Types.Horizontal ? "h/" : "v/");

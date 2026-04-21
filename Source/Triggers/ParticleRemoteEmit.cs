@@ -5,7 +5,7 @@ using System;
 [CustomEntity("FemtoHelper/ParticleRemoteEmit")]
 internal class ParticleRemoteEmit(EntityData data, Vector2 offset) : Trigger(data, offset)
 {
-	private string tag = data.Attr("tag");
+	private readonly string tag = data.Attr("tag");
 
 	public override void OnEnter(Player player)
 	{

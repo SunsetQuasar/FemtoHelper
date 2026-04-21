@@ -13,7 +13,7 @@ public class PlutoniumTextRenderer : Entity
 {
     public TextLayer Layer;
 
-    private List<PlutoniumTextComponent> texts = [];
+    private readonly List<PlutoniumTextComponent> texts = [];
 
     private static readonly Comparison<PlutoniumTextComponent> compareDepth = (a, b) => (int)(b.Entity.actualDepth - a.Entity.actualDepth);
     public void SortEntities()
@@ -152,7 +152,7 @@ public class PlutoniumTextRenderer : Entity
 
     public PlutoniumTextRenderer(TextLayer layer) : base()
     {
-        this.Layer = layer;
+        Layer = layer;
         AddTag(Tags.Global);
         if (layer == TextLayer.HUD || layer == TextLayer.AdditiveHUD) AddTag(TagsExt.SubHUD);
     }

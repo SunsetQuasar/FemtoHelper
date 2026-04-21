@@ -1,7 +1,7 @@
 ﻿global using Monocle;
 global using Microsoft.Xna.Framework;
 global using Celeste.Mod.Entities;
-global using static Celeste.Mod.FemtoHelper.Util;
+global using static Celeste.Mod.FemtoHelper.Utils;
 
 using System;
 using MonoMod.Cil;
@@ -279,6 +279,8 @@ public class FemtoModule : EverestModule
         PlutoniumTextRenderer.Load();
         MovementModifier.Load();
         MoveBlockIgnoreController.Load();
+
+        LifecycleMethods.OnLoad();
     }
 
     public override void Unload()
@@ -323,9 +325,9 @@ public class FemtoModule : EverestModule
         PlutoniumTextRenderer.Unload();
         MovementModifier.Unload();
         MoveBlockIgnoreController.Unload();
+
+        LifecycleMethods.OnUnload();
     }
-
-
     private static void onCollideH_IL(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);

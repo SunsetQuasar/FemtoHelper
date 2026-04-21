@@ -13,7 +13,7 @@ public class WaterZipMover : GenericWaterBlock
     {
         public WaterZipMover WaterZipMover;
 
-        private MTexture cog;
+        private readonly MTexture cog;
 
         private Vector2 from;
 
@@ -21,13 +21,13 @@ public class WaterZipMover : GenericWaterBlock
 
         private Vector2 sparkAdd;
 
-        private float sparkDirFromA;
+        private readonly float sparkDirFromA;
 
-        private float sparkDirFromB;
+        private readonly float sparkDirFromB;
 
-        private float sparkDirToA;
+        private readonly float sparkDirToA;
 
-        private float sparkDirToB;
+        private readonly float sparkDirToB;
 
         public Wiggler CogWiggler;
         public Vector2 CogScale = Vector2.One;
@@ -103,19 +103,19 @@ public class WaterZipMover : GenericWaterBlock
 
     private readonly Vector2 start, target;
 
-    private SoundSource sfx = new SoundSource();
+    private readonly SoundSource sfx = new SoundSource();
 
     private float percent;
 
     private WaterZipMoverPathRenderer pathRenderer;
 
-    private string texturePath;
+    private readonly string texturePath;
 
-    private Sprite cornerL, cornerR;
+    private readonly Sprite cornerL, cornerR;
 
-    private Wiggler cornerWiggler;
+    private readonly Wiggler cornerWiggler;
 
-    private BloomPoint bloomL, bloomR, bloomStart, bloomTarget;
+    private readonly BloomPoint bloomL, bloomR, bloomStart, bloomTarget;
 
     //private readonly Image centerNoReturn, centerPermanent;
 
@@ -126,7 +126,7 @@ public class WaterZipMover : GenericWaterBlock
         Permanent
     }
 
-    private Behaviors behavior;
+    private readonly Behaviors behavior;
 
     public WaterZipMover(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
     {
@@ -197,11 +197,11 @@ public class WaterZipMover : GenericWaterBlock
 
         Add(bloomStart = new BloomPoint(0.5f, 12f)
         {
-            Position = (start + new Vector2(Width, Height) / 2) - this.Position
+            Position = (start + new Vector2(Width, Height) / 2) - Position
         });
         Add(bloomTarget = new BloomPoint(0.5f, 12f)
         {
-            Position = (target + new Vector2(Width, Height) / 2) - this.Position
+            Position = (target + new Vector2(Width, Height) / 2) - Position
         });
     }
 
@@ -256,8 +256,8 @@ public class WaterZipMover : GenericWaterBlock
                     SceneAs<Level>().ParticlesFG.Emit(Tinydrops, pos2, (pos2 - Center).Angle());
                 }
                 MoveTo(vector);
-                bloomStart.Position = (this.start + new Vector2(Width, Height) / 2) - this.Position;
-                bloomTarget.Position = (target + new Vector2(Width, Height) / 2) - this.Position;
+                bloomStart.Position = (this.start + new Vector2(Width, Height) / 2) - Position;
+                bloomTarget.Position = (target + new Vector2(Width, Height) / 2) - Position;
             }
             WiggleEverything();
             Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
@@ -310,8 +310,8 @@ public class WaterZipMover : GenericWaterBlock
                         SceneAs<Level>().ParticlesFG.Emit(Tinydrops, pos2, (pos2 - Center).Angle());
                     }
                     MoveTo(vector);
-                    bloomStart.Position = (this.start + new Vector2(Width, Height) / 2) - this.Position;
-                    bloomTarget.Position = (target + new Vector2(Width, Height) / 2) - this.Position;
+                    bloomStart.Position = (this.start + new Vector2(Width, Height) / 2) - Position;
+                    bloomTarget.Position = (target + new Vector2(Width, Height) / 2) - Position;
                 }
                 WiggleEverything();
                 Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
@@ -339,8 +339,8 @@ public class WaterZipMover : GenericWaterBlock
                         SceneAs<Level>().ParticlesFG.Emit(Tinydrops, pos2, (pos2 - Center).Angle());
                     }
                     MoveTo(position);
-                    bloomStart.Position = (this.start + new Vector2(Width, Height) / 2) - this.Position;
-                    bloomTarget.Position = (target + new Vector2(Width, Height) / 2) - this.Position;
+                    bloomStart.Position = (this.start + new Vector2(Width, Height) / 2) - Position;
+                    bloomTarget.Position = (target + new Vector2(Width, Height) / 2) - Position;
                 }
                 WiggleEverything(0.4f, 2f);
                 cornerL.SetAnimationFrame(1);

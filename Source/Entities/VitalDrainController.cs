@@ -40,7 +40,7 @@ public class VitalDrainController : Entity
     private readonly float musicParamMax;
     private readonly float cameraZoomTarget;
 
-    private float anxiety;
+    private readonly float anxiety;
 
     private readonly bool debugView;
 

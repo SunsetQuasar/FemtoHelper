@@ -36,7 +36,7 @@ public class FuckingAwesomeEmulator : Entity
 
     private Vector2 offset;
 
-    private float pauseFade;
+    private readonly float pauseFade;
 
     private EventInstance snapshot;
 
@@ -56,7 +56,7 @@ public class FuckingAwesomeEmulator : Entity
 
     private string fontMap;
 
-    private Effect effect;
+    private readonly Effect effect;
 
     private bool booting => game == null;
 
@@ -1150,11 +1150,11 @@ public class FuckingAwesomeClassic
             public float size;
         }
 
-        private node[] hair = new node[5];
+        private readonly node[] hair = new node[5];
 
-        private FuckingAwesomeEmulator E;
+        private readonly FuckingAwesomeEmulator E;
 
-        private FuckingAwesomeClassic G;
+        private readonly FuckingAwesomeClassic G;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public player_hair(ClassicObject obj)
@@ -2197,17 +2197,17 @@ public class FuckingAwesomeClassic
 
     private bool new_bg;
 
-    private int k_left;
+    private readonly int k_left;
 
-    private int k_right = 1;
+    private readonly int k_right = 1;
 
-    private int k_up = 2;
+    private readonly int k_up = 2;
 
-    private int k_down = 3;
+    private readonly int k_down = 3;
 
-    private int k_jump = 4;
+    private readonly int k_jump = 4;
 
-    private int k_dash = 5;
+    private readonly int k_dash = 5;
 
     private int frames;
 

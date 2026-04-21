@@ -6,9 +6,28 @@ FemtoHelper_PlutoniumText_Example2= O
 FemtoHelper_Memo_exampleText=
 Example text.{n}Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus lobortis augue mollis diam imperdiet ullamcorper. Praesent viverra hendrerit lorem, eget blandit lectus maximus eget. Cras a magna mauris. In hac habitasse platea dictumst. Proin facilisis magna nec rhoncus ornare. Fusce vitae lacinia dui, pellentesque pellentesque felis. Cras a turpis et. 
 
+FemtoHelper_SessionHeart_examplePoem=
+Example Poem
+
 FEMTOHELPER_ERRORHANDLER_INDEX_ZERO=
 "Total Indexes" can't be zero!
 
 FEMTOHELPER_ERRORHANDLER_INVALID_ROOM=
 [MADELINE_PHONE left angry]
 That door doesn't have a valid destination room!
+
+FEMTOHELPER_ERRORHANDLER_INVALID_SESSION_HEART=
+[MADELINE_PHONE left angry]
+This Session Heart's group isn't defined in the map's .meta.yaml!
+
+FEMTOHELPER_ERRORHANDLER_EMPTY_SESSION_HEART=
+[MADELINE_PHONE left normal]
+Session Hearts require at least one Session Heart Group to work. Those are defined in the map's .meta.yaml!
+
+FEMTOHELPER_ERRORHANDLER_INVALID_SESSION_HEART_GATE=
+[MADELINE_PHONE left angry]
+This Session Heart Gate's group isn't defined in the map's .meta.yaml!
+
+FEMTOHELPER_ERRORHANDLER_EMPTY_SESSION_HEART_GATE=
+[MADELINE_PHONE left normal]
+Session Heart Gates require at least one Session Heart Group to work. Those are defined in the map's .meta.yaml!

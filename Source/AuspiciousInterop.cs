@@ -25,7 +25,7 @@ public static class TemplateIop
             Entity = ent;
         }
         //This is a reference to the template's parent and should not be changed
-        Entity parent = null;
+        readonly Entity parent = null;
         //Called when this is added to a template. Parent will be non-null before this function.
         //<IMPORTANT> This is called before Entity.Added is called. For maximum compatibility,
         //make sure that AddSelf returns all associated entities to this one before you return from it.

@@ -16,9 +16,9 @@ public class CircleMover : Solid
     {
         public CircleMover CircleMover;
 
-        private MTexture cog;
+        private readonly MTexture cog;
 
-        private List<MTexture> glob;
+        private readonly List<MTexture> glob;
 
         private Vector2 from;
 
@@ -26,13 +26,13 @@ public class CircleMover : Solid
 
         private Vector2 sparkAdd;
 
-        private float sparkDirFromA;
+        private readonly float sparkDirFromA;
 
-        private float sparkDirFromB;
+        private readonly float sparkDirFromB;
 
-        private float sparkDirToA;
+        private readonly float sparkDirToA;
 
-        private float sparkDirToB;
+        private readonly float sparkDirToB;
 
         public CircleMoverPathRenderer(CircleMover zipMover)
         {
@@ -91,7 +91,7 @@ public class CircleMover : Solid
         public CircleMover Parent;
         public DebugVisual(CircleMover parent) : base()
         {
-            this.Parent = parent;
+            Parent = parent;
             AddTag(TagsExt.SubHUD);
         }
 
@@ -126,9 +126,9 @@ public class CircleMover : Solid
     private readonly MTexture chainTex;
 
     private readonly Image centerGem;
-    private Image centerRing;
+    private readonly Image centerRing;
 
-    private BloomPoint gemGlow;
+    private readonly BloomPoint gemGlow;
 
     private bool idle = true;
     private float glowPercent = 0;
@@ -152,7 +152,7 @@ public class CircleMover : Solid
         Permanent
     }
 
-    private Behaviors behavior;
+    private readonly Behaviors behavior;
 
     public string Prefix;
 

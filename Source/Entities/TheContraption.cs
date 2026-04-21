@@ -10,7 +10,7 @@ public class TheContraption : Actor
     [Pooled]
     public class ContraptionDebris : Actor
     {
-        private Image image;
+        private readonly Image image;
 
         private float lifeTimer;
 
@@ -18,9 +18,9 @@ public class TheContraption : Actor
 
         private Vector2 speed;
 
-        private Collision collideH;
+        private readonly Collision collideH;
 
-        private Collision collideV;
+        private readonly Collision collideV;
 
         private int rotateSign;
 
@@ -30,7 +30,7 @@ public class TheContraption : Actor
 
         private bool dreaming;
 
-        private SineWave dreamSine;
+        private readonly SineWave dreamSine;
 
         private bool hasHitGround;
 
@@ -186,7 +186,7 @@ public class TheContraption : Actor
         public ChildSolid(TheContraption parent, Vector2 pos, float width, float height) : base(pos, width, height, false)
         {
             SurfaceSoundIndex = 9;
-            this.Parent = parent;
+            Parent = parent;
             Depth = 5000;
             Collider.Position = new Vector2((0f - width) / 2f, 0f - height);
             OnDashCollide = OnDashed;
@@ -257,17 +257,17 @@ public class TheContraption : Actor
 
     private float highFrictionTimer;
 
-    private MTexture[,] edges = new MTexture[4, 4];
-    private MTexture cog;
+    private readonly MTexture[,] edges = new MTexture[4, 4];
+    private readonly MTexture cog;
     private float cogRotation;
 
     private Vector2 lastPosition;
 
-    private SoundSource sfx;
+    private readonly SoundSource sfx;
 
-    private string spritePath;
+    private readonly string spritePath;
 
-    private static ParticleType _steam2 = new(ParticleTypes.Steam)
+    private static readonly ParticleType _steam2 = new(ParticleTypes.Steam)
     {
         SpeedMin = 15,
         SpeedMax = 40,

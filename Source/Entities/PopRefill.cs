@@ -10,31 +10,31 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/PopRefill")]
 public class PopRefill : Entity
 {
-    private Sprite sprite;
+    private readonly Sprite sprite;
 
-    private Sprite flash;
+    private readonly Sprite flash;
 
-    private Image outline;
+    private readonly Image outline;
 
-    private Wiggler wiggler;
+    private readonly Wiggler wiggler;
 
-    private BloomPoint bloom;
+    private readonly BloomPoint bloom;
 
-    private VertexLight light;
+    private readonly VertexLight light;
 
     private Level level;
 
-    private SineWave sine;
+    private readonly SineWave sine;
 
-    private bool twoDashes;
+    private readonly bool twoDashes;
 
-    private bool oneUse;
+    private readonly bool oneUse;
 
-    private ParticleType pShatter;
+    private readonly ParticleType pShatter;
 
-    private ParticleType pRegen;
+    private readonly ParticleType pRegen;
 
-    private ParticleType pGlow;
+    private readonly ParticleType pGlow;
 
     private float respawnTimer;
 
@@ -90,7 +90,7 @@ public class PopRefill : Entity
         sine.Randomize();
         UpdateY();
         Depth = -100;
-        this.SpawnTime = spawnTime;
+        SpawnTime = spawnTime;
     }
 
     

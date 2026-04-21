@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -24,7 +21,7 @@ public class EntityKillZone : Entity
         }
     }
 
-    private static Dictionary<string, Action<Entity>> killInterop = [];
+    private static readonly Dictionary<string, Action<Entity>> killInterop = [];
 
     public static readonly ParticleType Stars = new()
     {

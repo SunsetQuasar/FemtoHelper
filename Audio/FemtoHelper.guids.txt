@@ -223,6 +223,7 @@
 {a1c12f2a-43a4-40f8-99c5-84dbe527f1d8} event:/FemtoHelper/shellkick
 {7a78fcbf-275f-469c-8c34-bd781311f9ae} event:/FemtoHelper/smw_door_opens
 {27d77bf0-ac9a-4b5c-8b9c-58c9ae3fa8cb} event:/FemtoHelper/stomp_bounce
+{093f6167-bc15-49d2-b63c-f966234dd351} event:/FemtoHelper/stomp_poof
 {b1bbad2c-7d64-4b7e-bd60-230d2330c5b7} event:/FemtoHelper/switch_movet_accelerate
 {699a6f69-f205-4c8c-9f5e-c2e2e99ac7f9} event:/FemtoHelper/switch_movet_box_hit
 {922159d0-323d-4ccd-a6d0-45f4a838a2f7} event:/FemtoHelper/switch_movet_box_hitfail
@@ -231,7 +232,7 @@
 {193bd06f-83ff-4122-8a88-e5d3d1e0aa76} event:/FemtoHelper/water_fallblock_first_shake
 {07f56f1e-2d37-4dc9-b9f0-0f16038d48fe} event:/FemtoHelper/water_zip_mover
 {ad791c49-9640-41e6-8201-269dcb2c67b7} event:/FemtoHelper/water_zip_mover_permanent
-{093f6167-bc15-49d2-b63c-f966234dd351} event:/FemtoHelper/stomp_poof
+{776e47be-af4c-444d-b771-750439470bf1} event:/FemtoHelper/sessionheart_get
 {3f2d088f-f438-42c1-b9e9-6e6a44203865} event:/game/00_prologue/bridge_rumble_loop
 {fb47d655-bc4f-4361-b4a2-d19e30518d24} event:/game/00_prologue/bridge_support_break
 {319ecd12-335d-44ff-94ca-07fe499d4a87} event:/game/00_prologue/car_down
@@ -528,6 +529,7 @@
 {8c2fe55b-ace0-456c-b8ae-0f0fb39ba558} event:/modded/blu_foam/04_cliffside
 {406fbbae-4104-425b-871c-c30e0b8fb68c} event:/modded/blu_foam/analysis
 {d5ee5230-978d-4ddf-97da-8c23e8e3619b} event:/modded/blu_foam/deepblue
+{7178338b-d54a-4fb5-a7a2-ce0639dd5266} event:/modded/NyanSunsetFusion/bubbles in the rain
 {96b03165-d0b2-48e4-9b50-fd465212a930} event:/modded/PlutoniumHelper/example_text_sound
 {8f3ce713-263c-4f32-9580-84ce95afab93} event:/modded/SoundBlastHelper/instrs
 {a22008e8-9441-476d-81ab-c55a3b323fac} event:/modded/sunset_aprilhello/girl
@@ -553,7 +555,6 @@
 {3bcb2138-3e73-4b05-838a-7e5ffb1ba95c} event:/modded/sunset_breeze/startit
 {5b164fba-eae1-4381-acb6-39ff4ed67566} event:/modded/sunset_breeze/torch_lit
 {b0ea1896-f938-41db-8dc4-c78e577fcebf} event:/modded/sunset_breeze/torch_loop
-{7178338b-d54a-4fb5-a7a2-ce0639dd5266} event:/modded/sunset_ceiling/NyanSunsetFusion/bubbles in the rain
 {f0344f21-4298-4892-94e7-1db894324e91} event:/modded/sunset_ceiling/scenario
 {b1501e61-b816-4695-ae8d-43a6be51edf9} event:/modded/sunset_decmap/second
 {bfbb0ffb-c48d-4a07-a5f0-8552e85243d2} event:/modded/sunset_dream/door
@@ -566,7 +567,12 @@
 {289d19ab-09df-4d52-a413-ae80f40e73cf} event:/modded/sunset_gaythreequel/realmario
 {c482560c-6017-475f-be22-dcd96dc3ab0d} event:/modded/sunset_gaythreequel/westmansion
 {5f73cb0a-ece6-4d4e-821f-1a344c54e2d0} event:/modded/sunset_geencontest/cheri
+{0c3b1d8b-618e-47d3-be14-82b7993b89ee} event:/modded/sunset_ispy/灰色の雲が私の悲しみをもたらします
+{7037222c-c0e4-457f-a219-9479b38eb099} event:/modded/sunset_jaunty/regalo_de_amor
 {1e8ada60-1663-44b8-b370-68cc88301626} event:/modded/sunset_kaizo/empty
+{42aca106-5d39-44eb-8711-b3e3ba6f1a23} event:/modded/sunset_kaizo/password
+{3817330b-0233-4c65-a379-1e680d537d10} event:/modded/sunset_kaizo/roll
+{fed22506-f6b0-48d0-a20f-4733837da8f1} event:/modded/sunset_kaizo/unused2
 {0a929a1f-d7f8-4605-904b-57cdd3408ca1} event:/modded/sunset_lastnano/dreamer
 {a89fcb30-6520-4395-bff2-9851e37b2012} event:/modded/sunset_loveunano/altsummit
 {54e50af6-c986-4e43-bdb3-d12b6841f5c9} event:/modded/sunset_marchmap/rebel
@@ -575,6 +581,10 @@
 {4b819446-968e-4514-9dbe-303c49039165} event:/modded/sunset_mucus/mucusflow
 {01482a65-a424-4b6b-8e45-5e835e8efa01} event:/modded/sunset_october/ripple
 {610dc02d-d4de-4db4-b201-c8134fe7832a} event:/modded/sunset_octreal/totallynormalcerebrawl
+{7a87c25d-6030-4eb6-918f-1b41cee026e5} event:/modded/sunset_roadtrip/morph
+{d6b997bb-3c41-473e-a5f7-0c474220db27} event:/modded/sunset_roadtrip/speech
+{5346edf1-65eb-4c48-be4a-26da54c08bf4} event:/modded/sunset_roadtrip/wilhelmscream
+{4314fa26-6128-4205-b969-492b18072e78} event:/modded/sunset_roadtrip/wrongchoice
 {565182ab-849f-4a61-b621-537155ce9105} event:/modded/sunset_sscwhat/biu/explode
 {705148c1-3d10-46ae-b738-44159aa27a2b} event:/modded/sunset_sscwhat/biu/game_off
 {ea40e772-e210-4ef4-aca0-2a20de24b050} event:/modded/sunset_sscwhat/biu/game_on
@@ -1132,6 +1142,8 @@
 {06a4e717-adff-47b2-91cd-ebc2b710194d} bank:/sunset_febmap
 {7ac1f176-568c-4b39-88f3-0b7c3d85603a} bank:/sunset_gaythreequel
 {fadb6412-4df5-41db-97ce-a53232d40b72} bank:/sunset_geencontest
+{1e1fc078-cb3c-41ca-b71a-257b3a478e5a} bank:/sunset_ispy
+{3c7eb4a5-e3dc-40a8-817a-3416a9a28f88} bank:/sunset_jaunty
 {333c6e63-dbc8-4d57-b15d-c9cdbe19dc60} bank:/sunset_kaizo
 {ed2bff40-4c94-40b1-9da4-a4689d5ddbda} bank:/sunset_lastnano
 {961c1fd6-73b3-44d4-9b2a-23df73c8862f} bank:/sunset_loveunano
@@ -1140,6 +1152,7 @@
 {f79af8aa-e780-49a0-a212-514804356c5d} bank:/sunset_mucus
 {3a00e38b-2241-45b8-9f10-b4b243195558} bank:/sunset_october
 {afbf06f6-5542-4cb6-8a43-7f6445310c02} bank:/sunset_octreal
+{de31f968-abcd-469d-b0f1-89be44251b10} bank:/sunset_roadtrip
 {a1f8dbc7-c6fd-4727-96fe-9de305013af4} bank:/sunset_sscwhat
 {9e6b64ba-1d3e-43d3-b02c-2e6f95a89461} bank:/sunset_summitmap
 {ee122142-5f7b-441f-9dbb-70aab9568b60} bank:/sunset_theseus

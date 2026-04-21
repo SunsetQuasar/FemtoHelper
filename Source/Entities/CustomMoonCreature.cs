@@ -76,9 +76,9 @@ public class CustomMoonCreature : Entity
 
 	private readonly float trailGravity;
 
-	private BloomPoint bloom;
+	private readonly BloomPoint bloom;
 
-	private VertexLight light;
+	private readonly VertexLight light;
 
 	public CustomMoonCreature(EntityData data, Vector2 offset) : this(data.Position + offset)
 	{

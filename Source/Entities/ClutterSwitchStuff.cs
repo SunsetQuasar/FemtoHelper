@@ -22,7 +22,7 @@ public class NoLightClutterSwitch : Solid
 
     private readonly ClutterBlock.Colors color;
 
-    private float startY;
+    private readonly float startY;
 
     private float atY;
 

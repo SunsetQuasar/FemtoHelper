@@ -4,8 +4,13 @@ using System;
 
 namespace Celeste.Mod.FemtoHelper;
 
-public class Util
+public static class Utils
 {
+    public static bool LeftPressed => Input.Aim.Left.Pressed(Input.Gamepad, 0.25f);
+    public static bool RightPressed => Input.Aim.Right.Pressed(Input.Gamepad, 0.25f);
+    public static bool UpPressed => Input.Aim.Up.Pressed(Input.Gamepad, 0.25f);
+    public static bool DownPressed => Input.Aim.Down.Pressed(Input.Gamepad, 0.25f);
+
     public static float VectorToAngle(Vector2 vector)
     {
         return (float)Math.Atan2(vector.Y, vector.X);
@@ -50,12 +55,12 @@ public class Util
 
     public static void Log(string str, LogLevel level = LogLevel.Debug)
     {
-        Logger.Log(level, nameof(FemtoModule), str);
+        Logger.Log(level, "FemtoHelper", str);
     }
 
     public static void Log(object obj, LogLevel level = LogLevel.Debug)
     {
-        Logger.Log(level, nameof(FemtoModule), obj.ToString());
+        Logger.Log(level, "FemtoHelper", obj.ToString());
     }
 
     public static Vector2 ParametricRoundedSquare(float p, float radiusX, float radiusY, float radiusC)

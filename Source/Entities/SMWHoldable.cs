@@ -20,8 +20,8 @@ public class SmwHoldable : Holdable
 
     public SmwHoldable(int yOffset = 0, int crouchYOffset = 0) : base(0f)
     {
-        this.YOffset = yOffset;
-        this.CrouchYOffset = crouchYOffset;
+        YOffset = yOffset;
+        CrouchYOffset = crouchYOffset;
     }
 
     private static ILHook _hookPickupCoroutine;

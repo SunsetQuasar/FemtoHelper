@@ -184,7 +184,7 @@ public class GenericSmwBlock : Solid
     public readonly float HitCooldown;
     private bool onCooldown;
 
-    private HashSet<StaticMover> exemptFromRenderThingy = [];
+    private readonly HashSet<StaticMover> exemptFromRenderThingy = [];
 
     public readonly bool PushHoldablesOnHit;
 

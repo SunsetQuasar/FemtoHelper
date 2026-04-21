@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using static Celeste.DreamStars;
 using static Celeste.Mod.FemtoHelper.Entities.EntityKillZone;
-using static Celeste.TrackSpinner;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -14,7 +12,7 @@ public class SmwShell : Actor
 
     public class BounceDisplay : Entity
     {
-        SmwShell parent;
+        readonly SmwShell parent;
 
         public BounceDisplay(SmwShell parent) : base(Vector2.Zero)
         {
@@ -986,11 +984,11 @@ public class SmwShell : Actor
         Position = new(MathF.Round(Position.X), MathF.Round(Position.Y));
         TreatNaive = false;
 
-        foreach (JumpThru entity in base.Scene.Tracker.GetEntities<JumpThru>())
+        foreach (JumpThru entity in Scene.Tracker.GetEntities<JumpThru>())
         {
-            if (CollideCheck(entity) && base.Bottom - entity.Top <= 6f)
+            if (CollideCheck(entity) && Bottom - entity.Top <= 6f)
             {
-                MoveVExact((int)(entity.Top - base.Bottom));
+                MoveVExact((int)(entity.Top - Bottom));
             }
         }
     }

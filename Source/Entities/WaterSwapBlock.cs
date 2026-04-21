@@ -9,7 +9,7 @@ public class WaterSwapBlock : GenericWaterBlock
 {
     private class PathRenderer : Entity
     {
-        private WaterSwapBlock block;
+        private readonly WaterSwapBlock block;
 
         private float timer;
 
@@ -37,7 +37,7 @@ public class WaterSwapBlock : GenericWaterBlock
         }
     }
 
-    private WaterSprite waterSprite;
+    private readonly WaterSprite waterSprite;
 
     private Vector2 start;
 
@@ -59,21 +59,21 @@ public class WaterSwapBlock : GenericWaterBlock
 
     private float speed;
 
-    private float maxForwardSpeed;
+    private readonly float maxForwardSpeed;
 
-    private float maxBackwardSpeed;
+    private readonly float maxBackwardSpeed;
 
     private EventInstance moveSfx;
 
     private EventInstance returnSfx;
 
-    private MTexture[,] nineSliceTarget;
+    private readonly MTexture[,] nineSliceTarget;
 
     private PathRenderer path;
 
-    private Sprite middleGreen;
+    private readonly Sprite middleGreen;
 
-    private Sprite middleRed;
+    private readonly Sprite middleRed;
 
     private float particlesRemainder;
 

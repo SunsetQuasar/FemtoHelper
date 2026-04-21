@@ -1,5 +1,4 @@
-﻿using Celeste.Mod.FemtoHelper.Utils;
-using System;
+﻿using System;
 
 namespace Celeste.Mod.FemtoHelper.Entities; 
 

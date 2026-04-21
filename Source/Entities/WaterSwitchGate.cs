@@ -7,13 +7,13 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/WaterSwitchGate")]
 public class WaterSwitchGate : GenericWaterBlock
 {
-    private Sprite icon;
+    private readonly Sprite icon;
 
     private Vector2 node;
 
-    private SoundSource openSfx;
+    private readonly SoundSource openSfx;
 
-    private bool persistent;
+    private readonly bool persistent;
 
     private Color inactiveColor = Calc.HexToColor("5fcde4");
 
@@ -21,9 +21,9 @@ public class WaterSwitchGate : GenericWaterBlock
 
     private Color finishColor = Calc.HexToColor("f141df");
 
-    private WaterSprite waterSprite;
+    private readonly WaterSprite waterSprite;
 
-    private Wiggler wiggler;
+    private readonly Wiggler wiggler;
 
     private Vector2 iconOffset;
     public WaterSwitchGate(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, data.Bool("canCarry", true))
