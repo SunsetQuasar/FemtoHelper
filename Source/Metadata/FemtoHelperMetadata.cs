@@ -58,7 +58,7 @@ public static class FemtoHelperMetadata
 
         orig(self);
 
-        if (SessionHeartMeta.Count != 0)
+        if (SessionHeartMeta != null && SessionHeartMeta.Count != 0)
         {
             self.Level.Add(new SessionHeartDisplay());
         }

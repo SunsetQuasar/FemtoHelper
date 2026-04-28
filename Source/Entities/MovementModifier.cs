@@ -122,7 +122,7 @@ public class MovementModifier : Entity
         else
         {
             List<Entity> mms = self.CollideAll<MovementModifier>();
-            if (mms.Count != 0)
+            if (mms is not null && mms.Count != 0)
             {
                 foreach (MovementModifier mm in mms)
                 {
@@ -149,7 +149,7 @@ public class MovementModifier : Entity
         else
         {
             List<Entity> mms = self.CollideAll<MovementModifier>();
-            if (mms.Count != 0)
+            if (mms is not null && mms.Count != 0)
             {
                 foreach (MovementModifier mm in mms)
                 {

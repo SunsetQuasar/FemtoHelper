@@ -119,7 +119,7 @@ public class SessionHeartGate : Entity
 
     private readonly bool requireLeft;
 
-    private readonly Color mistColor, interiorColor;
+    private readonly Color mistColor, interiorColor, interiorParticleColor;
     private readonly float mistAlpha = 0.6f, mistSpeed, bloom;
 
     public SessionHeartGate(EntityData data, Vector2 offset)
@@ -143,12 +143,15 @@ public class SessionHeartGate : Entity
         requireLeft = data.Bool("requireLeft", false);
         mistColor = data.HexColor("mistColor", Color.PaleTurquoise);
         interiorColor = data.HexColor("interiorColor", Calc.HexToColor("41665F"));
+        interiorParticleColor = data.HexColor("interiorParticleColor", Color.White);
         mistAlpha = data.Float("mistAlpha", 0.6f);
         mistSpeed = data.Float("mistSpeed", 1f);
         bloom = data.Float("bloomAlpha", 1f);
 
-        P_Shimmer.Color2 = mistColor;
-        P_Slice.Color2 = mistColor * 0.65f;
+        P_Shimmer.Color = data.HexColor("shimmerColorA", Color.Lerp(mistColor, Color.White, 0.5f));
+        P_Shimmer.Color2 = data.HexColor("shimmerColorB", mistColor);
+        P_Slice.Color = data.HexColor("sliceColorA", Color.White);
+        P_Slice.Color2 = data.HexColor("sliceColorB", mistColor) * 0.65f;
     }
 
     public override void Added(Scene scene)
@@ -159,7 +162,7 @@ public class SessionHeartGate : Entity
         {
             particles[i].Position = new Vector2(Calc.Random.NextFloat(Size), Calc.Random.NextFloat(level.Bounds.Height));
             particles[i].Speed = Calc.Random.Range(4, 12);
-            particles[i].Color = Color.White * Calc.Random.Range(0.2f, 0.6f);
+            particles[i].Color = interiorParticleColor * Calc.Random.Range(0.2f, 0.6f);
         }
         level.Add(TopSolid = new Solid(new Vector2(X, level.Bounds.Top - 32), Size, Y - (float)level.Bounds.Top + 32f, safe: true));
         TopSolid.SurfaceSoundIndex = 32;

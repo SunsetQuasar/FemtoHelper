@@ -34,19 +34,19 @@ public class SessionHeartDisplay : Entity
 
         private readonly int[] amount;
 
-        private int outOf = -1;
+        private int[] outOf;
 
         internal Wiggler wiggler, iconWiggler;
 
         internal float flashTimer;
 
-        private string sAmount;
+        internal string sAmount;
 
-        private string sOutOf;
+        internal string sOutOf;
 
-        private readonly MTexture x, arrow;
+        internal readonly MTexture x, arrow;
 
-        private bool showOutOf;
+        internal bool showOutOf;
 
         private int currentSelected = 0;
 
@@ -112,8 +112,9 @@ public class SessionHeartDisplay : Entity
                     }
                     else
                     {
-                        Audio.Play("event:/ui/game/increment_strawberry");
+                        Audio.Play(value == OutOf ? "event:/ui/postgame/strawberry_total_all" : "event:/ui/game/increment_strawberry");
                     }
+                    if(value == OutOf) iconWiggler.Start();
                     wiggler.Start();
                     flashTimer = 0.5f;
                 }
@@ -124,11 +125,11 @@ public class SessionHeartDisplay : Entity
         {
             get
             {
-                return outOf;
+                return outOf[CurrentSelected];
             }
             set
             {
-                outOf = value;
+                outOf[CurrentSelected] = value;
                 UpdateStrings();
             }
         }
@@ -168,8 +169,7 @@ public class SessionHeartDisplay : Entity
             }
         }
 
-
-        public HeartsCounter(bool centeredX, int[] amount, int outOf = 0, bool showOutOf = false)
+        public HeartsCounter(bool centeredX, int[] amount, int[] outOf, bool showOutOf = false)
             : base(active: true, visible: true)
         {
             CenteredX = centeredX;
@@ -192,9 +192,9 @@ public class SessionHeartDisplay : Entity
         private void UpdateStrings()
         {
             sAmount = Amount.ToString();
-            if (outOf > -1)
+            if (outOf[CurrentSelected] > 0)
             {
-                sOutOf = "/" + outOf;
+                sOutOf = "/" + outOf[CurrentSelected];
             }
             else
             {
@@ -246,6 +246,8 @@ public class SessionHeartDisplay : Entity
             arrowPercent = Calc.Approach(arrowPercent, SceneAs<Level>().Paused ? 1f : 0f, Engine.DeltaTime * 4f);
         }
 
+        internal bool HasMultipleHearts => FemtoHelperMetadata.SessionHeartMeta.Count is { } && FemtoHelperMetadata.SessionHeartMeta.Count > 1;
+
 
         public override void Render()
         {
@@ -266,17 +268,24 @@ public class SessionHeartDisplay : Entity
                 renderPosition -= vector * (num3 / 2f) * Scale;
             }
             MTexture texture = GFX.Gui[FemtoHelperMetadata.SessionHeartMeta[CurrentSelected].UITexture];
-            texture.DrawCentered(renderPosition + Vector2.UnitX * (+30 + (FemtoHelperMetadata.SessionHeartMeta.Count is { } && FemtoHelperMetadata.SessionHeartMeta.Count <= 1 ? 0 : (-20 * Ease.SineInOut(arrowPercent)))), Color.White, Scale + 0.25f, iconWiggler.Value * -0.25f);
+            texture.DrawCentered(renderPosition + Vector2.UnitX * (+30 + (HasMultipleHearts ? (-20 * Ease.SineInOut(arrowPercent)) : 0)), Color.White, Scale + 0.25f, iconWiggler.Value * -0.25f);
 
-            arrow.DrawCentered(renderPosition + (Vector2.UnitX * (arrowLastPressed == 1 ? iconWiggler.Value * -4f : 0f)) + Vector2.UnitX * (30 - 20 + 48), (arrowLastPressed == 1 ? HighlightColor : Color.White) * Ease.SineInOut(arrowPercent), 0.5f);
-            arrow.DrawCentered(renderPosition + (Vector2.UnitX * (arrowLastPressed == -1 ? iconWiggler.Value * 4f : 0f)) + Vector2.UnitX * (30 - 20 - 48), (arrowLastPressed == -1 ? HighlightColor : Color.White) * Ease.SineInOut(arrowPercent), -0.5f);
-
+            if(HasMultipleHearts)
+            {
+                arrow.DrawCentered(renderPosition + (Vector2.UnitX * (arrowLastPressed == 1 ? iconWiggler.Value * -4f : 0f)) + Vector2.UnitX * (30 - 20 + 48), (arrowLastPressed == 1 ? HighlightColor : Color.White) * Ease.SineInOut(arrowPercent), 0.5f);
+                arrow.DrawCentered(renderPosition + (Vector2.UnitX * (arrowLastPressed == -1 ? iconWiggler.Value * 4f : 0f)) + Vector2.UnitX * (30 - 20 - 48), (arrowLastPressed == -1 ? HighlightColor : Color.White) * Ease.SineInOut(arrowPercent), -0.5f);
+            }
+            
             x.DrawCentered(renderPosition + vector * (62f + (float)x.Width * 0.5f) * Scale + vector2 * 2f * Scale, color, Scale);
             ActiveFont.DrawOutline(sAmount, renderPosition + vector * (num3 - num2 - num * 0.5f) * Scale + vector2 * (wiggler.Value * 18f) * Scale, new Vector2(0.5f, 0.5f), Vector2.One * Scale, color, Stroke, Color.Black);
             if (text != "")
             {
                 ActiveFont.DrawOutline(text, renderPosition + vector * (num3 - num2 / 2f) * Scale, new Vector2(0.5f, 0.5f), Vector2.One * Scale, OutOfColor, Stroke, Color.Black);
             }
+
+            //Draw.Rect(renderPosition, num3, 8, Color.Red);
+
+            //Log($"{renderPosition.X + num3}, {Engine.Width}");
         }
     }
 
@@ -302,6 +311,16 @@ public class SessionHeartDisplay : Entity
 
     private readonly HeartsCounter hearts;
 
+    public float LengthOffsetTarget()
+    {
+        string text = (hearts.showOutOf ? hearts.sOutOf : "");
+        float len = 62f + (float)hearts.x.Width + 2f + ActiveFont.Measure(hearts.sAmount).X + ActiveFont.Measure(text).X;
+
+        return Math.Max(len - 176, 0);
+    }
+
+    private float lengthOffset;
+
     public SessionHeartDisplay()
     {
         Y = 984f;
@@ -310,20 +329,25 @@ public class SessionHeartDisplay : Entity
         bg = GFX.Gui["strawberryCountBG"];
 
         int[] amount = new int[FemtoHelperMetadata.SessionHeartMeta.Count];
+        int[] outOf = new int[FemtoHelperMetadata.SessionHeartMeta.Count];
 
         int i = 0;
         foreach (SessionHeartDefinition def in FemtoHelperMetadata.SessionHeartMeta)
         {
             amount[i] = FemtoModule.Session.SessionHeartCount(def.Name);
+            outOf[i] = def.UITotal;
             i++;
         }
 
-        Add(hearts = new HeartsCounter(centeredX: false, amount));
+        Add(hearts = new HeartsCounter(centeredX: false, amount, outOf, true));
     }
 
 
     public override void Update()
     {
+        float target = LengthOffsetTarget();
+        lengthOffset = Calc.Approach(lengthOffset, target, Math.Abs((lengthOffset - target) + 1) * Engine.DeltaTime * 8);
+
         List<int> diffs = [];
         int totalDiff = 0;
         int i = 0;
@@ -382,7 +406,7 @@ public class SessionHeartDisplay : Entity
             }
         }
 
-        if (level.Paused && level.PauseMainMenuOpen && strawberriesUpdateTimer <= 0 && totalDiff <= 0)
+        if (level.Paused && level.PauseMainMenuOpen && strawberriesUpdateTimer <= 0 && totalDiff <= 0 && hearts.HasMultipleHearts)
         {
             if (RightPressed)
             {
@@ -409,10 +433,11 @@ public class SessionHeartDisplay : Entity
 
     public override void Render()
     {
-        Vector2 vec = Vector2.Lerp(new Vector2(-bg.Width, Y), new Vector2(32f, Y), Ease.CubeOut(DrawLerp));
+        Vector2 vec = Vector2.Lerp(new Vector2(-bg.Width, Y), new Vector2(32f + lengthOffset, Y), Ease.CubeOut(DrawLerp));
         vec.X = Engine.Width - vec.X;
         vec = vec.Round();
         bg.DrawJustified(vec + new Vector2(-96f, 12f), new Vector2(0.5f, 0.5f), Color.White, -1);
+        bg.DrawJustified(vec + new Vector2(-96f + bg.Width, 12f), new Vector2(0.5f, 0.5f), Color.White, 1);
         hearts.Position = vec + new Vector2(-bg.Width / 2 - 32, 0f - Y);
         hearts.Render();
     }

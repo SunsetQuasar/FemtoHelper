@@ -82,10 +82,10 @@ public class FemtoModule : EverestModule
 
 #if DEBUG
         // debug builds use verbose logging
-        Logger.SetLogLevel(nameof(FemtoModule), LogLevel.Verbose);
+        Logger.SetLogLevel("FemtoHelper", LogLevel.Verbose);
 #else
         // release builds use info logging to reduce spam in log files
-        Logger.SetLogLevel(nameof(FemtoModule), LogLevel.Info);
+        Logger.SetLogLevel("FemtoHelper", LogLevel.Info);
 #endif
     }
 

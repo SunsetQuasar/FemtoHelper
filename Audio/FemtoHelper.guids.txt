@@ -232,6 +232,7 @@
 {193bd06f-83ff-4122-8a88-e5d3d1e0aa76} event:/FemtoHelper/water_fallblock_first_shake
 {07f56f1e-2d37-4dc9-b9f0-0f16038d48fe} event:/FemtoHelper/water_zip_mover
 {ad791c49-9640-41e6-8201-269dcb2c67b7} event:/FemtoHelper/water_zip_mover_permanent
+{470dc319-ef7c-4176-abb0-ef06fa185a63} event:/FemtoHelper/sessionheart_shatter
 {776e47be-af4c-444d-b771-750439470bf1} event:/FemtoHelper/sessionheart_get
 {3f2d088f-f438-42c1-b9e9-6e6a44203865} event:/game/00_prologue/bridge_rumble_loop
 {fb47d655-bc4f-4361-b4a2-d19e30518d24} event:/game/00_prologue/bridge_support_break

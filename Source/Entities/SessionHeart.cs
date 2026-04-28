@@ -620,7 +620,7 @@ public class SessionHeart : Entity
         private static void LevelTemplate_ctor_LevelData(On.Celeste.Editor.LevelTemplate.orig_ctor_LevelData orig, LevelTemplate self, LevelData data)
         {
             orig(self, data);
-            if (FemtoHelperMetadata.SessionHeartMeta.Count == 0) return;
+            if (FemtoHelperMetadata.SessionHeartMeta is { } && FemtoHelperMetadata.SessionHeartMeta.Count == 0) return;
             List<HeartData> hs = [];
             foreach (EntityData entity in data.Entities)
             {
