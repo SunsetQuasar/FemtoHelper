@@ -170,7 +170,7 @@ public class MovementModifier : Entity
         if (!self.Components.current.Any(c => c is AlreadyModifiedIt))
         {
             List<Entity> mms = self.CollideAll<MovementModifier>();
-            if (mms.Count != 0)
+            if (mms is not null && mms.Count != 0)
             {
                 float floatMoveH = moveH;
                 foreach (MovementModifier mm in mms)
@@ -191,7 +191,7 @@ public class MovementModifier : Entity
         if (!self.Components.current.Any(c => c is AlreadyModifiedIt))
         {
             List<Entity> mms = self.CollideAll<MovementModifier>();
-            if (mms.Count != 0)
+            if (mms is not null && mms.Count != 0)
             {
                 float floatMoveV = moveV;
                 foreach (MovementModifier mm in mms)
@@ -209,9 +209,13 @@ public class MovementModifier : Entity
 
     private static void Actor_NaiveMove(On.Celeste.Actor.orig_NaiveMove orig, Actor self, Vector2 amount)
     {
-        foreach (MovementModifier mm in self.CollideAll<MovementModifier>())
+        var mms = self.CollideAll<MovementModifier>();
+        if (mms is not null)
         {
-            amount = mm.MovementMod(amount);
+            foreach (MovementModifier mm in mms)
+            {
+                amount = mm.MovementMod(amount);
+            }
         }
         orig(self, amount);
     }
