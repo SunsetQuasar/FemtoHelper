@@ -70,8 +70,8 @@ public class TouchPlatform : JumpThru
 
         if (Triggered)
         {
-            MoveV(Speed.Y * Engine.DeltaTime);
-            MoveH(Speed.X * Engine.DeltaTime);
+            MoveV(Speed.Y * Engine.DeltaTime, Speed.Y);
+            MoveH(Speed.X * Engine.DeltaTime, Speed.X);
 
             Speed.Y = Calc.Approach(Speed.Y, 200 * Math.Sign(Gravity), Engine.DeltaTime * Math.Abs(Gravity));
         }
