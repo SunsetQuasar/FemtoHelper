@@ -141,17 +141,17 @@ public class SessionHeartGate : Entity
         startHidden = data.Bool("startHidden");
         group = data.String("group", "");
         requireLeft = data.Bool("requireLeft", false);
-        mistColor = data.HexColor("mistColor", Color.PaleTurquoise);
-        interiorColor = data.HexColor("interiorColor", Calc.HexToColor("41665F"));
-        interiorParticleColor = data.HexColor("interiorParticleColor", Color.White);
+        mistColor = data.HexColorWithAlpha("mistColor", Color.PaleTurquoise);
+        interiorColor = data.HexColorWithAlpha("interiorColor", Calc.HexToColor("41665F"));
+        interiorParticleColor = data.HexColorWithAlpha("interiorParticleColor", Color.White);
         mistAlpha = data.Float("mistAlpha", 0.6f);
         mistSpeed = data.Float("mistSpeed", 1f);
         bloom = data.Float("bloomAlpha", 1f);
 
-        P_Shimmer.Color = data.HexColor("shimmerColorA", Color.Lerp(mistColor, Color.White, 0.5f));
-        P_Shimmer.Color2 = data.HexColor("shimmerColorB", mistColor);
-        P_Slice.Color = data.HexColor("sliceColorA", Color.White);
-        P_Slice.Color2 = data.HexColor("sliceColorB", mistColor) * 0.65f;
+        P_Shimmer.Color = data.HexColorWithAlpha("shimmerColorA", Color.Lerp(mistColor, Color.White, 0.5f));
+        P_Shimmer.Color2 = data.HexColorWithAlpha("shimmerColorB", mistColor);
+        P_Slice.Color = data.HexColorWithAlpha("sliceColorA", Color.White);
+        P_Slice.Color2 = data.HexColorWithAlpha("sliceColorB", mistColor) * 0.65f;
     }
 
     public override void Added(Scene scene)

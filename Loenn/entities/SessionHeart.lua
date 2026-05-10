@@ -3,6 +3,17 @@ local FemtoHelperSessionHeart = {}
 FemtoHelperSessionHeart.name = "FemtoHelper/SessionHeart"
 FemtoHelperSessionHeart.depth = 0
 FemtoHelperSessionHeart.justification = {0.5, 0.5}
+FemtoHelperSessionHeart.fieldInformation = {
+    lightColor = {
+        fieldType = "color",
+    },
+    particleColor = {
+        fieldType = "color",
+    },
+    guiColor = {
+        fieldType = "color",
+    },
+}
 FemtoHelperSessionHeart.placements = {
     {
         name = "default",

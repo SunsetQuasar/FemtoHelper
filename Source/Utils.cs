@@ -448,3 +448,21 @@ public static class RainbowHelper
         return new Color(color1.R * color2.R / 255, color1.G * color2.G / 255, color1.B * color2.B / 255, color1.A * color2.A / 255);
     }
 }
+
+public static class EntityDataExtensions
+{
+    public static Color HexColorWithAlpha(this EntityData data, string key, Color defaultValue = default(Color))
+    {
+        if (data.Values.TryGetValue(key, out var value))
+        {
+            string text = value.ToString();
+            
+            if (text.Length == 2 || text.Length == 6 || text.Length == 8)
+            {
+                return Calc.HexToColorWithAlpha(text);
+            }
+        }
+
+        return defaultValue;
+    }
+}
