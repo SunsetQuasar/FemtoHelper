@@ -469,7 +469,7 @@ public class SessionHeartDisplay : Entity
             }
         }
 
-        if (((level.Paused && level.PauseMainMenuOpen) || list is not null) && strawberriesUpdateTimer <= 0 && totalDiff <= 0 && hearts.HasMultipleHearts)
+        if (((level.Paused && level.PauseMainMenuOpen) || list is not null) && strawberriesUpdateTimer <= 0 && totalDiff <= 0 && hearts.HasMultipleHearts && switchDelay <= 0)
         {
             if (RightPressed)
             {

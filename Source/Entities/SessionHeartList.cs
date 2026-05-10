@@ -15,9 +15,12 @@ public class SessionHeartPedestal : Entity
     private readonly TalkComponent talker;
     public SessionHeartPedestal(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-        Add(talker = new(new Rectangle(-24, 0, 48, 8), Vector2.UnitY * -16, (player) =>
+        float width = data.Width;
+        float height = data.Height;
+        Position += new Vector2(width * 0.5f, height);
+        Add(talker = new(new Rectangle(-(int)(width * 0.5f), -(int)height, (int)width, (int)height), Vector2.UnitY * data.Float("offsetY", -16), (player) =>
         {
-            if ((Scene as Level).Session.GetFlag("FemtoHelper_SessionHeartMenu_Open")) return;
+            //if ((Scene as Level).Session.GetFlag("FemtoHelper_SessionHeartMenu_Open")) return;
             Scene.Add(new SessionHeartList("Session Hearts"));
         }));
     }
@@ -82,7 +85,7 @@ public class SessionHeartList : Overlay
 
         display = level.Tracker.GetEntity<SessionHeartDisplay>();
 
-        level.Session.SetFlag("FemtoHelper_SessionHeartMenu_Open");
+        //level.Session.SetFlag("FemtoHelper_SessionHeartMenu_Open");
         level.StartPauseEffects();
         Tween open = Tween.Create(Tween.TweenMode.Oneshot, Ease.SineInOut, 0.25f, true);
         open.OnUpdate = (t) =>
@@ -126,14 +129,14 @@ public class SessionHeartList : Overlay
         yield return 0.25f;
 
         player?.StateMachine.State = Player.StNormal;
-        level.Session.SetFlag("FemtoHelper_SessionHeartMenu_Open", false);
+        //level.Session.SetFlag("FemtoHelper_SessionHeartMenu_Open", false);
         RemoveSelf();
     }
 
     public override void Removed(Scene scene)
     {
         base.Removed(scene);
-        level.Session.SetFlag("FemtoHelper_SessionHeartMenu_Open", false);
+        //level.Session.SetFlag("FemtoHelper_SessionHeartMenu_Open", false);
         level.EndPauseEffects();
     }
 

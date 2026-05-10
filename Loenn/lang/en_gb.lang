@@ -417,6 +417,7 @@ entities.FemtoHelper/SessionHeart.attributes.description.guiSprite=The Sprites.x
 entities.FemtoHelper/SessionHeart.attributes.description.quickSmash=Skips the collection screen altogether, similar to a Summit Gem.\nThis omits the heart's poem, but it is still used internally as its ID.
 entities.FemtoHelper/SessionHeart.attributes.description.quickSmashSfx=The sound effect that plays when the heart is collected and Quick Smash is set.
 
+# Session Heart Gate
 entities.FemtoHelper/SessionHeartGate.placements.name.default=Session Heart Gate
 entities.FemtoHelper/SessionHeartGate.placements.name.alias=Session Heart Door
 entities.FemtoHelper/SessionHeartGate.placements.description.default=A customizable Heart Gate for Session Hearts.
@@ -435,6 +436,11 @@ entities.FemtoHelper/SessionHeartGate.attributes.description.shimmerColorA=Prima
 entities.FemtoHelper/SessionHeartGate.attributes.description.shimmerColorB=Secondary color of the shimmer particles emitted as the gate opens.
 entities.FemtoHelper/SessionHeartGate.attributes.description.sliceColorA=Primary color of the particles emitted when the gate is sliced open.
 entities.FemtoHelper/SessionHeartGate.attributes.description.sliceColorB=Secondary color of the particles emitted when the gate is sliced open.
+
+# Session Heart Pedestal
+entities.FemtoHelper/SessionHeartPedestal.placements.name.default=Session Heart Pedestal
+entities.FemtoHelper/SessionHeartPedestal.placements.description.default=Interactable area that shows collected Session Hearts.
+entities.FemtoHelper/SessionHeartPedestal.attributes.description.offsetY=Vertical offset for the talker indicator.
 
 # Particle Emitter
 entities.FemtoHelper/ParticleEmitter.placements.name.default=Particle Emitter
