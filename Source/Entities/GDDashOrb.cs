@@ -9,8 +9,8 @@ public class GdDashOrb : Entity
 
     public readonly float Angle;
     public readonly float Speed;
-    public bool Yeahforsure;
-    public bool Lastforsure;
+    public bool PlayerInside;
+    public bool LastPlayerInside;
 
     public Player Player;
 
@@ -61,8 +61,7 @@ public class GdDashOrb : Entity
     {
         Collider = new Hitbox(20, 20, -10, -10);
         Add(new PlayerCollider(OnPlayer));
-
-        Angle = data.Float("angle", 0f) * Calc.DegToRad;
+        Angle = data.Float("angle", data.FirstNodeNullable(offset) is Vector2 node ? Vector2.Subtract(node, Position).Angle() * Calc.RadToDeg : 0f) * Calc.DegToRad;
         Speed = data.Float("speed", 240f);
         Pink = data.Bool("pink", false);
         Additive = data.Bool("additive", false);
@@ -109,12 +108,12 @@ public class GdDashOrb : Entity
 
         Timer += Engine.DeltaTime;
 
-        if (Yeahforsure && !Lastforsure)
+        if (PlayerInside && !LastPlayerInside)
         {
             Scene.Add(new Ring(Position + Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2));
         }
         Cooldown = Math.Max(Cooldown - Engine.DeltaTime, 0);
-        if (Yeahforsure && Cooldown <= 0)
+        if (PlayerInside && Cooldown <= 0)
         {
             if (Input.Jump.Pressed)
             {
@@ -149,13 +148,13 @@ public class GdDashOrb : Entity
                 }
             }
         }
-        Lastforsure = Yeahforsure;
-        Yeahforsure = false;
+        LastPlayerInside = PlayerInside;
+        PlayerInside = false;
     }
 
     public void OnPlayer(Player player)
     {
-        if (!player.OnGround()) Yeahforsure = true;
+        if (!player.OnGround()) PlayerInside = true;
         Player = player;
     }
 
@@ -170,8 +169,6 @@ public class GdDashOrb : Entity
 
         RingTexture.DrawCentered(Position + Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2, Color.White, 1 + Ease.QuintIn(PulsePercent) * 0.6f);
         OrbTexture.DrawCentered(Position + Vector2.UnitY * (float)Math.Sin(Timer * 2) * 2, col, 1 + Ease.QuintIn(PulsePercent) * 0.6f, Angle);
-
-
     }
 
     public override void DebugRender(Camera camera)

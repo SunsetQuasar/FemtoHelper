@@ -12,7 +12,7 @@ FemtoHelperDirectionalLineIndicator.nodeVisibility = "never"
 FemtoHelperDirectionalLineIndicator.fieldInformation = {
     positionEase = {
         options = {
-            {"Linear", 0},
+            {"Linear", "Linear"},
             {"SineIn", "SineIn"},
             {"SineOut", "SineOut"},
             {"SineInOut", "SineInOut"},
@@ -45,7 +45,7 @@ FemtoHelperDirectionalLineIndicator.fieldInformation = {
     },
     alphaInEase = {
         options = {
-            {"Linear", 0},
+            {"Linear", "Linear"},
             {"SineIn", "SineIn"},
             {"SineOut", "SineOut"},
             {"SineInOut", "SineInOut"},
@@ -78,7 +78,7 @@ FemtoHelperDirectionalLineIndicator.fieldInformation = {
     },
     alphaOutEase = {
         options = {
-            {"Linear", 0},
+            {"Linear", "Linear"},
             {"SineIn", "SineIn"},
             {"SineOut", "SineOut"},
             {"SineInOut", "SineInOut"},
@@ -165,7 +165,7 @@ function FemtoHelperDirectionalLineIndicator.sprite(room, entity)
                     arrow:setPosition(entity.x + ((i / entity.spriteCount) * xx), entity.y + ((i / entity.spriteCount) * yy))
                     arrow:setColor(entity.color)
                     arrow:setAlpha(entity.alphaMultiplier)
-                    if entity.orientSprite then arrow.rotation = customAtan2(xx, yy) end--math.atan2(yy, xx) end
+                    if entity.orientSprite then arrow.rotation = math.atan2(yy, xx) end
                     table.insert(sprites, arrow)
                 end
             end

@@ -35,6 +35,7 @@ public class CustomSpeedRotateSpinner : RotateSpinner
         RotateTime = data.Float("rotateTime");
         IsBlade = data.Bool("isBlade");
         IsDust = data.Bool("isDust");
+        noParticles = data.Bool("noParticles", false);
 
         if (IsBlade)
         {
