@@ -1,6 +1,9 @@
 ﻿using Celeste.Mod.FemtoHelper.Entities;
 using Celeste.Mod.Helpers;
+using MonoMod.Utils;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -63,6 +66,56 @@ public static class Utils
         Logger.Log(level, "FemtoHelper", obj.ToString());
     }
 
+    public static void Verbose(string str)
+    {
+        Logger.Log(LogLevel.Verbose, "FemtoHelper", str);
+    }
+
+    public static void Verbose(object obj)
+    {
+        Logger.Log(LogLevel.Verbose, "FemtoHelper", obj.ToString());
+    }
+
+    public static void Debug(string str)
+    {
+        Logger.Log(LogLevel.Debug, "FemtoHelper", str);
+    }
+
+    public static void Debug(object obj)
+    {
+        Logger.Log(LogLevel.Debug, "FemtoHelper", obj.ToString());
+    }
+
+    public static void Info(string str)
+    {
+        Logger.Log(LogLevel.Info, "FemtoHelper", str);
+    }
+
+    public static void Info(object obj)
+    {
+        Logger.Log(LogLevel.Info, "FemtoHelper", obj.ToString());
+    }
+
+    public static void Warn(string str)
+    {
+        Logger.Log(LogLevel.Warn, "FemtoHelper", str);
+    }
+
+    public static void Warn(object obj)
+    {
+        Logger.Log(LogLevel.Warn, "FemtoHelper", obj.ToString());
+    }
+
+    public static void Error(string str)
+    {
+        Logger.Log(LogLevel.Error, "FemtoHelper", str);
+    }
+
+    public static void Error(object obj)
+    {
+        Logger.Log(LogLevel.Error, "FemtoHelper", obj.ToString());
+    }
+
     public static Vector2 ParametricRoundedSquare(float p, float radiusX, float radiusY, float radiusC)
     {
         Vector2 @return = new();
@@ -110,6 +163,23 @@ public static class Utils
         }
 
         return @return;
+    }
+
+    internal static object AreaReloadLock;
+
+    public static List<AreaKey> GetFromLevelSet(string levelSet)
+    {
+        AreaReloadLock ??= typeof(AssetReloadHelper).GetField("AreaReloadLock", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic).GetValue(null);
+
+        lock (AreaReloadLock)
+        {
+            List<AreaKey> ret = [.. string.IsNullOrEmpty(levelSet) ? null : AreaData.Areas.FindAll(a => a.LevelSet == levelSet).Select(a => a.ToKey())];
+            foreach(AreaKey key in ret)
+            {
+                Debug(key.SID);
+            }
+            return ret;
+        }
     }
 }
 

@@ -2,6 +2,7 @@
 using Celeste.Mod.FemtoHelper.Metadata;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -10,7 +11,8 @@ public class SessionHeartDisplay : Entity
 {
     public class HeartsCounter : Component
     {
-        public Color FlashColor => Calc.HexToColor(FemtoHelperMetadata.SessionHeartMeta[CurrentSelected].Color);
+
+        public Color FlashColor => Calc.HexToColor(FemtoHelperMetadata.SessionHeartMeta[indexes[CurrentSelected]].Color);
 
         public bool Golden;
 
@@ -32,9 +34,11 @@ public class SessionHeartDisplay : Entity
 
         public bool OverworldSfx;
 
-        private readonly int[] amount;
+        internal int[] amount;
+        internal List<int> indexes;
+        internal int[] indexindexes;
 
-        private int[] outOf;
+        internal int[] outOf;
 
         internal Wiggler wiggler, iconWiggler;
 
@@ -84,7 +88,7 @@ public class SessionHeartDisplay : Entity
                     arrowLastPressed = -1;
                     Audio.Play("event:/ui/main/rollover_down");
                 }
-                currentSelected = Utils.Mod(value, amount.Length);
+                currentSelected = Utils.Mod(value, indexes.Count);
                 iconWiggler.Start();
                 UpdateStrings();
             }
@@ -94,15 +98,16 @@ public class SessionHeartDisplay : Entity
         {
             get
             {
-                return amount[CurrentSelected];
+                if (!HasAnyVisible) return 0;
+                return amount[indexes[CurrentSelected]];
             }
             set
             {
-                if (amount[CurrentSelected] == value)
+                if (amount[indexes[CurrentSelected]] == value)
                 {
                     return;
                 }
-                amount[CurrentSelected] = value;
+                amount[indexes[CurrentSelected]] = value;
                 UpdateStrings();
                 if (CanWiggle)
                 {
@@ -114,22 +119,25 @@ public class SessionHeartDisplay : Entity
                     {
                         Audio.Play(value == OutOf ? "event:/ui/postgame/strawberry_total_all" : "event:/ui/game/increment_strawberry");
                     }
-                    if(value == OutOf) iconWiggler.Start();
+                    if (value == OutOf) iconWiggler.Start();
                     wiggler.Start();
                     flashTimer = 0.5f;
                 }
             }
         }
 
+        public bool HasAnyVisible => indexes?.Count > 0;
+
         public int OutOf
         {
             get
             {
-                return outOf[CurrentSelected];
+                if (!HasAnyVisible) return 0;
+                return outOf[indexes[CurrentSelected]];
             }
             set
             {
-                outOf[CurrentSelected] = value;
+                outOf[indexes[CurrentSelected]] = value;
                 UpdateStrings();
             }
         }
@@ -153,7 +161,6 @@ public class SessionHeartDisplay : Entity
 
         public float FullHeight
         {
-
             get
             {
                 return Math.Max(ActiveFont.LineHeight, MTN.Journal["heartgem0"].Height);
@@ -172,6 +179,7 @@ public class SessionHeartDisplay : Entity
         public HeartsCounter(bool centeredX, int[] amount, int[] outOf, bool showOutOf = false)
             : base(active: true, visible: true)
         {
+            indexindexes = new int[amount.Length];
             CenteredX = centeredX;
             this.amount = amount;
             this.outOf = outOf;
@@ -186,15 +194,37 @@ public class SessionHeartDisplay : Entity
             iconWiggler.UseRawDeltaTime = true;
             x = GFX.Gui["x"];
             arrow = GFX.Gui["tinyarrow"];
+            UpdateIndexes(false);
         }
 
+        public void UpdateIndexes(bool changeSelected = true)
+        {
+            indexindexes = new int[amount.Length];
+            indexes = [];
+            int i = 0;
+            foreach (SessionHeartDefinition def in FemtoHelperMetadata.SessionHeartMeta)
+            {
+                if (FemtoHelperMetadata.VisibleSessionHeartMeta.Contains(def))
+                {
+                    indexes.Add(i);
+                    indexindexes[i] = indexes.Count - 1;
+                }
+                else
+                {
+                    indexindexes[i] = -1;
+                }
+                i++;
+            }
+            UpdateStrings();
+            if (changeSelected) CurrentSelected += indexes.Count;
+        }
 
         private void UpdateStrings()
         {
             sAmount = Amount.ToString();
-            if (outOf[CurrentSelected] > 0)
+            if (OutOf > 0)
             {
-                sOutOf = "/" + outOf[CurrentSelected];
+                sOutOf = "/" + OutOf;
             }
             else
             {
@@ -243,10 +273,10 @@ public class SessionHeartDisplay : Entity
                 }
             }
 
-            arrowPercent = Calc.Approach(arrowPercent, SceneAs<Level>().Paused ? 1f : 0f, Engine.DeltaTime * 4f);
+            arrowPercent = Calc.Approach(arrowPercent, (SceneAs<Level>().Paused || Scene.Tracker.GetEntity<SessionHeartList>() is { }) ? 1f : 0f, Engine.DeltaTime * 4f);
         }
 
-        internal bool HasMultipleHearts => FemtoHelperMetadata.SessionHeartMeta.Count is { } && FemtoHelperMetadata.SessionHeartMeta.Count > 1;
+        internal bool HasMultipleHearts => FemtoHelperMetadata.VisibleSessionHeartMeta.Count is { } && FemtoHelperMetadata.VisibleSessionHeartMeta.Count > 1;
 
 
         public override void Render()
@@ -267,15 +297,15 @@ public class SessionHeartDisplay : Entity
             {
                 renderPosition -= vector * (num3 / 2f) * Scale;
             }
-            MTexture texture = GFX.Gui[FemtoHelperMetadata.SessionHeartMeta[CurrentSelected].UITexture];
+            MTexture texture = GFX.Gui[FemtoHelperMetadata.SessionHeartMeta[indexes[CurrentSelected]].UITexture];
             texture.DrawCentered(renderPosition + Vector2.UnitX * (+30 + (HasMultipleHearts ? (-20 * Ease.SineInOut(arrowPercent)) : 0)), Color.White, Scale + 0.25f, iconWiggler.Value * -0.25f);
 
-            if(HasMultipleHearts)
+            if (HasMultipleHearts)
             {
                 arrow.DrawCentered(renderPosition + (Vector2.UnitX * (arrowLastPressed == 1 ? iconWiggler.Value * -4f : 0f)) + Vector2.UnitX * (30 - 20 + 48), (arrowLastPressed == 1 ? HighlightColor : Color.White) * Ease.SineInOut(arrowPercent), 0.5f);
                 arrow.DrawCentered(renderPosition + (Vector2.UnitX * (arrowLastPressed == -1 ? iconWiggler.Value * 4f : 0f)) + Vector2.UnitX * (30 - 20 - 48), (arrowLastPressed == -1 ? HighlightColor : Color.White) * Ease.SineInOut(arrowPercent), -0.5f);
             }
-            
+
             x.DrawCentered(renderPosition + vector * (62f + (float)x.Width * 0.5f) * Scale + vector2 * 2f * Scale, color, Scale);
             ActiveFont.DrawOutline(sAmount, renderPosition + vector * (num3 - num2 - num * 0.5f) * Scale + vector2 * (wiggler.Value * 18f) * Scale, new Vector2(0.5f, 0.5f), Vector2.One * Scale, color, Stroke, Color.Black);
             if (text != "")
@@ -309,6 +339,8 @@ public class SessionHeartDisplay : Entity
 
     private float strawberriesWaitTimer;
 
+    private float switchDelay;
+
     private readonly HeartsCounter hearts;
 
     public float LengthOffsetTarget()
@@ -324,10 +356,18 @@ public class SessionHeartDisplay : Entity
     public SessionHeartDisplay()
     {
         Y = 984f;
-        Depth = -101;
+        Depth = -5101;
         Tag = (int)Tags.HUD | (int)Tags.Global | (int)Tags.PauseUpdate | (int)Tags.TransitionUpdate;
         bg = GFX.Gui["strawberryCountBG"];
 
+        int[] amount, outOf;
+        (amount, outOf) = GetAmounts();
+
+        Add(hearts = new HeartsCounter(centeredX: false, amount, outOf, true));
+    }
+
+    public static (int[], int[]) GetAmounts()
+    {
         int[] amount = new int[FemtoHelperMetadata.SessionHeartMeta.Count];
         int[] outOf = new int[FemtoHelperMetadata.SessionHeartMeta.Count];
 
@@ -339,34 +379,47 @@ public class SessionHeartDisplay : Entity
             i++;
         }
 
-        Add(hearts = new HeartsCounter(centeredX: false, amount, outOf, true));
+        return (amount, outOf);
     }
-
 
     public override void Update()
     {
         float target = LengthOffsetTarget();
         lengthOffset = Calc.Approach(lengthOffset, target, Math.Abs((lengthOffset - target) + 1) * Engine.DeltaTime * 8);
 
-        List<int> diffs = [];
+        SessionHeartList list = Scene.Tracker.GetEntity<SessionHeartList>();
+
         int totalDiff = 0;
         int i = 0;
         int hasDiffAt = -1;
-        foreach(string name in FemtoHelperMetadata.SessionHeartGroupNames)
+        foreach (string name in FemtoHelperMetadata.SessionHeartGroupNames)
         {
             int value = FemtoModule.Session.SessionHeartCount(name) - hearts.AmountOf(i);
             totalDiff += value;
-            if(hasDiffAt == -1 && value != 0)
+            if (hasDiffAt == -1 && value != 0)
             {
                 hasDiffAt = i;
             }
-            diffs.Add(value);
             i++;
         }
 
-        if (hasDiffAt != -1 && hearts.CurrentSelected != hasDiffAt)
+        if (switchDelay <= 0)
         {
-            hearts.CurrentSelected = hasDiffAt;
+            if (hasDiffAt != -1)
+            {
+                if (hearts.indexindexes[hasDiffAt] == -1)
+                {
+                    hearts.UpdateIndexes();
+                }
+                hasDiffAt = hearts.indexindexes[hasDiffAt];
+            }
+
+            if (!hearts.HasAnyVisible) return;
+
+            if (hasDiffAt != -1 && hearts.CurrentSelected != hasDiffAt)
+            {
+                hearts.CurrentSelected = hasDiffAt;
+            }
         }
 
         base.Update();
@@ -375,7 +428,7 @@ public class SessionHeartDisplay : Entity
         {
             strawberriesUpdateTimer = 0.4f;
         }
-        if (totalDiff > 0 || strawberriesUpdateTimer > 0f || strawberriesWaitTimer > 0f || (level.Paused && level.PauseMainMenuOpen))
+        if (totalDiff > 0 || strawberriesUpdateTimer > 0f || strawberriesWaitTimer > 0f || ((level.Paused && level.PauseMainMenuOpen) || list is not null))
         {
             DrawLerp = Calc.Approach(DrawLerp, 1f, 1.2f * Engine.RawDeltaTime);
         }
@@ -387,26 +440,36 @@ public class SessionHeartDisplay : Entity
         {
             strawberriesWaitTimer -= Engine.RawDeltaTime;
         }
+
+        if (switchDelay > 0)
+        {
+            switchDelay -= Engine.DeltaTime;
+        }
+
         if (strawberriesUpdateTimer > 0f && DrawLerp == 1f)
         {
             strawberriesUpdateTimer -= Engine.RawDeltaTime;
             if (strawberriesUpdateTimer <= 0f)
             {
-
-                if (totalDiff > 0 && diffs.Count > 0)
-                {
-                    hearts.CurrentSelected = hasDiffAt;
-                    hearts.Amount++;
-                }
                 strawberriesWaitTimer = 2f;
                 if (totalDiff > 0)
                 {
+                    hearts.CurrentSelected = hasDiffAt;
+                    hearts.Amount++;
+                    totalDiff--;
+                    switchDelay = 0.2f;
+
                     strawberriesUpdateTimer = 0.3f;
+                    if (hearts.OutOf == hearts.Amount)
+                    {
+                        switchDelay *= 2f;
+                        strawberriesUpdateTimer *= 2f;
+                    }
                 }
             }
         }
 
-        if (level.Paused && level.PauseMainMenuOpen && strawberriesUpdateTimer <= 0 && totalDiff <= 0 && hearts.HasMultipleHearts)
+        if (((level.Paused && level.PauseMainMenuOpen) || list is not null) && strawberriesUpdateTimer <= 0 && totalDiff <= 0 && hearts.HasMultipleHearts)
         {
             if (RightPressed)
             {
@@ -433,6 +496,7 @@ public class SessionHeartDisplay : Entity
 
     public override void Render()
     {
+        if (!hearts.HasAnyVisible) return;
         Vector2 vec = Vector2.Lerp(new Vector2(-bg.Width, Y), new Vector2(32f + lengthOffset, Y), Ease.CubeOut(DrawLerp));
         vec.X = Engine.Width - vec.X;
         vec = vec.Round();

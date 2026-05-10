@@ -75,6 +75,8 @@ public class FemtoModule : EverestModule
 
     public override Type SessionType => typeof(FemtoHelperSession);
     public static FemtoHelperSession Session => (FemtoHelperSession)Instance._Session;
+    public override Type SaveDataType => typeof(FemtoHelperSaveData);
+    public static FemtoHelperSaveData SaveData => (FemtoHelperSaveData)Instance._SaveData;
 
     public FemtoModule()
     {
@@ -181,7 +183,7 @@ public class FemtoModule : EverestModule
             Vector2 aim = Input.GetAimVector();
 
             // block the dash directly if the player is holding a forbidden direction, and does not have Dash Assist enabled.
-            return orig(self) && (SaveData.Instance.Assists.DashAssist || IsDashDirectionAllowed(aim, d));
+            return orig(self) && (global::Celeste.SaveData.Instance.Assists.DashAssist || IsDashDirectionAllowed(aim, d));
         }
         return orig(self);
     }

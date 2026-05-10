@@ -368,6 +368,28 @@ entities.FemtoHelper/OshiroCaller.attributes.name.repell=Repel
 entities.FemtoHelper/OshiroCaller.attributes.description.repell=Whether the caller should make Oshiro explode (or leave) instead of calling him.
 entities.FemtoHelper/OshiroCaller.attributes.description.justMakeOshiroLeave=Whether Oshiro should just leave instead of exploding.
 
+# Session Heart
+entities.FemtoHelper/SessionHeart.placements.name.default=Session Heart
+entities.FemtoHelper/SessionHeart.placements.description.default=A Crystal Heart collectable that does not persist in the save file.
+entities.FemtoHelper/SessionHeart.attributes.description.removeCameraTriggers=Remove camera triggers when the heart is collected.
+entities.FemtoHelper/SessionHeart.attributes.description.poem=The Dialog ID for poem the heart displays.\nNote: the Dialog ID is the heart's unique identifier, even when it is not displayed (e.g. when Quick Smash is set).
+entities.FemtoHelper/SessionHeart.attributes.description.group=The Session Heart Group this heart belongs to.\nAt least one Session Heart Group is required for the heart to work.\nThey are defined in your map's meta.yaml like so:\n\nSessionHeartGroups:\n  - Name: unique_group_name\n\n    #The icon in the heart counter\n    UITexture: FemtoHelper/SessionHearts/defaultIcon\n\n    #The color for the heart counter\n    Color: 59CFB5\n\n    #Hide this group if the player has zero hearts from it\n    HideZero: false\n\n    #Allow the player to collect more than one heart with the same poem ID\n    AllowDuplicates: false\n\n  - Name: another_group_name\n    UITexture: ...\n\nAnd so on.
+entities.FemtoHelper/SessionHeart.attributes.description.sprite=The heart's Sprites.xml Sprite ID.
+entities.FemtoHelper/SessionHeart.attributes.description.lightColor=The color of the heart's light source.
+entities.FemtoHelper/SessionHeart.attributes.description.particleColor=The color of the heart's ambient particles.
+entities.FemtoHelper/SessionHeart.attributes.description.guiColor=The color of the text/particles in the heart collection screen.
+entities.FemtoHelper/SessionHeart.attributes.description.fakeParticles=Spawn particles like the ones from the fake heart from Farewell.
+entities.FemtoHelper/SessionHeart.attributes.description.bloomAlpha=The transparency of the heart's bloom point.
+entities.FemtoHelper/SessionHeart.attributes.description.lightAlpha=The transparency of the heart's light source.
+entities.FemtoHelper/SessionHeart.attributes.description.pulseSfx=The sound effect that plays when the heart pulses.
+entities.FemtoHelper/SessionHeart.attributes.description.bounceSfx=The sound effect that plays when the heart is bounced on.
+entities.FemtoHelper/SessionHeart.attributes.description.collectSfx=The sound effect that plays when the heart is collected.
+entities.FemtoHelper/SessionHeart.attributes.description.flashSprite=The Sprites.xml sprite for the heart's silhouette the moment it is collected.
+entities.FemtoHelper/SessionHeart.attributes.description.guiSprite=The Sprites.xml sprite for the UI heart in the collection screen.
+entities.FemtoHelper/SessionHeart.attributes.description.quickSmash=Skips the collection screen altogether, similar to a Summit Gem.\nThis omits the heart's poem, but it is still used internally as its ID.
+entities.FemtoHelper/SessionHeart.attributes.description.quickSmashSfx=The sound effect that plays when the heart is collected and Quick Smash is set.
+
+
 # Particle Emitter
 entities.FemtoHelper/ParticleEmitter.placements.name.default=Particle Emitter
 entities.FemtoHelper/ParticleEmitter.placements.description.default=An entity that continuously emits particles, with full customization.

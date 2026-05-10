@@ -9,6 +9,8 @@ public static class FemtoHelperMetadata
 {
     public static List<SessionHeartDefinition> SessionHeartMeta = [];
 
+    public static List<SessionHeartDefinition> VisibleSessionHeartMeta => [.. SessionHeartMeta.Where((def) => !(def.HideZero && FemtoModule.Session.SessionHeartCount(def.Name) == 0))];
+
     public static Dictionary<string, SessionHeartDefinition> SessionHeartMetaByGroupName = [];
 
     public static List<string> SessionHeartGroupNames = [];

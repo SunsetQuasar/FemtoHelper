@@ -13,4 +13,6 @@ public class SessionHeartDefinition
     public string UITexture { get; set; } = "FemtoHelper/SessionHearts/defaultIcon";
     public string Color { get; set; } = "FFFFFF";
     public int UITotal { get; set; } = 0;
+    public bool HideZero { get; set; } = false;
+    public bool AllowDuplicates { get; set; } = false;
 }

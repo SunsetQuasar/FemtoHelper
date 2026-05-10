@@ -27,7 +27,7 @@ public class SessionHeart : Entity
 
             public float Duration;
 
-            
+
             public void Reset(float percent)
             {
                 Direction = Calc.AngleToVector(Calc.Random.NextFloat(MathF.PI * 2f), 1f);
@@ -66,7 +66,7 @@ public class SessionHeart : Entity
 
         public Color Color { get; private set; }
 
-        
+
         public Poem(string text, Color color, string spriteID, float heartAlpha)
         {
             if (text != null)
@@ -74,17 +74,24 @@ public class SessionHeart : Entity
                 this.text = ActiveFont.FontSize.AutoNewline(text, 1024);
             }
             Color = color;
-            if(string.IsNullOrEmpty(spriteID))
+            if (string.IsNullOrEmpty(spriteID))
             {
                 Heart = new(GFX.Gui, "FemtoHelper/SessionHearts/defaultGui/");
                 Heart.AddLoop("idle", "spin", 1f, 0);
                 Heart.AddLoop("spin", "spin", 0.08f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
                 Heart.AddLoop("fastspin", "spin", 0.08f, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
                 Heart.CenterOrigin();
-            } 
+            }
             else
             {
-                Heart = GFX.GuiSpriteBank.Create(spriteID);
+                try
+                {
+                    Heart = GFX.GuiSpriteBank.Create(spriteID);
+                }
+                catch
+                {
+                    Heart = GFX.SpriteBank.Create(spriteID);
+                }
             }
             Heart.Play("spin");
             Heart.Position = new Vector2(1920f, 1080f) * 0.5f;
@@ -102,7 +109,7 @@ public class SessionHeart : Entity
             }
         }
 
-        
+
         public void Dispose()
         {
             if (!disposed)
@@ -115,7 +122,7 @@ public class SessionHeart : Entity
             }
         }
 
-        
+
         private void DrawPoem(Vector2 offset, Color color)
         {
             MTexture mTexture = GFX.Gui["poemside"];
@@ -126,7 +133,7 @@ public class SessionHeart : Entity
             mTexture.DrawCentered(vector + Vector2.UnitX * (num / 2f + 64f), color);
         }
 
-        
+
         public override void Update()
         {
             timer += Engine.DeltaTime;
@@ -141,7 +148,7 @@ public class SessionHeart : Entity
             Heart.Update();
         }
 
-        
+
         public void BeforeRender()
         {
             if (!disposed)
@@ -181,7 +188,7 @@ public class SessionHeart : Entity
             }
         }
 
-        
+
         public override void Render()
         {
             if (!disposed && !Scene.Paused)
@@ -283,7 +290,7 @@ public class SessionHeart : Entity
         flashSpriteID = data.String("flashSprite", "heartGemWhite");
         guiSpriteID = data.String("guiSprite", "");
         quickSmash = data.Bool("quickSmash", false);
-        quickSmashSfxPath = data.String("quickSmashSfx", "event:/game/07_summit/gem_get");
+        quickSmashSfxPath = data.String("quickSmashSfx", "event:/FemtoHelper/sessionheart_shatter");
     }
 
     public override void Awake(Scene scene)
@@ -424,7 +431,7 @@ public class SessionHeart : Entity
         Level level = Scene as Level;
         AreaKey area = level.Session.Area;
 
-        if(quickSmash)
+        if (quickSmash)
         {
             Visible = false;
             Collidable = false;
@@ -541,7 +548,7 @@ public class SessionHeart : Entity
         {
             if (value is not null)
             {
-                if (value.Contains(poemID)) return;
+                if (value.Contains(poemID) && !(FemtoHelperMetadata.SessionHeartMetaByGroupName.TryGetValue(groupName, out var def) && def.AllowDuplicates)) return;
                 value.Add(poemID);
             }
             else
@@ -628,8 +635,9 @@ public class SessionHeart : Entity
                 {
                     Color col = Color.White * 0.5f;
                     string group = entity.String("group", "");
-                    if (FemtoHelperMetadata.SessionHeartGroupNames.Contains(group)) {
-                        if(FemtoHelperMetadata.SessionHeartMetaByGroupName.TryGetValue(group, out var def))
+                    if (FemtoHelperMetadata.SessionHeartGroupNames.Contains(group))
+                    {
+                        if (FemtoHelperMetadata.SessionHeartMetaByGroupName.TryGetValue(group, out var def))
                         {
                             col = Calc.HexToColor(def.Color);
                         }
