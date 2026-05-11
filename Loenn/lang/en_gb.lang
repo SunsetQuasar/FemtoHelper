@@ -373,7 +373,7 @@ entities.FemtoHelper/SessionHeart.placements.name.default=Session Heart
 entities.FemtoHelper/SessionHeart.placements.description.default=A Crystal Heart collectable that does not persist in the save file.
 entities.FemtoHelper/SessionHeart.attributes.description.removeCameraTriggers=Remove camera triggers when the heart is collected.
 entities.FemtoHelper/SessionHeart.attributes.description.poem=The Dialog ID for poem the heart displays.\nNote: the Dialog ID is the heart's unique identifier, even when it is not displayed (e.g. when Quick Smash is set).
-entities.FemtoHelper/SessionHeart.attributes.description.group=The Session Heart Group this gate belongs to.\nAt least one Session Heart Group is required for the heart to work.\nThey are defined in your map's meta.yaml like so:\n\nSessionHeartGroups:\n  - Name: unique_group_name\n\n    #The icon in the heart counter\n    UITexture: FemtoHelper/SessionHearts/defaultIcon\n\n    #The color for the heart counter\n    Color: 59CFB5\n\n    #Hide this group if the player has zero hearts from it\n    HideZero: false\n\n    #Allow the player to collect more than one heart with the same poem ID\n    AllowDuplicates: false\n\n  - Name: another_group_name\n    UITexture: ...\n\nAnd so on.
+entities.FemtoHelper/SessionHeart.attributes.description.group=The Session Heart Group this gate belongs to.\nAt least one Session Heart Group is required for the heart to work.\nThey are defined in your map's meta.yaml like so:\n\nSessionHeartGroups:\n  - Name: unique_group_name\n\n    # The icon in the heart counter\n    UITexture: FemtoHelper/SessionHearts/defaultIcon\n\n    # The color for the heart counter\n    Color: 59CFB5\n\n    # (Optional) Display a target amount of hearts to collect (visual only)\n    UITotal: 10\n\n    # Hide this group if the player has zero hearts from it\n    HideZero: false\n\n    # Allow the player to collect more than one heart with the same poem ID\n    AllowDuplicates: false\n\n  - Name: another_group_name\n    UITexture: ...\n\nAnd so on.
 
 # one day lonn will support this... one day... :^)
 
@@ -385,16 +385,19 @@ entities.FemtoHelper/SessionHeart.attributes.description.group=The Session Heart
 # SessionHeartGroups:
 #   - Name: unique_group_name
 #   
-#     #The icon in the heart counter
+#     # The icon in the heart counter
 #     UITexture: FemtoHelper/SessionHearts/defaultIcon
 #           
-#     #The color for the heart counter
+#     # The color for the heart counter
 #     Color: 59CFB5
+#       
+#     # (Optional) Display a target amount of hearts to collect (visual only)
+#     UITotal: 10
 #                   
-#     #Hide this group if the player has zero hearts from it
+#     # Hide this group if the player has zero hearts from it
 #     HideZero: false
 #                           
-#     #Allow the player to collect more than one heart with the same poem ID
+#     # Allow the player to collect more than one heart with the same poem ID
 #     AllowDuplicates: false
 #                                   
 #   - Name: another_group_name
@@ -424,7 +427,7 @@ entities.FemtoHelper/SessionHeartGate.placements.description.default=A customiza
 entities.FemtoHelper/SessionHeartGate.attributes.description.requires=The number of Session Hearts required to open this gate.
 entities.FemtoHelper/SessionHeartGate.attributes.description.startHidden=Whether the gate should start hidden and come crashing down when the player approaches.\nWill destroy dash blocks as it crashes down.
 entities.FemtoHelper/SessionHeartGate.attributes.description.spritePath=Path to the folder containing edge and heart icon sprites.
-entities.FemtoHelper/SessionHeartGate.attributes.description.group=The Session Heart Group this gate belongs to.\nAt least one Session Heart Group is required for the heart to work.\nThey are defined in your map's meta.yaml like so:\n\nSessionHeartGroups:\n  - Name: unique_group_name\n\n    #The icon in the heart counter\n    UITexture: FemtoHelper/SessionHearts/defaultIcon\n\n    #The color for the heart counter\n    Color: 59CFB5\n\n    #Hide this group if the player has zero hearts from it\n    HideZero: false\n\n    #Allow the player to collect more than one heart with the same poem ID\n    AllowDuplicates: false\n\n  - Name: another_group_name\n    UITexture: ...\n\nAnd so on.
+entities.FemtoHelper/SessionHeartGate.attributes.description.group=The Session Heart Group this gate belongs to.\nAt least one Session Heart Group is required for the heart to work.\nThey are defined in your map's meta.yaml like so:\n\nSessionHeartGroups:\n  - Name: unique_group_name\n\n    # The icon in the heart counter\n    UITexture: FemtoHelper/SessionHearts/defaultIcon\n\n    # The color for the heart counter\n    Color: 59CFB5\n\n    # (Optional) Display a target amount of hearts to collect (visual only)\n    UITotal: 10\n\n    # Hide this group if the player has zero hearts from it\n    HideZero: false\n\n    # Allow the player to collect more than one heart with the same poem ID\n    AllowDuplicates: false\n\n  - Name: another_group_name\n    UITexture: ...\n\nAnd so on.
 entities.FemtoHelper/SessionHeartGate.attributes.description.requireLeft=Requires the player to be on the left side of the gate to open it.
 entities.FemtoHelper/SessionHeartGate.attributes.description.mistColor=Color of the interior mist effect.
 entities.FemtoHelper/SessionHeartGate.attributes.description.interiorColor=Color of the interior background.
