@@ -438,9 +438,9 @@ entities.FemtoHelper/SessionHeartGate.attributes.description.sliceColorA=Primary
 entities.FemtoHelper/SessionHeartGate.attributes.description.sliceColorB=Secondary color of the particles emitted when the gate is sliced open.
 
 # Session Heart Pedestal
-entities.FemtoHelper/SessionHeartPedestal.placements.name.default=Session Heart Pedestal
-entities.FemtoHelper/SessionHeartPedestal.placements.description.default=Interactable area that shows collected Session Hearts.
-entities.FemtoHelper/SessionHeartPedestal.attributes.description.offsetY=Vertical offset for the talker indicator.
+triggers.FemtoHelper/SessionHeartPedestal.placements.name.default=Session Heart Pedestal
+triggers.FemtoHelper/SessionHeartPedestal.placements.description.default=Interactable area that shows collected Session Hearts.
+triggers.FemtoHelper/SessionHeartPedestal.attributes.description.offsetY=Vertical offset for the talker indicator.
 
 # Particle Emitter
 entities.FemtoHelper/ParticleEmitter.placements.name.default=Particle Emitter
