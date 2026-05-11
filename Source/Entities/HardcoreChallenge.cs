@@ -45,7 +45,7 @@ public class HardcoreChallenge
             string key = collectable.SourceId.ToString();
             if (key == default(EntityID).Key)
             {
-                Error($"HardcoreChallenge ({levelSet}): tried to collect an entity with a default entity ID!");
+                Warn($"HardcoreChallenge ({levelSet}): tried to collect an entity with a default entity ID! Allowing it, but it means any other ones with the same ID won't count!");
             }
 
             string sid = (collectable.Scene as Level).Session.Area.SID;
@@ -57,6 +57,11 @@ public class HardcoreChallenge
             else
             {
                 challenge.collectables.Add(sid, [key]);
+            }
+
+            if(collectable.Scene.Tracker.GetEntity<QueryHardcoreChallenge>() is { } q)
+            {
+                q.Query();
             }
         }
     }
@@ -138,7 +143,16 @@ public class HardcoreChallenge
     private static PlayerDeadBody Player_Die(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats)
     {
         var @return = orig(self, direction, evenIfInvincible, registerDeathInStats);
-        FailCurrent();
+        if(@return != null) //i.e. the player *actually* died
+        {
+            self.Scene.OnEndOfFrame += () =>
+            {
+                if(self == null || self.Dead)
+                {
+                    FailCurrent();
+                }
+            };
+        }
         return @return;
     }
 
@@ -219,11 +233,16 @@ public class QueryHardcoreChallenge(EntityData data, Vector2 offset) : Entity(da
     {
         base.Awake(scene);
 
+        Query();
+    }
+
+    public void Query()
+    {
         if (FemtoModule.SaveData.GetCurrentChallenge() is HardcoreChallenge challenge)
         {
             if (!challenge.Failed && challenge.TotalOf(sids) >= requiredAmount && challenge.CompletedAllOf(levelCompleteSids))
             {
-                (scene as Level).Session.SetFlag(flag);
+                (Scene as Level).Session.SetFlag(flag);
             }
         }
     }
