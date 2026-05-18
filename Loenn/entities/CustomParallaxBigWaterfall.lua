@@ -15,7 +15,7 @@ FemtoHelperCustomParallaxBigWaterfall.fieldInformation = {
     },
     ]]--
     displacementType = {
-        options = {"None", "NoneSmooth", "Vanilla", "Custom", "CustomSmooth"},
+        options = {"None", "Vanilla", "Custom"},
         editable = false
     },
     surfaceColor = {
