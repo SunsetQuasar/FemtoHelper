@@ -181,7 +181,7 @@ public class NoLightClutterSwitch : Solid
         }, duration, start: true));
         player.StateMachine.State = 11;
         Vector2 target = Position + new Vector2(Width / 2f, 0f);
-        ClutterAbsorbEffect effect = new ClutterAbsorbEffect();
+        ClutterAbsorbEffect effect = [];
         Scene.Add(effect);
         sprite.Play("break");
         Level level = SceneAs<Level>();

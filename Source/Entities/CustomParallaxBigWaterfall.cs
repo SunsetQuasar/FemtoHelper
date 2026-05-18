@@ -23,7 +23,7 @@ public class CustomParallaxBigWaterfall : Entity
 
 	private readonly float fallSpeedMultiplier;
 
-	private readonly List<float> lines = new List<float>();
+	private readonly List<float> lines = [];
 
 	private readonly Color surfaceColor;
 

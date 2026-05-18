@@ -97,11 +97,11 @@ public class DigitalCascade : Backdrop
 
 		cascatees = new List<Cascatee>(symbolAmount);
 
-		afterimages = new List<Afterimage>();
+		afterimages = [];
 
 		float angleRad = Calc.DegToRad * angle;
 
-		textures = new List<MTexture>();
+		textures = [];
 		textures = GFX.Game.GetAtlasSubtextures(spritePath);
 
 		fadeTime = fadetime;

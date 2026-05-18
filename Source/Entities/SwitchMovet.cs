@@ -420,7 +420,7 @@ public class SwitchMovet : Solid
         Smallcog = GFX.Game[path + "gearsmall"];
         MTexture mainTexture = GFX.Game[path + "block"];
         MTexture mainTextureRust = GFX.Game[path + "rust"];
-        Block = new List<Image>();
+        Block = [];
         for (int i = 0; i < Width; i += 8)
         {
             for (int j = 0; j < Height; j += 8)

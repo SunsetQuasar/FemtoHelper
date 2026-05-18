@@ -20,7 +20,7 @@ public class FsCs0HubIntro : CutsceneEntity
 
 	private readonly Vector2 spawn;
 
-	private readonly List<EventInstance> sfxs = new List<EventInstance>();
+	private readonly List<EventInstance> sfxs = [];
 
 	public FsCs0HubIntro(Scene scene, Player player)
 	{

@@ -264,7 +264,7 @@ public class SessionHeart : Entity
     public SessionHeart(Vector2 position) : base(position)
     {
         autoPulse = true;
-        walls = new List<InvisibleBarrier>();
+        walls = [];
         Add(holdableCollider = new HoldableCollider(OnHoldable));
         Add(new MirrorReflection());
     }

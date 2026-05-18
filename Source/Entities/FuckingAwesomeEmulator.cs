@@ -778,7 +778,7 @@ public class FuckingAwesomeEmulator : Entity
             Calc.HexToColor("ff77a8"),
             Calc.HexToColor("ffccaa")
         };
-        paletteSwap = new Dictionary<Color, int>();
+        paletteSwap = [];
         fontMap = "abcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=?:.";
         //base..ctor();
         bootLevel = new Point(levelX, levelY);
@@ -1863,7 +1863,7 @@ public class FuckingAwesomeClassic
                     G.init_object(new smoke(), x, y);
                     G.init_object(new smoke(), x + 8f, y);
                     timer = 60f;
-                    particles = new List<particle>();
+                    particles = [];
                 }
                 E.spr(96f, x, y);
                 E.spr(97f, x + 8f, y);
@@ -2238,11 +2238,11 @@ public class FuckingAwesomeClassic
         //IL_000f: Unknown result type (might be due to invalid IL or missing references)
         E = Emulator;
         room = new Point(0, 0);
-        objects = new List<ClassicObject>();
+        objects = [];
         freeze = 0;
         will_restart = false;
         delay_restart = 0;
-        got_fruit = new HashSet<int>();
+        got_fruit = [];
         has_dashed = false;
         sfx_timer = 0;
         has_key = false;
@@ -2258,7 +2258,7 @@ public class FuckingAwesomeClassic
         max_djump = 1;
         start_game = false;
         start_game_flash = 0;
-        clouds = new List<Cloud>();
+        clouds = [];
         for (int i = 0; i <= 16; i++)
         {
             clouds.Add(new Cloud
@@ -2269,7 +2269,7 @@ public class FuckingAwesomeClassic
                 w = 32f + E.rnd(32f)
             });
         }
-        particles = new List<Particle>();
+        particles = [];
         for (int j = 0; j <= 32; j++)
         {
             particles.Add(new Particle
@@ -2282,14 +2282,14 @@ public class FuckingAwesomeClassic
                 c = 6 + E.flr(0.5f + E.rnd(1f))
             });
         }
-        dead_particles = new List<DeadParticle>();
+        dead_particles = [];
         title_screen();
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void title_screen()
     {
-        got_fruit = new HashSet<int>();
+        got_fruit = [];
         frames = 0;
         deaths = 0;
         max_djump = 1;
