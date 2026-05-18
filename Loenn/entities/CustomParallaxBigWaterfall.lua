@@ -3,14 +3,19 @@ local xnaColors = require("consts.xna_colors")
 local utils = require("utils")
 local waterfallHelper = require("helpers.waterfalls")
 
-
 local FemtoHelperCustomParallaxBigWaterfall = {}
 
 FemtoHelperCustomParallaxBigWaterfall.name = "FemtoHelper/CustomParallaxBigWaterfall"
 FemtoHelperCustomParallaxBigWaterfall.minimumSize = {16, 16}
 FemtoHelperCustomParallaxBigWaterfall.fieldInformation = {
+    --[[
     layer = {
         options = {"FG", "BG"},
+        editable = false
+    },
+    ]]--
+    displacementType = {
+        options = {"None", "NoneSmooth", "Vanilla", "Custom", "CustomSmooth"},
         editable = false
     },
     surfaceColor = {
@@ -32,7 +37,11 @@ FemtoHelperCustomParallaxBigWaterfall.placements = {
             fillOpacity = 0.3,
             surfaceColor = "89dbf0",
             fillColor = "29a7ea",
-            layer = "FG"
+            --layer = "FG"
+            silent = false,
+            depth = -49900,
+            displacementType = "Vanilla",
+            smooth = true,
         }
     },
     {
@@ -46,15 +55,17 @@ FemtoHelperCustomParallaxBigWaterfall.placements = {
             fillOpacity = 0.3,
             surfaceColor = "89dbf0",
             fillColor = "29a7ea",
-            layer = "BG"
+            --layer = "BG"
+            silent = true,
+            depth = 10010,
+            displacementType = "None",
+            smooth = false;
         }
     }
 }
 
 function FemtoHelperCustomParallaxBigWaterfall.depth(room, entity)
-    local foreground = waterfallHelper.isForeground(entity)
-
-    return foreground and -49900 or 10010
+    return entity.depth
 end
 
 function FemtoHelperCustomParallaxBigWaterfall.sprite(room, entity)

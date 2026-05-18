@@ -324,12 +324,16 @@ entities.FemtoHelper/CustomParallaxBigWaterfall.placements.name.bg=Custom Big Wa
 entities.FemtoHelper/CustomParallaxBigWaterfall.placements.description.fg=Allows for parallax and color customization.
 entities.FemtoHelper/CustomParallaxBigWaterfall.placements.description.bg=Allows for parallax and color customization.
 entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.parallax=The strength of the waterfall's parallax.
-entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.fallSpeedMultiplier=A multiplier for the speed of the waterfall.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.fallSpeedMultiplier=A multiplier for the speed of the waterfall.\nDoes not work when Displacement Type is set to "Vanilla".
 entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.surfaceOpacity=The alpha of the waterfall's edges.
 entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.fillOpacity=The alpha of the waterfall's center.
 entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.surfaceColor=The hex color code of the waterfall's edges.
 entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.fillColor=The hex color code of the waterfall's center.
-entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.layer=Which layer the waterfall should render on.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.layer=Which layer the waterfall should render on.\nThis property is obsolete. Place a new waterfall for the newest features.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.silent=Disable the waterfall's ambient sound.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.depth=The waterfall's render depth.\n-49900 for vanilla foreground waterfalls;\n10010 for vanilla background waterfalls.
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.displacementType=The type of displacement to use.\n\nNone: No displacement. (default for BG waterfalls)\nVanilla: Vanilla displacement. (default for FG waterfalls) (incompatible with Fall Speed Multiplier)\nCustom: Custom displacement, mimics the look for "None". (compatible with Fall Speed Multiplier)
+entities.FemtoHelper/CustomParallaxBigWaterfall.attributes.description.smooth=Enables smoother rendering for None and Custom Displacement Types.\nBeware of lag with too many waterfalls onscreen.
 
 # Custom Speed Rotate Spinner
 entities.FemtoHelper/CustomSpeedRotateSpinner.placements.name.blade_clockwise=Custom Speed Blade (Clockwise)
