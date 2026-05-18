@@ -1,9 +1,6 @@
 ﻿using Celeste.Mod.FemtoHelper.Metadata;
-using Celeste.Mod.Roslyn.ModLifecycleAttributes;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections;
-using static Monocle.MInput;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

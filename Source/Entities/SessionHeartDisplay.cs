@@ -2,7 +2,6 @@
 using Celeste.Mod.FemtoHelper.Metadata;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
