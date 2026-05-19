@@ -108,13 +108,8 @@ public struct PlutoniumFont
         public override int Width => width;
         public override int Height => height;
 
-        public TextCharacter(char character)
+        public TextCharacter(PlutoniumFont parent, char character, PixelFontCharacter data)
         {
-            if (!ActiveFont.FontSize.Characters.TryGetValue(character, out PixelFontCharacter data))
-            {
-                throw new Exception($"Active font does not contain character '{character}'!");
-            }
-
             Letter = character;
 
             MTexture texture = data.Texture;
@@ -131,8 +126,8 @@ public struct PlutoniumFont
             PreDrawOffset = new Point(xOffset, 0);
             PostDrawOffset = new Point(postXOffset, 0);
 
-            Outline = VirtualContent.CreateRenderTarget("extended_char_" + (int)character + "_outline", width + 2, height + 2);
-            Shadow = VirtualContent.CreateRenderTarget("extended_char_" + (int)character + "_shadow", width + 2, height + 2);
+            Outline = VirtualContent.CreateRenderTarget(parent.SourcePath + "_" + character + "_outline", width + 2, height + 2);
+            Shadow = VirtualContent.CreateRenderTarget(parent.SourcePath + "_" + character + "_shadow", width + 2, height + 2);
 
             GraphicsDevice g = Engine.Graphics.GraphicsDevice;
 
@@ -340,9 +335,9 @@ public struct PlutoniumFont
     {
         foreach (var c in str)
         {
-            if (!Chars.ContainsKey(c))
+            if (!Chars.ContainsKey(c) && ActiveFont.FontSize.Characters.TryGetValue(c, out PixelFontCharacter data))
             {
-                Chars.Add(c, new TextCharacter(c));
+                Chars.Add(c, new TextCharacter(this, c, data));
             }
         }
     }
