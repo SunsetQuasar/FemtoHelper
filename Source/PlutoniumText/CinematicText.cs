@@ -147,6 +147,14 @@ public partial class CinematicText : Entity
         TextLayer layer = data.Enum("layer", data.Bool("hud", false) ? TextLayer.HUD : TextLayer.Gameplay);
         //Add(Text = new PlutoniumTextComponent(path, list, size, Hud ? PlutoniumText.TextLayer.HUD : PlutoniumText.TextLayer.Gameplay, BeforeRenderCallback, RenderCallback));
         Add(Text = new PlutoniumTextComponent(fontFilePath, layer, BeforeRenderCallback, RenderCallback, effectData, list, size));
+        
+        foreach (var n in Nodes)
+        {
+            if (n is PlutoniumTextNodes.Text text)
+            {
+                Text.Font.RegisterTextCharacters(text.StringText);
+            }
+        }
 
         Parallax = data.Float("parallax", 1);
 

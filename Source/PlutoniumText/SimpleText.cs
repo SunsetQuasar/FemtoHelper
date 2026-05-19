@@ -1,5 +1,6 @@
 using Celeste.Mod.FemtoHelper.PlutoniumText;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
@@ -62,6 +63,15 @@ public partial class SimpleText : Entity
 
         TextLayer layer = data.Enum("layer", data.Bool("hud", false) ? TextLayer.HUD : TextLayer.Gameplay);
         Add(Text = new PlutoniumTextComponent(fontFilePath, layer, null, RenderCallback, new(), list, size));
+        
+        foreach (var n in Nodes)
+        {
+            if (n is PlutoniumTextNodes.Text text)
+            {
+                Text.Font.RegisterTextCharacters(text.StringText);
+            }
+        }
+        
         Parallax = data.Float("parallax", 1);
 
         HudCanZoom = data.Bool("hudZoomSupport", false);
