@@ -9,7 +9,7 @@ public struct PlutoniumFont
 {
     public static Dictionary<string, PlutoniumFont> FontCache { get; private set; } = [];
 
-    public struct Character
+    public abstract class Character
     {
         public static BlendState AlphaSubtract = new()
         {
@@ -21,15 +21,36 @@ public struct PlutoniumFont
             AlphaBlendFunction = BlendFunction.ReverseSubtract
         };
 
-        public readonly Rectangle SourceRect;
         public Point PreDrawOffset;
         public Point PostDrawOffset;
-        public MTexture Sprite;
         public VirtualRenderTarget Outline;
         public VirtualRenderTarget Shadow;
         public Dictionary<char, Point> KerningData = [];
 
-        public Character(PlutoniumFont parent, char character, MTexture source, Rectangle rect, Point preOffset, Point postOffset)
+        public abstract int Width { get; }
+        public abstract int Height { get; }
+
+        public abstract void DrawCharacter(Vector2 position, Color color, float scale, SpriteEffects seffect);
+
+        public Point GetKerning(char afterThisChar)
+        {
+            if (KerningData.TryGetValue(afterThisChar, out var result))
+            {
+                return result;
+            }
+            else return Point.Zero;
+        }
+    }
+
+    public class SpriteCharacter : Character
+    {
+        public readonly Rectangle SourceRect;
+        public MTexture Sprite;
+        
+        public override int Width => Sprite.Width;
+        public override int Height => Sprite.Height;
+
+        public SpriteCharacter(PlutoniumFont parent, char character, MTexture source, Rectangle rect, Point preOffset, Point postOffset)
         {
             Sprite = source.GetSubtexture(rect);
             SourceRect = rect;
@@ -68,13 +89,89 @@ public struct PlutoniumFont
             Draw.SpriteBatch.End();
         }
 
-        public Point GetKerning(char afterThisChar)
+        public override void DrawCharacter(Vector2 position, Color color, float scale, SpriteEffects seffect)
         {
-            if (KerningData.TryGetValue(afterThisChar, out var result))
+            Sprite.Draw(position, Vector2.Zero, color, scale, 0f, seffect);
+        }
+    }
+
+    public class TextCharacter : Character
+    {
+        private const float Scale = 1/3f;
+        
+        public char Letter;
+        private Vector2 charOffset;
+
+        private readonly int width;
+        private readonly int height;
+        
+        public override int Width => width;
+        public override int Height => height;
+
+        public TextCharacter(char character)
+        {
+            if (!ActiveFont.FontSize.Characters.TryGetValue(character, out PixelFontCharacter data))
             {
-                return result;
+                throw new Exception($"Active font does not contain character '{character}'!");
             }
-            else return Point.Zero;
+
+            Letter = character;
+
+            MTexture texture = data.Texture;
+            width = (int) Math.Ceiling(texture.Width * Scale);
+            height = (int) Math.Ceiling(texture.Height * Scale);
+            height += height % 2;
+
+            int xOffset = (int) (data.XOffset * Scale);
+            int yOffset = (int) (data.YOffset * Scale);
+            charOffset = new Vector2(xOffset, yOffset);
+            
+            int postXOffset = (int) Math.Ceiling((data.XAdvance - data.XOffset - texture.Width) * Scale);
+
+            PreDrawOffset = new Point(xOffset, 0);
+            PostDrawOffset = new Point(postXOffset, 0);
+
+            Outline = VirtualContent.CreateRenderTarget("extended_char_" + (int)character + "_outline", width + 2, height + 2);
+            Shadow = VirtualContent.CreateRenderTarget("extended_char_" + (int)character + "_shadow", width + 2, height + 2);
+
+            GraphicsDevice g = Engine.Graphics.GraphicsDevice;
+
+            //do outline first
+
+            g.SetRenderTarget(Outline);
+            g.Clear(Color.Transparent);
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    ActiveFont.Draw(Letter, Vector2.One + new Vector2(i, j) - charOffset, Vector2.Zero, new Vector2(Scale), Color.White);
+                }
+            }
+            Draw.SpriteBatch.End();
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, AlphaSubtract, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            ActiveFont.Draw(Letter, Vector2.One - charOffset, Vector2.Zero, new Vector2(Scale), Color.White);
+            Draw.SpriteBatch.End();
+
+            //then do shadow
+
+            g.SetRenderTarget(Shadow);
+            g.Clear(Color.Transparent);
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            ActiveFont.Draw(Letter, Vector2.One + Vector2.One - charOffset, Vector2.Zero, new Vector2(Scale), Color.White);
+            Draw.SpriteBatch.End();
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, AlphaSubtract, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            ActiveFont.Draw(Letter, Vector2.One - charOffset, Vector2.Zero, new Vector2(Scale), Color.White);
+            Draw.SpriteBatch.End();
+        }
+
+        public override void DrawCharacter(Vector2 position, Color color, float scale, SpriteEffects seffect)
+        {
+            ActiveFont.Draw(Letter, position - charOffset, Vector2.Zero, new Vector2(scale * Scale), color);
         }
     }
 
@@ -100,7 +197,7 @@ public struct PlutoniumFont
 
             for(int i = 0; i < CharList.Length; i++)
             {
-                Chars.Add(CharList[i], new Character(this, CharList[i], SourceTexture, new Rectangle((int)legacySize.X * i, 0, (int)legacySize.X, (int)legacySize.Y), Point.Zero, Point.Zero));
+                Chars.Add(CharList[i], new SpriteCharacter(this, CharList[i], SourceTexture, new Rectangle((int)legacySize.X * i, 0, (int)legacySize.X, (int)legacySize.Y), Point.Zero, Point.Zero));
             }
 
             FontCache.Add(path, this);
@@ -162,7 +259,7 @@ public struct PlutoniumFont
 
             Character chr;
 
-            Chars.Add(id, chr = new Character(this, id, SourceTexture, source, pre, post));
+            Chars.Add(id, chr = new SpriteCharacter(this, id, SourceTexture, source, pre, post));
 
             foreach(XmlElement kerning in character.GetElementsByTagName("CharSpecificOffset"))
             {
@@ -226,16 +323,27 @@ public struct PlutoniumFont
                     size += ch2.GetKerning(before).ToVector2();
                 }
                 else firstchar = false;
-                size += new Vector2(ch2.Sprite.Width, 0) + ch2.PreDrawOffset.ToVector2() + ch2.PostDrawOffset.ToVector2() + (Vector2.UnitX * extraSpacing);
+                size += new Vector2(ch2.Width, 0) + ch2.PreDrawOffset.ToVector2() + ch2.PostDrawOffset.ToVector2() + (Vector2.UnitX * extraSpacing);
 
-                if(ch2.Sprite.Height > tallestChar)
+                if(ch2.Height > tallestChar)
                 {
-                    tallestChar = ch2.Sprite.Height;
+                    tallestChar = ch2.Height;
                 }
 
                 before = c;
             }
         }
         return size + (Vector2.UnitY * tallestChar);
+    }
+
+    public void RegisterTextCharacters(string str)
+    {
+        foreach (var c in str)
+        {
+            if (!Chars.ContainsKey(c))
+            {
+                Chars.Add(c, new TextCharacter(c));
+            }
+        }
     }
 }
