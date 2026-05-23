@@ -38,8 +38,8 @@ public class CustomCliffsideWindFlag : Entity
 		segments = new Segment[atlasSubtexturesAt.Width];
 		for (int i = 0; i < segments.Length; i++)
 		{
-			Segment segment = new Segment
-			{
+			Segment segment = new()
+            {
 				Texture = atlasSubtexturesAt.GetSubtexture(i, 0, 1, atlasSubtexturesAt.Height),
 				Offset = new Vector2(i, 0f)
 			};

@@ -119,10 +119,10 @@ public class WaterSwitchGate : GenericWaterBlock
         Collidable = false;
         if (node.X <= start.X)
         {
-            Vector2 vector = new Vector2(0f, 2f);
+            Vector2 vector = new(0f, 2f);
             for (int k = 0; (float)k < Height / 8f; k++)
             {
-                Vector2 vector2 = new Vector2(Left - 1f, Top + 4f + (float)(k * 8));
+                Vector2 vector2 = new(Left - 1f, Top + 4f + (float)(k * 8));
                 Vector2 point = vector2 + Vector2.UnitX;
                 if (Scene.CollideCheck<Solid>(vector2) && !Scene.CollideCheck<Solid>(point))
                 {
@@ -133,10 +133,10 @@ public class WaterSwitchGate : GenericWaterBlock
         }
         if (node.X >= start.X)
         {
-            Vector2 vector3 = new Vector2(0f, 2f);
+            Vector2 vector3 = new(0f, 2f);
             for (int l = 0; (float)l < Height / 8f; l++)
             {
-                Vector2 vector4 = new Vector2(Right + 1f, Top + 4f + (float)(l * 8));
+                Vector2 vector4 = new(Right + 1f, Top + 4f + (float)(l * 8));
                 Vector2 point2 = vector4 - Vector2.UnitX * 2f;
                 if (Scene.CollideCheck<Solid>(vector4) && !Scene.CollideCheck<Solid>(point2))
                 {
@@ -147,10 +147,10 @@ public class WaterSwitchGate : GenericWaterBlock
         }
         if (node.Y <= start.Y)
         {
-            Vector2 vector5 = new Vector2(2f, 0f);
+            Vector2 vector5 = new(2f, 0f);
             for (int m = 0; (float)m < Width / 8f; m++)
             {
-                Vector2 vector6 = new Vector2(Left + 4f + (float)(m * 8), Top - 1f);
+                Vector2 vector6 = new(Left + 4f + (float)(m * 8), Top - 1f);
                 Vector2 point3 = vector6 + Vector2.UnitY;
                 if (Scene.CollideCheck<Solid>(vector6) && !Scene.CollideCheck<Solid>(point3))
                 {
@@ -161,10 +161,10 @@ public class WaterSwitchGate : GenericWaterBlock
         }
         if (node.Y >= start.Y)
         {
-            Vector2 vector7 = new Vector2(2f, 0f);
+            Vector2 vector7 = new(2f, 0f);
             for (int n = 0; (float)n < Width / 8f; n++)
             {
-                Vector2 vector8 = new Vector2(Left + 4f + (float)(n * 8), Bottom + 1f);
+                Vector2 vector8 = new(Left + 4f + (float)(n * 8), Bottom + 1f);
                 Vector2 point4 = vector8 - Vector2.UnitY * 2f;
                 if (Scene.CollideCheck<Solid>(vector8) && !Scene.CollideCheck<Solid>(point4))
                 {

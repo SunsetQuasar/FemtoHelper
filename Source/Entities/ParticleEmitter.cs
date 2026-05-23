@@ -47,7 +47,7 @@ public class ParticleEmitter : Entity
 		Flag = data.Attr("flag", "");
 		Tag = data.Attr("tag", "");
 		string[] texString = data.Attr("particleTexture").Split(',');
-		Chooser<MTexture> texchoice = new Chooser<MTexture>();
+		Chooser<MTexture> texchoice = new();
 		foreach (var t in texString)
 		{
 			texchoice.Add(GFX.Game[t], 1);

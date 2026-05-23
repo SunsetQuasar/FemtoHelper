@@ -64,7 +64,7 @@ public class WaterSprite : GraphicsComponent
 
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
-        Vector2 size = new Vector2(Entity.Width, Entity.Height);
+        Vector2 size = new(Entity.Width, Entity.Height);
 
         Color color = Color.White;
         Vector2 pos = Vector2.One * Padding;
@@ -129,7 +129,7 @@ public class WaterSprite : GraphicsComponent
         Engine.Graphics.GraphicsDevice.Textures[3] = Buffer;
         Engine.Graphics.GraphicsDevice.SamplerStates[3] = SamplerState.PointClamp;
 
-        Color color = new Color(Color.White, 1)
+        Color color = new(Color.White, 1)
         {
             A = 200
         };

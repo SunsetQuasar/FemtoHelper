@@ -114,7 +114,7 @@ public class WaterCircleMover : GenericWaterBlock
 
     private float percent;
 
-    private readonly SoundSource sfx = new SoundSource();
+    private readonly SoundSource sfx = new();
 
     private readonly Image centerGem;
     private readonly Image centerRing;

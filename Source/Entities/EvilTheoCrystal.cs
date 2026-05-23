@@ -10,7 +10,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/EvilTheoCrystal")]
 public class EvilTheoCrystal : Actor
 {
-    public static readonly ParticleType PImpact = new ParticleType(TheoCrystal.P_Impact);
+    public static readonly ParticleType PImpact = new(TheoCrystal.P_Impact);
 
     public Vector2 Speed;
 
@@ -238,8 +238,8 @@ public class EvilTheoCrystal : Actor
     public IEnumerator Shatter()
     {
         shattering = true;
-        BloomPoint bloom = new BloomPoint(0f, 32f);
-        VertexLight light = new VertexLight(Color.AliceBlue, 0f, 64, 200);
+        BloomPoint bloom = new(0f, 32f);
+        VertexLight light = new(Color.AliceBlue, 0f, 64, 200);
         Add(bloom);
         Add(light);
         for (float p = 0f; p < 1f; p += Engine.DeltaTime)
@@ -511,7 +511,7 @@ public class EvilTheoCrystal : Actor
 
     private static void PlayerThrowNoKb(ILContext il)
     {
-        ILCursor cursor = new ILCursor(il);
+        ILCursor cursor = new(il);
 
         while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdindR4()))
         {

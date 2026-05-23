@@ -291,7 +291,7 @@ public class NodePuffer : Entity
 
     public override void Render()
     {
-        Vector2 sineOffset = new Vector2(idleSine.Value * 1f, idleSine.ValueOverTwo * 1f);
+        Vector2 sineOffset = new(idleSine.Value * 1f, idleSine.ValueOverTwo * 1f);
         Position += sineOffset;
 
         for (int i = 0; i < nodes.Length - 1; i++)

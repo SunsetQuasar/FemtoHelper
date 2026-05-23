@@ -91,7 +91,7 @@ public class FuckingAwesomeEmulator : Entity
             return;
         }
         string input;
-        using (StreamReader streamReader = new StreamReader(metadata.Stream))
+        using (StreamReader streamReader = new(metadata.Stream))
         {
             input = streamReader.ReadToEnd();
         }
@@ -111,14 +111,14 @@ public class FuckingAwesomeEmulator : Entity
             if (i >= num)
             {
                 reference = c2;
-                ReadOnlySpan<char> readOnlySpan = new ReadOnlySpan<char>(in reference);
+                ReadOnlySpan<char> readOnlySpan = new(in reference);
                 reference2 = c;
                 s = string.Concat(readOnlySpan, new ReadOnlySpan<char>(in reference2));
             }
             else
             {
                 reference2 = c;
-                ReadOnlySpan<char> readOnlySpan2 = new ReadOnlySpan<char>(in reference2);
+                ReadOnlySpan<char> readOnlySpan2 = new(in reference2);
                 reference = c2;
                 s = string.Concat(readOnlySpan2, new ReadOnlySpan<char>(in reference));
             }
@@ -876,9 +876,9 @@ public class FuckingAwesomeClassic
 
         public int dash_effect_time;
 
-        public Vector2 dash_target = new Vector2(0f, 0f);
+        public Vector2 dash_target = new(0f, 0f);
 
-        public Vector2 dash_accel = new Vector2(0f, 0f);
+        public Vector2 dash_accel = new(0f, 0f);
 
         public float spr_off;
 
@@ -2029,11 +2029,11 @@ public class FuckingAwesomeClassic
 
         public float y;
 
-        public Rectangle hitbox = new Rectangle(0, 0, 8, 8);
+        public Rectangle hitbox = new(0, 0, 8, 8);
 
-        public Vector2 spd = new Vector2(0f, 0f);
+        public Vector2 spd = new(0f, 0f);
 
-        public Vector2 rem = new Vector2(0f, 0f);
+        public Vector2 rem = new(0f, 0f);
 
         public virtual void init(FuckingAwesomeClassic g, FuckingAwesomeEmulator e)
         {

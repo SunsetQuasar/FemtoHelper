@@ -377,7 +377,7 @@ public class SwitchMovetPathRenderer : Entity
 [CustomEntity("FemtoHelper/SwitchMovet")]
 public class SwitchMovet : Solid
 {
-    public static ParticleType PScrape = new ParticleType(ZipMover.P_Scrape);
+    public static ParticleType PScrape = new(ZipMover.P_Scrape);
     public string Color = "ffffff";
     public Vector2 Node = Vector2.Zero;
     public Vector2 Anchor = Vector2.Zero;
@@ -471,7 +471,7 @@ public class SwitchMovet : Solid
                         cutout = new Point(8, 8);
                     }
                 }
-                Image image = new Image((Calc.Random.Chance(0.5f) ? mainTexture : mainTextureRust).GetSubtexture(cutout.X, cutout.Y, 8, 8)) { Position = new Vector2(i, j) };
+                Image image = new((Calc.Random.Chance(0.5f) ? mainTexture : mainTextureRust).GetSubtexture(cutout.X, cutout.Y, 8, 8)) { Position = new Vector2(i, j) };
                 Add(image);
                 Block.Add(image);
             }

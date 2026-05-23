@@ -339,7 +339,7 @@ public static class EntityExtensions
                 {
                     for (int num2 = 1; num2 >= -1; num2 -= 2)
                     {
-                        Vector2 vector = new Vector2(i * num, j * num2);
+                        Vector2 vector = new(i * num, j * num2);
                         if (actor.CollideCheck<Solid>(actor.Position + vector)) continue;
                         actor.Position += vector;
                         return true;

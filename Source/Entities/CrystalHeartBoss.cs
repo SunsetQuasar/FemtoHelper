@@ -56,7 +56,7 @@ public class CrystalHeartBoss : FinalBoss
 
     private static void ModifyBossSpritesOnCustomFinalBoss(ILContext il)
     {
-        ILCursor cursor = new ILCursor(il);
+        ILCursor cursor = new(il);
         if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdstr("badeline_boss")))
         {
             cursor.Emit(OpCodes.Ldarg_0);

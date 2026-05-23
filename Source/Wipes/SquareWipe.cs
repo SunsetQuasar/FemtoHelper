@@ -5,7 +5,7 @@ namespace Celeste.Mod.FemtoHelper.Wipes;
 
 public class SquareWipe : ScreenWipe
 {
-    public static readonly BlendState SubtractBlendmode = new BlendState
+    public static readonly BlendState SubtractBlendmode = new()
     {
         ColorSourceBlend = Blend.One,
         ColorDestinationBlend = Blend.One,

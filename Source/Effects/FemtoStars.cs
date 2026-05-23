@@ -138,7 +138,7 @@ public class FemtoStars : Backdrop
 			{
 				position.X += 320f + extraLoopBorderX;
 			}
-			Vector2 epic = new Vector2();
+			Vector2 epic = new();
 			epic = Vector2.Normalize(stars[i].Speed);
 			for (int j = 0; j < stars[i].Colors.Length; j++)
 			{

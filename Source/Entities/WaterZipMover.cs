@@ -103,7 +103,7 @@ public class WaterZipMover : GenericWaterBlock
 
     private readonly Vector2 start, target;
 
-    private readonly SoundSource sfx = new SoundSource();
+    private readonly SoundSource sfx = new();
 
     private float percent;
 

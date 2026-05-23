@@ -9,14 +9,14 @@ namespace Celeste.Mod.FemtoHelper.Code.Effects;
 public class NewDistortedParallax : Backdrop
 {
 
-    private static readonly BlendState Multiply = new BlendState
+    private static readonly BlendState Multiply = new()
     {
         ColorBlendFunction = BlendFunction.Add,
         ColorSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.DestinationColor,
         ColorDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.Zero
     };
 
-    private static readonly BlendState ReverseSubtract = new BlendState
+    private static readonly BlendState ReverseSubtract = new()
     {
         ColorSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
         ColorDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
@@ -26,7 +26,7 @@ public class NewDistortedParallax : Backdrop
         AlphaBlendFunction = BlendFunction.Add
     };
 
-    public static readonly BlendState Subtract = new BlendState
+    public static readonly BlendState Subtract = new()
     {
         ColorSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.One,
         ColorDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.One,

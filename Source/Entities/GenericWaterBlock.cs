@@ -21,12 +21,12 @@ public abstract class GenericWaterBlock : Water
     private Vector2 shakeAmount;
     public Vector2 Shake => shakeAmount;
 
-    public static ParticleType Dissipate = new ParticleType(Booster.P_Burst)
+    public static ParticleType Dissipate = new(Booster.P_Burst)
     {
         Color = Calc.HexToColor("81F4F0") * 0.25f
     };
 
-    public static ParticleType Tinydrops = new ParticleType
+    public static ParticleType Tinydrops = new()
     {
         Size = 1f,
 
@@ -39,7 +39,7 @@ public abstract class GenericWaterBlock : Water
         SpeedMultiplier = 0.10f,
         FadeMode = ParticleType.FadeModes.Linear,
     };
-    public static ParticleType Tinydrops2 = new ParticleType
+    public static ParticleType Tinydrops2 = new()
     {
         Size = 1f,
         Color = Color.LightSkyBlue,
@@ -121,7 +121,7 @@ public abstract class GenericWaterBlock : Water
 
     private static void Player_NormalUpdate(ILContext il)
     {
-        ILCursor cursor = new ILCursor(il);
+        ILCursor cursor = new(il);
 
         while (cursor.TryGotoNextBestFit(MoveType.After, instr => instr.MatchLdcR4(1), instr => instr.MatchCallOrCallvirt<Water.Surface>("DoRipple"), instr => instr.MatchLdcI4(0)))
         {

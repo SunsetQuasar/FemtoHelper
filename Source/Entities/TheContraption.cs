@@ -275,8 +275,8 @@ public class TheContraption : Actor
         Friction = 10,
     };
 
-    private Hitbox airHitbox => new Hitbox(Width, 8, -Width / 2, 0);
-    private Hitbox groundHitbox => new Hitbox(Width + 4, 10, (-Width / 2) - 2, -5);
+    private Hitbox airHitbox => new(Width, 8, -Width / 2, 0);
+    private Hitbox groundHitbox => new(Width + 4, 10, (-Width / 2) - 2, -5);
 
     private readonly bool particles;
 
@@ -487,7 +487,7 @@ public class TheContraption : Actor
                 {
                     for (int num2 = 1; num2 >= -1; num2 -= 2)
                     {
-                        Vector2 vector = new Vector2(i * num, j * num2);
+                        Vector2 vector = new(i * num, j * num2);
                         if (!CollideCheck<Solid>(Position + vector))
                         {
                             Position += vector;
@@ -525,7 +525,7 @@ public class TheContraption : Actor
                 {
                     for (int num2 = 1; num2 >= -1; num2 -= 2)
                     {
-                        Vector2 vector = new Vector2(i * num, j * num2);
+                        Vector2 vector = new(i * num, j * num2);
                         if (!CollideCheck<Solid>(Position + vector))
                         {
                             Position += vector;

@@ -30,8 +30,8 @@ public class OshiroCaller : Entity
 
 	private readonly bool justMakeOshiroLeave;
 
-	private readonly ParticleType callerParticle = new ParticleType
-	{
+	private readonly ParticleType callerParticle = new()
+    {
 		Source = GFX.Game["particles/circle"],
 		Color = Calc.HexToColor("8484a5"),
 		Color2 = Calc.HexToColor("3f3f74"),
@@ -50,8 +50,8 @@ public class OshiroCaller : Entity
 		SpinMin = 8f,
 		SpinMax = 16f
 	};
-	private readonly ParticleType callerParticle2 = new ParticleType
-	{
+	private readonly ParticleType callerParticle2 = new()
+    {
 		Source = GFX.Game["particles/circle"],
 		Color = Calc.HexToColor("8484a5"),
 		Color2 = Calc.HexToColor("3f3f74"),
@@ -162,7 +162,7 @@ public class OshiroCaller : Entity
 			}
 			Celeste.Celeste.Freeze(0.1f);
 			level.Flash(Color.White * 0.25f, drawPlayerOver: true);
-			Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
+			Vector2 position = new(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
 			Scene.Add(new AngryOshiro(position, fromCutscene: false));
 			SceneAs<Level>().Shake();
 			RemoveSelf();
@@ -220,7 +220,7 @@ public class OshiroCaller : Entity
 				}
 				Celeste.Celeste.Freeze(0.1f);
 				level.Flash(Color.White * 0.25f, drawPlayerOver: true);
-				Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
+				Vector2 position = new(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
 				Scene.Add(new AngryOshiro(position, fromCutscene: false));
 				SceneAs<Level>().Shake();
 				RemoveSelf();

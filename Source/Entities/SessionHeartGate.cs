@@ -87,7 +87,7 @@ public class SessionHeartGate : Entity
 
     private Vector2 mist;
 
-    private readonly MTexture temp = new MTexture();
+    private readonly MTexture temp = new();
 
     private readonly List<MTexture> icon;
 
@@ -439,7 +439,7 @@ public class SessionHeartGate : Entity
         Color color = (Opened ? (Color.White * 0.25f) : Color.White);
         if (!Opened && TopSolid.Visible && BotSolid.Visible)
         {
-            Rectangle bounds = new Rectangle((int)TopSolid.X, (int)TopSolid.Y, Size, (int)(TopSolid.Height + BotSolid.Height));
+            Rectangle bounds = new((int)TopSolid.X, (int)TopSolid.Y, Size, (int)(TopSolid.Height + BotSolid.Height));
             DrawInterior(bounds);
             DrawEdges(bounds, color);
         }
@@ -447,13 +447,13 @@ public class SessionHeartGate : Entity
         {
             if (TopSolid.Visible)
             {
-                Rectangle bounds2 = new Rectangle((int)TopSolid.X, (int)TopSolid.Y, Size, (int)TopSolid.Height);
+                Rectangle bounds2 = new((int)TopSolid.X, (int)TopSolid.Y, Size, (int)TopSolid.Height);
                 DrawInterior(bounds2);
                 DrawEdges(bounds2, color);
             }
             if (BotSolid.Visible)
             {
-                Rectangle bounds3 = new Rectangle((int)BotSolid.X, (int)BotSolid.Y, Size, (int)BotSolid.Height);
+                Rectangle bounds3 = new((int)BotSolid.X, (int)BotSolid.Y, Size, (int)BotSolid.Height);
                 DrawInterior(bounds3);
                 DrawEdges(bounds3, color);
             }

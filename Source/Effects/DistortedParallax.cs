@@ -21,13 +21,13 @@ public class DistortedParallax : Parallax
 
 	private readonly MTexture[,] slices2;
 
-	private Vector2 timer = new Vector2(0, 0);
+	private Vector2 timer = new(0, 0);
 
-	private readonly Vector2 frequency = new Vector2(40, 10);
+	private readonly Vector2 frequency = new(40, 10);
 
-	private readonly Vector2 amplitude = new Vector2(10, 0);
+	private readonly Vector2 amplitude = new(10, 0);
 
-	private readonly Vector2 waveAnimSpeed = new Vector2(3, 3);
+	private readonly Vector2 waveAnimSpeed = new(3, 3);
 
 	private readonly SliceModes sliceMode = SliceModes.TransLong;
 
@@ -163,7 +163,7 @@ public class DistortedParallax : Parallax
 
 					for (float i = 0; i < slices.Length; i++)
 					{
-						Vector2 newnum2 = new Vector2(num2, num3);
+						Vector2 newnum2 = new(num2, num3);
 						newnum2 += vector * Scroll;
 						if (num2 == vector2.X && LoopX)
 						{
@@ -210,7 +210,7 @@ public class DistortedParallax : Parallax
 					for (float i = 0; i < slices.Length; i++)
 					{
 
-						Vector2 newnum2 = new Vector2(num2, num3);
+						Vector2 newnum2 = new(num2, num3);
 						newnum2 += vector * Scroll;
 						if (num2 == vector2.X && LoopX)
 						{

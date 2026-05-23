@@ -8,7 +8,7 @@ public class NoLightClutterSwitch : Solid
 {
     public const float LightingAlphaAdd = 0.05f;
 
-    public static readonly ParticleType PPressed = new ParticleType(ClutterSwitch.P_Pressed);
+    public static readonly ParticleType PPressed = new(ClutterSwitch.P_Pressed);
 
     private const int PressedAdd = 10;
 

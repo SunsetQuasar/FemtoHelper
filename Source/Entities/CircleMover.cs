@@ -120,7 +120,7 @@ public class CircleMover : Solid
 
     private float percent;
 
-    private readonly SoundSource sfx = new SoundSource();
+    private readonly SoundSource sfx = new();
 
     private readonly MTexture[,] edges = new MTexture[3, 3];
     private readonly MTexture chainTex;

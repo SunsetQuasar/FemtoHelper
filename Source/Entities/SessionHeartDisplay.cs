@@ -282,7 +282,7 @@ public class SessionHeartDisplay : Entity
         {
             Vector2 renderPosition = RenderPosition;
             Vector2 vector = Calc.AngleToVector(Rotation, 1f);
-            Vector2 vector2 = new Vector2(0f - vector.Y, vector.X);
+            Vector2 vector2 = new(0f - vector.Y, vector.X);
             string text = (showOutOf ? sOutOf : "");
             float num = ActiveFont.Measure(sAmount).X;
             float num2 = ActiveFont.Measure(text).X;

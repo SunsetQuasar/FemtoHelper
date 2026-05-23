@@ -28,7 +28,7 @@ public class DiagridWipe : ScreenWipe
 
     private bool hasDrawn;
 
-    public static readonly BlendState SubtractBlendmode = new BlendState
+    public static readonly BlendState SubtractBlendmode = new()
     {
         ColorSourceBlend = Blend.One,
         ColorDestinationBlend = Blend.One,
@@ -70,7 +70,7 @@ public class DiagridWipe : ScreenWipe
         int num = 0;
         foreach (var circle in _circles)
         {
-            Vector2 vector = new Vector2(1f, 0f);
+            Vector2 vector = new(1f, 0f);
             for (float num2 = 0f; num2 < CircleSegments; num2 += 1f)
             {
                 Vector2 vector2 = Calc.AngleToVector((num2 + 1f) / CircleSegments * ((float)Math.PI * 2f), 1f);

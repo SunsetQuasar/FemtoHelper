@@ -174,7 +174,7 @@ public class MovingWaterBlock : GenericWaterBlock
         {
             for (int j = 0; j < Height; j += 8)
             {
-                Vector2 vector6 = new Vector2(X + i + 4f, Y + j + 4f);
+                Vector2 vector6 = new(X + i + 4f, Y + j + 4f);
                 Vector2 vec = (vector6 - Center).SafeNormalize();
                 Color col = Color.CadetBlue * 0.2f;
                 Scene.Add(Engine.Pooler.Create<Droplet>().Init(vector6 + vec * 12f, vector6, col));

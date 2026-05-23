@@ -153,7 +153,7 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
     protected void SetParticleColors(Color burstColor, Color appearColor)
     {
         DynData<Booster> boosterData = this.boosterData;
-        ParticleType obj = new ParticleType(P_Burst)
+        ParticleType obj = new(P_Burst)
         {
             Color = burstColor
         };
@@ -355,7 +355,7 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
 
     private static void Player_BoostUpdate(ILContext il)
     {
-        ILCursor iLCursor = new ILCursor(il);
+        ILCursor iLCursor = new(il);
         iLCursor.GotoNext(MoveType.After, instr => instr.MatchLdcR4(3f));
         iLCursor.Emit(OpCodes.Ldarg_0);
         iLCursor.EmitDelegate<Func<float, Player, float>>(Boosthookthing);
@@ -426,7 +426,7 @@ public class BoostingBoosterSorryIStoleFromCommunalHelper : Booster
 
     private static void Player_orig_Update(ILContext il)
     {
-        ILCursor iLCursor = new ILCursor(il);
+        ILCursor iLCursor = new(il);
         ILLabel label = null;
         iLCursor.GotoNext(instr => instr.MatchCall<Actor>("Update"));
         iLCursor.GotoNext(instr => instr.MatchCall<Actor>("MoveH"));

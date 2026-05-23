@@ -54,7 +54,7 @@ public class CsFunnyAsHell : CutsceneEntity
 			player.Sprite.Play("idle");
 			player.Visible = false;
 			Audio.SetMusic("event:/new_content/music/lvl10/granny_farewell");
-			FadeWipe fadeWipe = new FadeWipe(Level, wipeIn: true);
+			FadeWipe fadeWipe = new(Level, wipeIn: true);
 			fadeWipe.Duration = 2f;
 			ScreenWipe.WipeColor = Color.White;
 			yield return fadeWipe.Duration;
@@ -99,7 +99,7 @@ public class CsFunnyAsHell : CutsceneEntity
 					granny.MoveAnim = "walk";
 					granny.Maxspeed = 15f;
 					granny.Add(granny.Sprite = GFX.SpriteBank.Create("granny"));
-					GrannyLaughSfx grannyLaughSfx = new GrannyLaughSfx(granny.Sprite);
+					GrannyLaughSfx grannyLaughSfx = new(granny.Sprite);
 					grannyLaughSfx.FirstPlay = false;
 					granny.Add(grannyLaughSfx);
 					granny.Sprite.OnFrameChange = delegate (string anim)

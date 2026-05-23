@@ -48,7 +48,7 @@ public class PseudoPolyhedron : Entity
 		Samples = Math.Max(data.Int("samples", 128), 2);
 		Depth = data.Int("depth", 6000);
 		Positions = new Vector2[Samples, BaseSides];
-		Vector2 origScale = new Vector2(BaseWidth, BaseHeight);
+		Vector2 origScale = new(BaseWidth, BaseHeight);
 		origScale.Normalize();
 		TopScale = origScale + new Vector2(TopBaseSize.X, TopBaseSize.Y);
 		float m = 0;

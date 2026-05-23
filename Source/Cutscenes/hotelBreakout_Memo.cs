@@ -66,8 +66,8 @@ public class HotelBreakoutMemo(Player player, int totind, float txtoffset, float
 		public IEnumerator EaseIn()
 		{
 			Audio.Play("event:/game/03_resort/memo_in");
-			Vector2 from = new Vector2(Engine.Width / 2, Engine.Height + 100);
-			Vector2 to = new Vector2(Engine.Width / 2, Engine.Height / 2 - 150);
+			Vector2 from = new(Engine.Width / 2, Engine.Height + 100);
+			Vector2 to = new(Engine.Width / 2, Engine.Height / 2 - 150);
 			float rFrom = -1f;
 			float rTo = 0.05f;
 			for (float p = 0f; p < 1f; p += Engine.DeltaTime)
@@ -112,7 +112,7 @@ public class HotelBreakoutMemo(Player player, int totind, float txtoffset, float
 			Audio.Play("event:/game/03_resort/memo_out");
 			easingOut = true;
 			Vector2 from = Position;
-			Vector2 to = new Vector2(Engine.Width / 2, -target.Height);
+			Vector2 to = new(Engine.Width / 2, -target.Height);
 			float rFrom = rotation;
 			float rTo = rotation + 0.5f;
 			for (float p = 0f; p < 1f; p += Engine.DeltaTime * 1.5f)

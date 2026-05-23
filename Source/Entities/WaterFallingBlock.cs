@@ -40,7 +40,7 @@ public class WaterFallingBlock : GenericWaterBlock
 
         for(int i = 4; i < Width + 4; i += 8)
         {
-            Image arrow = new Image(GFX.Game[prefix + "arrow"]);
+            Image arrow = new(GFX.Game[prefix + "arrow"]);
             arrow.CenterOrigin();
             arrow.Position = new Vector2(i, Height / 2);
             arrows.Add(new Tuple<Image, int>(arrow, i));

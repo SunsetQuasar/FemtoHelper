@@ -75,7 +75,7 @@ public class Monopticon : Lookout
         onlyY = data.Bool("onlyY");
         Collider = new Hitbox(4f, 4f, -2f, -4f);
         Add(new MirrorReflection());
-        VertexLight vertexLight = new VertexLight(new Vector2(-1f, -11f), Color.White, 0.8f, 16, 24);
+        VertexLight vertexLight = new(new Vector2(-1f, -11f), Color.White, 0.8f, 16, 24);
         Add(vertexLight);
         lightTween = vertexLight.CreatePulseTween();
         Add(lightTween);
@@ -324,7 +324,7 @@ public class Monopticon : Lookout
                 {
                     mono.animPrefix = "";
                 }
-                Coroutine coroutine = new Coroutine(mono.LookRoutine2(player));
+                Coroutine coroutine = new(mono.LookRoutine2(player));
                 coroutine.RemoveOnComplete = true;
                 mono.Add(coroutine);
                 mono.interacting = true;
@@ -602,7 +602,7 @@ public class Monopticon : Lookout
                 {
                     Vector2 begin = Vector2.Lerp((node <= 1) ? camStartCenter : nodes[node - 2], vector2, 0.75f);
                     Vector2 end = Vector2.Lerp(vector2, vector3, 0.25f);
-                    SimpleCurve simpleCurve = new SimpleCurve(begin, end, vector2);
+                    SimpleCurve simpleCurve = new(begin, end, vector2);
                     level.Camera.Position = simpleCurve.GetPoint(0.5f + nodePercent / 0.25f * 0.5f);
                 }
                 else if (nodePercent > 0.75f && node < nodes.Count - 1)
@@ -610,7 +610,7 @@ public class Monopticon : Lookout
                     Vector2 value2 = nodes[node + 1];
                     Vector2 begin2 = Vector2.Lerp(vector2, vector3, 0.75f);
                     Vector2 end2 = Vector2.Lerp(vector3, value2, 0.25f);
-                    SimpleCurve simpleCurve2 = new SimpleCurve(begin2, end2, vector3);
+                    SimpleCurve simpleCurve2 = new(begin2, end2, vector3);
                     level.Camera.Position = simpleCurve2.GetPoint((nodePercent - 0.75f) / 0.25f * 0.5f);
                 }
                 else
@@ -687,7 +687,7 @@ public class Monopticon : Lookout
             yield return 0.5f;
             float duration2 = 3f;
             float approach2 = 0f;
-            Coroutine component = new Coroutine(level.ZoomTo(new Vector2(160f, 90f), 2f, duration2));
+            Coroutine component = new(level.ZoomTo(new Vector2(160f, 90f), 2f, duration2));
             Add(component);
             while (!Input.MenuCancel.Pressed && !Input.MenuConfirm.Pressed && !Input.Dash.Pressed && !(Input.Jump.Pressed || player.onGround) && interacting)
             {

@@ -198,7 +198,7 @@ public class FemtoModule : EverestModule
 
     private static void ModDashSpeed(ILContext il)
     {
-        ILCursor cursor = new ILCursor(il);
+        ILCursor cursor = new(il);
 
         // find 240f in the method (dash speed) and multiply it with our modifier.
         if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(240f)))
@@ -332,7 +332,7 @@ public class FemtoModule : EverestModule
     }
     private static void onCollideH_IL(ILContext il)
     {
-        ILCursor cursor = new ILCursor(il);
+        ILCursor cursor = new(il);
         while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdloc(4)))
         {
             //Logger.Log(LogLevel.Info, "FemtoHelper/onCollideH_IL", $"Emitting extra collision actions at {cursor.Index} in CIL code for {cursor.Method.FullName}");
@@ -444,7 +444,7 @@ public class FemtoModule : EverestModule
 
     private static void onCollideV_IL(ILContext il)
     {
-        ILCursor cursor = new ILCursor(il);
+        ILCursor cursor = new(il);
         while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdloc(4)))
         {
             //Logger.Log(LogLevel.Info, "FemtoHelper/onCollideV_IL", $"Emitting extra collision actions at {cursor.Index} in CIL code for {cursor.Method.FullName}");

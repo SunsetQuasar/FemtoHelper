@@ -26,13 +26,13 @@ public class FadingNorthernLights : Backdrop
 			Duration = Calc.Random.Range(6f, 16f);
 			Alpha = 0f;
 			Nodes.Clear();
-			Vector2 position = new Vector2(Calc.Random.Range(-40, 40), Calc.Random.Range(0, 180));
+			Vector2 position = new(Calc.Random.Range(-40, 40), Calc.Random.Range(0, 180));
 			float num = Calc.Random.NextFloat();
 			Color value = Calc.Random.Choose(Colors);
 			for (int i = 0; i < 40; i++)
 			{
-				Node item = new Node
-				{
+				Node item = new()
+                {
 					Position = position,
 					TextureOffset = num,
 					Height = Calc.Random.Range(10, 180),

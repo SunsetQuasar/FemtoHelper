@@ -5,7 +5,7 @@ namespace Celeste.Mod.FemtoHelper.Wipes;
 
 public class DiamondWipe : ScreenWipe
 {
-    public static readonly BlendState SubtractBlendmode = new BlendState
+    public static readonly BlendState SubtractBlendmode = new()
     {
         ColorSourceBlend = Blend.One,
         ColorDestinationBlend = Blend.One,
@@ -42,7 +42,7 @@ public class DiamondWipe : ScreenWipe
         //}
         float num2 = (Percent * Percent + Percent * Percent * Percent) / 2;
         float num3 = WipeIn ? num2 : -num2;
-        Vector2 center = new Vector2(Engine.Width / 2f, Engine.Height / 2f);
+        Vector2 center = new(Engine.Width / 2f, Engine.Height / 2f);
         vertex[0].Position = new Vector3(center.X, center.Y - num2 * (center.X + center.Y), 0);
         vertex[1].Position = new Vector3(center.X - num2 * (center.X + center.Y), center.Y, 0);
         vertex[2].Position = new Vector3(center.X, center.Y + num2 * (center.X + center.Y), 0);
