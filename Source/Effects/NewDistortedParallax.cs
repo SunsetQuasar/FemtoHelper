@@ -68,6 +68,8 @@ public class NewDistortedParallax : Backdrop
 
     public readonly bool WaveFix;
 
+    private readonly int _version;
+
     public NewDistortedParallax(BinaryPacker.Element data) : base()
     {
         Position = new Vector2(data.AttrFloat("offsetX", 0f), data.AttrFloat("offsetY", 0f));
@@ -103,38 +105,27 @@ public class NewDistortedParallax : Backdrop
         WaveFix = data.AttrBool("waveRotationFix", true);
         EffectId = data.Attr("shaderPath", "FemtoHelper/DistortedParallax");
 
-        switch (data.Attr("filterMode", "point"))
+        _version = data.AttrInt("_version", 0);
+
+        if(_version > 0)
         {
-            default:
-                Filter = SamplerState.PointWrap;
-                break;
-            case "linear":
-                Filter = SamplerState.LinearWrap;
-                break;
-            case "anisotropic":
-                Filter = SamplerState.AnisotropicWrap;
-                break;
+            Position -= Vector2.One * 0.5f;
         }
 
-        switch (data.Attr("blendState"))
+        Filter = data.Attr("filterMode", "point") switch
         {
-            default:
-                Blend = BlendState.AlphaBlend;
-                break;
-            case "additive":
-                Blend = BlendState.Additive;
-                break;
-            case "subtract":
-                Blend = Subtract;
-                break;
-            case "reversesubtract":
-                Blend = ReverseSubtract;
-                break;
-            case "multiply":
-                Blend = Multiply;
-                break;
-        }
-
+            "linear" => SamplerState.LinearWrap,
+            "anisotropic" => SamplerState.AnisotropicWrap,
+            _ => SamplerState.PointWrap,
+        };
+        Blend = data.Attr("blendState") switch
+        {
+            "additive" => BlendState.Additive,
+            "subtract" => Subtract,
+            "reversesubtract" => ReverseSubtract,
+            "multiply" => Multiply,
+            _ => BlendState.AlphaBlend,
+        };
         Effect = null;
         Initialized = false;
         Time = 0;

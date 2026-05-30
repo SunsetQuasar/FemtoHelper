@@ -27,6 +27,11 @@ effect.fieldInformation = {
     }
 }
 
+effect.ignoredFields = {
+    "_name", "_id","_version"
+}
+
+
 effect.fieldOrder = {
     "only","exclude","tag","flag","notflag",
     "offsetX",
@@ -119,7 +124,9 @@ effect.defaultData = {
     rotationOffset = 0,
 
     shaderPath = "FemtoHelper/DistortedParallax",
-    waveRotationFix = true
+    waveRotationFix = true,
+
+    _version = 1;
 }
 
 return effect
