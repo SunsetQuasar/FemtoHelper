@@ -20,11 +20,16 @@ public class HardcoreChallenge
     [YamlIgnore]
     public int Total => collectables.Sum(kvp => kvp.Value.Count);
     [YamlIgnore]
-    public int CompletedCount => completedArea.Count;
+    public int CompletedCount => completedArea.Count(kvp => kvp.Value);
     
     public bool CompletedAllOf(string sids)
     {
         return !sids.Split(',').Any(i => !(completedArea.TryGetValue(i, out var area) && area));
+    }
+
+    public int LevelsCompletedFrom(string sids)
+    {
+        return sids.Split(',').Sum(i => completedArea.TryGetValue(i, out var area) && area ? 1 : 0);
     }
 
     public int TotalOf(string sids)
@@ -96,6 +101,16 @@ public class HardcoreChallenge
     public HardcoreChallenge(EntityData data) : this()
     {
         levelSet = data.String("levelSet", null);
+
+        if (string.IsNullOrWhiteSpace(levelSet))
+        {
+            levelSet = AreaData.Get(Engine.Scene).LevelSet;
+        }
+        if (GetFromLevelSet(levelSet) == null)
+        {
+            throw new Exception($"Level set '{levelSet}' does not exist or does not have any maps associated with it!");
+        }
+
         ignoreGoldens = data.Bool("ignoreGoldens", true);
 
         if (FemtoModule.SaveData.HardcoreChallenges is null)
@@ -190,8 +205,16 @@ public class SetupHardcoreChallenge(EntityData data, Vector2 offset) : Entity(da
 
     public override void Awake(Scene scene)
     {
-        string levelSet = data.String("levelSet", null);
-        ArgumentNullException.ThrowIfNull(levelSet);
+        string levelSet = data.String("levelSet", "");
+        if(string.IsNullOrWhiteSpace(levelSet))
+        {
+            levelSet = AreaData.Get(scene).LevelSet;
+        }
+        if(GetFromLevelSet(levelSet) == null)
+        {
+            throw new Exception($"Level set '{levelSet}' does not exist or does not have any maps associated with it!");
+        }
+        //ArgumentNullException.ThrowIfNull(levelSet);
 
         //challenge already exists
         if (FemtoModule.SaveData.HardcoreChallenges.TryGetValue(levelSet, out var ch))
@@ -238,10 +261,22 @@ public class QueryHardcoreChallenge(EntityData data, Vector2 offset) : Entity(da
     {
         if (FemtoModule.SaveData.GetCurrentChallenge() is HardcoreChallenge challenge)
         {
-            if (!challenge.Failed && challenge.TotalOf(sids) >= requiredAmount && challenge.CompletedAllOf(levelCompleteSids))
+            Level level = (Scene as Level);
+            int amount = challenge.TotalOf(sids);
+            if (!challenge.Failed && amount >= requiredAmount && challenge.CompletedAllOf(levelCompleteSids))
             {
-                (Scene as Level).Session.SetFlag(flag);
+                level.Session.SetFlag(flag);
             }
+
+            level.Session.SetCounter($"{flag}_collectables", amount);
+            level.Session.SetCounter($"{flag}_collectables_total", challenge.Total);
+
+            level.Session.SetCounter($"{flag}_levels_completed", challenge.LevelsCompletedFrom(levelCompleteSids));
+            level.Session.SetCounter($"{flag}_levels_completed_total", challenge.CompletedCount);
+        } 
+        else
+        {
+            Warn($"Failed to query hardcore challenge for {AreaData.Get(Scene).LevelSet} ({nameof(FemtoModule.SaveData.GetCurrentChallenge)} was not {nameof(HardcoreChallenge)})");
         }
     }
 

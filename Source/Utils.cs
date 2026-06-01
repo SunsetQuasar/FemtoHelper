@@ -172,12 +172,7 @@ public static class Utils
 
         lock (AreaReloadLock)
         {
-            List<AreaKey> ret = [.. string.IsNullOrEmpty(levelSet) ? null : AreaData.Areas.FindAll(a => a.LevelSet == levelSet).Select(a => a.ToKey())];
-            foreach(AreaKey key in ret)
-            {
-                Debug(key.SID);
-            }
-            return ret;
+            return string.IsNullOrEmpty(levelSet) ? null : [.. AreaData.Areas.FindAll(a => a.LevelSet == levelSet).Select(a => a.ToKey())];
         }
     }
 }

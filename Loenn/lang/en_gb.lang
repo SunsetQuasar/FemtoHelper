@@ -6,10 +6,25 @@ mods.FemtoHelper.name=Femto Helper
 entities.FemtoHelper/AssistHazardController.placements.name.controller=Solid No Squish Controller
 entities.FemtoHelper/AssistHazardController.placements.description.controller=Prevents solids from squishing the player and dream block impact deaths.
 
-# Solid No Squish Controller
+# Move Block Ignore Controller
 entities.FemtoHelper/MoveBlockIgnoreController.placements.name.controller=Move Block Ignore Controller
 entities.FemtoHelper/MoveBlockIgnoreController.placements.description.controller=Allows vanilla Move Blocks to ignore specified solids.
 entities.FemtoHelper/MoveBlockIgnoreController.attributes.description.ignore=A comma-separated list of entity placement names to ignore.
+
+# Set up Hardcore Challenge
+entities.FemtoHelper/SetupHardcoreChallenge.placements.name.default=Set up Hardcore Challenge
+entities.FemtoHelper/SetupHardcoreChallenge.placements.description.default=Sets up a multi-chapter challenge run. Dying marks the run as failed.
+entities.FemtoHelper/SetupHardcoreChallenge.attributes.description.levelSet=The challenge's level set.
+entities.FemtoHelper/SetupHardcoreChallenge.attributes.description.ignoreGoldens=Ignores Golden Berries during the run.
+
+# Query Hardcore Challenge
+entities.FemtoHelper/QueryHardcoreChallenge.placements.name.default=Query Hardcore Challenge
+entities.FemtoHelper/QueryHardcoreChallenge.placements.description.default=Queries the active Hardcore Challenge run for this level set. 
+entities.FemtoHelper/QueryHardcoreChallenge.attributes.description.sids=A Comma-separated list of map SIDs to query.
+entities.FemtoHelper/QueryHardcoreChallenge.attributes.description.levelCompleteSids=A Comma-separated list of the maps that must be completed.
+entities.FemtoHelper/QueryHardcoreChallenge.attributes.description.requires=The minimum required amount of Strawberries, Cassettes and Crystal Hearts.
+entities.FemtoHelper/QueryHardcoreChallenge.attributes.description.setFlag=The flag to set if requirements are met.\nAlso used as a prefix for counters that expose the amount of collectables obtained and amount of maps cleared.
+
 
 # Touch Platform
 entities.FemtoHelper/TouchPlatform.placements.name.default=Touch Platform (Fall)

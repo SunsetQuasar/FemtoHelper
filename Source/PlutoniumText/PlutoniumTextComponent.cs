@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Net.Mime;
 using static Celeste.Mod.FemtoHelper.PlutoniumFont;
 
 namespace Celeste.Mod.FemtoHelper;
