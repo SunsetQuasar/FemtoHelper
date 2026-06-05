@@ -333,6 +333,11 @@ public struct PlutoniumFont
 
     public void RegisterTextCharacters(string str)
     {
+        if (str is null)
+        {
+            Error($"{nameof(RegisterTextCharacters)}: tried to register a null string!");
+            return;
+        }
         foreach (var c in str)
         {
             if (!Chars.ContainsKey(c) && ActiveFont.FontSize.Characters.TryGetValue(c, out PixelFontCharacter data))

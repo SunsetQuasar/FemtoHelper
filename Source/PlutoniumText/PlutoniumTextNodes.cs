@@ -1,6 +1,7 @@
 ﻿using Celeste.Mod.FemtoHelper.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper;
 
@@ -74,28 +75,19 @@ public static class PlutoniumTextNodes
     {
         List<Node> nodes = [];
 
-        string[] splitStr = SimpleText.MyRegex().Split(Dialog.Get(dialogId));
-        string[] splitStr2 = new string[splitStr.Length];
-        int num = 0;
-        foreach (var t in splitStr)
-        {
-            if (!string.IsNullOrEmpty(t))
-            {
-                splitStr2[num++] = t;
-            }
-        }
+        string[] splitString = [.. SimpleText.MyRegex().Split(Dialog.Get(dialogId)).Where(c => !string.IsNullOrEmpty(c))];
 
-        for (int i = 0; i < splitStr2.Length; i++)
+        for (int i = 0; i < splitString.Length; i++)
         {
-            if (splitStr2[i] == "{")
+            if (splitString[i] == "{")
             {
                 i++;
 
-                for (; i < splitStr2.Length && splitStr2[i] != "}"; i++)
+                for (; i < splitString.Length && splitString[i] != "}"; i++)
                 {
-                    if (string.IsNullOrWhiteSpace(splitStr2[i])) continue;
+                    if (string.IsNullOrWhiteSpace(splitString[i])) continue;
 
-                    string[] splitOnceAgain = splitStr2[i].Split(';');
+                    string[] splitOnceAgain = splitString[i].Split(';');
                     if (splitOnceAgain.Length == 3)
                     {
                         nodes.Add(new Flag(splitOnceAgain[0], splitOnceAgain[1], splitOnceAgain[2]));
@@ -110,20 +102,20 @@ public static class PlutoniumTextNodes
                     }
                     else
                     {
-                        if (splitStr2[i][0] == '@')
+                        if (splitString[i][0] == '@')
                         {
-                            nodes.Add(new Slider(splitStr2[i].Remove(0, 1), truncateSliders, decimals));
+                            nodes.Add(new Slider(splitString[i].Remove(0, 1), truncateSliders, decimals));
                         }
                         else
                         {
-                            nodes.Add(new Counter(splitStr2[i]));
+                            nodes.Add(new Counter(splitString[i]));
                         }
                     }
                 }
             }
             else
             {
-                nodes.Add(new Text(splitStr2[i]));
+                nodes.Add(new Text(splitString[i]));
             }
         }
 
