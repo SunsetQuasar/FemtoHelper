@@ -54,6 +54,10 @@ public class FemtoStars : Backdrop
 	public readonly string Alpha;
 
 	private readonly float separation;
+	
+	public static int GameplayBufferWidth => GameplayBuffers.Gameplay?.Width ?? 320;
+	public static int GameplayBufferHeight => GameplayBuffers.Gameplay?.Height ?? 180;
+	
 	public FemtoStars(int blurCount, string colors3, float minXSpeed, float maxXSpeed, float minYSpeed, float maxYSpeed, float loopBorderX, float loopBorderY, int count, string backgroundColor, float backgroundAlpha, string sprite, float scrollX, float scrollY, float transparency, float trailSeparation, float animationRate, string transp2, float animationRateRandom)
 	{
 		trailCount = blurCount;
@@ -81,7 +85,7 @@ public class FemtoStars : Backdrop
 		{
 			stars[i] = new Star
 			{
-				Position = new Vector2(Calc.Random.NextFloat(320f + extraLoopBorderX) - extraLoopBorderX / 2, Calc.Random.NextFloat(180f + extraLoopBorderY) - extraLoopBorderY / 2),
+				Position = new Vector2(Calc.Random.NextFloat(GameplayBufferWidth + extraLoopBorderX) - extraLoopBorderX / 2, Calc.Random.NextFloat(GameplayBufferHeight + extraLoopBorderY) - extraLoopBorderY / 2),
 				Timer = Calc.Random.NextFloat((float)Math.PI * 2f),
 				Rate = animationRate + Calc.Random.NextFloat(animationRateRandom),
 				TextureSet = Calc.Random.Next(textures.Count),
@@ -116,7 +120,7 @@ public class FemtoStars : Backdrop
 
 	public override void Render(Scene scene)
 	{
-		Draw.Rect(0f, 0f, 320f, 180f, backdropColor * backdropAlpha);
+		Draw.Rect(0f, 0f, GameplayBufferWidth, GameplayBufferHeight, backdropColor * backdropAlpha);
 		Level level = scene as Level;
 		int num = stars.Length;
 		for (int i = 0; i < num; i++)
@@ -128,15 +132,15 @@ public class FemtoStars : Backdrop
 			MTexture mTexture = list[num2];
 			position.Y -= level.Camera.Y * parallaxY;
 			position.X -= level.Camera.X * parallaxX;
-			position.Y %= 180f + extraLoopBorderY;
-			position.X %= 320f + extraLoopBorderX;
+			position.Y %= GameplayBufferHeight + extraLoopBorderY;
+			position.X %= GameplayBufferWidth + extraLoopBorderX;
 			if (position.Y < 0f)
 			{
-				position.Y += 180f + extraLoopBorderY;
+				position.Y += GameplayBufferHeight + extraLoopBorderY;
 			}
 			if (position.X < 0f)
 			{
-				position.X += 320f + extraLoopBorderX;
+				position.X += GameplayBufferWidth + extraLoopBorderX;
 			}
 			Vector2 epic = new();
 			epic = Vector2.Normalize(stars[i].Speed);

@@ -41,6 +41,9 @@ public class PolygonStars : Backdrop
     private readonly float scroll;
 
     private readonly bool filled;
+    
+    public static int GameplayBufferWidth => GameplayBuffers.Gameplay?.Width ?? 320;
+    public static int GameplayBufferHeight => GameplayBuffers.Gameplay?.Height ?? 180;
 
     public PolygonStars(int sides, float pointiness, float minRotation, float maxRotation, float minSize, float maxSize, float border, string color, float angle, float alpha, float minSpeed, float maxSpeed, int amount, float scroll, bool filled)
     {
@@ -57,7 +60,7 @@ public class PolygonStars : Backdrop
         this.angle = new Vector2((float)Math.Sin(angle / 180 * Math.PI), (float)Math.Cos(angle / 180 * Math.PI));
         for (int i = 0; i < stars.Length; i++)
         {
-            stars[i].Position = new Vector2(Calc.Random.NextFloat(320f + loopBorder) - loopBorder / 2, Calc.Random.NextFloat(180f + loopBorder) - loopBorder / 2);
+            stars[i].Position = new Vector2(Calc.Random.NextFloat(GameplayBufferWidth + loopBorder) - loopBorder / 2, Calc.Random.NextFloat(GameplayBufferHeight + loopBorder) - loopBorder / 2);
             stars[i].Speed = Calc.Random.Range(minSpeed, maxSpeed);
             stars[i].Size = Calc.Random.Range(minSize, maxSize);
             stars[i].Rotation = Calc.Random.NextFloat((float)Math.PI * 2);
@@ -94,7 +97,7 @@ public class PolygonStars : Backdrop
             for (int i = 0; i < stars.Length; i++)
             {
                 Color color = stars[i].Color * alpha;
-                Vector2 center = new(Mod(stars[i].Position.X, 320f + loopBorder) - loopBorder / 2, Mod(stars[i].Position.Y, 180f + loopBorder) - loopBorder / 2);
+                Vector2 center = new(Mod(stars[i].Position.X, GameplayBufferWidth + loopBorder) - loopBorder / 2, Mod(stars[i].Position.Y, GameplayBufferHeight + loopBorder) - loopBorder / 2);
 
                 for (int j = 0; j < sideCount; j++)
                 {
@@ -118,7 +121,7 @@ public class PolygonStars : Backdrop
             for (int i = 0; i < stars.Length; i++)
             {
                 Color color = stars[i].Color * alpha;
-                Vector2 center = new(Mod(stars[i].Position.X, 320f + loopBorder) - loopBorder / 2, Mod(stars[i].Position.Y, 180f + loopBorder) - loopBorder / 2);
+                Vector2 center = new(Mod(stars[i].Position.X, GameplayBufferWidth + loopBorder) - loopBorder / 2, Mod(stars[i].Position.Y, GameplayBufferHeight + loopBorder) - loopBorder / 2);
 
                 //Draw.HollowRect(new Vector2(Mod(stars[i].Position.X, 320f), Mod(stars[i].Position.Y, 180f)), stars[i].Size, stars[i].Size, Color.Teal);
                 for (int j = 0; j < sideCount; j++)
