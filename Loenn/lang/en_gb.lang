@@ -1053,6 +1053,7 @@ style.effects.FemtoHelper/WindPetals.description.alpha=The alpha of the petals.
 style.effects.FemtoHelper/WindPetals.description.scale=The scale of the petals.
 style.effects.FemtoHelper/WindPetals.description.minXDriftSpeed=The minimum drifting speed of the petals.
 style.effects.FemtoHelper/WindPetals.description.maxXDriftSpeed=The maximum drifting speed of the petals.
+style.effects.FemtoHelper/WindPetals.description.ignoreWind=Causes the petals to ingore the wind entirely when enabled.
 
 # Digital Cascade 
 style.effects.FemtoHelper/DigitalCascade.name=Digital Cascade
