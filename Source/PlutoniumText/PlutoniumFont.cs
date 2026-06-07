@@ -100,6 +100,7 @@ public struct PlutoniumFont
         private const float Scale = 1/3f;
         
         public char Letter;
+        private VirtualRenderTarget LetterSprite;
         private Vector2 charOffset;
 
         private readonly int width;
@@ -128,6 +129,7 @@ public struct PlutoniumFont
 
             Outline = VirtualContent.CreateRenderTarget(parent.SourcePath + "_" + character + "_outline", width + 2, height + 2);
             Shadow = VirtualContent.CreateRenderTarget(parent.SourcePath + "_" + character + "_shadow", width + 2, height + 2);
+            LetterSprite = VirtualContent.CreateRenderTarget(parent.SourcePath + "_" + character + "_letter", width, height);
 
             GraphicsDevice g = Engine.Graphics.GraphicsDevice;
 
@@ -162,11 +164,18 @@ public struct PlutoniumFont
             Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, AlphaSubtract, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
             ActiveFont.Draw(Letter, Vector2.One - charOffset, Vector2.Zero, new Vector2(Scale), Color.White);
             Draw.SpriteBatch.End();
+
+            g.SetRenderTarget(LetterSprite);
+            g.Clear(Color.Transparent);
+
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            ActiveFont.Draw(Letter, Vector2.Zero - charOffset, Vector2.Zero, new Vector2(Scale), Color.White);
+            Draw.SpriteBatch.End();
         }
 
         public override void DrawCharacter(Vector2 position, Color color, float scale, SpriteEffects seffect)
         {
-            ActiveFont.Draw(Letter, position - charOffset, Vector2.Zero, new Vector2(scale * Scale), color);
+            Draw.SpriteBatch.Draw(LetterSprite, position, new Rectangle(0, 0, width, height), color, 0, Vector2.Zero, scale, seffect, 0f);
         }
     }
 
