@@ -33,7 +33,9 @@ public class WindPetals : Backdrop
 
     public readonly float Scale;
 
-    public readonly bool IgnoreWind;
+    public readonly float WindXMultiplier;
+    
+    public readonly float WindYMultiplier;
     
     public static int GameplayBufferWidth => GameplayBuffers.Gameplay?.Width ?? 320;
     public static int GameplayBufferHeight => GameplayBuffers.Gameplay?.Height ?? 180;
@@ -59,7 +61,7 @@ public class WindPetals : Backdrop
 
     private float fade;
 
-    public WindPetals(string colors, float fallingSpeedMin, float fallingSpeedMax, int blurCount, float blurDensity, string texture, int count, float scroll, float spinFrequency, float spinAmplitude, float transparency, float size, float xDriftingSpeedMin, float xDriftingSpeedMax, bool ignoreWind)
+    public WindPetals(string colors, float fallingSpeedMin, float fallingSpeedMax, int blurCount, float blurDensity, string texture, int count, float scroll, float spinFrequency, float spinAmplitude, float transparency, float size, float xDriftingSpeedMin, float xDriftingSpeedMax, float windXMultiplier, float windYMultiplier)
     {
         // this is like communal helper!
         Colors = colors
@@ -79,7 +81,8 @@ public class WindPetals : Backdrop
         SpinAmount = spinAmplitude;
         Alpha = transparency;
         Scale = size;
-        IgnoreWind = ignoreWind;
+        WindXMultiplier = windXMultiplier;
+        WindYMultiplier = windYMultiplier;
         for (int i = 0; i < particles.Length; i++)
         {
             Reset(i);
@@ -107,10 +110,8 @@ public class WindPetals : Backdrop
             particles[i].Position.Y += particles[i].Speed * Engine.DeltaTime;
             particles[i].Position.X += particles[i].SpeedX * Engine.DeltaTime;
             particles[i].RotationCounter += particles[i].Spin * Engine.DeltaTime;
-            if (!IgnoreWind)
-            {
-                particles[i].Position += level.Wind * Engine.DeltaTime;
-            }
+            particles[i].Position.Y += level.Wind.Y * WindYMultiplier * Engine.DeltaTime;
+            particles[i].Position.X += level.Wind.X * WindXMultiplier * Engine.DeltaTime;
         }
         fade = Calc.Approach(fade, Visible ? 1f : 0f, Engine.DeltaTime);
     }
@@ -129,9 +130,9 @@ public class WindPetals : Backdrop
                 position.Y = -16f + Mod(particles[i].Position.Y - camera.Y, (GameplayBufferHeight + (32 * Parallax)) / Parallax);
                 float num = MathF.PI / 2 + MathF.Sin(particles[i].RotationCounter * SpinSpeedMultiplier * particles[i].MaxRotate) * 1.0f;
                 position += Calc.AngleToVector(num, 4f);
-                
-                float windStrengthX = !IgnoreWind ? (level as Level).Wind.X : 0f;
-                float windStrengthY = !IgnoreWind ? (level as Level).Wind.Y : 0f;
+
+                float windStrengthX = (level as Level).Wind.X * WindXMultiplier;
+                float windStrengthY = (level as Level).Wind.Y * WindYMultiplier;
 
                 for (int n = 1; n < BlurCount; n++)
                 {
