@@ -101,15 +101,15 @@ public class FemtoModule : EverestModule
                 switch (self.hitSpeed.X)
                 {
                     case > 0:
-                    {
-                        if (block.CanHitLeft) block.Hit(null, GenericSmwBlock.Direction.Right);
-                        break;
-                    }
+                        {
+                            if (block.CanHitLeft) block.Hit(null, GenericSmwBlock.Direction.Right);
+                            break;
+                        }
                     case < 0:
-                    {
-                        if (block.CanHitRight) block.Hit(null, GenericSmwBlock.Direction.Left);
-                        break;
-                    }
+                        {
+                            if (block.CanHitRight) block.Hit(null, GenericSmwBlock.Direction.Left);
+                            break;
+                        }
                 }
             }
         }
@@ -124,15 +124,15 @@ public class FemtoModule : EverestModule
                 switch (self.hitSpeed.Y)
                 {
                     case > 0:
-                    {
-                        if (block.CanHitTop) block.Hit(null, GenericSmwBlock.Direction.Down);
-                        break;
-                    }
+                        {
+                            if (block.CanHitTop) block.Hit(null, GenericSmwBlock.Direction.Down);
+                            break;
+                        }
                     case < 0:
-                    {
-                        if (block.CanHitBottom) block.Hit(null, GenericSmwBlock.Direction.Up);
-                        break;
-                    }
+                        {
+                            if (block.CanHitBottom) block.Hit(null, GenericSmwBlock.Direction.Up);
+                            break;
+                        }
                 }
             }
         }
@@ -193,7 +193,7 @@ public class FemtoModule : EverestModule
         direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 
         // bottom-left (-1, 1) is row 2, column 0.
-        return d.Dirs[(int)(direction.Y + 1),(int)(direction.X + 1)];
+        return d.Dirs[(int)(direction.Y + 1), (int)(direction.X + 1)];
     }
 
     private static void ModDashSpeed(ILContext il)
@@ -341,7 +341,7 @@ public class FemtoModule : EverestModule
             cursor.EmitDelegate(InvokeExtraCollisionActionsH);
         }
     }
-    
+
     private static bool CheckSpeed(float speed, float req, bool equal, float tolerance)
     {
         if (!equal)
@@ -367,7 +367,7 @@ public class FemtoModule : EverestModule
                     if (block.CanActivate(-data.Direction) && CheckSpeed(Math.Abs(h.GetSpeed().X), controller.CrushBlockSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance)) block.Attack(-data.Direction);
                     break;
                 case DashBlock dashBlock when controller.InteractWithDashBlocks:
-                    if(CheckSpeed(Math.Abs(h.GetSpeed().X), controller.DashBlockSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance)) dashBlock.Break(self.Center, data.Direction, true, true);
+                    if (CheckSpeed(Math.Abs(h.GetSpeed().X), controller.DashBlockSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance)) dashBlock.Break(self.Center, data.Direction, true, true);
                     break;
                 case LightningBreakerBox box when controller.InteractWithBreakerBoxes:
                     if (!(data.Direction == Vector2.UnitX && box.spikesLeft) && !(data.Direction == -Vector2.UnitX && box.spikesRight) && CheckSpeed(Math.Abs(h.GetSpeed().X), controller.BreakerBoxSpeedReq.X, controller.ExactSpeedMatch, controller.ExactSpeedTolerance))
@@ -429,7 +429,7 @@ public class FemtoModule : EverestModule
         }
 
         if (data.Hit is not GenericSmwBlock smwblock || smwblock.Activated) return data;
-        
+
         if (h.GetSpeed().X > 20)
         {
             if (smwblock.CanHitLeft) smwblock.Hit(null, GenericSmwBlock.Direction.Right);
@@ -453,7 +453,7 @@ public class FemtoModule : EverestModule
             cursor.EmitDelegate(InvokeExtraCollisionActionsV);
         }
     }
-    
+
     public static CollisionData InvokeExtraCollisionActionsV(CollisionData data, Actor self)
     {
         if (self is Debris) return data;
@@ -538,13 +538,13 @@ public class FemtoModule : EverestModule
                     }
                     break;
             }
-            
+
         }
-        
+
         //smw block handling
 
         if (data.Hit is not GenericSmwBlock smwblock || smwblock.Activated) return data;
-        
+
         if (h.GetSpeed().Y > 80)
         {
             if (smwblock.CanHitTop) smwblock.Hit(null, GenericSmwBlock.Direction.Down);
@@ -579,15 +579,69 @@ public class FemtoModule : EverestModule
     {
         if (child.Name.Equals("FemtoHelper/WindPetals", StringComparison.OrdinalIgnoreCase))
         {
-            return new WindPetals(child.Attr("colors", "66cc33"), child.AttrFloat("fallingSpeedMin", 8f), child.AttrFloat("fallingSpeedMax", 16f), child.AttrInt("blurCount", 15), child.AttrFloat("blurDensity", 3), child.Attr("texture", "particles/petal"), child.AttrInt("particleCount", 40), child.AttrFloat("parallax", 1f), child.AttrFloat("spinSpeedMultiplier", 1f), child.AttrFloat("spinAmountMultiplier", 1f), child.AttrFloat("alpha", 1f), child.AttrFloat("scale", 1f), child.AttrFloat("minXDriftSpeed", 0f), child.AttrFloat("maxXDriftSpeed", 0f), child.AttrFloat("windX_Multiplier", 1f), child.AttrFloat("windY_Multiplier", 1f));
+            return new WindPetals(
+                child.Attr("colors", "66cc33"),
+                child.AttrFloat("fallingSpeedMin", 8f),
+                child.AttrFloat("fallingSpeedMax", 16f),
+                child.AttrInt("blurCount", 15),
+                child.AttrFloat("blurDensity", 3),
+                child.Attr("texture", "particles/petal"),
+                child.AttrInt("particleCount", 40),
+                child.AttrFloat("parallax", 1f),
+                child.AttrFloat("spinSpeedMultiplier", 1f),
+                child.AttrFloat("spinAmountMultiplier", 1f),
+                child.AttrFloat("alpha", 1f),
+                child.AttrFloat("scale", 1f),
+                child.AttrFloat("minXDriftSpeed", 0f),
+                child.AttrFloat("maxXDriftSpeed", 0f),
+                child.AttrFloat("windX_Multiplier", 1f),
+                child.AttrFloat("windY_Multiplier", 1f),
+                child.AttrFloat("extraLoopBorder", 32)
+            );
         }
         if (child.Name.Equals("FemtoHelper/FemtoStars", StringComparison.OrdinalIgnoreCase))
         {
-            return new FemtoStars(child.AttrInt("trailCount", 8), child.Attr("colors", "ffffff"), child.AttrFloat("minXSpeed", 0f), child.AttrFloat("maxXSpeed", 0f), child.AttrFloat("minYSpeed", 6f), child.AttrFloat("maxYSpeed", 12f), child.AttrFloat("extraLoopBorderX", 0), child.AttrFloat("extraLoopBorderY", 0), child.AttrInt("starCount", 100), child.Attr("backgroundColor", "000000"), child.AttrFloat("backgroundAlpha", 1f), child.Attr("sprite", "bgs/02/stars"), child.AttrFloat("scrollX", 0f), child.AttrFloat("scrollY", 0f), child.AttrFloat("alpha", 1f), child.AttrFloat("trailSeparation", 1f), child.AttrFloat("animationRate", 2f), child.Attr("alphas", "1"), child.AttrFloat("animationRateRange", 2f));
+            return new FemtoStars(
+                child.AttrInt("trailCount", 8),
+                child.Attr("colors", "ffffff"),
+                child.AttrFloat("minXSpeed", 0f),
+                child.AttrFloat("maxXSpeed", 0f),
+                child.AttrFloat("minYSpeed", 6f),
+                child.AttrFloat("maxYSpeed", 12f),
+                child.AttrFloat("extraLoopBorderX", 0),
+                child.AttrFloat("extraLoopBorderY", 0),
+                child.AttrInt("starCount", 100),
+                child.Attr("backgroundColor", "000000"),
+                child.AttrFloat("backgroundAlpha", 1f),
+                child.Attr("sprite", "bgs/02/stars"),
+                child.AttrFloat("scrollX", 0f),
+                child.AttrFloat("scrollY", 0f),
+                child.AttrFloat("alpha", 1f),
+                child.AttrFloat("trailSeparation", 1f),
+                child.AttrFloat("animationRate", 2f),
+                child.Attr("alphas", "1"),
+                child.AttrFloat("animationRateRange", 2f)
+            );
         }
         if (child.Name.Equals("FemtoHelper/PolygonStars", StringComparison.OrdinalIgnoreCase))
         {
-            return new PolygonStars(child.AttrInt("sideCount", 10), child.AttrFloat("pointinessMultiplier", 2f), child.AttrFloat("minRotationSpeed", 1f), child.AttrFloat("maxRotationSpeed", 2f), child.AttrFloat("minSize", 2f), child.AttrFloat("maxSize", 8f), child.AttrFloat("loopBorder", 64f), child.Attr("colors", "008080"), child.AttrFloat("angle", 270f), child.AttrFloat("alpha", 1f), child.AttrFloat("minSpeed", 24f), child.AttrFloat("maxSpeed", 48f), child.AttrInt("amount", 50), child.AttrFloat("scroll", 0.5f), child.AttrBool("filled", false));
+            return new PolygonStars(
+                child.AttrInt("sideCount", 10),
+                child.AttrFloat("pointinessMultiplier", 2f),
+                child.AttrFloat("minRotationSpeed", 1f),
+                child.AttrFloat("maxRotationSpeed", 2f),
+                child.AttrFloat("minSize", 2f),
+                child.AttrFloat("maxSize", 8f),
+                child.AttrFloat("loopBorder", 64f),
+                child.Attr("colors", "008080"),
+                child.AttrFloat("angle", 270f),
+                child.AttrFloat("alpha", 1f),
+                child.AttrFloat("minSpeed", 24f),
+                child.AttrFloat("maxSpeed", 48f),
+                child.AttrInt("amount", 50),
+                child.AttrFloat("scroll", 0.5f),
+                child.AttrBool("filled", false)
+            );
         }
         if (child.Name.Equals("FemtoHelper/FadingNorthernLights", StringComparison.OrdinalIgnoreCase))
         {
@@ -595,11 +649,35 @@ public class FemtoModule : EverestModule
         }
         if (child.Name.Equals("FemtoHelper/VaporWave", StringComparison.OrdinalIgnoreCase))
         {
-            return new VaporWave(child.AttrFloat("lineCount", 30), child.AttrFloat("horizon", 64));
+            return new VaporWave(
+                child.AttrFloat("lineCount", 30),
+                child.AttrFloat("horizon", 64)
+            );
         }
         if (child.Name.Equals("FemtoHelper/VectorSpace", StringComparison.OrdinalIgnoreCase))
         {
-            return new VectorSpace(child.AttrFloat("spacingX", 30), child.AttrFloat("spacingY", 30), child.AttrFloat("velocityX", -10), child.AttrFloat("velocityY", 10), child.AttrFloat("scroll", 1), child.Attr("color", "ffffff"), child.AttrFloat("sineXOffsetMin", 0), child.AttrFloat("sineXOffsetMax", 180), child.AttrFloat("sineYOffsetMin", 0), child.AttrFloat("sineYOffsetMax", 180), child.AttrFloat("sineXFreqMin", -90), child.AttrFloat("sineXFreqMax", 90), child.AttrFloat("sineYFreqMin", -90), child.AttrFloat("sineYFreqMax", 90), child.AttrFloat("amplitude", 12), child.AttrBool("renderTip", true), child.AttrBool("scaleTip", false), child.AttrFloat("alpha", 1), child.AttrBool("yFreqRelativeToX", false), child.AttrBool("yOffsetRelativeToX", false));
+            return new VectorSpace(
+                child.AttrFloat("spacingX", 30),
+                child.AttrFloat("spacingY", 30),
+                child.AttrFloat("velocityX", -10),
+                child.AttrFloat("velocityY", 10),
+                child.AttrFloat("scroll", 1),
+                child.Attr("color", "ffffff"),
+                child.AttrFloat("sineXOffsetMin", 0),
+                child.AttrFloat("sineXOffsetMax", 180),
+                child.AttrFloat("sineYOffsetMin", 0),
+                child.AttrFloat("sineYOffsetMax", 180),
+                child.AttrFloat("sineXFreqMin", -90),
+                child.AttrFloat("sineXFreqMax", 90),
+                child.AttrFloat("sineYFreqMin", -90),
+                child.AttrFloat("sineYFreqMax", 90),
+                child.AttrFloat("amplitude", 12),
+                child.AttrBool("renderTip", true),
+                child.AttrBool("scaleTip", false),
+                child.AttrFloat("alpha", 1),
+                child.AttrBool("yFreqRelativeToX", false),
+                child.AttrBool("yOffsetRelativeToX", false)
+            );
         }
         if (child.Name.Equals("FemtoHelper/DigitalCascade", StringComparison.OrdinalIgnoreCase))
         {
@@ -662,7 +740,7 @@ public class FemtoModule : EverestModule
                 child.AttrBool("flipY", false),
 
                 child.AttrInt("sliceMode", 0) == 0 ? DistortedParallax.SliceModes.TransLong : child.AttrInt("sliceMode", 0) == 1 ? DistortedParallax.SliceModes.LongTrans : child.AttrInt("sliceMode", 0) == 2 ? DistortedParallax.SliceModes.TransTrans : DistortedParallax.SliceModes.LongLong
-                );
+            );
         }
         return null;
     }

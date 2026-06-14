@@ -36,6 +36,8 @@ public class WindPetals : Backdrop
     public readonly float WindXMultiplier;
     
     public readonly float WindYMultiplier;
+
+    public readonly float ExtraLoopBorder;
     
     public static int GameplayBufferWidth => GameplayBuffers.Gameplay?.Width ?? 320;
     public static int GameplayBufferHeight => GameplayBuffers.Gameplay?.Height ?? 180;
@@ -61,7 +63,7 @@ public class WindPetals : Backdrop
 
     private float fade;
 
-    public WindPetals(string colors, float fallingSpeedMin, float fallingSpeedMax, int blurCount, float blurDensity, string texture, int count, float scroll, float spinFrequency, float spinAmplitude, float transparency, float size, float xDriftingSpeedMin, float xDriftingSpeedMax, float windXMultiplier, float windYMultiplier)
+    public WindPetals(string colors, float fallingSpeedMin, float fallingSpeedMax, int blurCount, float blurDensity, string texture, int count, float scroll, float spinFrequency, float spinAmplitude, float transparency, float size, float xDriftingSpeedMin, float xDriftingSpeedMax, float windXMultiplier, float windYMultiplier, float extraLoopBorder)
     {
         // this is like communal helper!
         Colors = colors
@@ -83,6 +85,7 @@ public class WindPetals : Backdrop
         Scale = size;
         WindXMultiplier = windXMultiplier;
         WindYMultiplier = windYMultiplier;
+        ExtraLoopBorder = extraLoopBorder;
         for (int i = 0; i < particles.Length; i++)
         {
             Reset(i);
@@ -91,7 +94,7 @@ public class WindPetals : Backdrop
 
     private void Reset(int i)
     {
-        particles[i].Position = new Vector2(Calc.Random.Range(0, GameplayBufferWidth + 32) / Parallax, Calc.Random.Range(0, GameplayBufferHeight + 32) / Parallax);
+        particles[i].Position = new Vector2(Calc.Random.Range(0, GameplayBufferWidth + ExtraLoopBorder) / Parallax, Calc.Random.Range(0, GameplayBufferHeight + ExtraLoopBorder) / Parallax);
         particles[i].Speed = Calc.Random.Range(FallSpeedMin, FallSpeedMax);
         particles[i].SpeedX = Calc.Random.Range(XDriftSpeedMin, XDriftSpeedMax);
         particles[i].Spin = Calc.Random.Range(8f, 12f) * 0.2f;
@@ -126,8 +129,8 @@ public class WindPetals : Backdrop
             for (int i = 0; i < particles.Length; i++)
             {
                 Vector2 position = Vector2.Zero;
-                position.X = -16f + Mod(particles[i].Position.X - camera.X, (GameplayBufferWidth + (32 * Parallax)) / Parallax);
-                position.Y = -16f + Mod(particles[i].Position.Y - camera.Y, (GameplayBufferHeight + (32 * Parallax)) / Parallax);
+                position.X = -16f + Mod(particles[i].Position.X - camera.X, (GameplayBufferWidth + (ExtraLoopBorder * Parallax)) / Parallax);
+                position.Y = -16f + Mod(particles[i].Position.Y - camera.Y, (GameplayBufferHeight + (ExtraLoopBorder * Parallax)) / Parallax);
                 float num = MathF.PI / 2 + MathF.Sin(particles[i].RotationCounter * SpinSpeedMultiplier * particles[i].MaxRotate) * 1.0f;
                 position += Calc.AngleToVector(num, 4f);
 

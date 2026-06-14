@@ -1055,6 +1055,7 @@ style.effects.FemtoHelper/WindPetals.description.minXDriftSpeed=The minimum drif
 style.effects.FemtoHelper/WindPetals.description.maxXDriftSpeed=The maximum drifting speed of the petals.
 style.effects.FemtoHelper/WindPetals.description.windX_Multiplier=A mutipler for how much the petals should be affected by the horizontal component of the current wind.
 style.effects.FemtoHelper/WindPetals.description.windY_Multiplier=A mutipler for how much the petals should be affected by the vertical component of the current wind.
+style.effects.FemtoHelper/WindPetals.description.extraLoopBorder=The amount of out-of-bounds space in all directions the petals can stay in before looping.\nA larger value is recommended if large sprites are disappearing before fully going out of bounds.
 
 # Digital Cascade 
 style.effects.FemtoHelper/DigitalCascade.name=Digital Cascade
