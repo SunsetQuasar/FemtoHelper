@@ -45,6 +45,9 @@ public class VectorSpace : Backdrop
 
 	private readonly bool scaleTip;
 	private readonly bool renderTip;
+	
+	public static int GameplayBufferWidth => GameplayBuffers.Gameplay?.Width ?? 320;
+	public static int GameplayBufferHeight => GameplayBuffers.Gameplay?.Height ?? 180;
 
 	public VectorSpace(float spacingX, float spacingY, float speedX, float speedY, float scroll, string color, float xOffsetMin, float xOffsetMax, float yOffsetMin, float yOffsetMax, float xFreqMin, float xFreqMax, float yFreqMin, float yFreqMax, float amplitude, bool trender, bool tscale, float alpha, bool yFrelX, bool yOrelX)
 	{
@@ -57,8 +60,8 @@ public class VectorSpace : Backdrop
 
 		this.scroll = scroll;
 
-		howmanyx = (int)Math.Ceiling(320 / spacingX) + extras;
-		howmanyy = (int)Math.Ceiling(180 / spacingY) + extras;
+		howmanyx = (int)Math.Ceiling(GameplayBufferWidth / spacingX) + extras;
+		howmanyy = (int)Math.Ceiling(GameplayBufferHeight / spacingY) + extras;
 
 		this.spacingX = spacingX;
 		this.spacingY = spacingY;
@@ -142,12 +145,12 @@ public class VectorSpace : Backdrop
 		for (int i = 0; i < vecs.Length; i++)
 		{
 			Draw.Line(new Vector2(
-				vecs[i].Position.X - (howmanyx * spacingX - 320) / 2,
-				vecs[i].Position.Y - (howmanyy * spacingY - 180) / 2
+				vecs[i].Position.X - (howmanyx * spacingX - GameplayBufferWidth) / 2,
+				vecs[i].Position.Y - (howmanyy * spacingY - GameplayBufferHeight) / 2
 				),
 				new Vector2(
-				vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2,
-				vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2
+				vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - GameplayBufferWidth) / 2,
+				vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - GameplayBufferHeight) / 2
 				),
 				vecs[i].IndColor);
 			if (renderTip)
@@ -168,23 +171,23 @@ public class VectorSpace : Backdrop
 				
 
 				Draw.Line(new Vector2(
-					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2,
-					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2
+					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - GameplayBufferWidth) / 2,
+					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - GameplayBufferHeight) / 2
 					),
 					new Vector2(
-					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2 + (float)Math.Sin(dir - 9 * Math.PI / 8) * tipscale,
-					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2 + (float)Math.Cos(dir - 9 * Math.PI / 8) * tipscale
+					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - GameplayBufferWidth) / 2 + (float)Math.Sin(dir - 9 * Math.PI / 8) * tipscale,
+					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - GameplayBufferHeight) / 2 + (float)Math.Cos(dir - 9 * Math.PI / 8) * tipscale
 					),
 					vecs[i].IndColor);
 
 				Draw.Line(new Vector2(
-					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2 + (float)Math.Sin(dir + 9 * Math.PI / 8) * tipscale,
-					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2 + (float)Math.Cos(dir + 9 * Math.PI / 8) * tipscale
+					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - GameplayBufferWidth) / 2 + (float)Math.Sin(dir + 9 * Math.PI / 8) * tipscale,
+					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - GameplayBufferHeight) / 2 + (float)Math.Cos(dir + 9 * Math.PI / 8) * tipscale
 
 					),
 					new Vector2(
-					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - 320) / 2,
-					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - 180) / 2
+					vecs[i].Position.X + vecs[i].XComp - (howmanyx * spacingX - GameplayBufferWidth) / 2,
+					vecs[i].Position.Y + vecs[i].YComp - (howmanyy * spacingY - GameplayBufferHeight) / 2
 					),
 					vecs[i].IndColor);
 			}

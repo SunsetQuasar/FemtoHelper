@@ -24,7 +24,9 @@ wind_petals.defaultData = {
     alpha = 1.0,
     scale = 1.0,
     minXDriftSpeed = 0.0,
-    maxXDriftSpeed = 0.0
+    maxXDriftSpeed = 0.0,
+	windX_Multiplier = 0.0,
+	windY_Multiplier = 0.0
 }
 
 return wind_petals

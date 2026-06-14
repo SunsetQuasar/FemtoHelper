@@ -77,6 +77,9 @@ public class DigitalCascade : Backdrop
 	private readonly bool infiniteLifetime;
 
 	private readonly float alphaAi;
+	
+	public static int GameplayBufferWidth => GameplayBuffers.Gameplay?.Width ?? 320;
+	public static int GameplayBufferHeight => GameplayBuffers.Gameplay?.Height ?? 180;
 
 	public DigitalCascade(int symbolAmount, int afterimagesCap, string colors, float alpha, float minspeed, float maxspeed, float angle, float extraLoopBorderX, float extraLoopBorderY, string spritePath, float minlife, float maxlife, float fadetime, int doScale, bool randomsym, float aifade, float aiemit, float scroll, bool inflife, float aIalpha)
 	{
@@ -120,8 +123,8 @@ public class DigitalCascade : Backdrop
             float chosenSpeed = Calc.Random.Range(minspeed, maxspeed);
 
 			cascatees.Add(new Cascatee(new Vector2(
-				Calc.Random.Range(0 - halfloopborderX, 320f + halfloopborderX),
-				Calc.Random.Range(0 - halfloopborderY, 180f + halfloopborderY)),
+				Calc.Random.Range(0 - halfloopborderX, GameplayBufferWidth + halfloopborderX),
+				Calc.Random.Range(0 - halfloopborderY, GameplayBufferHeight + halfloopborderY)),
 				new Vector2((float)Math.Sin(angleRad) * chosenSpeed, (float)Math.Cos(angleRad) * chosenSpeed),
 				1f,
 				possibleColors[Calc.Random.Next(possibleColors.Length)],
@@ -226,8 +229,8 @@ public class DigitalCascade : Backdrop
 		{
 			cascatees[i].Texture.Draw(
 				new Vector2(
-					Mod(cascatees[i].Position.X, 320 + halfloopborderX * 2) - halfloopborderX,
-					Mod(cascatees[i].Position.Y, 180 + halfloopborderY * 2) - halfloopborderY
+					Mod(cascatees[i].Position.X, GameplayBufferWidth + halfloopborderX * 2) - halfloopborderX,
+					Mod(cascatees[i].Position.Y, GameplayBufferHeight + halfloopborderY * 2) - halfloopborderY
 					),
 				new Vector2(
 					cascatees[i].Texture.Width, 
@@ -252,8 +255,8 @@ public class DigitalCascade : Backdrop
         {
 						afterimages[ai].Texture.Draw(
 				new Vector2(
-					Mod(afterimages[ai].Position.X, 320 + halfloopborderX * 2) - halfloopborderX,
-					Mod(afterimages[ai].Position.Y, 180 + halfloopborderY * 2) - halfloopborderY
+					Mod(afterimages[ai].Position.X, GameplayBufferWidth + halfloopborderX * 2) - halfloopborderX,
+					Mod(afterimages[ai].Position.Y, GameplayBufferHeight + halfloopborderY * 2) - halfloopborderY
 					),
 				new Vector2(
 					afterimages[ai].Texture.Width,
