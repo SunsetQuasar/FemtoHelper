@@ -60,6 +60,19 @@ public class FemtoModule : EverestModule
         public static Func<object, Session, bool> GetBoolSessionExpressionValue;
     }
 
+    [ModImportName("MotionSmoothing")]
+    public static class MotionSmoothingSupport
+    {
+        // [1.5.6+]
+        // Returns the scale factor of the current render target, relative to its vanilla size:
+        // 1 normally, or the hires scale, usually 6, when a backdrop or effect is being rendered
+        // into an upscaled buffer. Mods that draw through a custom shader with their own projection
+        // matrix, which bypasses the SpriteBatch transform that Motion Smoothing automatically scales,
+        // should divide the viewport dimensions they feed into that projection by this value, so that
+        // their quad fills the whole upscaled target instead of a 1/scale corner.
+        public static Func<float> GetCurrentRenderTargetScale;
+    }
+
     // Only one alive module instance can exist at any given time.
     public static FemtoModule Instance;
     public static SpriteBank FemtoSpriteBank;
@@ -247,6 +260,8 @@ public class FemtoModule : EverestModule
         typeof(FrostHelperSupport).ModInterop(); //:3333
 
         typeof(TemplateIop).ModInterop(); //:33333
+
+		typeof(MotionSmoothingSupport).ModInterop(); //:333333
 
         TemplateIop.customClarify?.Invoke("FemtoHelper/SMWBlock", (level, leveldata, offset, entitydata) =>
         {
