@@ -199,7 +199,7 @@ public class GloriousPassage : Entity
 
             leader = player.Get<Leader>();
 
-            foreach (Follower item in leader.Followers.Where(f => f.Entity != null))
+            foreach (Follower item in leader.Followers.Where(f => f.Entity != null && f.ParentEntityID.Key != null && f.ParentEntityID.Level != null))
             {
                 item.Entity.AddTag(Tags.Global);
 
