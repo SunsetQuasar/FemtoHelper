@@ -242,7 +242,10 @@ public class NewDistortedParallax : Backdrop
         Level level = scene as Level;
 
         Viewport viewport = Engine.Graphics.GraphicsDevice.Viewport;
-        Matrix projection = Matrix.CreateOrthographicOffCenter(0f, viewport.Width, viewport.Height, 0f, 0f, 1f);
+
+        float renderScale = FemtoModule.MotionSmoothingSupport.GetCurrentRenderTargetScale?.Invoke() ?? 1f;
+        Matrix projection = Matrix.CreateOrthographicOffCenter(0f, viewport.Width / renderScale, viewport.Height / renderScale, 0f, 0f, 1f);
+		
         Matrix halfPixelOffset = typeof(Game).Assembly.FullName.Contains("FNA") ? Matrix.Identity : Matrix.CreateTranslation(-0.5f, -0.5f, 0f);
 
         Color col = Color * FadeAlphaMultiplier * FadeIn;
