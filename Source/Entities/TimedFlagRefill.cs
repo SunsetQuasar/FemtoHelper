@@ -70,7 +70,9 @@ public class BooleanGem : Entity
 
     private readonly float respawnTime;
 
-    public BooleanGem(Vector2 position, bool twoDashes, bool oneUse, string path, string pcolors, float respawnTime)
+    public readonly string AudioPath;
+
+    public BooleanGem(Vector2 position, bool twoDashes, bool oneUse, string path, string pcolors, float respawnTime, string audioPath)
         : base(position)
     {
         //thanks communal helper
@@ -81,6 +83,7 @@ public class BooleanGem : Entity
         Add(new PlayerCollider(OnPlayer));
         this.twoDashes = twoDashes;
         this.oneUse = oneUse;
+        this.AudioPath = audioPath;
         var text = path;
         pShatter = new ParticleType(Refill.P_Shatter);
         pRegen = new ParticleType(Refill.P_Regen);
@@ -120,7 +123,7 @@ public class BooleanGem : Entity
     }
 
     public BooleanGem(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"), data.Attr("path", "objects/refill/"), data.Attr("particleColors", "d3edff,94a5ef,a5c3ff,6c74dd"), data.Float("respawnTime", 2.5f))
+        : this(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"), data.Attr("path", "objects/refill/"), data.Attr("particleColors", "d3edff,94a5ef,a5c3ff,6c74dd"), data.Float("respawnTime", 2.5f), data.Attr("audioPath", "event:/game/general/"))
     {
         PShatter = new ParticleType(Refill.P_Shatter);
         PRegen = new ParticleType(Refill.P_Regen);
@@ -182,7 +185,7 @@ public class BooleanGem : Entity
         outline.Visible = false;
         Depth = -100;
         wiggler.Start();
-        Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_return" : "event:/game/general/diamond_return", Position);
+        Audio.Play(twoDashes ? $"{AudioPath}pinkdiamond_return" : $"{AudioPath}diamond_return", Position);
         level.ParticlesFG.Emit(pRegen, 16, Position, Vector2.One * 2f);
     }
 
@@ -207,7 +210,7 @@ public class BooleanGem : Entity
         
         if (StopMomentum) player.Speed = Vector2.Zero;
         Add(new Coroutine(FlagRoutine(Flag)));
-        Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_touch" : "event:/game/general/diamond_touch", Position);
+        Audio.Play(twoDashes ? $"{AudioPath}pinkdiamond_touch" : $"{AudioPath}diamond_touch", Position);
         Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
         Collidable = false;
         Add(new Coroutine(RefillRoutine(player)));

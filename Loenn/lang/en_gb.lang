@@ -194,6 +194,7 @@ entities.FemtoHelper/TimedFlagRefill.attributes.description.duration=The amount 
 entities.FemtoHelper/TimedFlagRefill.attributes.description.refillDash=Whether the refill should refill the player's dash.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.refillStamina=Whether the refill should refill the player's stamina.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.audioPath=The FMOD path prefix for the refill's sounds.\nGiven the path to an event folder, the refill will look for the following events:\ndiamond_touch, diamond_return, pinkdiamond_touch and pinkdiamond_return.
 
 # Directional Sprites Line
 entities.FemtoHelper/DirectionalLine.placements.name.default=Directional Sprites Line

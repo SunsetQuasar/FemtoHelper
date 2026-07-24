@@ -32,6 +32,7 @@ FemtoHelperTimedFlagRefill.placements = {
             refillDash = true,
             refillStamina = true,
             respawnTime = 2.5,
+            audioPath = "event:/game/general/",
         }
     },
     {
@@ -49,6 +50,7 @@ FemtoHelperTimedFlagRefill.placements = {
             refillDash = true,
             refillStamina = true,
             respawnTime = 2.5,
+            audioPath = "event:/game/general/",
         }
     }
 }
