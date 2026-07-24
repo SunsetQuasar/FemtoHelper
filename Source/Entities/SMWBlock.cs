@@ -1033,7 +1033,7 @@ public class GenericSmwBlock : Solid
                                 spinner.border.RemoveSelf();
                             }
                             spinner.border = null;
-                            List<Image> list = spinner.Components.GetAll<Image>().ToList();
+                            List<Image> list = [.. spinner.Components.GetAll<Image>()];
                             for (int i = 0; i < list.Count; i++)
                             {
                                 list[i].RemoveSelf();

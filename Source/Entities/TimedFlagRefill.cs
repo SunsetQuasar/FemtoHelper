@@ -74,10 +74,9 @@ public class BooleanGem : Entity
         : base(position)
     {
         //thanks communal helper
-        Color[] cols = pcolors
+        Color[] cols = [.. pcolors
                       .Split(',')
-                      .Select(str => Calc.HexToColor(str.Trim()))
-                      .ToArray();
+                      .Select(str => Calc.HexToColor(str.Trim()))];
         Collider = new Hitbox(16f, 16f, -8f, -8f);
         Add(new PlayerCollider(OnPlayer));
         this.twoDashes = twoDashes;

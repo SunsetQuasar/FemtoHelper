@@ -71,10 +71,9 @@ public class VectorSpace : Backdrop
 
 		vecs = new Vectand[howmanyx * howmanyy];
 		//Alpha = alpha;
-		colors = color
+		colors = [.. color
 				.Split(',')
-				.Select(str => Calc.HexToColor(str.Trim()) * alpha)
-				.ToArray();
+				.Select(str => Calc.HexToColor(str.Trim()) * alpha)];
 
 
 		for (int i = 0; i < vecs.Length; i++)

@@ -66,10 +66,9 @@ public class WindPetals : Backdrop
     public WindPetals(string colors, float fallingSpeedMin, float fallingSpeedMax, int blurCount, float blurDensity, string texture, int count, float scroll, float spinFrequency, float spinAmplitude, float transparency, float size, float xDriftingSpeedMin, float xDriftingSpeedMax, float windXMultiplier, float windYMultiplier, float extraLoopBorder)
     {
         // this is like communal helper!
-        Colors = colors
+        Colors = [.. colors
                 .Split(',')
-                .Select(str => Calc.HexToColorWithAlpha(str.Trim()))
-                .ToArray();
+                .Select(str => Calc.HexToColorWithAlpha(str.Trim()))];
         FallSpeedMin = fallingSpeedMin;
         FallSpeedMax = fallingSpeedMax;
         XDriftSpeedMin = xDriftingSpeedMin;

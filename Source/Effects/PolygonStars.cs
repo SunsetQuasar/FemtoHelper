@@ -53,10 +53,9 @@ public class PolygonStars : Backdrop
         this.alpha = alpha;
         this.scroll = scroll;
         stars = new Stars[amount];
-        colors = color
+        colors = [.. color
                 .Split(',')
-                .Select(str => Calc.HexToColor(str.Trim()) * alpha)
-                .ToArray();
+                .Select(str => Calc.HexToColor(str.Trim()) * alpha)];
         this.angle = new Vector2((float)Math.Sin(angle / 180 * Math.PI), (float)Math.Cos(angle / 180 * Math.PI));
         for (int i = 0; i < stars.Length; i++)
         {

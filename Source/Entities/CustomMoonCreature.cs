@@ -103,7 +103,7 @@ public class CustomMoonCreature : Entity
 		trailBaseAlpha = data.Float("trailBaseAlpha", 1f);
 		trailTipAlpha = data.Float("trailTipAlpha", 1f);
 		trailGravity = data.Float("trailGravity", 0.05f);
-		List<Color> colors = data.Attr("colors", "c34fc7,4f95c7,53c74f").Split(',').Select(Calc.HexToColor).ToList();
+		List<Color> colors = [.. data.Attr("colors", "c34fc7,4f95c7,53c74f").Split(',').Select(Calc.HexToColor)];
 		centerColor = Color.Lerp(colors[Calc.Random.Next(colors.Count)], Color.White, 0);
 		orbColor = Calc.HexToColor("b0e6ff");
 		//Logger.Log("a", mainColors[0].ToString());

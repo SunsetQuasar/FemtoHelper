@@ -72,7 +72,7 @@ public class FemtoStars : Backdrop
 		separation = trailSeparation;
 		var alphas3 = Array.ConvertAll(
 		Alpha.Split(",", StringSplitOptions.RemoveEmptyEntries), double.Parse);
-		colors2 = colors3.Split(',').Select(str => Calc.HexToColorWithAlpha(str.Trim())).ToArray();
+		colors2 = [.. colors3.Split(',').Select(str => Calc.HexToColorWithAlpha(str.Trim()))];
 		textures =
         [
             GFX.Game.GetAtlasSubtextures(sprite + "/a"),
