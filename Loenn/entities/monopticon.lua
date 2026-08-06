@@ -41,6 +41,7 @@ FemtoHelperMonopticon.placements = {
         strictStateReset = false,
         binoAcceleration = 800,
         binoMaxSpeed = 240,
+        useCoyoteFrames = true,
     }
 }
 

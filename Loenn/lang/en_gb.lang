@@ -839,9 +839,10 @@ entities.FemtoHelper/Monopticon.attributes.description.openFrames=Frames after "
 entities.FemtoHelper/Monopticon.attributes.description.preOpenFrames=Frames after interacting with the Monopticon before the bino sound plays.\nCombined with "Open Frames" to create the delay before the bino state takes place.
 entities.FemtoHelper/Monopticon.attributes.description.closeFrames=Frames to exit bino state.
 entities.FemtoHelper/Monopticon.attributes.description.cooldownFrames=The cooldown after interacting with the Monopticon before you may cancel the bino state.\nAllows for tech to be performed in this short window of time without losing bino state.
-entities.FemtoHelper/Monopticon.attributes.description.strictStateReset=Whether the interact bind should be able to reset the player's state midair or only when the player is grounded (strict).
+entities.FemtoHelper/Monopticon.attributes.description.strictStateReset=Only allow state resets while interacting with the Monopticon.
 entities.FemtoHelper/Monopticon.attributes.description.binoAcceleration=The Monopticon's panning acceleration.
 entities.FemtoHelper/Monopticon.attributes.description.binoMaxSpeed=The Monopticon's max panning speed.
+entities.FemtoHelper/Monopticon.attributes.description.useCoyoteFrames=Allows interacting with the Monopticon during coyote frames.
 
 # Ocular Barrier
 

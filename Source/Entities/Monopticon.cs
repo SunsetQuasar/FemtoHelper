@@ -9,13 +9,9 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [TrackedAs(typeof(LookoutBlocker))]
 [Tracked(false)]
 [CustomEntity("FemtoHelper/MonoBlocker")]
-public class MonoBlocker : LookoutBlocker
+public class MonoBlocker(EntityData data, Vector2 offset) : LookoutBlocker(data, offset)
 {
-    public string Flag;
-    public MonoBlocker(EntityData data, Vector2 offset) : base(data, offset)
-    {
-        Flag = data.Attr("flag", "");
-    }
+    public string Flag = data.Attr("flag", "");
 }
 
 [TrackedAs(typeof(Lookout))]
@@ -60,6 +56,7 @@ public class Monopticon : Lookout
     public bool CanDashCoroutine;
 
     private readonly bool strictStateReset;
+    public readonly bool UseCoyoteFrames;
 
     private readonly float binoAccel;
     private readonly float binoMaxSpeed;
@@ -110,6 +107,7 @@ public class Monopticon : Lookout
         CloseFrames = data.Float("closeFrames", 20f);
         CooldownFrames = data.Float("cooldownFrames", 6f);
         strictStateReset = data.Bool("strictStateReset", false);
+        UseCoyoteFrames = data.Bool("useCoyoteFrames", false); // false by default (legacy)
 
         binoAccel = data.Float("binoAcceleration", 800f);
         binoMaxSpeed = data.Float("binoMaxSpeed", 240f);
@@ -126,6 +124,28 @@ public class Monopticon : Lookout
         On.Celeste.Actor.MoveHExact += Actor_MoveHExact;
         On.Celeste.Actor.MoveVExact += Actor_MoveVExact;
         IL.Celeste.Player.ClimbUpdate += Player_ClimbUpdate;
+        IL.Celeste.TalkComponent.Update += TalkComponent_Update;
+    }
+
+    private static void TalkComponent_Update(ILContext il)
+    {
+        ILCursor cursor = new(il);
+
+        if(cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallOrCallvirt<Actor>("OnGround"))) {
+            cursor.EmitLdloc0(); // Player
+            cursor.EmitLdarg0(); // TalkComponent
+            cursor.EmitDelegate(TalkComponent_ModGroundCheck);
+            cursor.EmitOr(); // player.OnGround() || monopticon.UseCoyoteFrames && player.jumpGraceTimer > 0
+        }
+    }
+
+    private static bool TalkComponent_ModGroundCheck(Player p, TalkComponent t)
+    {
+        if(t.Entity is Monopticon m)
+        {
+            return m.UseCoyoteFrames && p.jumpGraceTimer > 0;
+        }
+        return false;
     }
 
     private static void Player_ClimbUpdate(ILContext il)
@@ -189,6 +209,7 @@ public class Monopticon : Lookout
         On.Celeste.Actor.MoveHExact -= Actor_MoveHExact;
         On.Celeste.Actor.MoveVExact -= Actor_MoveVExact;
         IL.Celeste.Player.ClimbUpdate -= Player_ClimbUpdate;
+        IL.Celeste.TalkComponent.Update -= TalkComponent_Update;
     }
 
     public override void Awake(Scene scene)
@@ -302,8 +323,7 @@ public class Monopticon : Lookout
 
     public static void MonopticonInteractHook(On.Celeste.Lookout.orig_Interact orig, Lookout self, Player player)
     {
-        Monopticon mono = self as Monopticon;
-        if (mono == null)
+        if (self is not Monopticon mono)
         {
             orig(self, player);
             return;
@@ -358,7 +378,7 @@ public class Monopticon : Lookout
             Player entity = scene.Tracker.GetEntity<Player>();
             if (entity != null)
             {
-                entity.StateMachine.State = 0;
+                entity.StateMachine.State = Player.StNormal;
                 entity.Sprite.Visible = (entity.Hair.Visible = true);
             }
         }
@@ -400,6 +420,7 @@ public class Monopticon : Lookout
         }
         Position = player?.Position ?? Position;
 
+        Debug($"pnull: {player is null}, int: {interacting}, input: {Input.Talk.Pressed}");
         if (Input.Talk.Pressed)
         {
             if (player != null && (interacting || !strictStateReset))
@@ -427,21 +448,18 @@ public class Monopticon : Lookout
     {
         Level level = SceneAs<Level>();
         SandwichLava sandwichLava = Scene.Entities.FindFirst<SandwichLava>();
-        if (sandwichLava != null)
-        {
-            sandwichLava.Waiting = true;
-        }
+        sandwichLava?.Waiting = true;
         if (player.Holding != null)
         {
             player.Drop();
         }
-        player.StateMachine.State = 11;
+        //player.StateMachine.State = Player.StDummy;
         //yield return player.DummyWalkToExact((int)base.X, walkBackwards: false, 1f, cancelOnFall: true);
-        if (player.Dead || !player.OnGround())
+        if (player.Dead || !(player.OnGround() || (UseCoyoteFrames && player.jumpGraceTimer > 0)))
         {
             if (!player.Dead)
             {
-                player.StateMachine.State = 0;
+                player.StateMachine.State = Player.StNormal;
             }
             yield break;
         }
@@ -680,7 +698,7 @@ public class Monopticon : Lookout
         CanDashCoroutine = false;
         if (DashInputCancel)
         {
-            player.StateMachine.State = 0;
+            player.StateMachine.State = Player.StNormal;
         }
         /*
         bool atSummitTop = summit && node >= nodes.Count - 1 && nodePercent >= 0.95f;
