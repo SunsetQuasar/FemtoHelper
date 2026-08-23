@@ -4,7 +4,10 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/MoveBlockIgnoreController")]
 [Tracked]
+// does everest really not look for a ctor with a single EntityData parameter?
+#pragma warning disable CS9113 // Parameter is unread.
 internal class MoveBlockIgnoreController(EntityData data, Vector2 offset) : Entity()
+#pragma warning restore CS9113 // Parameter is unread.
 {
     public string[] ignores = data.String("ignore", "XaphanHelper/TimedDashSwitch").Split(",");
 

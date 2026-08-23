@@ -5,7 +5,7 @@ using System;
 [CustomEntity("FemtoHelper/ParticleRemoteEmit")]
 internal class ParticleRemoteEmit(EntityData data, Vector2 offset) : Trigger(data, offset)
 {
-	private readonly string tag = data.Attr("tag");
+	private readonly string emitterTag = data.Attr("tag");
 
 	public override void OnEnter(Player player)
 	{
@@ -14,8 +14,9 @@ internal class ParticleRemoteEmit(EntityData data, Vector2 offset) : Trigger(dat
 
 		foreach (Celeste.Mod.FemtoHelper.ParticleEmitter emitter in Scene.Tracker.GetEntities<Celeste.Mod.FemtoHelper.ParticleEmitter>())
         {
-			bool flagge;
-			if (emitter.Flag.StartsWith("!"))
+            if (emitter.EmitterTag != emitterTag) continue;
+            bool flagge;
+			if (emitter.Flag.StartsWith('!'))
 			{
 				flagge = !level.Session.GetFlag(emitter.Flag[1..]);
 			}
@@ -24,7 +25,6 @@ internal class ParticleRemoteEmit(EntityData data, Vector2 offset) : Trigger(dat
 				flagge = level.Session.GetFlag(emitter.Flag);
 			}
 
-			if (emitter.Tag != tag) continue;
 			if (flagge != true && emitter.Flag != "") continue;
 			
 			for (int i = 0; i < emitter.ParticleCount; i++)

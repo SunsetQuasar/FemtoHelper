@@ -1,9 +1,14 @@
-﻿using System;
+﻿using Celeste;
+using Celeste.Mod.Roslyn.ModLifecycleAttributes;
+using MonoMod.RuntimeDetour;
+using System;
 using System.Collections;
+using System.Reflection;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
+
 [CustomEntity("FemtoHelper/LimitRefill")]
-public class LimitRefill : Entity
+public class LimitRefill : CustomRefill
 {
     public class DirectionConstraint : Component
     {
@@ -49,45 +54,9 @@ public class LimitRefill : Entity
             }
         }
     }
-
-    private readonly Sprite sprite;
-
-    private readonly Sprite flash;
-
-    private readonly Image outline;
-
-    private readonly Wiggler wiggler;
-
-    private readonly BloomPoint bloom;
-
-    private readonly VertexLight light;
-
-    private Level level;
-
-    private readonly SineWave sine;
-
-    private readonly bool oneUse;
-
-    private static readonly ParticleType _pShatter = new(Refill.P_Shatter)
-    {
-        Color = Calc.HexToColor("7affe8"),
-        Color2 = Calc.HexToColor("7affe8")
-    };
-
-    private static readonly ParticleType _pRegen = new(Refill.P_Regen)
-    {
-        Color = Calc.HexToColor("00cca9"),
-        Color2 = Calc.HexToColor("00cca9")
-    };
-
-    private static readonly ParticleType _pGlow = new(Refill.P_Glow)
-    {
-        Color = Calc.HexToColor("00cca9"),
-        Color2 = Calc.HexToColor("00cca9")
-    };
-
-    private float respawnTimer;
-    private readonly float respawnTime;
+    private static ParticleType _pShatter;
+    private static ParticleType _pRegen;
+    private static ParticleType _pGlow;
 
     public enum Directions
     {
@@ -104,14 +73,10 @@ public class LimitRefill : Entity
     private readonly Directions direction;
 
     public LimitRefill(Vector2 position, EntityData data)
-        : base(position)
+        : base(position, false, data.Bool("oneUse", false))
     {
-        Collider = new Hitbox(16f, 16f, -8f, -8f);
-        Add(new PlayerCollider(OnPlayer));
-        oneUse = data.Bool("oneUse", false);
         direction = data.Enum("direction", Directions.Up);
-        string text;
-        text = "objects/FemtoHelper/limitRefill/" + direction switch
+        this.SetTexture("objects/FemtoHelper/limitRefill/" + direction switch
         {
             Directions.UpRight => "upright/",
             Directions.Right => "right/",
@@ -120,34 +85,14 @@ public class LimitRefill : Entity
             Directions.DownLeft => "downleft/",
             Directions.Left => "left/",
             Directions.UpLeft => "upleft/",
-            _ => "up/",
-        };
-        Add(outline = new Image(GFX.Game[text + "outline"]));
-        outline.CenterOrigin();
-        outline.Visible = false;
-        Add(sprite = new Sprite(GFX.Game, text + "idle"));
-        sprite.AddLoop("idle", "", 0.1f);
-        sprite.Play("idle");
-        sprite.CenterOrigin();
-        Add(flash = new Sprite(GFX.Game, text + "flash"));
-        flash.Add("flash", "", 0.05f);
-        flash.OnFinish = (_) =>
-        {
-            flash.Visible = false;
-        };
-        flash.CenterOrigin();
-        Add(wiggler = Wiggler.Create(1f, 4f, (float v) =>
-        {
-            sprite.Scale = (flash.Scale = Vector2.One * (1f + v * 0.2f));
-        }));
-        Add(new MirrorReflection());
-        Add(bloom = new BloomPoint(0.8f, 16f));
-        Add(light = new VertexLight(Color.White, 1f, 16, 48));
-        Add(sine = new SineWave(0.6f, 0f));
-        sine.Randomize();
-        UpdateY();
-        Depth = -100;
-        respawnTime = data.Float("respawnTime", 2.5f);
+            _ => "up/"
+        })
+            .SetParticles(_pShatter, _pRegen, _pGlow)
+            .SetOnCollect(OnCollect);
+
+        AlwaysUse = true;
+
+        RespawnTime = data.Float("respawnTime", 2.5f);
     }
 
     public LimitRefill(EntityData data, Vector2 offset)
@@ -155,105 +100,64 @@ public class LimitRefill : Entity
     {
     }
 
-    public override void Added(Scene scene)
-    {
-        base.Added(scene);
-        level = SceneAs<Level>();
-    }
-
-    public override void Update()
-    {
-        base.Update();
-        if (respawnTimer > 0f)
-        {
-            respawnTimer -= Engine.DeltaTime;
-            if (respawnTimer <= 0f)
-            {
-                Respawn();
-            }
-        }
-        else if (Scene.OnInterval(0.1f))
-        {
-            level.ParticlesFG.Emit(_pGlow, 1, Position, Vector2.One * 5f);
-        }
-        UpdateY();
-        light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
-        bloom.Alpha = light.Alpha * 0.8f;
-        if (Scene.OnInterval(2f) && sprite.Visible)
-        {
-            flash.Play("flash", restart: true);
-            flash.Visible = true;
-        }
-    }
-    private void Respawn()
-    {
-        if (!Collidable)
-        {
-            Collidable = true;
-            sprite.Visible = true;
-            outline.Visible = false;
-            Depth = -100;
-            wiggler.Start();
-            Audio.Play("event:/game/general/diamond_return", Position);
-            level.ParticlesFG.Emit(_pRegen, 16, Position, Vector2.One * 2f);
-        }
-    }
-    private void UpdateY()
-    {
-        Sprite obj = flash;
-        Sprite obj2 = sprite;
-        float num2 = (bloom.Y = sine.Value * 2f);
-        float y = (obj2.Y = num2);
-        obj.Y = y;
-    }
-    public override void Render()
-    {
-        if (sprite.Visible)
-        {
-            sprite.DrawOutline();
-        }
-        base.Render();
-    }
-    private void OnPlayer(Player player)
+    private void OnCollect(Player player)
     {
         player.UseRefill(false);
         if (player.Get<DirectionConstraint>() is DirectionConstraint d) d.RemoveSelf();
         player.Add(new DirectionConstraint(direction));
-        Audio.Play("event:/game/general/diamond_touch", Position);
-        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-        Collidable = false;
-        Add(new Coroutine(LimitRefillRoutine(player)));
-        respawnTimer = respawnTime;
     }
-    private IEnumerator LimitRefillRoutine(Player player)
+    private static Hook CanDashHook;
+    private delegate bool OrigCanDash(Player self);
+
+    [OnLoadContent]
+    public static void LoadLimitRefillContent(bool firstLoad)
     {
-        Celeste.Freeze(0.05f);
-        yield return null;
-        level.Shake();
-        Sprite obj = sprite;
-        Sprite obj2 = flash;
-        bool visible = false;
-        obj2.Visible = false;
-        obj.Visible = visible;
-        if (!oneUse)
+        _pShatter = new(P_Shatter)
         {
-            outline.Visible = true;
-        }
-        Depth = 8999;
-        yield return 0.05f;
-        float num = player.Speed.Angle();
-        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
-        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
-        SlashFx.Burst(Position, num);
-        if (oneUse)
+            Color = Calc.HexToColor("7affe8"),
+            Color2 = Calc.HexToColor("7affe8")
+        };
+
+        _pRegen = new(P_Regen)
         {
-            RemoveSelf();
-        }
+            Color = Calc.HexToColor("00cca9"),
+            Color2 = Calc.HexToColor("00cca9")
+        };
+
+        _pGlow = new(P_Glow)
+        {
+            Color = Calc.HexToColor("00cca9"),
+            Color2 = Calc.HexToColor("00cca9")
+        };
     }
-    public static void Load()
+
+    [OnLoad]
+    public static void LoadHooks()
     {
+        CanDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), ModCanDash);
         On.Celeste.Player.DashBegin += Player_DashBegin;
         On.Celeste.Player.DashCoroutine += Player_DashCoroutine;
+    }
+
+    private static bool ModCanDash(OrigCanDash orig, Player self)
+    {
+        if (self.Get<DirectionConstraint>() is { } d)
+        {
+            Vector2 aim = Input.GetAimVector();
+
+            // block the dash directly if the player is holding a forbidden direction, and does not have Dash Assist enabled.
+            return orig(self) && (SaveData.Instance.Assists.DashAssist || IsDashDirectionAllowed(aim, d));
+        }
+        return orig(self);
+    }
+
+    private static bool IsDashDirectionAllowed(Vector2 direction, DirectionConstraint d)
+    {
+        // if directions are not integers, make them integers.
+        direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
+
+        // bottom-left (-1, 1) is row 2, column 0.
+        return d.Dirs[(int)(direction.Y + 1), (int)(direction.X + 1)];
     }
 
     private static IEnumerator Player_DashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self)
@@ -270,7 +174,8 @@ public class LimitRefill : Entity
 
     private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
     {
-        if (self.Get<DirectionConstraint>() is { } d) {
+        if (self.Get<DirectionConstraint>() is { } d)
+        {
             d.lastAim = self.lastAim;
             d.dashOverrideReturn = self.OverrideDashDirection;
             Alarm.Set(self, 0f, () =>
@@ -281,8 +186,13 @@ public class LimitRefill : Entity
         }
         orig(self);
     }
-    public static void Unload()
+
+    [OnUnload]
+    public static void UnloadHooks()
     {
+        CanDashHook?.Dispose();
+        CanDashHook = null;
+
         On.Celeste.Player.DashBegin -= Player_DashBegin;
         On.Celeste.Player.DashCoroutine -= Player_DashCoroutine;
     }

@@ -1,8 +1,52 @@
-﻿using System;
+﻿using Celeste.Mod.Roslyn.ModLifecycleAttributes;
+using System;
 using System.Linq;
 using System.Collections;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
+
+[Tracked]
+public class RotateDash() : Component(true, true)
+{
+    public readonly MTexture Texture = GFX.Game["objects/FemtoHelper/rotateRefillCCW/indicator_a"];
+    private float angleTarget;
+    private float displayAngle;
+    private float displayPercent = 0;
+    private float sineTimer = Calc.Random.NextAngle();
+    public float AngleOffset = 0;
+    public float SpeedScalar = 1;
+    public bool HasStartedRotateDashing = false;
+
+    public Color[] Colors;
+    public override void Update()
+    {
+        base.Update();
+        sineTimer += Engine.DeltaTime * (MathF.Tau * 1.2f);
+        if ((Entity as Player).Speed != Vector2.Zero)
+        {
+            float newAngle = VectorToAngle((Entity as Player).Speed) - AngleOffset;
+            angleTarget = Calc.AngleApproach(angleTarget, newAngle, Engine.DeltaTime * 16 * Calc.AbsAngleDiff(angleTarget, newAngle));
+            displayPercent = Calc.Approach(displayPercent, 1, Engine.DeltaTime * 6);
+        }
+        else
+        {
+            displayPercent = Calc.Approach(displayPercent, 0, Engine.DeltaTime * 6);
+        }
+        displayAngle = angleTarget + MathF.Sin(sineTimer) / 5;
+    }
+
+    public override void Render()
+    {
+        if (displayPercent > 0)
+        {
+            Texture.DrawOutlineCentered(Entity.Center + Vector2.UnitY, Color.Black, Ease.CubeInOut(displayPercent), displayAngle);
+            Texture.DrawOutlineCentered(Entity.Center, Color.Black, Ease.CubeInOut(displayPercent), displayAngle);
+            Texture.DrawCentered(Entity.Center + Vector2.UnitY, Colors[2], Ease.CubeInOut(displayPercent), displayAngle);
+            Texture.DrawCentered(Entity.Center, Colors[1], Ease.CubeInOut(displayPercent), displayAngle);
+        }
+        base.Render();
+    }
+}
 
 [Tracked]
 public class ExtraTrailManager() : Component(true, true)
@@ -60,47 +104,13 @@ public class ExtraTrailManager() : Component(true, true)
 
 [Tracked]
 [CustomEntity("FemtoHelper/RotateDashRefill")]
-public class RotateDashRefill : Entity
+public class RotateDashRefill : CustomRefill
 {
-    public static ParticleType PShatter;
-
-    public static ParticleType PRegen;
-
-    public static ParticleType PGlow;
-
-    public static ParticleType PShatterTwo;
-
-    public static ParticleType PRegenTwo;
-
-    public static ParticleType PGlowTwo;
-
-    private readonly Sprite sprite;
-
-    private readonly Sprite flash;
-
-    private readonly Image outline;
-
-    private readonly Wiggler wiggler;
-
-    private readonly BloomPoint bloom;
-
-    private readonly VertexLight light;
-
-    private Level level;
-
-    private readonly SineWave sine;
-
-    private readonly bool twoDashes;
-
-    private readonly bool oneUse;
-
     private readonly ParticleType pShatter;
 
     private readonly ParticleType pRegen;
 
     private readonly ParticleType pGlow;
-
-    private float respawnTimer;
 
     public readonly float Angle;
 
@@ -108,52 +118,30 @@ public class RotateDashRefill : Entity
 
     public readonly Color[] EffectColors;
 
-    public RotateDashRefill(EntityData data, Vector2 offset) : base(data.Position + offset)
+    public RotateDashRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
     {
-        Collider = new Hitbox(16f, 16f, -8f, -8f);
-        Add(new PlayerCollider(OnPlayer));
-        twoDashes = false;
-        oneUse = data.Bool("oneUse", false);
-        Angle = data.Float("angle", 90);
-        Scalar = data.Float("scalar", 1.5f); 
-        string text = data.Attr("texture", "objects/refill/");
+        pShatter = new ParticleType(P_Shatter);
+        pRegen = new ParticleType(P_Regen);
+        pGlow = new ParticleType(P_Glow);
+
         string[] efColors = data.Attr("effectColors", "7958ad,cbace6,634691").Split(',');
-        if (efColors.Length != 3) efColors = "7958ad,cbace6,634691".Split(',');
+        if (efColors.Length != 3) efColors = ["7958ad", "cbace6", "634691"];
         string[] colors = data.Attr("particleColors", "dba0d0,ca6dd1,e6aec1,e376df").Split(',');
-        if (colors.Length != 4) colors = "dba0d0,ca6dd1,e6aec1,e376df".Split(',');
+        if (colors.Length != 4) colors = ["dba0d0", "ca6dd1", "e6aec1", "e376df"];
         EffectColors = [.. efColors.Select(Calc.HexToColor)];
-        pShatter = new ParticleType(Refill.P_Shatter);
-        pRegen = new ParticleType(Refill.P_Regen);
-        pGlow = new ParticleType(Refill.P_Glow);
+
         pShatter.Color = Calc.HexToColor(colors[0]);
         pShatter.Color2 = Calc.HexToColor(colors[1]);
         pRegen.Color = pGlow.Color = Calc.HexToColor(colors[2]);
         pRegen.Color2 = pGlow.Color2 = Calc.HexToColor(colors[3]);
-        Add(outline = new Image(GFX.Game[text + "outline"]));
-        outline.CenterOrigin();
-        outline.Visible = false;
-        Add(sprite = new Sprite(GFX.Game, text + "idle"));
-        sprite.AddLoop("idle", "", 0.1f);
-        sprite.Play("idle");
-        sprite.CenterOrigin();
-        Add(flash = new Sprite(GFX.Game, text + "flash"));
-        flash.Add("flash", "", 0.05f);
-        flash.OnFinish = delegate
-        {
-            flash.Visible = false;
-        };
-        flash.CenterOrigin();
-        Add(wiggler = Wiggler.Create(1f, 4f, delegate (float v)
-        {
-            sprite.Scale = flash.Scale = Vector2.One * (1f + v * 0.2f);
-        }));
-        Add(new MirrorReflection());
-        Add(bloom = new BloomPoint(0.8f, 16f));
-        Add(light = new VertexLight(Color.White, 1f, 16, 48));
-        Add(sine = new SineWave(0.6f, 0f));
-        sine.Randomize();
-        UpdateY();
-        Depth = -100;
+
+        Angle = data.Float("angle", 90);
+        Scalar = data.Float("scalar", 1.5f);
+
+        this.SetTexture(data.Attr("texture", "objects/FemtoHelper/rotateRefillCCW/"))
+            .SetParticles(pShatter, pRegen, pGlow)
+            .SetCollectLogic(CollectCheck)
+            .SetOnCollect(OnCollect);
     }
 
     public override void Added(Scene scene)
@@ -165,148 +153,78 @@ public class RotateDashRefill : Entity
     public override void Update()
     {
         base.Update();
-        if (respawnTimer > 0f)
-        {
-            respawnTimer -= Engine.DeltaTime;
-            if (respawnTimer <= 0f)
-            {
-                Respawn();
-            }
-        }
-        else if (Scene.OnInterval(0.1f))
-        {
-            level.ParticlesFG.Emit(pGlow, 1, Position, Vector2.One * 5f);
-        }
-        UpdateY();
-        light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
-        bloom.Alpha = light.Alpha * 0.8f;
-        if (!Scene.OnInterval(2f) || !sprite.Visible) return;
-        flash.Play("flash", restart: true);
-        flash.Visible = true;
-    }
-
-    private void Respawn()
-    {
-        if (Collidable) return;
-        Collidable = true;
-        sprite.Visible = true;
-        outline.Visible = false;
-        Depth = -100;
-        wiggler.Start();
-        Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_return" : "event:/game/general/diamond_return", Position);
-        level.ParticlesFG.Emit(pRegen, 16, Position, Vector2.One * 2f);
-    }
-
-    private void UpdateY()
-    {
-        float num2 = bloom.Y = sine.Value * 2f;
-        float num5 = flash.Y = sprite.Y = num2;
     }
 
     public override void Render()
     {
-        if (sprite.Visible)
-        {
-            sprite.DrawOutline();
-        }
         base.Render();
     }
 
-    private void OnPlayer(Player player)
+    public bool CollectCheck(Player player)
     {
-        if (FemtoModule.Session.HasRotateDash && FemtoModule.Session.RotateDashAngle == Angle.ToRad() &&
-            FemtoModule.Session.RotateDashScalar == Scalar) return;
-        player.UseRefill(twoDashes);
-        Audio.Play(twoDashes ? "event:/new_content/game/10_farewell/pinkdiamond_touch" : "event:/game/general/diamond_touch", Position);
-        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-        FemtoModule.Session.HasRotateDash = true;
-        FemtoModule.Session.RotateDashAngle = Angle.ToRad();
-        FemtoModule.Session.RotateDashScalar = Scalar;
-        FemtoModule.Session.RotateDashColors = EffectColors;
-        Collidable = false;
-        Add(new Coroutine(RefillRoutine(player)));
-        respawnTimer = 2.5f;
+        if (player.Get<RotateDash>() is RotateDash rotateDash)
+        {
+            if (rotateDash.AngleOffset == Angle.ToRad() && rotateDash.SpeedScalar == Scalar)
+            {
+                return false;
+            }
+            player.Remove(rotateDash);
+        }
+        return true;
     }
 
-    private IEnumerator RefillRoutine(Player player)
+    private void OnCollect(Player player)
     {
-        Celeste.Freeze(0.05f);
-        yield return null;
-        level.Shake();
-        sprite.Visible = flash.Visible = false;
-        if (!oneUse)
+        player.UseRefill(false);
+        player.Add(new RotateDash()
         {
-            outline.Visible = true;
-        }
-        Depth = 8999;
-        yield return 0.05f;
-        float num = player.Speed.Angle();
-        level.ParticlesFG.Emit(pShatter, 5, Position, Vector2.One * 4f, num - (float)Math.PI / 2f);
-        level.ParticlesFG.Emit(pShatter, 5, Position, Vector2.One * 4f, num + (float)Math.PI / 2f);
-        SlashFx.Burst(Position, num);
-        if (oneUse)
-        {
-            RemoveSelf();
-        }
+            AngleOffset = Angle.ToRad(),
+            SpeedScalar = Scalar,
+            Colors = EffectColors
+        });
     }
 
-    public static void Load()
+    [OnLoad]
+    public static void LoadHooks()
     {
-        On.Celeste.LevelLoader.LoadingThread += RotateDashInitialize;
         On.Celeste.PlayerHair.GetHairColor += RotateDashCustomColor;
-        On.Celeste.Player.Die += RotateDashDeathHook;
         On.Celeste.Player.DashBegin += RotateDashBeginHook;
         On.Celeste.Player.DashCoroutine += RotateDashCoroutineHook;
-        On.Celeste.Player.Added += RotateDashAddComponent;
         On.Celeste.Player.Update += RotateDashBugCheck;
     }
-
-    public static void Unload()
+    [OnUnload]
+    public static void UnloadHooks()
     {
-        On.Celeste.LevelLoader.LoadingThread -= RotateDashInitialize;
         On.Celeste.PlayerHair.GetHairColor -= RotateDashCustomColor;
-        On.Celeste.Player.Die -= RotateDashDeathHook;
         On.Celeste.Player.DashBegin -= RotateDashBeginHook;
         On.Celeste.Player.DashCoroutine -= RotateDashCoroutineHook;
-        On.Celeste.Player.Added -= RotateDashAddComponent;
         On.Celeste.Player.Update -= RotateDashBugCheck;
-    }
-
-    private static void RotateDashInitialize(On.Celeste.LevelLoader.orig_LoadingThread orig, LevelLoader self)
-    {
-        orig(self);
-        RotateDashInitialize();
-    }
-
-    private static PlayerDeadBody RotateDashDeathHook(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats)
-    {
-        RotateDashInitialize();
-        return orig(self, direction, evenIfInvincible, registerDeathInStats);
     }
 
     private static Color RotateDashCustomColor(On.Celeste.PlayerHair.orig_GetHairColor orig, PlayerHair self, int index)
     {
-        return FemtoModule.Session.HasRotateDash ? Color.Lerp(FemtoModule.Session.RotateDashColors[0], FemtoModule.Session.RotateDashColors[1], (float)(Math.Sin(self.Scene.TimeActive * 4) * 0.5f) + 0.5f) : orig(self, index);
+        return self.Entity.Get<RotateDash>() is RotateDash rotateDash ? Color.Lerp(rotateDash.Colors[0], rotateDash.Colors[1], (float)(Math.Sin(self.Scene.TimeActive * 4) * 0.5f) + 0.5f) : orig(self, index);
     }
     private static IEnumerator RotateDashCoroutineHook(On.Celeste.Player.orig_DashCoroutine orig, Player self)
     {
-        if (FemtoModule.Session.HasRotateDash)
+        if (self.Get<RotateDash>() is RotateDash rotateDash)
         {
             Celeste.Freeze(0.1f);
 
-            self.Speed = Vector2.Transform(self.Speed, Matrix.CreateRotationZ(-FemtoModule.Session.RotateDashAngle));
+            self.Speed = Vector2.Transform(self.Speed, Matrix.CreateRotationZ(-rotateDash.AngleOffset));
             (self.Scene as Level).DirectionalShake(self.Speed.SafeNormalize());
-            self.Speed *= FemtoModule.Session.RotateDashScalar;
+            self.Speed *= rotateDash.SpeedScalar;
             self.StateMachine.State = 0;
-            FemtoModule.Session.HasRotateDash = false;
-            FemtoModule.Session.HasStartedRotateDashing = false;
+            self.Remove(rotateDash);
             ExtraTrailManager t = self.Get<ExtraTrailManager>();
-            if(t != null)
+            if(t == null)
             {
-                t.DashTrailTimer = 0.06f;
-                t.DashTrailCounter = 3;
-                t.DashParticleCount = 10;
+                self.Add(t = new ExtraTrailManager());
             }
+            t.DashTrailTimer = 0.06f;
+            t.DashTrailCounter = 3;
+            t.DashParticleCount = 10;
+
             self.level.Displacement.AddBurst(self.Center, 0.4f, 8f, 64f, 0.5f, Ease.QuadOut, Ease.QuadOut);
             yield return null;
 
@@ -320,37 +238,23 @@ public class RotateDashRefill : Entity
 
     private static void RotateDashBeginHook(On.Celeste.Player.orig_DashBegin orig, Player self)
     {
-        Vector2 tempSpeed = Vector2.Zero;
-        tempSpeed = self.Speed;
+        Vector2 tempSpeed = self.Speed;
+
         orig(self);
-        if (!FemtoModule.Session.HasRotateDash) return;
-        self.Speed = tempSpeed;
-        FemtoModule.Session.HasStartedRotateDashing = true;
+
+        if (self.Get<RotateDash>() is RotateDash rotateDash)
+        {
+            self.Speed = tempSpeed;
+            rotateDash.HasStartedRotateDashing = true;
+        }
     }
 
     private static void RotateDashBugCheck(On.Celeste.Player.orig_Update orig, Player self)
     {
-        if (FemtoModule.Session.HasStartedRotateDashing && FemtoModule.Session.HasRotateDash && self.StateMachine.State != 2)
+        if (self.Get<RotateDash>() is RotateDash rotateDash && rotateDash.HasStartedRotateDashing && self.StateMachine.State != 2)
         {
-            FemtoModule.Session.HasRotateDash = false;
-            FemtoModule.Session.HasStartedRotateDashing = false;
-            Engine.TimeRate = 1;
+            self.Remove(rotateDash);
         }
         orig(self);
-    }
-
-    private static void RotateDashAddComponent(On.Celeste.Player.orig_Added orig, Player self, Scene scene)
-    {
-        orig(self, scene);
-        self.Add(new ExtraTrailManager());
-        self.Add(new RotateDashIndicator());
-    }
-
-    public static void RotateDashInitialize()
-    {
-        FemtoModule.Session.HasRotateDash = false;
-        FemtoModule.Session.RotateDashAngle = 0;
-        FemtoModule.Session.RotateDashScalar = 1;
-        FemtoModule.Session.HasStartedRotateDashing = false;
     }
 }

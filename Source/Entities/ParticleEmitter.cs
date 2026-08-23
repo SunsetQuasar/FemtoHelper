@@ -26,7 +26,7 @@ public class ParticleEmitter : Entity
 
 	public readonly string Flag;
 
-	public readonly string Tag;
+	public readonly string EmitterTag;
 
 	public readonly bool AttachToPlayer;
 	public readonly Vector2 AttachToPlayerOffset;
@@ -45,7 +45,7 @@ public class ParticleEmitter : Entity
 		AttachToPlayerOffset = new(data.Float("attachToPlayerOffsetX", 0f), data.Float("attachToPlayerOffsetY", 0f));
         IsFg = data.Bool("foreground", false);
 		Flag = data.Attr("flag", "");
-		Tag = data.Attr("tag", "");
+		EmitterTag = data.Attr("tag", "");
 		string[] texString = data.Attr("particleTexture").Split(',');
 		Chooser<MTexture> texchoice = new();
 		foreach (var t in texString)

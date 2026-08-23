@@ -115,6 +115,7 @@ entities.FemtoHelper/PopRefill.placements.description.PopRefillTwo=Refill that s
 entities.FemtoHelper/PopRefill.attributes.description.twoDash=Gives two dashes instead of one.
 entities.FemtoHelper/PopRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/PopRefill.attributes.description.spawnTime=The time it takes for the refill to spawn once triggered.
+entities.FemtoHelper/PopRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
 
 # Spark Refill
 entities.FemtoHelper/SparkRefill.placements.name.spark=Spark Refill
@@ -195,6 +196,8 @@ entities.FemtoHelper/TimedFlagRefill.attributes.description.refillDash=Whether t
 entities.FemtoHelper/TimedFlagRefill.attributes.description.refillStamina=Whether the refill should refill the player's stamina.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.audioPath=The FMOD path prefix for the refill's sounds.\nGiven the path to an event folder, the refill will look for the following events:\ndiamond_touch, diamond_return, pinkdiamond_touch and pinkdiamond_return.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/TimedFlagRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Directional Sprites Line
 entities.FemtoHelper/DirectionalLine.placements.name.default=Directional Sprites Line

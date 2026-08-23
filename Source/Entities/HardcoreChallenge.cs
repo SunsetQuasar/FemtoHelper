@@ -156,15 +156,9 @@ public class HardcoreChallenge
     private static PlayerDeadBody Player_Die(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats)
     {
         var @return = orig(self, direction, evenIfInvincible, registerDeathInStats);
-        if(@return != null) //i.e. the player *actually* died
+        if (@return is not null)
         {
-            self.Scene.OnEndOfFrame += () =>
-            {
-                if(self == null || self.Dead)
-                {
-                    FailCurrent();
-                }
-            };
+            FailCurrent();
         }
         return @return;
     }

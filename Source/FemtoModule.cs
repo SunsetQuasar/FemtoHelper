@@ -183,71 +183,10 @@ public class FemtoModule : EverestModule
     // Set up any hooks, event handlers and your mod in general here.
     // Load runs before Celeste itself has initialized properly.
 
-    private static ILHook _dashCoroutineHook;
-    private static ILHook _redDashCoroutineHook;
 
-    public Hook CanDashHook;
-    private delegate bool OrigCanDash(Player self);
-    private bool ModCanDash(OrigCanDash orig, Player self)
-    {
-        if (self.Get<LimitRefill.DirectionConstraint>() is { } d)
-        {
-            Vector2 aim = Input.GetAimVector();
-
-            // block the dash directly if the player is holding a forbidden direction, and does not have Dash Assist enabled.
-            return orig(self) && (global::Celeste.SaveData.Instance.Assists.DashAssist || IsDashDirectionAllowed(aim, d));
-        }
-        return orig(self);
-    }
-    private bool IsDashDirectionAllowed(Vector2 direction, LimitRefill.DirectionConstraint d)
-    {
-        // if directions are not integers, make them integers.
-        direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
-
-        // bottom-left (-1, 1) is row 2, column 0.
-        return d.Dirs[(int)(direction.Y + 1), (int)(direction.X + 1)];
-    }
-
-    private static void ModDashSpeed(ILContext il)
-    {
-        ILCursor cursor = new(il);
-
-        // find 240f in the method (dash speed) and multiply it with our modifier.
-        if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(240f)))
-        {
-            cursor.EmitLdloc1();
-            cursor.EmitDelegate(GetMultiplier);
-            cursor.EmitMul();
-        }
-    }
-
-    private static float GetMultiplier(Player player)
-    {
-        if (player.Get<SparkDash>() is { } s) return s.ThisDashHasStarted ? 2f : 1f;
-        return 1f;
-    }
-
-    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
-    {
-        orig(self);
-        if (self.Get<SparkDash>() is { } s) s.ThisDashHasStarted = true;
-    }
-
-    private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
-    {
-        orig(self);
-        if (self.Get<SparkDash>() is { } s && s.ThisDashHasStarted) s.RemoveSelf();
-    }
 
     public override void Load()
     {
-        CanDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(FemtoModule).GetMethod("ModCanDash", BindingFlags.NonPublic | BindingFlags.Instance), this);
-
-        _dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);
-        _redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);
-        On.Celeste.Player.DashEnd += Player_DashEnd;
-        On.Celeste.Player.DashBegin += Player_DashBegin;
-
         typeof(FemtoHelperExports).ModInterop();
 
         typeof(GravityHelperSupport).ModInterop(); //:3
@@ -283,12 +222,9 @@ public class FemtoModule : EverestModule
         Monopticon.Load();
         GenericWaterBlock.Load();
         TheContraption.Load();
-        LimitRefill.Load();
-        BoundRefill.Load();
         GenericSmwBlock.Load();
         ObfuscatedFancyText.Load();
         NewDistortedParallax.Load();
-        RotateDashRefill.Load();
         BoostingBoosterSorryIStoleFromCommunalHelper.Load();
         EvilTheoCrystal.Load();
         AssistHazardController.Load();
@@ -301,17 +237,6 @@ public class FemtoModule : EverestModule
 
     public override void Unload()
     {
-        CanDashHook?.Dispose();
-        CanDashHook = null;
-
-        _dashCoroutineHook?.Dispose();
-        _redDashCoroutineHook?.Dispose();
-
-        _dashCoroutineHook = null;
-        _redDashCoroutineHook = null;
-
-        On.Celeste.Player.DashEnd -= Player_DashEnd;
-        On.Celeste.Player.DashBegin -= Player_DashBegin;
 
         Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
         On.Celeste.Puffer.OnCollideH -= Puffer_KaizoCollideHHook;
@@ -329,12 +254,9 @@ public class FemtoModule : EverestModule
         Monopticon.Unload();
         GenericWaterBlock.Unload();
         TheContraption.Unload();
-        LimitRefill.Unload();
-        BoundRefill.Unload();
         GenericSmwBlock.Unload();
         ObfuscatedFancyText.Unload();
         NewDistortedParallax.Unload();
-        RotateDashRefill.Unload();
         BoostingBoosterSorryIStoleFromCommunalHelper.Unload();
         EvilTheoCrystal.Unload();
         AssistHazardController.Unload();
@@ -574,6 +496,7 @@ public class FemtoModule : EverestModule
     // Optional, initialize anything after Celeste has initialized itself properly.
     public override void Initialize()
     {
+        LifecycleMethods.OnInitialize();
     }
 
     // Optional, do anything requiring either the Celeste or mod content here. 

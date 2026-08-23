@@ -1,205 +1,135 @@
-﻿using System;
+﻿using Celeste.Mod.Roslyn.ModLifecycleAttributes;
+using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
+using System;
 using System.Collections;
+using System.Reflection;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
+
 [CustomEntity("FemtoHelper/SparkRefill")]
-public class SparkRefill : Entity
+public class SparkRefill : CustomRefill
 {
     public class SparkDash() : Component(false, false)
     {
-        public bool ThisDashHasStarted = false;
+        public bool CurrentlyDashing = false;
+
+        public int Count = 1;
     }
+    private static ParticleType _pShatter;
 
+    private static ParticleType _pRegen;
 
-    private readonly Sprite sprite;
+    private static ParticleType _pGlow;
 
-    private readonly Sprite flash;
-
-    private readonly Image outline;
-
-    private readonly Wiggler wiggler;
-
-    private readonly BloomPoint bloom;
-
-    private readonly VertexLight light;
-
-    private Level level;
-
-    private readonly SineWave sine;
-
-    private readonly bool oneUse;
-
-    private static readonly ParticleType _pShatter = new(Refill.P_Shatter)
-    {
-        Color = Calc.HexToColor("fff8bc"),
-        Color2 = Calc.HexToColor("fff8bc")
-    };
-
-    private static readonly ParticleType _pRegen = new(Refill.P_Regen)
-    {
-        Color = Calc.HexToColor("bdb040"),
-        Color2 = Calc.HexToColor("bdb040")
-    };
-
-    private static readonly ParticleType _pGlow = new(Refill.P_Glow)
-    {
-        Color = Calc.HexToColor("bdb040"),
-        Color2 = Calc.HexToColor("bdb040")
-    };
-
-    private float respawnTimer;
-    private readonly float respawnTime;
-
-    
     public SparkRefill(Vector2 position, EntityData data)
-        : base(position)
+        : base(position, false, data.Bool("oneUse", false))
     {
-        Collider = new Hitbox(16f, 16f, -8f, -8f);
-        Add(new PlayerCollider(OnPlayer));
-        oneUse = data.Bool("oneUse", false);
-        string text;
-        text = "objects/FemtoHelper/sparkRefill/";
-        Add(outline = new Image(GFX.Game[text + "outline"]));
-        outline.CenterOrigin();
-        outline.Visible = false;
-        Add(sprite = new Sprite(GFX.Game, text + "idle"));
-        sprite.AddLoop("idle", "", 0.1f);
-        sprite.Play("idle");
-        sprite.CenterOrigin();
-        Add(flash = new Sprite(GFX.Game, text + "flash"));
-        flash.Add("flash", "", 0.05f);
-        flash.OnFinish = (_) =>
-        {
-            flash.Visible = false;
-        };
-        flash.CenterOrigin();
-        Add(wiggler = Wiggler.Create(1f, 4f,  (float v) =>
-        {
-            sprite.Scale = (flash.Scale = Vector2.One * (1f + v * 0.2f));
-        }));
-        Add(new MirrorReflection());
-        Add(bloom = new BloomPoint(0.8f, 16f));
-        Add(light = new VertexLight(Color.White, 1f, 16, 48));
-        Add(sine = new SineWave(0.6f, 0f));
-        sine.Randomize();
-        UpdateY();
-        Depth = -100;
-        respawnTime = data.Float("respawnTime", 2.5f);
+        RespawnTime = data.Float("respawnTime", 2.5f);
+        this.SetTexture("objects/FemtoHelper/sparkRefill/")
+            .SetParticles(_pShatter, _pRegen, _pGlow)
+            .SetCollectLogic((player) => !(player.Get<SparkDash>() is { } s && (!s.CurrentlyDashing || s.Count > 1)))
+            .SetOnCollect(OnCollect);
     }
-
-    
     public SparkRefill(EntityData data, Vector2 offset)
         : this(data.Position + offset, data)
     {
     }
-
-    
-    public override void Added(Scene scene)
+    private void OnCollect(Player player)
     {
-        base.Added(scene);
-        level = SceneAs<Level>();
+        player.UseRefill(false);
+        if (player.Get<SparkDash>() is SparkDash s)
+        {
+            s.Count++;
+        }
+        else
+        {
+            player.Add(new SparkDash());
+        }
     }
 
-    
-    public override void Update()
+    private static ILHook _dashCoroutineHook;
+    private static ILHook _redDashCoroutineHook;
+
+    private static void ModDashSpeed(ILContext il)
     {
-        base.Update();
-        if (respawnTimer > 0f)
+        ILCursor cursor = new(il);
+
+        // find 240f in the method (dash speed) and multiply it with our modifier.
+        if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(240f)))
         {
-            respawnTimer -= Engine.DeltaTime;
-            if (respawnTimer <= 0f)
+            cursor.EmitLdloc1();
+            cursor.EmitDelegate(GetMultiplier);
+            cursor.EmitMul();
+        }
+    }
+
+    private static float GetMultiplier(Player player)
+    {
+        if (player.Get<SparkDash>() is { } s) return s.CurrentlyDashing ? 2f : 1f;
+        return 1f;
+    }
+
+    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
+    {
+        orig(self);
+        if (self.Get<SparkDash>() is { } s) s.CurrentlyDashing = true;
+    }
+
+    private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
+    {
+        orig(self);
+        if (self.Get<SparkDash>() is { } s && s.CurrentlyDashing)
+        {
+            if (--s.Count < 1)
             {
-                Respawn();
+                s.RemoveSelf();
             }
         }
-        else if (Scene.OnInterval(0.1f))
-        {
-            level.ParticlesFG.Emit(_pGlow, 1, Position, Vector2.One * 5f);
-        }
-        UpdateY();
-        light.Alpha = Calc.Approach(light.Alpha, sprite.Visible ? 1f : 0f, 4f * Engine.DeltaTime);
-        bloom.Alpha = light.Alpha * 0.8f;
-        if (Scene.OnInterval(2f) && sprite.Visible)
-        {
-            flash.Play("flash", restart: true);
-            flash.Visible = true;
-        }
     }
 
-    
-    private void Respawn()
+    [OnLoadContent]
+    public static void LoadContent(bool firstLoad)
     {
-        if (!Collidable)
+        _pShatter = new(P_Shatter)
         {
-            Collidable = true;
-            sprite.Visible = true;
-            outline.Visible = false;
-            Depth = -100;
-            wiggler.Start();
-            Audio.Play("event:/game/general/diamond_return", Position);
-            level.ParticlesFG.Emit(_pRegen, 16, Position, Vector2.One * 2f);
-        }
+            Color = Calc.HexToColor("fff8bc"),
+            Color2 = Calc.HexToColor("fff8bc")
+        };
+
+        _pRegen = new(P_Regen)
+        {
+            Color = Calc.HexToColor("bdb040"),
+            Color2 = Calc.HexToColor("bdb040")
+        };
+
+        _pGlow = new(P_Glow)
+        {
+            Color = Calc.HexToColor("bdb040"),
+            Color2 = Calc.HexToColor("bdb040")
+        };
     }
 
-    
-    private void UpdateY()
+    [OnLoad]
+    public static void LoadHooks()
     {
-        Sprite obj = flash;
-        Sprite obj2 = sprite;
-        float num2 = (bloom.Y = sine.Value * 2f);
-        float y = (obj2.Y = num2);
-        obj.Y = y;
+        _dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);
+        _redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);
+        On.Celeste.Player.DashEnd += Player_DashEnd;
+        On.Celeste.Player.DashBegin += Player_DashBegin;
     }
 
-    
-    public override void Render()
+    [OnUnload]
+    public static void UnloadHooks()
     {
-        if (sprite.Visible)
-        {
-            sprite.DrawOutline();
-        }
-        base.Render();
-    }
+        _dashCoroutineHook?.Dispose();
+        _dashCoroutineHook = null;
 
-    
-    private void OnPlayer(Player player)
-    {
-        if (!(player.Get<SparkDash>() is { } s && !s.ThisDashHasStarted))
-        {
-            player.UseRefill(false);
-            player.Add(new SparkDash());
-            Audio.Play("event:/game/general/diamond_touch", Position);
-            Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-            Collidable = false;
-            Add(new Coroutine(SparkRefillRoutine(player)));
-            respawnTimer = respawnTime; Audio.Play("event:/game/general/diamond_touch", Position);
-        }
-    }
+        _redDashCoroutineHook?.Dispose();
+        _redDashCoroutineHook = null;
 
-    
-    private IEnumerator SparkRefillRoutine(Player player)
-    {
-        Celeste.Freeze(0.05f);
-        yield return null;
-        level.Shake();
-        Sprite obj = sprite;
-        Sprite obj2 = flash;
-        bool visible = false;
-        obj2.Visible = false;
-        obj.Visible = visible;
-        if (!oneUse)
-        {
-            outline.Visible = true;
-        }
-        Depth = 8999;
-        yield return 0.05f;
-        float num = player.Speed.Angle();
-        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
-        level.ParticlesFG.Emit(_pShatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
-        SlashFx.Burst(Position, num);
-        if (oneUse)
-        {
-            RemoveSelf();
-        }
+        On.Celeste.Player.DashEnd -= Player_DashEnd;
+        On.Celeste.Player.DashBegin -= Player_DashBegin;
     }
 }

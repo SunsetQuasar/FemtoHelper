@@ -13,12 +13,6 @@ public class CustomSpeedRotateSpinner : RotateSpinner
 
     private int colorId;
 
-    private readonly bool fixAngle;
-
-    private readonly Vector2 startCenter;
-
-    private readonly Vector2 startPosition;
-
     private readonly bool noParticles;
 
     public bool IsDust;

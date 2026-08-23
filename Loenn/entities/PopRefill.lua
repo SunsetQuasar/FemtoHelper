@@ -10,6 +10,7 @@ FemtoHelperPopRefill.placements = {
             oneUse = false,
             twoDash = false,
             spawnTime = 2.5,
+            respawnTimer = 2.5,
         }
     },
     {
@@ -18,6 +19,7 @@ FemtoHelperPopRefill.placements = {
             oneUse = false,
             twoDash = true,
             spawnTime = 2.5,
+            respawnTimer = 2.5,
         }
     }
 }

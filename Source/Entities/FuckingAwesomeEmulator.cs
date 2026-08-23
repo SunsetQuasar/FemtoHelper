@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
+#pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
+
 [CustomEntity("FemtoHelper/FuckingAwesomeEmulator")]
 public class FuckingAwesomeEmulator : Entity
 {
@@ -36,7 +38,7 @@ public class FuckingAwesomeEmulator : Entity
 
     private Vector2 offset;
 
-    private readonly float pauseFade;
+    //private readonly float pauseFade;
 
     private EventInstance snapshot;
 
@@ -859,6 +861,7 @@ public class FuckingAwesomeClassic
 
         public Vector2 spd;
     }
+
 
     public class player : ClassicObject
     {
@@ -2197,7 +2200,7 @@ public class FuckingAwesomeClassic
 
     private bool new_bg;
 
-    private readonly int k_left;
+    private readonly int k_left = 0;
 
     private readonly int k_right = 1;
 
@@ -2883,3 +2886,4 @@ public class FuckingAwesomeClassic
     }
 }
 
+#pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.

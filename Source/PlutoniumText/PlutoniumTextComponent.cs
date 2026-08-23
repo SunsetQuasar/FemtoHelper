@@ -130,8 +130,8 @@ public class PlutoniumTextComponent : Component
                     c = useChar[i];
                 }
 
-                Character? origCharNullable = Font.GetCharacter(origc);
-                Character? charNullable = Font.GetCharacter(c);
+                Character origCharNullable = Font.GetCharacter(origc);
+                Character charNullable = Font.GetCharacter(c);
                 if ((charNullable is { } @char) && (origCharNullable is { } origChar))
                 {
                     if (firstChar)
@@ -189,8 +189,8 @@ public class PlutoniumTextComponent : Component
                     c = useChar[i];
                 }
 
-                Character? charNullable = Font.GetCharacter(c);
-                Character? origCharNullable = Font.GetCharacter(origc);
+                Character charNullable = Font.GetCharacter(c);
+                Character origCharNullable = Font.GetCharacter(origc);
                 if (charNullable is { } @char && origCharNullable is { } origChar)
                 {
                     if (firstChar)

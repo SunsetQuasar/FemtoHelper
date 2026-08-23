@@ -302,7 +302,7 @@ public struct PlutoniumFont
         return new PlutoniumFont(path, legacyCharList, legacyFontSize);
     }
 
-    public readonly Character? GetCharacter(char c)
+    public readonly Character GetCharacter(char c)
     {
         if (Chars.TryGetValue(c, out Character character))
         {
@@ -319,7 +319,7 @@ public struct PlutoniumFont
         bool firstchar = true;
         foreach(char c in str)
         {
-            Character? ch = GetCharacter(c);
+            Character ch = GetCharacter(c);
             if (ch is { } ch2)
             {
                 if (!firstchar)
