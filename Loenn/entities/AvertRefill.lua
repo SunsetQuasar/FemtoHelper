@@ -1,3 +1,5 @@
+local drawableSprite = require("structs.drawable_sprite")
+
 local FemtoHelperAvertRefill = {}
 
 FemtoHelperAvertRefill.name = "FemtoHelper/AvertRefill"
@@ -19,7 +21,9 @@ FemtoHelperAvertRefill.placements = {
         data = {
             oneUse = false,
             direction = "Up",
-            respawnTime = 2.5
+            respawnTime = 2.5,
+            visualOffsetX = 0,
+            visualOffsetY = 0
         }
     },
         {
@@ -27,7 +31,9 @@ FemtoHelperAvertRefill.placements = {
         data = {
             oneUse = false,
             direction = "Down",
-            respawnTime = 2.5
+            respawnTime = 2.5,
+            visualOffsetX = 0,
+            visualOffsetY = 0
         }
     },
         {
@@ -35,7 +41,9 @@ FemtoHelperAvertRefill.placements = {
         data = {
             oneUse = false,
             direction = "Left",
-            respawnTime = 2.5
+            respawnTime = 2.5,
+            visualOffsetX = 0,
+            visualOffsetY = 0
         }
     },
         {
@@ -43,7 +51,9 @@ FemtoHelperAvertRefill.placements = {
         data = {
             oneUse = false,
             direction = "Right",
-            respawnTime = 2.5
+            respawnTime = 2.5,
+            visualOffsetX = 0,
+            visualOffsetY = 0
         }
     },
 }
@@ -82,7 +92,7 @@ function FemtoHelperAvertRefill.flip(room, entity, horizontal, vertical)
 end
 
 function FemtoHelperAvertRefill.rotate(room, entity, direction)
-    if direction > 0 then
+    if direction < 0 then
         if string.lower(entity.direction) == "up" then 
             entity.direction = "left"
         elseif string.lower(entity.direction) == "left" then
@@ -107,12 +117,33 @@ function FemtoHelperAvertRefill.rotate(room, entity, direction)
     return true
 end
 
-function FemtoHelperAvertRefill.rotation(room, entity)
-    return spintable[string.lower(entity.direction)] * 0.0174533
-end
+function FemtoHelperAvertRefill.sprite(room, entity)
+    local sprPath = "objects/FemtoHelper/bubbleRedirect/"
 
-function FemtoHelperAvertRefill.texture(room, entity)
-    return "objects/FemtoHelper/bubbleRedirect/idle00"
+    local angle = spintable[string.lower(entity.direction)] * 0.0174533
+
+    local sprites = {}
+
+    local vx = entity.visualOffsetX or 0;
+    local vy = entity.visualOffsetY or 0;
+    
+    if vx ~= 0 or vy ~= 0 then
+        local main = drawableSprite.fromTexture(sprPath.."outline", entity)
+        main.rotation = angle
+        table.insert(sprites, main)
+
+        local offset_spr = drawableSprite.fromTexture(sprPath.."idle00", entity)
+        offset_spr.rotation = angle
+        offset_spr:setColor({1, 1, 1, 0.5})
+        offset_spr:addPosition(vx, vy)
+        table.insert(sprites, offset_spr)
+    else
+        local main = drawableSprite.fromTexture(sprPath.."idle00", entity)
+        main.rotation = angle
+        table.insert(sprites, main)
+    end
+
+    return sprites
 end
 
 return FemtoHelperAvertRefill

@@ -25,6 +25,7 @@ public class CustomRefill : Refill
     public bool RefillDash;
     public bool RefillStamina;
     public bool AlwaysUse;
+    public bool DontRemove = false;
     public string AudioPath = "event:/game/general/";
     public string TwoDashAudioPath = "event:/new_content/game/10_farewell/";
     public Vector2 VisualOffset = Vector2.Zero;
@@ -175,7 +176,7 @@ public class CustomRefill : Refill
         level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num - MathF.PI / 2f);
         level.ParticlesFG.Emit(p_shatter, 5, Position, Vector2.One * 4f, num + MathF.PI / 2f);
         SlashFx.Burst(Position, num);
-        if (oneUse)
+        if (oneUse && !DontRemove)
         {
             RemoveSelf();
         }
@@ -188,8 +189,7 @@ public class CustomRefill : Refill
         // GetEntitiesTrackIfNeeded doesn't work for... reasons
         Tracker.AddTypeToTracker(typeof(Refill));
 
-        // unnecessary?
-        Tracker.Refresh();
+        //Tracker.Refresh();
     }
 
     [OnLoad]

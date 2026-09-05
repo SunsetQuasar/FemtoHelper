@@ -116,12 +116,16 @@ entities.FemtoHelper/PopRefill.attributes.description.twoDash=Gives two dashes i
 entities.FemtoHelper/PopRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/PopRefill.attributes.description.spawnTime=The time it takes for the refill to spawn once triggered.
 entities.FemtoHelper/PopRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/PopRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/PopRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Spark Refill
 entities.FemtoHelper/SparkRefill.placements.name.spark=Spark Refill
 entities.FemtoHelper/SparkRefill.placements.description.spark=From KAERRA's Furry Week. Grants the player a double-speed dash.
 entities.FemtoHelper/SparkRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/SparkRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/SparkRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/SparkRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Avert Refill
 entities.FemtoHelper/AvertRefill.placements.name.avertUp=Avert Refill (Up)
@@ -135,12 +139,16 @@ entities.FemtoHelper/AvertRefill.placements.description.avertRight=From KAERRA's
 entities.FemtoHelper/AvertRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/AvertRefill.attributes.description.direction=The direction of momentum redirection.
 entities.FemtoHelper/AvertRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/AvertRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/AvertRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Minus Refill
 entities.FemtoHelper/MinusRefill.placements.name.minus=Minus Refill
 entities.FemtoHelper/MinusRefill.placements.description.minus=From KAERRA's Furry Week. Removes a dash from the player, killing them if they have none.
 entities.FemtoHelper/MinusRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/MinusRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/MinusRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/MinusRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Upend Refill
 entities.FemtoHelper/UpendRefill.placements.name.upendHorizontal=Upend Refill (Horizontal)
@@ -150,6 +158,8 @@ entities.FemtoHelper/UpendRefill.placements.description.upendVertical=From KAERR
 entities.FemtoHelper/UpendRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/UpendRefill.attributes.description.type=Axis of momentum reversion.
 entities.FemtoHelper/UpendRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/UpendRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/UpendRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Limit Refill
 entities.FemtoHelper/LimitRefill.placements.name.limitUp=Limit Refill (Up)
@@ -171,12 +181,16 @@ entities.FemtoHelper/LimitRefill.placements.description.limitDownRight=From KAER
 entities.FemtoHelper/LimitRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/LimitRefill.attributes.description.direction=The direction the dash is limited to.
 entities.FemtoHelper/LimitRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/LimitRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/LimitRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Bound Refill
 entities.FemtoHelper/BoundRefill.placements.name.bound=Bound Refill
 entities.FemtoHelper/BoundRefill.placements.description.bound=From KAERRA's Furry Week. Grants the player a spring-like dash.
 entities.FemtoHelper/BoundRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.FemtoHelper/BoundRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/BoundRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/BoundRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.boolean=Timed Flag Refill
@@ -198,6 +212,15 @@ entities.FemtoHelper/TimedFlagRefill.attributes.description.respawnTime=The time
 entities.FemtoHelper/TimedFlagRefill.attributes.description.audioPath=The FMOD path prefix for the refill's sounds.\nGiven the path to an event folder, the refill will look for the following events:\ndiamond_touch, diamond_return, pinkdiamond_touch and pinkdiamond_return.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/TimedFlagRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+
+# Buried Refill
+entities.FemtoHelper/BuriedRefill.placements.name.buried=Buried Refill
+entities.FemtoHelper/BuriedRefill.placements.description.buried=From The Mucus Flow. Activated once no other refills or the player intersect it. Limited compatibility with modded refills.
+entities.FemtoHelper/BuriedRefill.placements.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/BuriedRefill.placements.description.twoDash=Gives two dashes instead of one.
+entities.FemtoHelper/BuriedRefill.placements.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/BuriedRefill.placements.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/BuriedRefill.placements.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Directional Sprites Line
 entities.FemtoHelper/DirectionalLine.placements.name.default=Directional Sprites Line
@@ -827,6 +850,8 @@ entities.FemtoHelper/RotateDashRefill.attributes.description.texture=The texture
 entities.FemtoHelper/RotateDashRefill.attributes.description.effectColors=The colors used for the Rotate Dash effect. This affects the hair color and the arrow indicator.
 entities.FemtoHelper/RotateDashRefill.attributes.description.particleColors=The refill's particle colors.
 entities.FemtoHelper/RotateDashRefill.attributes.description.angle=How much the player's speed should be rotated counter-clockwise, or clockwise if the angle value is negative.\nMeasured in degrees.
+entities.FemtoHelper/RotateDashRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/RotateDashRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
 # Monopticon
 

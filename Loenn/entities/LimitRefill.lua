@@ -1,3 +1,5 @@
+local drawableSprite = require("structs.drawable_sprite")
+
 local FemtoHelperLimitRefill = {}
 
 FemtoHelperLimitRefill.name = "FemtoHelper/LimitRefill"
@@ -28,14 +30,36 @@ for k, v in ipairs(FemtoHelperLimitRefill.fieldInformation.direction.options) do
         data = {
             oneUse = false,
             direction = v,
-            respawnTime = 2.5
+            respawnTime = 2.5,
+            visualOffsetX = 0,
+            visualOffsetY = 0
         }
     }
     table.insert(FemtoHelperLimitRefill.placements, placement)
 end
 
-function FemtoHelperLimitRefill.texture(room, entity)
-    return "objects/FemtoHelper/limitRefill/"..(string.lower(entity.direction)).."/idle00"
+function FemtoHelperLimitRefill.sprite(room, entity)
+    local sprPath = "objects/FemtoHelper/limitRefill/"..(string.lower(entity.direction)).."/"
+
+    local sprites = {}
+
+    local vx = entity.visualOffsetX or 0;
+    local vy = entity.visualOffsetY or 0;
+    
+    if vx ~= 0 or vy ~= 0 then
+        local main = drawableSprite.fromTexture(sprPath.."outline", entity)
+        table.insert(sprites, main)
+
+        local offset_spr = drawableSprite.fromTexture(sprPath.."idle00", entity)
+        offset_spr:setColor({1, 1, 1, 0.5})
+        offset_spr:addPosition(vx, vy)
+        table.insert(sprites, offset_spr)
+    else
+        local main = drawableSprite.fromTexture(sprPath.."idle00", entity)
+        table.insert(sprites, main)
+    end
+
+    return sprites
 end
 
 -- i also can't deal with this shit

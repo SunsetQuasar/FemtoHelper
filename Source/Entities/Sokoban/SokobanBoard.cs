@@ -100,13 +100,8 @@ public class SokobanBoard : Entity
     public void StepTween()
     {
         stepPercent = 0;
-        if (stepTween.TimeLeft > 0)
-        {
-            stepTween.Stop();
-            
-            Remove(stepTween);
-        }
-        stepTween = Tween.Create(Tween.TweenMode.Oneshot, Ease.CubeOut, 0.1f, true);
+
+        stepTween.Init(Tween.TweenMode.Persist, Ease.CubeOut, 0.1f, true);
         stepTween.OnUpdate = (t) =>
         {
             stepPercent = t.Eased;

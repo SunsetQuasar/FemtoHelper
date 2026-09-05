@@ -54,6 +54,8 @@ public class AvertRefill : CustomRefill
         RespawnTime = data.Float("respawnTime", 2.5f);
 
         sprite.Rotation = flash.Rotation = outline.Rotation = (float)direction * Calc.DegToRad;
+
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
 
 

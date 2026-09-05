@@ -4,6 +4,7 @@
 // Celeste.Refill
 using System;
 using System.Collections;
+using static MonoMod.InlineRT.MonoModRule;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
@@ -14,18 +15,15 @@ public class PopRefill : CustomRefill
     public bool DoRespawn = false;
     public float SpawnTime = 2.5f;
     
-    public PopRefill(Vector2 position, bool twoDashes, bool oneUse, float spawnTime, float respawnTime)
-        : base(position, twoDashes, oneUse)
+    public PopRefill(EntityData data, Vector2 offset)
+        : base(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"))
     {
-        RespawnTime = respawnTime;
-        SpawnTime = spawnTime;
+        RespawnTime = data.Float("respawnTime", 2.5f);
+        SpawnTime = data.Float("spawnTime", 2.5f);
         this.SetRespawnGate(() => DoRespawn)
             .SetOnRespawn(() => outline.Color = Color.White);
-    }
 
-    public PopRefill(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"), data.Float("spawnTime", 2.5f), data.Float("respawnTime", 2.5f))
-    {
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
     
     public override void Added(Scene scene)

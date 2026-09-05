@@ -93,6 +93,8 @@ public class LimitRefill : CustomRefill
         AlwaysUse = true;
 
         RespawnTime = data.Float("respawnTime", 2.5f);
+
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
 
     public LimitRefill(EntityData data, Vector2 offset)

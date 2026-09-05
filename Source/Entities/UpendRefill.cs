@@ -44,6 +44,8 @@ public class UpendRefill : CustomRefill
         RefillDash = RefillStamina = false;
         AlwaysUse = true;
         RespawnTime = data.Float("respawnTime", 2.5f);
+
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
 
     public UpendRefill(EntityData data, Vector2 offset)

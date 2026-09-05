@@ -290,6 +290,8 @@ public static class EntityExtensions
         return false;
     }
 
+
+
     public static Vector2 ExplodeLaunch(this Holdable hold, Vector2 from, bool snapUp = true, bool sidesOnly = false)
     {
         Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);

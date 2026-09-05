@@ -142,6 +142,8 @@ public class RotateDashRefill : CustomRefill
             .SetParticles(pShatter, pRegen, pGlow)
             .SetCollectLogic(CollectCheck)
             .SetOnCollect(OnCollect);
+
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
 
     public override void Added(Scene scene)

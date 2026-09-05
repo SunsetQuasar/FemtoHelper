@@ -11,7 +11,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/SparkRefill")]
 public class SparkRefill : CustomRefill
 {
-    public class SparkDash() : Component(false, false)
+    public class SparkDash() : Component(false, true)
     {
         public bool CurrentlyDashing = false;
 
@@ -29,8 +29,10 @@ public class SparkRefill : CustomRefill
         RespawnTime = data.Float("respawnTime", 2.5f);
         this.SetTexture("objects/FemtoHelper/sparkRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => !(player.Get<SparkDash>() is { } s && (!s.CurrentlyDashing || s.Count > 1)))
+            .SetCollectLogic((player) => player.Get<SparkDash>() is not { } s || (s.CurrentlyDashing && s.Count <= 1))
             .SetOnCollect(OnCollect);
+
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
     public SparkRefill(EntityData data, Vector2 offset)
         : this(data.Position + offset, data)
@@ -82,6 +84,7 @@ public class SparkRefill : CustomRefill
         orig(self);
         if (self.Get<SparkDash>() is { } s && s.CurrentlyDashing)
         {
+            s.CurrentlyDashing = false;
             if (--s.Count < 1)
             {
                 s.RemoveSelf();
