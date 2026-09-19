@@ -192,6 +192,67 @@ entities.FemtoHelper/BoundRefill.attributes.description.respawnTime=The time it 
 entities.FemtoHelper/BoundRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/BoundRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
+# Delay Refill
+entities.FemtoHelper/DelayRefill.placements.name.delayUp=Delay Refill (Up)
+entities.FemtoHelper/DelayRefill.placements.name.delayRight=Delay Refill (Right)
+entities.FemtoHelper/DelayRefill.placements.name.delayDown=Delay Refill (Down)
+entities.FemtoHelper/DelayRefill.placements.name.delayLeft=Delay Refill (Left)
+entities.FemtoHelper/DelayRefill.placements.description.delayUp=From Vybbles' Furry 2 Week. Launches the player upwards after a set delay.
+entities.FemtoHelper/DelayRefill.placements.description.delayRight=From Vybbles' Furry 2 Week. Launches the player rightwards after a set delay.
+entities.FemtoHelper/DelayRefill.placements.description.delayDown=From Vybbles' Furry 2 Week. Launches the player downwards after a set delay.
+entities.FemtoHelper/DelayRefill.placements.description.delayLeft=From Vybbles' Furry 2 Week. Launches the player leftwards after a set delay.
+entities.FemtoHelper/DelayRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/DelayRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/DelayRefill.attributes.description.delay=The time it takes for the refill to launch the player.
+entities.FemtoHelper/DelayRefill.attributes.description.direction=The direction the player is launched to.
+entities.FemtoHelper/DelayRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/DelayRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+
+# Blink Refill
+entities.FemtoHelper/BlinkRefill.placements.name.blink=Blink Refill
+entities.FemtoHelper/BlinkRefill.placements.description.blink=From Vybbles' Furry 2 Week. Can make certain entities inactive and uncollidable during the player's dash.
+entities.FemtoHelper/BlinkRefill.attributes.description.inactiveTypes=Entity SIDs (placement names) to make inactive.\nThese will remain frozen for the duration of the dash.
+entities.FemtoHelper/BlinkRefill.attributes.description.uncollidableTypes=Entity SIDs (placement names) to make uncollidable.\nThe player will not collide with these for the duration of the dash.
+entities.FemtoHelper/BlinkRefill.attributes.description.strictWhitelist=Only match entities whose SIDs are included the lists, rather than any entity that is tracked under the listed SIDs.
+entities.FemtoHelper/BlinkRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/BlinkRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/BlinkRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/BlinkRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+
+# Float Refill
+entities.FemtoHelper/FloatRefill.placements.name.float=Float Refill
+entities.FemtoHelper/FloatRefill.placements.description.float=From Vybbles' Furry 2 Week. Causes the player to float until they dash.\nA ceiling kill barrier is active while floating.
+entities.FemtoHelper/FloatRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/FloatRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/FloatRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/FloatRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+
+# Drift Refill
+entities.FemtoHelper/DriftRefill.placements.name.drift=Drift Refill
+entities.FemtoHelper/DriftRefill.placements.description.drift=From Vybbles' Furry 2 Week. Grants the player a held Super Dash.
+entities.FemtoHelper/DriftRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/DriftRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/DriftRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/DriftRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+
+# Vapor Refill
+entities.FemtoHelper/AirRefill.placements.name.air=Vapor Refill
+entities.FemtoHelper/AirRefill.placements.description.air=From Vybbles' Furry 2 Week. Allows the player to perform tech in mid-air.\nOnly consumed on a successful mid-air move.
+entities.FemtoHelper/AirRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/AirRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/AirRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/AirRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+
+# Slash Refill
+entities.FemtoHelper/SlashRefill.placements.name.slash=Slash Refill
+entities.FemtoHelper/SlashRefill.placements.description.slash=From Vybbles' Furry 2 Week. Gives the ability to break any arbitrary entity like a Dash Block.
+entities.FemtoHelper/SlashRefill.attributes.description.brittleTypes=Entity SIDs (placement names) to allow breaking with the refill.
+entities.FemtoHelper/SlashRefill.attributes.description.strictWhitelist=Only match entities whose SIDs are included the lists, rather than any entity that is tracked under the listed SIDs.
+entities.FemtoHelper/SlashRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/SlashRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/SlashRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/SlashRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+
 # Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.boolean=Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.booleanTwo=Timed Flag Refill (Two Dashes)

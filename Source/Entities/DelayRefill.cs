@@ -81,6 +81,9 @@ public class DelayRefill : CustomRefill
             .SetEnumerator(CollectRoutine);
 
         sprite.Rotation = flash.Rotation = outline.Rotation = (float)dir * Calc.DegToRad;
+
+        RespawnTime = data.Float("respawnTime", 2.5f);
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
 
     public override void Added(Scene scene)

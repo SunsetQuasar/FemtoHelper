@@ -26,12 +26,12 @@ public class SparkRefill : CustomRefill
     public SparkRefill(Vector2 position, EntityData data)
         : base(position, false, data.Bool("oneUse", false))
     {
-        RespawnTime = data.Float("respawnTime", 2.5f);
         this.SetTexture("objects/FemtoHelper/sparkRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
             .SetCollectLogic((player) => player.Get<SparkDash>() is not { } s || (s.CurrentlyDashing && s.Count <= 1))
             .SetOnCollect(OnCollect);
 
+        RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
     public SparkRefill(EntityData data, Vector2 offset)

@@ -143,6 +143,7 @@ public class MoverRefill : CustomRefill
 
         disablePushing = !data.Bool("solidsCanPush", true);
         RespawnTime = data.Float("respawnTime", 2.5f);
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
 
     public override void Awake(Scene scene)

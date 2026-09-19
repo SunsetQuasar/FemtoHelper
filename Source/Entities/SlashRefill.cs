@@ -41,9 +41,9 @@ public class SlashRefill : CustomRefill
     public SlashRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
     {
 
-        targetTypesAndSIDs = [.. data.String("brittleTypes", "refill,FemtoHelper/MinusRefill,MaxHelpingHand/CustomizableCrumblePlatform").
-            Split(',').
-            SelectMany<string, (Type, string)>(
+        targetTypesAndSIDs = [.. data.String("brittleTypes", "refill,FemtoHelper/MinusRefill,crumbleBlock")
+            .Split(',')
+            .SelectMany<string, (Type, string)>(
                 (str) => EntityRegistry.GetKnownTypesFromSid(str).Select(t => (t, str))
             )];
 
@@ -55,6 +55,9 @@ public class SlashRefill : CustomRefill
             .SetOnCollect(OnCollect);
 
         strict = data.Bool("strictWhitelist", true);
+
+        RespawnTime = data.Float("respawnTime", 2.5f);
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
 
     public override void Awake(Scene scene)

@@ -79,13 +79,12 @@ public class DriftRefill : CustomRefill
     public DriftRefill(EntityData data, Vector2 offset)
        : base(data.Position + offset, false, data.Bool("oneUse", false))
     {
-        RespawnTime = data.Float("respawnTime", 2.5f);
-
         this.SetTexture("objects/FemtoHelper/holdRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
             .SetCollectLogic((player) => player.Get<DriftDash>() is not { } driftDash || (driftDash.CurrentlyDashing && driftDash.Count <= 1))
             .SetOnCollect(OnCollect);
 
+        RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
     private void OnCollect(Player player)

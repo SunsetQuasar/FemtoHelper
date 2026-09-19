@@ -47,7 +47,7 @@ public class BlinkRefill : CustomRefill
 
     public BlinkRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
     {
-        inactiveTypesAndSIDs = [.. data.String("inactiveTypes", "MaxHelpingHand/CustomizableCrumblePlatform")
+        inactiveTypesAndSIDs = [.. data.String("inactiveTypes", "crumbleBlock")
             .Split(',')
             .SelectMany<string, (Type, string)>(
                 (str) => EntityRegistry.GetKnownTypesFromSid(str).Select(t => (t, str))
@@ -62,6 +62,9 @@ public class BlinkRefill : CustomRefill
         strict = data.Bool("strictWhitelist", true);
 
         RefillDash = RefillStamina = AlwaysUse = true;
+
+        RespawnTime = data.Float("respawnTime", 2.5f);
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
 
         this.SetTexture("objects/FemtoHelper/blinkRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)

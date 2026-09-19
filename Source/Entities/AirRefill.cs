@@ -39,6 +39,9 @@ public class AirRefill : CustomRefill
             .SetParticles(_pShatter, _pRegen, _pGlow)
             .SetCollectLogic((player) => player.Get<AirDash>() is not { } s)
             .SetOnCollect(OnCollect);
+
+        RespawnTime = data.Float("respawnTime", 2.5f);
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
 
     public void OnCollect(Player player)

@@ -1,10 +1,14 @@
 local drawableSprite = require("structs.drawable_sprite")
+local drawableLine = require("structs.drawable_line")
+local utils = require("utils")
 
-local FemtoHelperAvertRefill = {}
+local FemtoHelperDelayRefill = {}
 
-FemtoHelperAvertRefill.name = "FemtoHelper/AvertRefill"
-FemtoHelperAvertRefill.depth = -100
-FemtoHelperAvertRefill.fieldInformation = {
+FemtoHelperDelayRefill.name = "FemtoHelper/DelayRefill"
+FemtoHelperDelayRefill.depth = -100
+FemtoHelperDelayRefill.nodeLimits = {0, 1}
+FemtoHelperDelayRefill.nodeVisibility = "never"
+FemtoHelperDelayRefill.fieldInformation = {
     direction = {
         options = {
             "Up",
@@ -15,61 +19,65 @@ FemtoHelperAvertRefill.fieldInformation = {
         editable = true
     },
 }
-FemtoHelperAvertRefill.placements = {
+FemtoHelperDelayRefill.placements = {
     {
-        name = "avertUp",
+        name = "delayUp",
         data = {
             oneUse = false,
             direction = "Up",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            delay = 1.2,
         }
     },
         {
-        name = "avertDown",
+        name = "delayDown",
         data = {
             oneUse = false,
             direction = "Down",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            delay = 1.2,
         }
     },
         {
-        name = "avertLeft",
+        name = "delayLeft",
         data = {
             oneUse = false,
             direction = "Left",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            delay = 1.2,
         }
     },
         {
-        name = "avertRight",
+        name = "delayRight",
         data = {
             oneUse = false,
             direction = "Right",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            delay = 1.2,
         }
     },
 }
 
 local spintable = {
     up = 0,
-    upright = 45,
+    -- upright = 45,
     right = 90,
-    downright = 135,
+    -- downright = 135,
     down = 180,
-    downleft = 225,
+    -- downleft = 225,
     left = 270,
-    upleft = 315,
+    -- upleft = 315,
 }
 
-function FemtoHelperAvertRefill.flip(room, entity, horizontal, vertical)
+function FemtoHelperDelayRefill.flip(room, entity, horizontal, vertical)
     if horizontal then
         if string.lower(entity.direction) == "left" then entity.direction = "right"
             return true 
@@ -91,7 +99,7 @@ function FemtoHelperAvertRefill.flip(room, entity, horizontal, vertical)
     return false
 end
 
-function FemtoHelperAvertRefill.rotate(room, entity, direction)
+function FemtoHelperDelayRefill.rotate(room, entity, direction)
     if direction < 0 then
         if string.lower(entity.direction) == "up" then 
             entity.direction = "left"
@@ -117,8 +125,8 @@ function FemtoHelperAvertRefill.rotate(room, entity, direction)
     return true
 end
 
-function FemtoHelperAvertRefill.sprite(room, entity)
-    local sprPath = "objects/FemtoHelper/bubbleRedirect/"
+function FemtoHelperDelayRefill.sprite(room, entity)
+    local sprPath = "objects/FemtoHelper/bumpRefill/"
 
     local angle = spintable[string.lower(entity.direction)] * 0.0174533
 
@@ -126,6 +134,14 @@ function FemtoHelperAvertRefill.sprite(room, entity)
 
     local vx = entity.visualOffsetX or 0;
     local vy = entity.visualOffsetY or 0;
+
+    local clock = drawableSprite.fromTexture(sprPath.."timer05", entity)
+    if #entity.nodes > 0 then 
+        local node = entity.nodes[1] or {x = entity.x, y = entity.y}
+        clock:setPosition(entity.nodes[1].x, entity.nodes[1].y)
+        table.insert(sprites, drawableLine.fromPoints({entity.x, entity.y, node.x, node.y}, {1, 1, 1, 0.25}, 1))
+    end
+    table.insert(sprites, clock)
     
     if vx ~= 0 or vy ~= 0 then
         local main = drawableSprite.fromTexture(sprPath.."outline", entity)
@@ -146,7 +162,7 @@ function FemtoHelperAvertRefill.sprite(room, entity)
     return sprites
 end
 
-function FemtoHelperAvertRefill.selection(room, entity) 
+function FemtoHelperDelayRefill.selection(room, entity) 
     local nodeRecs = {}
 
     for k, node in pairs(entity.nodes) do
@@ -156,4 +172,4 @@ function FemtoHelperAvertRefill.selection(room, entity)
     return utils.rectangle(entity.x - 8, entity.y - 8, 16, 16), nodeRecs
 end
 
-return FemtoHelperAvertRefill
+return FemtoHelperDelayRefill

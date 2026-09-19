@@ -103,7 +103,6 @@ public class ParticleEmitter : Entity
 
 	public override void Update()
 	{
-		Level level = Scene as Level;
 		base.Update();
 		if (AttachToPlayer)
 		{
