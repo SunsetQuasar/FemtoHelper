@@ -202,7 +202,7 @@ public class SlashRefill : CustomRefill
             cursor.EmitLdarg0(); // Actor self
             cursor.EmitLdloc1(); // num
             cursor.EmitLdloc2(); // num2
-            cursor.EmitDelegate(InjectBrittleCheckV); // return whether to immediately return true from the MoveHExact method
+            cursor.EmitDelegate(InjectBrittleCheckV); // return whether to immediately return true from the MoveVExact method
             cursor.EmitBrfalse(skip_ret);
             cursor.EmitLdcI4(1);
             cursor.EmitRet();
