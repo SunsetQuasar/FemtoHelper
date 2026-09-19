@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Celeste.Mod.FemtoHelper.Entities.SlashRefill;
 
-namespace Celeste.Mod.FemtoHelper.Entities.Sokoban;
+namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/BlinkRefill")]
 public class BlinkRefill : CustomRefill
