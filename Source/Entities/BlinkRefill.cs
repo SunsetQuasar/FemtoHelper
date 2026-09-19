@@ -15,7 +15,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/BlinkRefill")]
 public class BlinkRefill : CustomRefill
 {
-    public class BlinkDash(List<(Type, string)> inactive, List<(Type, string)> uncollidable, bool strict) : Component(false, false)
+    public class AirDash(List<(Type, string)> inactive, List<(Type, string)> uncollidable, bool strict) : Component(false, false)
     {
         internal List<(Type, string)> inactiveTypesAndSIDs = inactive;
         internal List<(Type, string)> uncollidableTypesAndSIDs = uncollidable;
@@ -47,15 +47,15 @@ public class BlinkRefill : CustomRefill
 
     public BlinkRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
     {
-        inactiveTypesAndSIDs = [.. data.String("inactiveTypes", "MaxHelpingHand/CustomizableCrumblePlatform").
-            Split(',').
-            SelectMany<string, (Type, string)>(
+        inactiveTypesAndSIDs = [.. data.String("inactiveTypes", "MaxHelpingHand/CustomizableCrumblePlatform")
+            .Split(',')
+            .SelectMany<string, (Type, string)>(
                 (str) => EntityRegistry.GetKnownTypesFromSid(str).Select(t => (t, str))
             )];
 
-        uncollidableTypesAndSIDs = [.. data.String("uncollidableTypes", "refill,FemtoHelper/MinusRefill").
-            Split(',').
-            SelectMany<string, (Type, string)>(
+        uncollidableTypesAndSIDs = [.. data.String("uncollidableTypes", "refill,FemtoHelper/MinusRefill")
+            .Split(',')
+            .SelectMany<string, (Type, string)>(
                 (str) => EntityRegistry.GetKnownTypesFromSid(str).Select(t => (t, str))
             )];
 
@@ -65,7 +65,7 @@ public class BlinkRefill : CustomRefill
 
         this.SetTexture("objects/FemtoHelper/blinkRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => player.Get<BlinkDash>() is not { } s || (s.CurrentlyDashing && s.Count <= 1))
+            .SetCollectLogic((player) => player.Get<AirDash>() is not { } s || (s.CurrentlyDashing && s.Count <= 1))
             .SetOnCollect(OnCollect);
     }
 
@@ -85,7 +85,7 @@ public class BlinkRefill : CustomRefill
     {
         player.UseRefill(false);
 
-        if (player.Get<BlinkDash>() is BlinkDash blinkDash)
+        if (player.Get<AirDash>() is AirDash blinkDash)
         {
             blinkDash.Count++;
             blinkDash.inactiveTypesAndSIDs = [.. blinkDash.inactiveTypesAndSIDs.Union(inactiveTypesAndSIDs)];
@@ -93,7 +93,7 @@ public class BlinkRefill : CustomRefill
         }
         else
         {
-            player.Add(new BlinkDash(inactiveTypesAndSIDs, uncollidableTypesAndSIDs, strict));
+            player.Add(new AirDash(inactiveTypesAndSIDs, uncollidableTypesAndSIDs, strict));
         }
     }
 
@@ -109,7 +109,7 @@ public class BlinkRefill : CustomRefill
     {
         orig(self);
 
-        if (self.Get<BlinkDash>() is { } blinkDash && blinkDash.CurrentlyDashing)
+        if (self.Get<AirDash>() is { } blinkDash && blinkDash.CurrentlyDashing)
         {
             blinkDash.CurrentlyDashing = false;
             if (--blinkDash.Count < 1)
@@ -122,7 +122,7 @@ public class BlinkRefill : CustomRefill
     {
         orig(self);
 
-        if (self.Get<BlinkDash>() is { } blinkDash)
+        if (self.Get<AirDash>() is { } blinkDash)
         {
             blinkDash.CurrentlyDashing = true;
             (self.Scene as Level).Session.SetFlag("blink_refill", true);

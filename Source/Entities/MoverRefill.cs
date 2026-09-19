@@ -211,6 +211,9 @@ public class MoverRefill : CustomRefill
         bool previousPush = player.AllowPushing;
         if (disablePushing) player.AllowPushing = false;
 
+        player.UpdateHair(applyGravity: true);
+        player.Hair.AfterUpdate();
+
         if (player.DashAttacking)
         {
             player.Speed *= 1.5f;
@@ -301,6 +304,8 @@ public class MoverRefill : CustomRefill
                 if (player is not null && !player.Dead)
                 {
                     player.NaiveMove(delta);
+                    player.UpdateHair(applyGravity: true);
+                    player.Hair.AfterUpdate();
 
                     Position += delta;
                 }
