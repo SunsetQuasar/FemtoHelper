@@ -202,7 +202,7 @@ public class GenericSmwBlock : Solid
             Vector2 old = BounceOffset;
             bounceOffset = value;
             Vector2 delta = BounceOffset - old;
-            foreach (StaticMover staticMover in staticMovers.Where(c => exemptFromRenderThingy.Contains(c)))
+            foreach (StaticMover staticMover in staticMovers.Where(exemptFromRenderThingy.Contains))
             {
                 staticMover.Shake(delta);
             }

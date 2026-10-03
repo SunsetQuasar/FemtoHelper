@@ -149,8 +149,10 @@ end
 function FemtoHelperAvertRefill.selection(room, entity) 
     local nodeRecs = {}
 
-    for k, node in pairs(entity.nodes) do
-        table.insert(nodeRecs,  utils.rectangle(node.x - 8, node.y - 8, 16, 16))
+    if entity.nodes then
+        for k, node in ipairs(entity.nodes) do
+            table.insert(nodeRecs,  utils.rectangle(node.x - 8, node.y - 8, 16, 16))
+        end
     end
 
     return utils.rectangle(entity.x - 8, entity.y - 8, 16, 16), nodeRecs

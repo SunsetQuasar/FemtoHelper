@@ -143,6 +143,10 @@ public class CustomRefill : Refill
     {
         if (collectLogic(player))
         {
+            foreach(StepMover.StepMoverTrigger trigger in Components.GetAll<StepMover.StepMoverTrigger>())
+            {
+                trigger.Trigger();
+            }
             onCollect?.Invoke(player);
             Audio.Play(twoDashes ? $"{TwoDashAudioPath}pinkdiamond_touch" : $"{AudioPath}diamond_touch", Position);
             Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);

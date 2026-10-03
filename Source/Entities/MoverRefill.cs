@@ -13,7 +13,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 public class MoverRefill : CustomRefill
 {
     Switch @switch;
-    DirectionalLine line;
+    internal DirectionalLine line;
     EntityID ID;
     string flagName;
     bool disablePushing;
@@ -97,7 +97,7 @@ public class MoverRefill : CustomRefill
         LifeMax = 1.25f,
     };
 
-    public readonly Vector2 Destination;
+    public Vector2 Destination;
 
     public readonly float MoveDuration = 0.5f;
 

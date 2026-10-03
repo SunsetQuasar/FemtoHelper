@@ -145,4 +145,23 @@ public class EntityKillZone : Entity
             entity.RemoveSelf();
         }
     }
+
+    public static void PoofEntity(Entity entity)
+    {
+        Audio.Play("event:/FemtoHelper/stomp_poof", entity.Center);
+
+        entity.Scene.Add(new Poof(entity.Center));
+
+        entity.SceneAs<Level>().ParticlesFG.Emit(Stars, entity.Center, (-22.5f).ToRad());
+        entity.SceneAs<Level>().ParticlesFG.Emit(Stars, entity.Center, (22.5f).ToRad());
+        entity.SceneAs<Level>().ParticlesFG.Emit(Stars, entity.Center, (180 - 22.5f).ToRad());
+        entity.SceneAs<Level>().ParticlesFG.Emit(Stars, entity.Center, (180 + 22.5f).ToRad());
+
+        if (entity is SmwShell shell)
+        {
+            shell.counter?.RemoveSelf();
+        }
+
+        entity.RemoveSelf();
+    }
 }

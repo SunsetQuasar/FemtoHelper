@@ -78,8 +78,8 @@ public class BlinkRefill : CustomRefill
         foreach (var (type, _) in inactiveTypesAndSIDs.Union(uncollidableTypesAndSIDs))
         {
             Tracker.AddTypeToTracker(type);
-            Tracker.Refresh();
         }
+        Tracker.Refresh();
 
         (scene as Level).Session.SetFlag("blink_refill", false);
     }

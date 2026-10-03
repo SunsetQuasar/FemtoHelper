@@ -66,8 +66,8 @@ public class SlashRefill : CustomRefill
         foreach (var (type, _) in targetTypesAndSIDs)
         {
             Tracker.AddTypeToTracker(type);
-            Tracker.Refresh();
         }
+        Tracker.Refresh();
     }
 
     public static void AddBrittle(Entity e)

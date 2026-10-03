@@ -136,7 +136,7 @@ function FemtoHelperDelayRefill.sprite(room, entity)
     local vy = entity.visualOffsetY or 0;
 
     local clock = drawableSprite.fromTexture(sprPath.."timer05", entity)
-    if #entity.nodes > 0 then 
+    if entity.nodes and #entity.nodes > 0 then 
         local node = entity.nodes[1] or {x = entity.x, y = entity.y}
         clock:setPosition(entity.nodes[1].x, entity.nodes[1].y)
         table.insert(sprites, drawableLine.fromPoints({entity.x, entity.y, node.x, node.y}, {1, 1, 1, 0.25}, 1))
@@ -164,9 +164,10 @@ end
 
 function FemtoHelperDelayRefill.selection(room, entity) 
     local nodeRecs = {}
-
-    for k, node in pairs(entity.nodes) do
-        table.insert(nodeRecs,  utils.rectangle(node.x - 8, node.y - 8, 16, 16))
+    if entity.nodes then
+        for k, node in ipairs(entity.nodes or {}) do
+            table.insert(nodeRecs,  utils.rectangle(node.x - 8, node.y - 8, 16, 16))
+        end
     end
 
     return utils.rectangle(entity.x - 8, entity.y - 8, 16, 16), nodeRecs

@@ -25,7 +25,7 @@ FemtoHelperWaterBlock.placements = {
         data = {
             width = 16,
             height = 16,
-            spritePath = 'objects/FemtoHelper/moveWater/nineslice',
+            spritePath = 'objects/FemtoHelper/moveWater/nineSlice',
         }
     }
 }

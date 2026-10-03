@@ -48,28 +48,33 @@ internal class FemtoHelperMapDataProcessor : EverestMapDataProcessor
     [OnLoad]
     public static void Load()
     {
-        Everest.Events.Level.OnEnter += Level_OnEnter;
+        On.Celeste.Level.Begin += Level_Begin;
     }
 
-    private static void Level_OnEnter(Session session, bool fromSaveData)
+    private static void Level_Begin(On.Celeste.Level.orig_Begin orig, Level self)
     {
-        string SID = session.Area.SID;
+        orig(self);
+        string SID = self.Session.Area.SID;
         if (hookRelevantSIDs.TryGetValue(SID, out var elements))
         {
             if (elements.Contains("FemtoHelper/MovementModifier"))
             {
                 MovementModifier.Load();
-            } 
+            }
             else
             {
                 MovementModifier.Unload();
             }
+        }
+        else
+        {
+            MovementModifier.Unload();
         }
     }
 
     [OnUnload]
     public static void Unload()
     {
-        Everest.Events.Level.OnEnter -= Level_OnEnter;
+        On.Celeste.Level.Begin -= Level_Begin;
     }
 }

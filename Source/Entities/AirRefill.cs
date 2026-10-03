@@ -129,8 +129,6 @@ public class AirRefill : CustomRefill
             cursor.MarkLabel(skipRet);
         }
         //*/
-
-        Console.WriteLine(il);
     }
     private static bool CheckForWalllessWallbounce(bool walljumpcheck, Player player)
     {

@@ -235,6 +235,15 @@ entities.FemtoHelper/DriftRefill.attributes.description.respawnTime=The time it 
 entities.FemtoHelper/DriftRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/DriftRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 
+# Mover Refill
+entities.FemtoHelper/MoverRefill.placements.name.mover=Mover Refill
+entities.FemtoHelper/MoverRefill.placements.description.mover=From Vybbles' Furry 2 Week. Freezes the player, moves them to the destination point, then resumes the player state.
+entities.FemtoHelper/MoverRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.FemtoHelper/MoverRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.FemtoHelper/MoverRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/MoverRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/MoverRefill.attributes.description.isSwitch=Acts like and counts as a Touch Switch. Does nothing if 'One Use' isn't set.
+
 # Vapor Refill
 entities.FemtoHelper/AirRefill.placements.name.air=Vapor Refill
 entities.FemtoHelper/AirRefill.placements.description.air=From Vybbles' Furry 2 Week. Allows the player to perform tech in mid-air.\nOnly consumed on a successful mid-air move.
