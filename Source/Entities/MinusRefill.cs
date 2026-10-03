@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-
-namespace Celeste.Mod.FemtoHelper.Entities;
+﻿namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/MinusRefill")]
 public class MinusRefill : CustomRefill

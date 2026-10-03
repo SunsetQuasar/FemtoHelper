@@ -1,7 +1,6 @@
 ﻿using Celeste.Mod.Helpers;
 using Celeste.Mod.Roslyn.ModLifecycleAttributes;
 using MonoMod.Cil;
-using System;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

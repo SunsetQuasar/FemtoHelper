@@ -3,11 +3,6 @@ using Celeste.Mod.Roslyn.ModLifecycleAttributes;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Celeste.Mod.FemtoHelper.Entities.SlashRefill;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using static Celeste.TempleGate;
-
-namespace Celeste.Mod.FemtoHelper.Entities;
+﻿namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/AvertRefill")]
 public class AvertRefill : CustomRefill

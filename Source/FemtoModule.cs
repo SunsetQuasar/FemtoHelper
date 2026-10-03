@@ -15,7 +15,6 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.ModInterop;
 using MonoMod.RuntimeDetour;
-using MonoMod.Utils;
 using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;

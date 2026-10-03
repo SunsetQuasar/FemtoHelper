@@ -1,9 +1,7 @@
-﻿using Celeste;
-using Celeste.Mod.Roslyn.ModLifecycleAttributes;
+﻿using Celeste.Mod.Roslyn.ModLifecycleAttributes;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Collections;
-using System.Reflection;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

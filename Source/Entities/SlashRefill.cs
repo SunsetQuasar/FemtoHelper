@@ -1,7 +1,6 @@
 ﻿using Celeste.Mod.Helpers;
 using Celeste.Mod.Registry;
 using Celeste.Mod.Roslyn.ModLifecycleAttributes;
-using Iced.Intel;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -10,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using static Celeste.Mod.FemtoHelper.Entities.SparkRefill;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

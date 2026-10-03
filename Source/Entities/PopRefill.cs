@@ -2,9 +2,7 @@
 
 // Celeste, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // Celeste.Refill
-using System;
 using System.Collections;
-using static MonoMod.InlineRT.MonoModRule;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 

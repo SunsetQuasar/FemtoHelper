@@ -2,8 +2,6 @@
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
-using System;
-using System.Collections;
 using System.Reflection;
 
 namespace Celeste.Mod.FemtoHelper.Entities;

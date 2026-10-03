@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-
-namespace Celeste.Mod.FemtoHelper.Entities;
+﻿namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/UpendRefill")]
 public class UpendRefill : CustomRefill

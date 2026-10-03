@@ -1,5 +1,4 @@
 ﻿using Celeste.Mod.Roslyn.ModLifecycleAttributes;
-using System;
 using System.Collections;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
