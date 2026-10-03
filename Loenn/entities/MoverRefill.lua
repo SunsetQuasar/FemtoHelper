@@ -14,6 +14,7 @@ FemtoHelperMoverRefill.placements = {
         data = {
             oneUse = false,
             isSwitch = false,
+            moveTime = 0.5,
             respawnTime = 2.5,
             visualOffsetX = 0,
             visualOffsetY = 0,

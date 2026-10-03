@@ -243,6 +243,7 @@ entities.FemtoHelper/MoverRefill.attributes.description.respawnTime=The time it 
 entities.FemtoHelper/MoverRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/MoverRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/MoverRefill.attributes.description.isSwitch=Acts like and counts as a Touch Switch. Does nothing if 'One Use' isn't set.
+entities.FemtoHelper/MoverRefill.attributes.description.moveTime=The time it takes to move the player.
 
 # Vapor Refill
 entities.FemtoHelper/AirRefill.placements.name.air=Vapor Refill
