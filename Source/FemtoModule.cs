@@ -227,7 +227,8 @@ public class FemtoModule : EverestModule
         EvilTheoCrystal.Load();
         AssistHazardController.Load();
         PlutoniumTextRenderer.Load();
-        MovementModifier.Load();
+        // lazy loaded
+        // MovementModifier.Load();
         MoveBlockIgnoreController.Load();
 
         LifecycleMethods.OnLoad();
@@ -259,7 +260,8 @@ public class FemtoModule : EverestModule
         EvilTheoCrystal.Unload();
         AssistHazardController.Unload();
         PlutoniumTextRenderer.Unload();
-        MovementModifier.Unload();
+        // lazy loaded
+        // MovementModifier.Unload();
         MoveBlockIgnoreController.Unload();
 
         LifecycleMethods.OnUnload();
@@ -680,5 +682,11 @@ public class FemtoModule : EverestModule
             );
         }
         return null;
+    }
+
+    public override void PrepareMapDataProcessors(MapDataFixup context)
+    {
+        base.PrepareMapDataProcessors(context);
+        context.Add<FemtoHelperMapDataProcessor>();
     }
 }
