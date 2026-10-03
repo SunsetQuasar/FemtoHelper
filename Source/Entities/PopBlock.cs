@@ -10,14 +10,16 @@ public class PopBlock : Solid
 {
     public class Side : Entity
     {
+        private readonly bool edgeLeft;
+        private readonly bool edgeRight;
         private readonly PopBlock parent;
-        private readonly Color color;
-        public Side(PopBlock parent, Color color) : base()
+        public Side(PopBlock parent) : base()
         {
             Depth = 7120;
             this.parent = parent;
-            this.color = color;
             Position = parent.BottomLeft;
+            edgeLeft = !parent.CheckForSame(parent.Left - 8f, parent.Bottom - 8f);
+            edgeRight = !parent.CheckForSame(parent.Right, parent.Bottom - 8f);
         }
 
         public override void Awake(Scene scene)
@@ -29,7 +31,8 @@ public class PopBlock : Solid
         {
             base.Render();
             float height = Calc.Min(8, parent.Height);
-            Draw.Rect(Position + new Vector2(0, 2f - height), parent.Width, height, color);
+            Draw.Rect(Position + new Vector2(0f, 2f - height), parent.Width, height, parent.disabledColor2);
+            Draw.Rect(Position + new Vector2(edgeLeft ? 1f : 0f, 2f - height), parent.Width - (edgeLeft ? 1f : 0f) - (edgeRight ? 1f : 0f), height, parent.disabledColor);
         }
     }
 
@@ -37,6 +40,7 @@ public class PopBlock : Solid
     public class PopBlockManager : Entity
     {
         Queue<PopBlock> popQueue = [];
+        List<PopBlock> soundList = [];
         public PopBlockManager() : base()
         {
             //right before player
@@ -51,6 +55,19 @@ public class PopBlock : Solid
             {
                 block.PopActors();
             }
+
+            Vector2 screenCenter = SceneAs<Level>().Camera.Position + new Vector2((GameplayBuffers.Gameplay?.Width ?? 320) / 2f, (GameplayBuffers.Gameplay?.Height ?? 180) / 2f);
+            soundList.Sort((a, b) => (int)(Vector2.DistanceSquared(screenCenter, a.Center) - Vector2.DistanceSquared(screenCenter, b.Center)));
+
+            float volume = 1f;
+
+            foreach (PopBlock block in soundList)
+            {
+                block.PlaySound(volume);
+                volume *= 0.4f;
+            }
+
+            soundList.Clear();
         }
 
         public static PopBlockManager GetManager(Level level)
@@ -67,6 +84,10 @@ public class PopBlock : Solid
         public void QueuePop(PopBlock block)
         {
             popQueue.Enqueue(block);
+        }
+        public void AddSound(PopBlock block)
+        {
+            soundList.Add(block);
         }
     }
 
@@ -86,6 +107,7 @@ public class PopBlock : Solid
     public bool Toggle = false;
     private Color color;
     private Color disabledColor;
+    private Color disabledColor2;
     private Color staticMoverColor;
     private Color staticMoverDisabledColor;
     public Color HighlightColor => Collidable ? new(0.35f, 0.3f, 0.25f, 0f) : new(0.1f, 0.12f, 0.14f, 0f);
@@ -109,6 +131,7 @@ public class PopBlock : Solid
     public List<Image> HighlightAlt = [];
 
     private float facingPercent;
+    private readonly SoundSource sfx = new();
 
     public PopBlock(EntityData data, Vector2 offset) : base(data.Position, data.Width, data.Height, false)
     {
@@ -121,12 +144,17 @@ public class PopBlock : Solid
         PressedTexture = GFX.Game["objects/FemtoHelper/PopBlock/pressed"];
 
         Color darkTint = Calc.HexToColor("667DA5");
+        Color darkerTint = Calc.HexToColor("324E69");
 
         color = data.HexColor("color", Color.RosyBrown);
         disabledColor = data.HexColor("disabledColor", new((color.R / 255f) * darkTint.R / 255f, (color.G / 255f) * darkTint.G / 255f, (color.B / 255f) * darkTint.B / 255f, (color.A / 255f) * darkTint.A / 255f));
+        disabledColor2 = data.HexColor("disabledColor2", new((color.R / 255f) * darkerTint.R / 255f, (color.G / 255f) * darkerTint.G / 255f, (color.B / 255f) * darkerTint.B / 255f, (color.A / 255f) * darkerTint.A / 255f));
 
         staticMoverColor = data.HexColor("staticMoverColor", color);
         staticMoverDisabledColor = data.HexColor("staticMoverDisabledColor", disabledColor);
+
+        sfx.Position = new Vector2(base.Width, base.Height) / 2f;
+        Add(sfx);
     }
 
     public void AddTile(float x, float y, int tx, int ty)
@@ -171,10 +199,7 @@ public class PopBlock : Solid
                 Highlight.Add(image);
                 break;
         }
-
-
     }
-
     public Image GetImage(float x, float y, int tx, int ty, MTexture tex)
     {
         Vector2 vector = new(x - X, y - Y);
@@ -191,7 +216,6 @@ public class PopBlock : Solid
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        scene.Add(side = new Side(this, disabledColor));
     }
 
     public override void Removed(Scene scene)
@@ -203,6 +227,7 @@ public class PopBlock : Solid
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
+        scene.Add(side = new Side(this));
 
         foreach (StaticMover staticMover in staticMovers)
         {
@@ -441,7 +466,7 @@ public class PopBlock : Solid
         {
             return;
         }
-        Vector2 scale = new Vector2(1f + wiggler.Value * 0.05f * wigglerScaler.X, 1f + wiggler.Value * 0.15f * wigglerScaler.Y);
+        Vector2 scale = new Vector2(1f + wiggler.Value * 0.025f * wigglerScaler.X, 1f + wiggler.Value * 0.075f * wigglerScaler.Y);
         foreach (PopBlock blocks in group)
         {
             foreach (Image item4 in blocks.All)
@@ -477,6 +502,8 @@ public class PopBlock : Solid
 
             Toggle = !Toggle;
 
+            if (groupLeader) PopBlockManager.GetManager(Scene as Level).AddSound(this);
+
             if (Toggle)
             {
                 wiggler.Start();
@@ -506,6 +533,12 @@ public class PopBlock : Solid
         }
     }
 
+    public void PlaySound(float volume)
+    {
+        sfx.Play(Toggle ? "event:/FemtoHelper/pop_block_switch_2" : "event:/FemtoHelper/pop_block_switch_1");
+        sfx.instance.setVolume(volume * 2f);
+    }
+
     public override void Update()
     {
         if (Popping)
@@ -525,13 +558,11 @@ public class PopBlock : Solid
 
     public override void MoveHExact(int move)
     {
-        LiftSpeed.X = 0;
         base.MoveHExact(move);
     }
 
     public override void MoveVExact(int move)
     {
-        LiftSpeed.Y = -90;
         base.MoveVExact(move);
     }
 

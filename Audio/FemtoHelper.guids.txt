@@ -209,6 +209,7 @@
 {4fa4d508-b807-4840-bea5-060e4e50c27a} event:/FemtoHelper/blockreward
 {c8f24441-2b04-4c1d-9df8-dc12566c929f} event:/FemtoHelper/blockswitch
 {1b556f6b-2abd-4740-8313-3279024850d3} event:/FemtoHelper/boss_spikes_burst_quiet
+{13ae57f0-a6d1-4428-b910-1cf3c449873c} event:/FemtoHelper/clock
 {38942b13-bfd2-4c2f-a647-2d84f9f99137} event:/FemtoHelper/contraption_angry
 {66915e4a-c8e9-4b3c-9187-b66cda59a4ec} event:/FemtoHelper/contraption_hit
 {22b1432d-f1ab-49de-8479-90b3c116978f} event:/FemtoHelper/contraption_idle
@@ -234,7 +235,8 @@
 {193bd06f-83ff-4122-8a88-e5d3d1e0aa76} event:/FemtoHelper/water_fallblock_first_shake
 {07f56f1e-2d37-4dc9-b9f0-0f16038d48fe} event:/FemtoHelper/water_zip_mover
 {ad791c49-9640-41e6-8201-269dcb2c67b7} event:/FemtoHelper/water_zip_mover_permanent
-{13ae57f0-a6d1-4428-b910-1cf3c449873c} event:/FemtoHelper/clock
+{856e8066-bb3a-4a19-8182-7f39fc5156cc} event:/FemtoHelper/pop_block_switch_1
+{b46d9d4a-2844-4479-9093-e6ba893e05e0} event:/FemtoHelper/pop_block_switch_2
 {3f2d088f-f438-42c1-b9e9-6e6a44203865} event:/game/00_prologue/bridge_rumble_loop
 {fb47d655-bc4f-4361-b4a2-d19e30518d24} event:/game/00_prologue/bridge_support_break
 {319ecd12-335d-44ff-94ca-07fe499d4a87} event:/game/00_prologue/car_down
@@ -559,6 +561,11 @@
 {b0ea1896-f938-41db-8dc4-c78e577fcebf} event:/modded/sunset_breeze/torch_loop
 {f0344f21-4298-4892-94e7-1db894324e91} event:/modded/sunset_ceiling/scenario
 {b1501e61-b816-4695-ae8d-43a6be51edf9} event:/modded/sunset_decmap/second
+{c3acaffa-1075-4c08-a064-67528106dc83} event:/modded/sunset_doggy/land
+{942c23cc-b02b-43e7-aeee-e7b94b0b3853} event:/modded/sunset_doggy/pant
+{b90d7574-768f-4bbb-93b0-8058e8e3fb7e} event:/modded/sunset_doggy/shockwave
+{f661ee60-1a4b-468d-9291-3b5112825671} event:/modded/sunset_doggy/sidehit
+{3544221a-4165-42f2-bbd9-3b95bfaa8b0c} event:/modded/sunset_doggy/woof
 {bfbb0ffb-c48d-4a07-a5f0-8552e85243d2} event:/modded/sunset_dream/door
 {55b9db56-09f6-4777-93be-b4931d8b2f10} event:/modded/sunset_dream/wakeup
 {b380fdff-fdc0-4732-bee5-8eeed1745b7e} event:/modded/sunset_eek/spark
@@ -589,9 +596,9 @@
 {296a3329-4cb3-4f97-9115-778e5dcaaacc} event:/modded/sunset_plasma/cursed
 {fb1c2073-951d-4d50-a264-de284f59e429} event:/modded/sunset_plasma/glass_ocean
 {65e8a31c-52cb-4ec8-bcc4-618bd526c17b} event:/modded/sunset_plasma/mucus_b
+{23c7a77e-ebff-46ac-b8b2-d814a385e34b} event:/modded/sunset_plasma/ripple
 {08d65329-60ab-4870-b5b9-c767d941b3f2} event:/modded/sunset_plasma/somersault
 {48730d47-2901-4581-825e-5c7baf984abc} event:/modded/sunset_plasma/triple_helix
-{23c7a77e-ebff-46ac-b8b2-d814a385e34b} event:/modded/sunset_plasma/ripple
 {7a87c25d-6030-4eb6-918f-1b41cee026e5} event:/modded/sunset_roadtrip/morph
 {d6b997bb-3c41-473e-a5f7-0c474220db27} event:/modded/sunset_roadtrip/speech
 {5346edf1-65eb-4c48-be4a-26da54c08bf4} event:/modded/sunset_roadtrip/wilhelmscream
@@ -1137,7 +1144,6 @@
 {5250645b-a9a5-4bb2-b7ca-fbd2ea4ea95a} bank:/AlbertHelper_alice
 {d8c01f23-822d-40e8-a768-2368351b3424} bank:/alicezucchini_berriesmap
 {42204847-3c19-44e2-b849-9e582bb2f2d5} bank:/blu_foam
-{77c22e6f-3e80-46b5-8631-65357db3ee67} bank:/blu_foam_bluesic
 {b372a2c5-e9e9-4981-aaf6-fe7562136c62} bank:/NyanSunsetFusion
 {9df26869-f7cd-4bd0-92b6-bd66f7a8919c} bank:/PlutoniumHelper
 {bc3a1896-e7c1-42fb-a470-4a55505be60b} bank:/SoundBlastHelper
@@ -1148,6 +1154,7 @@
 {b73d214e-03ee-4047-b6b3-24fa523bf847} bank:/sunset_breeze
 {e2ced9b2-fab1-4560-b737-3e137ed73123} bank:/sunset_ceiling
 {8c5d0a35-73aa-4b6b-a171-f9f1fa623b9f} bank:/sunset_decmap
+{65de5acd-e921-49c9-93e9-0146fbb4c092} bank:/sunset_doggy
 {fabfb3bf-b5f7-4d41-9306-dc079b5f21db} bank:/sunset_dream
 {b0652f27-f334-416a-8131-37f760c64a28} bank:/sunset_eek
 {06a4e717-adff-47b2-91cd-ebc2b710194d} bank:/sunset_febmap
