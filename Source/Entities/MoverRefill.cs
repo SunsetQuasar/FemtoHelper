@@ -260,7 +260,7 @@ public class MoverRefill : CustomRefill
         private float respawnClock = 0f;
         public Mover(float dur, Vector2 start, Vector2 end) : base()
         {
-            Depth = -1;
+            Depth = -42;
             Position = start;
             MoveDuration = dur;
             Move = end - start;
