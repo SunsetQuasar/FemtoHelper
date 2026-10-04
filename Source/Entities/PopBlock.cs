@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using static Celeste.Mod.FemtoHelper.Entities.EntityKillZone;
 
@@ -112,6 +113,8 @@ public class PopBlock : Solid
     private Color staticMoverDisabledColor;
     public Color HighlightColor => Collidable ? new(0.35f, 0.3f, 0.25f, 0f) : new(0.1f, 0.12f, 0.14f, 0f);
 
+    public bool RefillDash;
+
     private List<PopBlock> group;
     private bool groupLeader;
     private Vector2 groupOrigin;
@@ -152,6 +155,8 @@ public class PopBlock : Solid
 
         staticMoverColor = data.HexColor("staticMoverColor", color);
         staticMoverDisabledColor = data.HexColor("staticMoverDisabledColor", disabledColor);
+
+        RefillDash = data.Bool("refillDash");
 
         sfx.Position = new Vector2(base.Width, base.Height) / 2f;
         Add(sfx);
@@ -581,6 +586,8 @@ public class PopBlock : Solid
 
     public void MoveActorRecursive(Player player, Actor actor, int iter)
     {
+        Vector2 prevPos = actor.Position;
+
         if (actor.Get<Holdable>() is { IsHeld: true }) return;
 
         bool prev = Collidable;
@@ -623,10 +630,12 @@ public class PopBlock : Solid
         }
         Collidable = prev;
 
+        bool flag = false;
         foreach (Solid solid in Scene.Tracker.GetEntities<Solid>())
         {
             if (solid.CollideCheck(player))
             {
+                flag = true;
                 Debug(iter);
                 if (solid == this || iter > MaxIterations || solid is not PopBlock { Popping: true, Toggle: true } popblock)
                 {
@@ -647,6 +656,16 @@ public class PopBlock : Solid
                     popblock.MoveActorRecursive(player, actor, iter + 1);
                 }
             }
+        }
+        if (actor is Player p2 && !flag && RefillDash)
+        {
+            Audio.Play("event:/game/general/diamond_touch", p2.Center);
+            Celeste.Freeze(0.05f);
+            p2.RefillDash();
+            float speed_angle = (p2.Position - prevPos).Angle();
+            (Scene as Level).ParticlesFG.Emit(Refill.P_Shatter, 5, p2.Position, Vector2.One * 4f, speed_angle - MathF.PI / 2f);
+            (Scene as Level).ParticlesFG.Emit(Refill.P_Shatter, 5, p2.Position, Vector2.One * 4f, speed_angle + MathF.PI / 2f);
+            SlashFx.Burst(p2.Position, speed_angle);
         }
     }
 
