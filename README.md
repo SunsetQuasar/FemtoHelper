@@ -1,4 +1,4 @@
-# Femto Helper
+# FemtoHelper
 
 **Femto Helper** is a Helper mod for Celeste, created by sunsetquasar.
 
