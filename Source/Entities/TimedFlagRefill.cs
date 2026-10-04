@@ -21,7 +21,7 @@ public class BooleanGem : CustomRefill
     private readonly ParticleType pGlow;
 
     public BooleanGem(EntityData data, Vector2 offset)
-        : base(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"))
+        : base(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"), "")
     {
         Color[] cols = [.. data.Attr("particleColors", "d3edff,94a5ef,a5c3ff,6c74dd")
                       .Split(',')

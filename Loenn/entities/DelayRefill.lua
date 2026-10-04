@@ -29,6 +29,7 @@ FemtoHelperDelayRefill.placements = {
             visualOffsetX = 0,
             visualOffsetY = 0,
             delay = 1.2,
+            pulseFlag = ""
         }
     },
         {
@@ -40,6 +41,7 @@ FemtoHelperDelayRefill.placements = {
             visualOffsetX = 0,
             visualOffsetY = 0,
             delay = 1.2,
+            pulseFlag = ""
         }
     },
         {
@@ -51,6 +53,7 @@ FemtoHelperDelayRefill.placements = {
             visualOffsetX = 0,
             visualOffsetY = 0,
             delay = 1.2,
+            pulseFlag = ""
         }
     },
         {
@@ -62,6 +65,7 @@ FemtoHelperDelayRefill.placements = {
             visualOffsetX = 0,
             visualOffsetY = 0,
             delay = 1.2,
+            pulseFlag = ""
         }
     },
 }

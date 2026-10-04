@@ -25,7 +25,8 @@ public class CustomRefill : Refill
     public string AudioPath = "event:/game/general/";
     public string TwoDashAudioPath = "event:/new_content/game/10_farewell/";
     public Vector2 VisualOffset = Vector2.Zero;
-    public CustomRefill(Vector2 position, bool fixedDashes, bool oneUse) : base(position, fixedDashes, oneUse)
+    public string PulseFlag;
+    public CustomRefill(Vector2 position, bool fixedDashes, bool oneUse, string pulseFlag) : base(position, fixedDashes, oneUse)
     {
         //replace the vanilla PlayerCollider
         Get<PlayerCollider>()?.RemoveSelf();
@@ -36,6 +37,7 @@ public class CustomRefill : Refill
         RefillStamina = true;
         RespawnTime = 2.5f;
         AlwaysUse = false;
+        PulseFlag = pulseFlag;
     }
 
     public bool DefaultCollectLogic(Player player)
@@ -142,6 +144,17 @@ public class CustomRefill : Refill
             foreach(StepMover.StepMoverTrigger trigger in Components.GetAll<StepMover.StepMoverTrigger>())
             {
                 trigger.Trigger();
+            }
+            if (!string.IsNullOrWhiteSpace(PulseFlag))
+            {
+                (Scene as Level).Session.SetFlag(PulseFlag, true);
+                Entity helper = [];
+                Alarm.Set(helper, 0f, () =>
+                {
+                    (helper.Scene as Level).Session.SetFlag(PulseFlag, false);
+                    helper.RemoveSelf();
+                });
+                Scene.Add(helper);
             }
             onCollect?.Invoke(player);
             Audio.Play(twoDashes ? $"{TwoDashAudioPath}pinkdiamond_touch" : $"{AudioPath}diamond_touch", Position);

@@ -8,6 +8,7 @@ FemtoHelperRotateDashRefill.placements = {
     {
         name = "rotate_refill",
         data = {
+            respawnTime = 2.5,
             oneUse = false,
             scalar = 1.5,
             texture = "objects/FemtoHelper/rotateRefillCCW/",
@@ -15,7 +16,8 @@ FemtoHelperRotateDashRefill.placements = {
             particleColors = "ae99db,6f66d1,daa7e6,856fe3",
             angle = 90,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     },
 }

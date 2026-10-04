@@ -37,7 +37,7 @@ public class AvertRefill : CustomRefill
 
 
     public AvertRefill(Vector2 position, EntityData data)
-        : base(position, false, data.Bool("oneUse", false))
+        : base(position, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         direction = data.Enum("direction", Directions.Up);
 

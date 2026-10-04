@@ -7,10 +7,11 @@ public class BuriedRefill : CustomRefill
     public bool hasAppeared = false; // player got the fuck out of the way
 
     public BuriedRefill(EntityData data, Vector2 offset)
-        : base(data.Position + offset, data.Bool("twoDash", false), data.Bool("oneUse", false))
+        : base(data.Position + offset, data.Bool("twoDash", false), data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
 
         RespawnTime = data.Float("respawnTime", 2.5f);
+        VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
 
         this.SetCollectLogic((player) => hasAppeared && player.UseRefill(twoDashes));
 

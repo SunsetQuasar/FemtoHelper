@@ -21,7 +21,8 @@ FemtoHelperUpendRefill.placements = {
             type = "Horizontal",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     },
     {
@@ -31,7 +32,8 @@ FemtoHelperUpendRefill.placements = {
             type = "Vertical",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     },
 }

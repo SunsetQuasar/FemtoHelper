@@ -71,7 +71,7 @@ public class LimitRefill : CustomRefill
     private readonly Directions direction;
 
     public LimitRefill(Vector2 position, EntityData data)
-        : base(position, false, data.Bool("oneUse", false))
+        : base(position, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         direction = data.Enum("direction", Directions.Up);
         this.SetTexture("objects/FemtoHelper/limitRefill/" + direction switch

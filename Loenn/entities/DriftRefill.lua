@@ -12,6 +12,7 @@ FemtoHelperDriftRefill.placements = {
             respawnTime = 2.5,
             visualOffsetX = 0,
             visualOffsetY = 0,
+            pulseFlag = ""
         }
     },
 }

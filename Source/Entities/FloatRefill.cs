@@ -28,7 +28,7 @@ public class FloatRefill : CustomRefill
     private static ParticleType _pRegen;
     private static ParticleType _pGlow;
 
-    public FloatRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
+    public FloatRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         RefillDash = false;
         RefillStamina = true;

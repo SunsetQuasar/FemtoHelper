@@ -23,7 +23,8 @@ FemtoHelperAvertRefill.placements = {
             direction = "Up",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     },
         {
@@ -33,7 +34,8 @@ FemtoHelperAvertRefill.placements = {
             direction = "Down",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     },
         {
@@ -43,7 +45,8 @@ FemtoHelperAvertRefill.placements = {
             direction = "Left",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     },
         {
@@ -53,7 +56,8 @@ FemtoHelperAvertRefill.placements = {
             direction = "Right",
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     },
 }

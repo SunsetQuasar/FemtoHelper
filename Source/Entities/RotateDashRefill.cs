@@ -118,7 +118,7 @@ public class RotateDashRefill : CustomRefill
 
     public readonly Color[] EffectColors;
 
-    public RotateDashRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
+    public RotateDashRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         pShatter = new ParticleType(P_Shatter);
         pRegen = new ParticleType(P_Regen);
@@ -143,6 +143,7 @@ public class RotateDashRefill : CustomRefill
             .SetCollectLogic(CollectCheck)
             .SetOnCollect(OnCollect);
 
+        RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
     }
 

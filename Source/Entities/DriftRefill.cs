@@ -71,7 +71,7 @@ public class DriftRefill : CustomRefill
     private static ParticleType _pGlow;
 
     public DriftRefill(EntityData data, Vector2 offset)
-       : base(data.Position + offset, false, data.Bool("oneUse", false))
+       : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         this.SetTexture("objects/FemtoHelper/holdRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)

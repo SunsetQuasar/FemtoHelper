@@ -22,7 +22,7 @@ public class SparkRefill : CustomRefill
     private static ParticleType _pGlow;
 
     public SparkRefill(Vector2 position, EntityData data)
-        : base(position, false, data.Bool("oneUse", false))
+        : base(position, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         this.SetTexture("objects/FemtoHelper/sparkRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)

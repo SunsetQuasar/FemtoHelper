@@ -55,7 +55,7 @@ public class DelayRefill : CustomRefill
     public float delay;
     ClockDisplay clock;
 
-    public DelayRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
+    public DelayRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         AlwaysUse = true;
         RefillDash = RefillStamina = false;

@@ -39,7 +39,7 @@ public class BlinkRefill : CustomRefill
     private readonly List<(Type, string)> uncollidableTypesAndSIDs;
     private readonly bool strict;
 
-    public BlinkRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
+    public BlinkRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         inactiveTypesAndSIDs = [.. data.String("inactiveTypes", "crumbleBlock")
             .Split(',')

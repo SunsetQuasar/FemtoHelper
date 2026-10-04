@@ -14,7 +14,7 @@ public class PopRefill : CustomRefill
     public float SpawnTime = 2.5f;
     
     public PopRefill(EntityData data, Vector2 offset)
-        : base(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"))
+        : base(data.Position + offset, data.Bool("twoDash"), data.Bool("oneUse"), data.String("pulseFlag", ""))
     {
         RespawnTime = data.Float("respawnTime", 2.5f);
         SpawnTime = data.Float("spawnTime", 2.5f);

@@ -14,7 +14,8 @@ FemtoHelperPopRefill.placements = {
             spawnTime = 2.5,
             respawnTimer = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     },
     {
@@ -25,7 +26,8 @@ FemtoHelperPopRefill.placements = {
             spawnTime = 2.5,
             respawnTimer = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     }
 }

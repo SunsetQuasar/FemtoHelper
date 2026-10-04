@@ -22,7 +22,7 @@ public class MinusRefill : CustomRefill
     };
 
     public MinusRefill(Vector2 position, EntityData data)
-        : base(position, false, data.Bool("oneUse", false))
+        : base(position, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         this.SetTexture("objects/FemtoHelper/minusRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)

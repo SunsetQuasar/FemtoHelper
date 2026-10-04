@@ -30,7 +30,7 @@ public class AirRefill : CustomRefill
         }
     }
 
-    public AirRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
+    public AirRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         RefillDash = RefillStamina = AlwaysUse = true;
 

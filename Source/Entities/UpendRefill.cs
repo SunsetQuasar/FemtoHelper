@@ -30,7 +30,7 @@ public class UpendRefill : CustomRefill
     private readonly Types type;
 
     public UpendRefill(Vector2 position, EntityData data)
-        : base(position, false, data.Bool("oneUse", false))
+        : base(position, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         type = data.Enum("type", Types.Horizontal);
         

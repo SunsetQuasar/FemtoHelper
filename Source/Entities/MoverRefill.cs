@@ -95,7 +95,7 @@ public class MoverRefill : CustomRefill
 
     public readonly float MoveDuration = 0.5f;
 
-    public MoverRefill(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset, false, data.Bool("oneUse", false))
+    public MoverRefill(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         ID = id;
         flagName = $"mover_refill_{id.Key}";

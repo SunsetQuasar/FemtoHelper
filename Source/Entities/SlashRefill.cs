@@ -36,7 +36,7 @@ public class SlashRefill : CustomRefill
 
     private readonly bool strict;
 
-    public SlashRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false))
+    public SlashRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
 
         targetTypesAndSIDs = [.. data.String("brittleTypes", "refill,FemtoHelper/MinusRefill,crumbleBlock")

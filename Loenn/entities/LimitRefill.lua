@@ -32,7 +32,8 @@ for k, v in ipairs(FemtoHelperLimitRefill.fieldInformation.direction.options) do
             direction = v,
             respawnTime = 2.5,
             visualOffsetX = 0,
-            visualOffsetY = 0
+            visualOffsetY = 0,
+            pulseFlag = ""
         }
     }
     table.insert(FemtoHelperLimitRefill.placements, placement)
