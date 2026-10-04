@@ -10,6 +10,43 @@ FemtoHelperStepMover.depth = 7000
 FemtoHelperStepMover.nodeLimits = {2, 3}
 FemtoHelperStepMover.nodeVisibility = "never"
 FemtoHelperStepMover.warnBelowSize = {16, 16}
+FemtoHelperStepMover.fieldInformation = {
+    iconCountX = {
+      fieldType = "integer"
+    },
+    iconCountY = {
+      fieldType = "integer"
+    },
+    iconSpacingX = {
+      fieldType = "integer"
+    },
+    iconSpacingY = {
+      fieldType = "integer"
+    },
+
+    icon = {
+        options = {
+            "objects/FemtoHelper/StepMover/bubbletarget",
+            "objects/FemtoHelper/StepMover/crumblebouncetarget",
+            "objects/FemtoHelper/StepMover/crumbletarget",
+            "objects/FemtoHelper/StepMover/refillairtarget",
+            "objects/FemtoHelper/StepMover/refillblinktarget",
+            "objects/FemtoHelper/StepMover/refillboundtarget",
+            "objects/FemtoHelper/StepMover/refillbumptarget",
+            "objects/FemtoHelper/StepMover/refillcrashtarget",
+            "objects/FemtoHelper/StepMover/refillholdtarget",
+            "objects/FemtoHelper/StepMover/refillminustarget",
+            "objects/FemtoHelper/StepMover/refillmovertarget",
+            "objects/FemtoHelper/StepMover/refillmovertarget_b",
+            "objects/FemtoHelper/StepMover/refilltarget",
+            "objects/FemtoHelper/StepMover/refilltwotarget",
+            "objects/FemtoHelper/StepMover/targetnumberA",
+            "objects/FemtoHelper/StepMover/targetnumberB",
+            "objects/FemtoHelper/StepMover/targetnumberC",
+        },
+        editable = true
+    },
+}
 FemtoHelperStepMover.placements = {
     {
         name = "step_mover",
@@ -17,7 +54,7 @@ FemtoHelperStepMover.placements = {
             moveTime = 0.5,
             height = 16,
             targetBoxWidth = 16,
-            icon = "objects/FemtoHelper/StepMover/crumbletarget",
+            icon = "objects/FemtoHelper/StepMover/refilltarget",
             iconCountX = 1,
             iconCountY = 1,
             iconSpacingX = 8,

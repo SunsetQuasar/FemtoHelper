@@ -41,7 +41,7 @@ public class PopBlock : Solid
     public class PopBlockManager : Entity
     {
         Queue<PopBlock> popQueue = [];
-        List<PopBlock> soundList = [];
+        List<(PopBlock, bool)> soundList = [];
         public PopBlockManager() : base()
         {
             //right before player
@@ -58,13 +58,13 @@ public class PopBlock : Solid
             }
 
             Vector2 screenCenter = SceneAs<Level>().Camera.Position + new Vector2((GameplayBuffers.Gameplay?.Width ?? 320) / 2f, (GameplayBuffers.Gameplay?.Height ?? 180) / 2f);
-            soundList.Sort((a, b) => (int)(Vector2.DistanceSquared(screenCenter, a.Center) - Vector2.DistanceSquared(screenCenter, b.Center)));
+            soundList.Sort((a, b) => (int)(Vector2.DistanceSquared(screenCenter, a.Item1.Center) - Vector2.DistanceSquared(screenCenter, b.Item1.Center)));
 
             float volume = 1f;
 
-            foreach (PopBlock block in soundList)
+            foreach (var (block, up) in soundList)
             {
-                block.PlaySound(volume);
+                block.PlaySound(volume, up);
                 volume *= 0.4f;
             }
 
@@ -86,9 +86,9 @@ public class PopBlock : Solid
         {
             popQueue.Enqueue(block);
         }
-        public void AddSound(PopBlock block)
+        public void AddSound(PopBlock block, bool up)
         {
-            soundList.Add(block);
+            soundList.Add((block, up));
         }
     }
 
@@ -134,7 +134,8 @@ public class PopBlock : Solid
     public List<Image> HighlightAlt = [];
 
     private float facingPercent;
-    private readonly SoundSource sfx = new();
+    private readonly SoundSource sfxUp = new();
+    private readonly SoundSource sfxDown = new();
 
     public PopBlock(EntityData data, Vector2 offset) : base(data.Position, data.Width, data.Height, false)
     {
@@ -158,8 +159,10 @@ public class PopBlock : Solid
 
         RefillDash = data.Bool("refillDash");
 
-        sfx.Position = new Vector2(base.Width, base.Height) / 2f;
-        Add(sfx);
+        sfxUp.Position = new Vector2(Width, Height) / 2f;
+        Add(sfxUp);
+        sfxDown.Position = new Vector2(Width, Height) / 2f;
+        Add(sfxDown);
     }
 
     public void AddTile(float x, float y, int tx, int ty)
@@ -279,7 +282,7 @@ public class PopBlock : Solid
             }
             groupOrigin = new Vector2((int)(boundsLeft + (boundsRight - boundsLeft) / 2f), (int)boundsBottom);
             wigglerScaler = new Vector2(Calc.ClampedMap(boundsRight - boundsLeft, 32f, 96f, 1f, 0.2f), Calc.ClampedMap(boundsBottom - boundsTop, 32f, 96f, 1f, 0.2f));
-            Add(wiggler = Wiggler.Create(Delay / 3f, 3f));
+            Add(wiggler = Wiggler.Create(Math.Min(Delay, 0.3f), 3f));
             foreach (PopBlock item2 in group)
             {
                 item2.wiggler = wiggler;
@@ -499,6 +502,11 @@ public class PopBlock : Solid
     {
         while (true)
         {
+            Alarm.Set(this, Delay / 2f, () =>
+            {
+                if (groupLeader) PopBlockManager.GetManager(Scene as Level).AddSound(this, false);
+            });
+
             yield return (Delay / 5f) * 4f;
 
             MoveV(Toggle ? 1f : -1f);
@@ -507,7 +515,7 @@ public class PopBlock : Solid
 
             Toggle = !Toggle;
 
-            if (groupLeader) PopBlockManager.GetManager(Scene as Level).AddSound(this);
+            if (groupLeader) PopBlockManager.GetManager(Scene as Level).AddSound(this, true);
 
             if (Toggle)
             {
@@ -538,10 +546,12 @@ public class PopBlock : Solid
         }
     }
 
-    public void PlaySound(float volume)
+    public void PlaySound(float volume, bool up)
     {
-        sfx.Play(Toggle ? "event:/FemtoHelper/pop_block_switch_2" : "event:/FemtoHelper/pop_block_switch_1");
-        sfx.instance.setVolume(volume * 2f);
+        var source = up ? sfxUp : sfxDown;
+
+        source.Play(up ? "event:/FemtoHelper/pop_block_switch_2" : "event:/FemtoHelper/pop_block_switch_1");
+        source.instance.setVolume(volume * 2f);
     }
 
     public override void Update()
@@ -636,7 +646,6 @@ public class PopBlock : Solid
             if (solid.CollideCheck(player))
             {
                 flag = true;
-                Debug(iter);
                 if (solid == this || iter > MaxIterations || solid is not PopBlock { Popping: true, Toggle: true } popblock)
                 {
                     if (actor is Player p)

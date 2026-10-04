@@ -107,6 +107,27 @@ entities.FemtoHelper/GDDashOrb.attributes.description.additive=Whether the orb s
 entities.FemtoHelper/WaterfallBlocker.placements.name.default=Waterfall Blocker
 entities.FemtoHelper/WaterfallBlocker.placements.description.default=Invisible entity that blocks waterfalls.
 
+# Pop Block
+entities.FemtoHelper/PopBlock.placements.name.PopBlock=Pop Block
+entities.FemtoHelper/PopBlock.placements.description.PopBlock=Cycles like a cassette block, instantly pushes the player and any other actor inside it in some direction.
+entities.FemtoHelper/PopBlock.placements.name.PopBlockRefill=Pop Block (Refill Dash)
+entities.FemtoHelper/PopBlock.placements.description.PopBlockRefill=Cycles like a cassette block, instantly pushes the player and any other actor inside it in some direction.\nRefills dashes.
+
+entities.FemtoHelper/PopBlock.attributes.description.staticMoverColor=The color of any attached entities while the block is active.
+entities.FemtoHelper/PopBlock.attributes.description.staticMoverDisabledColor=The color of any attached entities while the block is inactive.
+entities.FemtoHelper/PopBlock.attributes.description.pushMode=The direction actors are pushed in.\nFacing and OppositeFacing depend on the player's facing direction,\nregardless of which entity is being pushed.\nBlocks with distinct push modes do not connect.
+entities.FemtoHelper/PopBlock.attributes.description.color=The color of the block.
+
+entities.FemtoHelper/PopBlock.attributes.name.disabledColor=Side Color
+entities.FemtoHelper/PopBlock.attributes.description.disabledColor=The color of the block's side.
+
+entities.FemtoHelper/PopBlock.attributes.name.disabledColor2=Side Edge Color
+entities.FemtoHelper/PopBlock.attributes.description.disabledColor2=The color of the block's side, at the left and right edges.
+
+entities.FemtoHelper/PopBlock.attributes.description.delay=The duration (in seconds) of a full cycle.\nBlocks with distinct cycle lengths do not connect.
+entities.FemtoHelper/PopBlock.attributes.description.refillDash=Refills the player's dash when they are pushed.
+entities.FemtoHelper/PopBlock.attributes.description.path=The path to the block's textures.\nShould be the path to a folder containing two files: 'solid.png' and 'pressed.png'.
+
 # Pop Refill
 entities.FemtoHelper/PopRefill.placements.name.PopRefill=Pop Refill
 entities.FemtoHelper/PopRefill.placements.description.PopRefill=Refill that spawns some time only after being touched.
@@ -262,6 +283,22 @@ entities.FemtoHelper/SlashRefill.attributes.description.oneUse=Whether the refil
 entities.FemtoHelper/SlashRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
 entities.FemtoHelper/SlashRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/SlashRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+
+# Step Mover
+entities.FemtoHelper/StepMover.placements.name.step_mover=Step Mover
+entities.FemtoHelper/StepMover.placements.description.step_mover=Moves entities from the target node to the destination node upon interaction with the blue area.\nCan be chained by moving other Step Movers' interaction areas.
+
+entities.FemtoHelper/StepMover.attributes.description.linkActivationTo=Entity SIDs (placement names) to attach activation to.\nActivation occurs when a linked solid is stood on, a linked refill collected, otherwise a linked entity is touched.\nIf no entities are found or this field is empty, a default hitbox will be used instead.
+entities.FemtoHelper/StepMover.attributes.description.iconCountX=The amount of destination icons to show horizontally.
+entities.FemtoHelper/StepMover.attributes.description.targetBoxWidth=The width of the target box, in pixels.
+entities.FemtoHelper/StepMover.attributes.description.strictWhitelist=Only match entities whose SIDs are included the lists, rather than any entity that is tracked under the listed SIDs.
+entities.FemtoHelper/StepMover.attributes.description.types=Entity SIDs (placement names) to target.
+entities.FemtoHelper/StepMover.attributes.description.targetBoxHeight=The height of the target box, in pixels.
+entities.FemtoHelper/StepMover.attributes.description.moveTime=How long it takes for the targeted entities to move to the destination.
+entities.FemtoHelper/StepMover.attributes.description.iconCountY=The amount of destination icons to show vertically.
+entities.FemtoHelper/StepMover.attributes.description.iconSpacingX=Distance in pixels between horizontal icon repetitions.
+entities.FemtoHelper/StepMover.attributes.description.iconSpacingY=Distance in pixels between vertical icon repetitions.
+entities.FemtoHelper/StepMover.attributes.description.icon=The icon's texture path.
 
 # Timed Flag Refill
 entities.FemtoHelper/TimedFlagRefill.placements.name.boolean=Timed Flag Refill
