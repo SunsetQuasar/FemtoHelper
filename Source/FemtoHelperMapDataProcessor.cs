@@ -39,9 +39,10 @@ internal class FemtoHelperMapDataProcessor : EverestMapDataProcessor
 
     public override void End()
     {
-        ///Verbose("MapDataProcessor End");
+        //Verbose("MapDataProcessor End");
     }
-
+    // this explodes, let's chill for a while
+    /*
     [OnLoad]
     public static void Load()
     {
@@ -51,6 +52,7 @@ internal class FemtoHelperMapDataProcessor : EverestMapDataProcessor
     private static void Level_Begin(On.Celeste.Level.orig_Begin orig, Level self)
     {
         orig(self);
+
         string SID = self.Session.Area.SID;
         if (hookRelevantSIDs.TryGetValue(SID, out var elements))
         {
@@ -74,4 +76,5 @@ internal class FemtoHelperMapDataProcessor : EverestMapDataProcessor
     {
         On.Celeste.Level.Begin -= Level_Begin;
     }
+    */
 }
