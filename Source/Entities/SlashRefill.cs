@@ -162,7 +162,11 @@ public class SlashRefill : CustomRefill
             cursor.EmitLdloc1(); // num
             cursor.EmitLdloc2(); // num2
             cursor.EmitDelegate(InjectBrittleCheckH); // return whether to immediately return true from the MoveHExact method
-            cursor.EmitBrfalse(skip_ret);
+            // cursor.EmitBrfalse(skip_ret);
+            // do this instead of brfalse for Jungle Helper reasons (it's technically not necessary)
+            cursor.EmitLdcI4(0);
+            cursor.EmitBeq(skip_ret);
+
             cursor.EmitLdcI4(1);
             cursor.EmitRet();
             cursor.MarkLabel(skip_ret);
@@ -293,8 +297,6 @@ public class SlashRefill : CustomRefill
         // jump where 0.3 or 0.15f are loaded (those are dash times)
         while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.3f) || instr.MatchLdcR4(0.15f)))
         {
-            Logger.Log("ExtendedVariantMode/DashLength", $"Applying dash length to constant at {cursor.Index} in CIL code for {cursor.Method.FullName}");
-
             cursor.EmitLdloc1();
             cursor.EmitDelegate(DetermineDashLengthFactor);
             cursor.Emit(OpCodes.Mul);
@@ -306,8 +308,6 @@ public class SlashRefill : CustomRefill
         // jump wherever dashTrailCounter is saved
         while (cursor.TryGotoNext(instr => instr.MatchStfld<Player>("dashTrailCounter")))
         {
-            Logger.Log("ExtendedVariantMode/DashLength", $"Modding dash trail counter at {cursor.Index} in CIL code for {cursor.Method.FullName}");
-
             cursor.EmitLdloc1();
             cursor.EmitDelegate(ApplyDashTrailCounter);
 

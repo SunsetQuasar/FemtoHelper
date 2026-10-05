@@ -41,14 +41,12 @@ internal class FemtoHelperMapDataProcessor : EverestMapDataProcessor
     {
         //Verbose("MapDataProcessor End");
     }
-    // this explodes, let's chill for a while
-    /*
+
     [OnLoad]
     public static void Load()
     {
         On.Celeste.Level.Begin += Level_Begin;
     }
-
     private static void Level_Begin(On.Celeste.Level.orig_Begin orig, Level self)
     {
         orig(self);
@@ -76,5 +74,4 @@ internal class FemtoHelperMapDataProcessor : EverestMapDataProcessor
     {
         On.Celeste.Level.Begin -= Level_Begin;
     }
-    */
 }

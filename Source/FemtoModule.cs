@@ -227,8 +227,7 @@ public class FemtoModule : EverestModule
         AssistHazardController.Load();
         PlutoniumTextRenderer.Load();
         // lazy loaded 
-        // nevermind!
-        MovementModifier.Load();
+        // MovementModifier.Load();
         MoveBlockIgnoreController.Load();
 
         LifecycleMethods.OnLoad();
@@ -261,8 +260,7 @@ public class FemtoModule : EverestModule
         AssistHazardController.Unload();
         PlutoniumTextRenderer.Unload();
         // lazy loaded
-        // nevermind!
-        MovementModifier.Unload();
+        // MovementModifier.Unload();
         MoveBlockIgnoreController.Unload();
 
         LifecycleMethods.OnUnload();
