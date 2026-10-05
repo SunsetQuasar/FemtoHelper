@@ -137,7 +137,7 @@ public class PopBlock : Solid
     private readonly SoundSource sfxUp = new();
     private readonly SoundSource sfxDown = new();
 
-    public PopBlock(EntityData data, Vector2 offset) : base(data.Position, data.Width, data.Height, false)
+    public PopBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
         Depth = 500;
         Add(new Coroutine(Routine()));

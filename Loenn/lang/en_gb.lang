@@ -597,7 +597,7 @@ entities.FemtoHelper/SessionHeart.attributes.description.quickSmash=Skips the co
 entities.FemtoHelper/SessionHeart.attributes.description.quickSmashSfx=The sound effect that plays when the heart is collected and Quick Smash is set.
 
 # Session Heart Gate
-entities.FemtoHelper/SessionHeartGate.placements.name.default=Session Heart Gate
+entities.FemtoHelper/SessionHeartGate.placements.name.door=Session Heart Gate
 entities.FemtoHelper/SessionHeartGate.placements.name.alias=Session Heart Door
 entities.FemtoHelper/SessionHeartGate.placements.description.default=A customizable Heart Gate for Session Hearts.
 entities.FemtoHelper/SessionHeartGate.attributes.description.requires=The number of Session Hearts required to open this gate.
