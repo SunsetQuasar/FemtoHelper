@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.FemtoHelper.Entities;
 using Celeste.Mod.Helpers;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -460,5 +461,26 @@ public static class EntityDataExtensions
         }
 
         return defaultValue;
+    }
+}
+
+public static class MTextureExtensions
+{
+    public static void DrawOnlyOutlineCentered(this MTexture self, Vector2 position, Color color, Vector2 scale)
+    {
+        float scaleFix = self.ScaleFix;
+        scale *= scaleFix;
+        Rectangle clipRect = self.ClipRect;
+        Vector2 origin = (self.Center - self.DrawOffset) / scaleFix;
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (i != 0 || j != 0)
+                {
+                    Draw.SpriteBatch.Draw(self.Texture.Texture_Safe, position + new Vector2(i, j), clipRect, color, 0f, origin, scale, SpriteEffects.None, 0f);
+                }
+            }
+        }
     }
 }

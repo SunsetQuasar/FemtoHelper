@@ -348,6 +348,10 @@ entities.FemtoHelper/BuriedRefill.placements.description.visualOffsetX=Applies a
 entities.FemtoHelper/BuriedRefill.placements.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/BuriedRefill.placements.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
 
+# Mucus Strand
+entities.FemtoHelper/MucusStrand.placements.name.mucus=Mucus Strand
+entities.FemtoHelper/MucusStrand.placements.description.mucus=From The Mucus Flow. Kills the player unless dashed through.
+
 # Directional Sprites Line
 entities.FemtoHelper/DirectionalLine.placements.name.default=Directional Sprites Line
 entities.FemtoHelper/DirectionalLine.placements.description.default=Displays a line of sprites moving from its position to its node.
