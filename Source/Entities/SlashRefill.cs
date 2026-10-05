@@ -138,9 +138,14 @@ public class SlashRefill : CustomRefill
     //shamelessly stolen from extended variant mode
     private static ILHook dashCoroutineHook;
 
-    [OnLoad]
+    private static bool _hooksLoaded = false;
+
+    //[OnLoad]
     public static void LoadHooks()
     {
+        if (_hooksLoaded) return;
+        _hooksLoaded = true;
+        Info("Loading SlashRefill hooks");
         //On.Celeste.Player.DashBegin += modDashBegin; //i already hook it
 
         MethodInfo dashCoroutine = typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget();
@@ -331,9 +336,13 @@ public class SlashRefill : CustomRefill
         return dashTrailCounter;
     }
 
-    [OnUnload]
+    //[OnUnload]
     public static void UnloadHooks()
     {
+        if (!_hooksLoaded) return;
+        _hooksLoaded = false;
+        Info("Unloading SlashRefill hooks");
+
         dashCoroutineHook?.Dispose();
         dashCoroutineHook = null;
 

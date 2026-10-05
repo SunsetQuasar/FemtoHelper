@@ -14,6 +14,10 @@ internal class FemtoHelperMapDataProcessor : EverestMapDataProcessor
         {
             {"entity:FemtoHelper/MovementModifier", (element) => {
                 AddElement("FemtoHelper/MovementModifier");
+            }},
+
+            {"entity:FemtoHelper/SlashRefill", (element) => {
+                AddElement("FemtoHelper/SlashRefill");
             }}
         };
     }
@@ -62,9 +66,19 @@ internal class FemtoHelperMapDataProcessor : EverestMapDataProcessor
             {
                 MovementModifier.Unload();
             }
+
+            if (elements.Contains("FemtoHelper/SlashRefill"))
+            {
+                SlashRefill.LoadHooks();
+            } 
+            else
+            {
+                SlashRefill.UnloadHooks();
+            }
         }
         else
         {
+            SlashRefill.UnloadHooks();
             MovementModifier.Unload();
         }
     }
