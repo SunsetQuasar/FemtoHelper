@@ -279,7 +279,8 @@ entities.FemtoHelper/MoverRefill.attributes.description.visualOffsetX=Applies a 
 entities.FemtoHelper/MoverRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/MoverRefill.attributes.description.isSwitch=Acts like and counts as a Touch Switch. Does nothing if 'One Use' isn't set.
 entities.FemtoHelper/MoverRefill.attributes.description.moveTime=The time it takes to move the player.
-entities.FemtoHelper/MoverRefill.attributes.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
+entities.FemtoHelper/MoverRefill.attributes.description.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
+entities.FemtoHelper/MoverRefill.attributes.description.solidsCanPush=Allows solids to push the player during movement.
 
 # Vapor Refill
 entities.FemtoHelper/AirRefill.placements.name.air=Vapor Refill
