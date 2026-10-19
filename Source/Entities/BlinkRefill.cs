@@ -140,6 +140,7 @@ public class BlinkRefill : CustomRefill
                     {
                         bool prev = e.Active;
                         e.Active = false;
+
                         Entity helper = [];
                         e.Scene.Add(helper);
 
@@ -161,7 +162,14 @@ public class BlinkRefill : CustomRefill
                     {
                         bool prev = e.Collidable;
                         e.Collidable = false;
-                        Alarm.Set(e, 0.5f, () => e.Collidable |= prev);
+
+                        Entity helper = [];
+                        e.Scene.Add(helper);
+
+                        Alarm.Set(helper, 0.5f, () => {
+                            e?.Collidable |= prev;
+                            helper.RemoveSelf();
+                        });
                     }
                 }
             }
