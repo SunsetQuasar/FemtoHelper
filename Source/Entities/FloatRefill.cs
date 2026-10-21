@@ -9,24 +9,15 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/FloatRefill")]
 public class FloatRefill : CustomRefill
 {
-    public class FloatDash() : Component(true, true)
+    public class FloatDash() : DashEffect()
     {
-        public bool CurrentlyDashing = false;
-        public int Count = 1;
-
         public override void Update()
         {
             base.Update();
-            if (Entity is Player player && Scene is Level level && player.Top < level.Bounds.Top - 16)
+            if ((ReadyCount > 0 || UsingCount > 0) && Entity is Player player && Scene is Level level && player.Top < level.Bounds.Top - 16)
             {
                 player.Die(Vector2.Zero);
             }
-        }
-
-        public override void Render()
-        {
-            base.Render();
-            ActiveFont.Draw(Count.ToString(), Vector2.Zero, Color.White);
         }
     }
 
@@ -46,7 +37,7 @@ public class FloatRefill : CustomRefill
 
         this.SetTexture(TwoCharges ? "objects/FemtoHelper/floatRefillTwo/" : "objects/FemtoHelper/floatRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => player.Get<FloatDash>() is not { } s || s.Count < Charges || (s.CurrentlyDashing && s.Count <= Charges))
+            .SetCollectLogic((player) => DashEffect.ShouldUseRefill<FloatDash>(player, Charges))
             .SetOnCollect(OnCollect);
 
         RespawnTime = data.Float("respawnTime", 2.5f);
@@ -55,18 +46,7 @@ public class FloatRefill : CustomRefill
     }
     public void OnCollect(Player player)
     {
-        if (player.Get<FloatDash>() is FloatDash s)
-        {
-            s.Count = Charges;
-            s.CurrentlyDashing = false;
-        }
-        else
-        {
-            player.Add(new FloatDash()
-            {
-                Count = Charges
-            });
-        }
+        DashEffect.GiveToPlayer<FloatDash>(player, Charges);
     }
 
     [OnLoadContent]
@@ -98,9 +78,6 @@ public class FloatRefill : CustomRefill
         {
             IL.Celeste.Player.NormalUpdate += ModNormalUpdate;
         }
-
-        On.Celeste.Player.DashEnd += Player_DashEnd;
-        On.Celeste.Player.DashBegin += Player_DashBegin;
     }
 
     private static void ModNormalUpdate(ILContext il)
@@ -129,7 +106,7 @@ public class FloatRefill : CustomRefill
 
     private static float ApplyGravityMultiplier(float target, float gravity, Player player)
     {
-        if (!(player.Get<FloatDash>() is { } _))
+        if (player.Get<FloatDash>() is not { } d || (d.UsingCount <= 0 && d.ReadyCount <= 0))
         {
             return gravity;
         }
@@ -146,35 +123,9 @@ public class FloatRefill : CustomRefill
         return gravity * gravityMultiplier;
     }
 
-    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
-    {
-        orig(self);
-
-        if (self.Get<FloatDash>() is { } floatDash)
-        {
-            floatDash.CurrentlyDashing = true;
-        }
-    }
-
-    private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
-    {
-        orig(self);
-
-        if (self.Get<FloatDash>() is { } floatDash && floatDash.CurrentlyDashing)
-        {
-            floatDash.CurrentlyDashing = false;
-            if (--floatDash.Count < 1)
-            {
-                floatDash.RemoveSelf();
-            }
-        }
-    }
-
     [OnUnload]
     public static void UnloadHooks()
     {
         IL.Celeste.Player.NormalUpdate -= ModNormalUpdate;
-        On.Celeste.Player.DashEnd -= Player_DashEnd;
-        On.Celeste.Player.DashBegin -= Player_DashBegin;
     }
 }
