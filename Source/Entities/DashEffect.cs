@@ -84,8 +84,6 @@ public abstract class DashEffect : Component
             dashEffect.OnDashBegin(self);
             dashEffect.ReadyCount--;
             dashEffect.UsingCount++;
-
-            Debug("begin: " + dashEffect.ReadyCount + ", " + dashEffect.UsingCount);
         }
     }
     private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
@@ -95,7 +93,6 @@ public abstract class DashEffect : Component
         {
             dashEffect.OnDashEnd(self);
             dashEffect.UsingCount = 0;
-            Debug("end: " + dashEffect.ReadyCount + ", " + dashEffect.UsingCount);
         }
     }
 
