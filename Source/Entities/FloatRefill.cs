@@ -9,7 +9,7 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/FloatRefill")]
 public class FloatRefill : CustomRefill
 {
-    public class FloatDash() : Component(true, false)
+    public class FloatDash() : Component(true, true)
     {
         public bool CurrentlyDashing = false;
         public int Count = 1;
@@ -22,34 +22,50 @@ public class FloatRefill : CustomRefill
                 player.Die(Vector2.Zero);
             }
         }
+
+        public override void Render()
+        {
+            base.Render();
+            ActiveFont.Draw(Count.ToString(), Vector2.Zero, Color.White);
+        }
     }
 
     private static ParticleType _pShatter;
     private static ParticleType _pRegen;
     private static ParticleType _pGlow;
 
+    public readonly bool TwoCharges;
+    public int Charges => TwoCharges ? 2 : 1;
+
     public FloatRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         RefillDash = false;
         RefillStamina = true;
 
-        this.SetTexture("objects/FemtoHelper/floatRefill/")
+        TwoCharges = data.Bool("twoCharges", false);
+
+        this.SetTexture(TwoCharges ? "objects/FemtoHelper/floatRefillTwo/" : "objects/FemtoHelper/floatRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => player.Get<FloatDash>() is not { } s || (s.CurrentlyDashing && s.Count <= 1))
+            .SetCollectLogic((player) => player.Get<FloatDash>() is not { } s || s.Count < Charges || (s.CurrentlyDashing && s.Count <= Charges))
             .SetOnCollect(OnCollect);
 
         RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
+
     }
     public void OnCollect(Player player)
     {
         if (player.Get<FloatDash>() is FloatDash s)
         {
-            s.Count++;
+            s.Count = Charges;
+            s.CurrentlyDashing = false;
         }
         else
         {
-            player.Add(new FloatDash());
+            player.Add(new FloatDash()
+            {
+                Count = Charges
+            });
         }
     }
 

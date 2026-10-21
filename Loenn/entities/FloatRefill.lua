@@ -12,13 +12,25 @@ FemtoHelperFloatRefill.placements = {
             respawnTime = 2.5,
             visualOffsetX = 0,
             visualOffsetY = 0,
-            pulseFlag = ""
+            pulseFlag = "",
+            twoCharges = false,
+        }
+    },
+    {
+        name = "floatTwo",
+        data = {
+            oneUse = false,
+            respawnTime = 2.5,
+            visualOffsetX = 0,
+            visualOffsetY = 0,
+            pulseFlag = "",
+            twoCharges = true,
         }
     },
 }
 
 function FemtoHelperFloatRefill.sprite(room, entity)
-    local sprPath = "objects/FemtoHelper/floatRefill/"
+    local sprPath = entity.twoCharges and "objects/FemtoHelper/floatRefillTwo/" or "objects/FemtoHelper/floatRefill/"
 
     local sprites = {}
 
