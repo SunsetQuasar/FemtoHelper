@@ -79,7 +79,7 @@ public abstract class DashEffect : Component
 
         foreach(DashEffect dashEffect in self.Components.GetAll<DashEffect>())
         {
-            if ((dashEffect.StrictDashCheck && (!CanDashStorage || self.LastBooster != null)) || dashEffect.ReadyCount <= 0) continue;
+            if ((dashEffect.StrictDashCheck && (!CanDashStorage || self.CurrentBooster != null)) || dashEffect.ReadyCount <= 0) continue;
 
             dashEffect.OnDashBegin(self);
             dashEffect.ReadyCount--;
@@ -91,6 +91,8 @@ public abstract class DashEffect : Component
         orig(self);
         foreach (DashEffect dashEffect in self.Components.GetAll<DashEffect>())
         {
+            if (dashEffect.UsingCount <= 0) continue;
+
             dashEffect.OnDashEnd(self);
             dashEffect.UsingCount = 0;
         }
