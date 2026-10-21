@@ -27,6 +27,7 @@ public class FloatRefill : CustomRefill
 
     public readonly bool TwoCharges;
     public int Charges => TwoCharges ? 2 : 1;
+    public readonly bool StrictDashCheck;
 
     public FloatRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
@@ -42,11 +43,11 @@ public class FloatRefill : CustomRefill
 
         RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
-
+        StrictDashCheck = data.Bool("strictDashCheck", false);
     }
     public void OnCollect(Player player)
     {
-        DashEffect.GiveToPlayer<FloatDash>(player, Charges);
+        DashEffect.GiveToPlayer<FloatDash>(player, Charges, StrictDashCheck);
     }
 
     [OnLoadContent]

@@ -13,6 +13,7 @@ FemtoHelperFloatRefill.placements = {
             visualOffsetX = 0,
             visualOffsetY = 0,
             pulseFlag = "",
+            strictDashCheck = true,
             twoCharges = false,
         }
     },
@@ -24,6 +25,7 @@ FemtoHelperFloatRefill.placements = {
             visualOffsetX = 0,
             visualOffsetY = 0,
             pulseFlag = "",
+            strictDashCheck = true,
             twoCharges = true,
         }
     },

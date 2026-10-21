@@ -263,6 +263,7 @@ entities.FemtoHelper/FloatRefill.attributes.description.visualOffsetX=Applies a 
 entities.FemtoHelper/FloatRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/FloatRefill.attributes.description.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
 entities.FemtoHelper/FloatRefill.attributes.description.twoCharges=Gives two charges of the effect, requiring the player to dash twice.
+entities.FemtoHelper/FloatRefill.attributes.description.strictDashCheck=Limits the refill's effects only to when the player dashes with the Dash input, excluding boosters, and forced dashes.
 
 # Drift Refill
 entities.FemtoHelper/DriftRefill.placements.name.drift=Drift Refill

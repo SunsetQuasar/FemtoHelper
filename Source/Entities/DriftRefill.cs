@@ -11,55 +11,44 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/DriftRefill")]
 public class DriftRefill : CustomRefill
 {
-    public class DriftDash : Component
+    public class DriftDash : DashEffect
     {
-        public bool CurrentlyDashing = false;
-        private int count;
-        public int Count
-        {
-            get
-            {
-                return count;
-            }
-            set
-            {
-                if (value > count)
-                {
-                    Dying = false;
-                    applyGooberTimer = 0f;
-                }
-                count = value;
-            }
-        }
-        public bool Dying = false;
         private float applyGooberTimer = 0;
         public bool ApplyGoober = false;
 
-        public DriftDash() : base(true, false)
+        public DriftDash() : base()
         {
-            Count = 1;
+        }
+
+        public override void GivenToPlayer(Player player, int amount)
+        {
+            base.GivenToPlayer(player, amount);
+            applyGooberTimer = 0f;
         }
 
         public override void Update()
         {
             base.Update();
-            applyGooberTimer = Calc.Approach(applyGooberTimer, 0.1f, Engine.DeltaTime);
-            if (applyGooberTimer >= 0.1f)
+            if (applyGooberTimer < 0.1f)
             {
-                if (Dying)
+                applyGooberTimer = Calc.Approach(applyGooberTimer, 0.1f, Engine.DeltaTime);
+                if (applyGooberTimer >= 0.1f)
                 {
-                    RemoveSelf();
-                }
-                else
-                {
-                    ApplyGoober = true;
+                    if (ReadyCount <= 0 || UsingCount <= 0)
+                    {
+                        ApplyGoober = false;
+                    }
+                    else
+                    {
+                        ApplyGoober = true;
+                    }
                 }
             }
         }
 
-        public void Die()
+        public override void OnDashEnd(Player player)
         {
-            Dying = true;
+            base.OnDashEnd(player);
             applyGooberTimer = 0f;
         }
     }
@@ -70,28 +59,24 @@ public class DriftRefill : CustomRefill
 
     private static ParticleType _pGlow;
 
+    public readonly bool StrictDashCheck;
+
     public DriftRefill(EntityData data, Vector2 offset)
        : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         this.SetTexture("objects/FemtoHelper/holdRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => player.Get<DriftDash>() is not { } driftDash || (driftDash.CurrentlyDashing && driftDash.Count <= 1))
+            .SetCollectLogic((player) => DashEffect.ShouldUseRefill<DriftDash>(player, 1))
             .SetOnCollect(OnCollect);
 
         RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
+        StrictDashCheck = data.Bool("strictDashCheck", false);
     }
     private void OnCollect(Player player)
     {
         player.UseRefill(false);
-        if (player.Get<DriftDash>() is DriftDash driftDash)
-        {
-            driftDash.Count++;
-        }
-        else
-        {
-            player.Add(new DriftDash());
-        }
+        DashEffect.GiveToPlayer<DriftDash>(player, 1, StrictDashCheck);
     }
 
     [OnLoadContent]
@@ -125,9 +110,6 @@ public class DriftRefill : CustomRefill
         On.Celeste.Player.DashCoroutine += Player_DashCoroutine;
         On.Celeste.Player.DashUpdate += Player_DashUpdate;
 
-        On.Celeste.Player.DashBegin += Player_DashBegin;
-        On.Celeste.Player.DashEnd += Player_DashEnd;
-
         On.Celeste.Level.Update += Level_Update;
     }
 
@@ -142,7 +124,7 @@ public class DriftRefill : CustomRefill
 
     private static void Level_Update(On.Celeste.Level.orig_Update orig, Level self)
     {
-        if (self.Tracker.GetEntity<Player>() is Player player && player.Get<DriftDash>() is not null)
+        if (self.Tracker.GetEntity<Player>() is Player player && player.Get<DriftDash>() is { CurrentlyDashing: true })
         {
             bool prev = SaveData.Instance.Assists.SuperDashing;
             try
@@ -195,7 +177,7 @@ public class DriftRefill : CustomRefill
             if (o != null && o.GetType() == typeof(float))
             {
                 yield return o;
-                while (self.Get<DriftDash>() is not null && (Input.Dash.Check || Input.CrouchDash.Check))
+                while (self.Get<DriftDash>() is { CurrentlyDashing: true } && (Input.Dash.Check || Input.CrouchDash.Check))
                 {
                     self.dashAttackTimer = 0.15f; // hold the dash attack timer to continue breaking dash blocks and such.
                     self.gliderBoostTimer = 0.30f; // hold the glider boost timer to still get boosted by jellies.
@@ -212,25 +194,6 @@ public class DriftRefill : CustomRefill
         yield break;
     }
 
-    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
-    {
-        orig(self);
-        if (self.Get<DriftDash>() is { } driftDash) driftDash.CurrentlyDashing = true;
-    }
-
-    private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
-    {
-        orig(self);
-        if (self.Get<DriftDash>() is { } driftDash && driftDash.CurrentlyDashing && !driftDash.Dying)
-        {
-            driftDash.CurrentlyDashing = false;
-            if (--driftDash.Count < 1)
-            {
-                driftDash.Die();
-            }
-        }
-    }
-
     [OnUnload]
     public static void UnloadHooks()
     {
@@ -238,9 +201,6 @@ public class DriftRefill : CustomRefill
         _dashCoroutineHook = null;
         On.Celeste.Player.DashCoroutine -= Player_DashCoroutine;
         On.Celeste.Player.DashUpdate -= Player_DashUpdate;
-
-        On.Celeste.Player.DashBegin -= Player_DashBegin;
-        On.Celeste.Player.DashEnd -= Player_DashEnd;
 
         On.Celeste.Level.Update -= Level_Update;
     }

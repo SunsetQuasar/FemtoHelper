@@ -15,6 +15,7 @@ public abstract class DashEffect : Component
     public int UsingCount;
     public bool CurrentlyDashing => UsingCount > 0;
     internal static bool CanDashStorage;
+    public bool StrictDashCheck;
     public virtual void OnDashBegin(Player player)
     {
 
@@ -47,26 +48,39 @@ public abstract class DashEffect : Component
         return player.Get<T>() is not { } t || (t.ReadyCount < amount);
     }
 
-    public static void GiveToPlayer<T>(Player player, int amount) where T : DashEffect, new()
+    public virtual void GivenToPlayer(Player player, int amount)
+    {
+
+    }
+
+    public static void GiveToPlayer<T>(Player player, int amount, bool strict = false) where T : DashEffect, new()
     {
         if (player.Get<T>() is T t)
         {
             t.ReadyCount = Math.Max(t.ReadyCount, amount);
+            t.StrictDashCheck = strict;
+            t.GivenToPlayer(player, amount);
         } 
         else
         {
-            player.Add(new T()
+            T newT = new()
             {
-                ReadyCount = amount
-            });
+                ReadyCount = amount,
+                StrictDashCheck = strict
+            };
+            player.Add(newT);
+            newT.GivenToPlayer(player, amount);
         }
     }
 
     private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
     {
         orig(self);
+
         foreach(DashEffect dashEffect in self.Components.GetAll<DashEffect>())
         {
+            if ((dashEffect.StrictDashCheck && (!CanDashStorage || self.LastBooster != null)) || dashEffect.ReadyCount <= 0) continue;
+
             dashEffect.OnDashBegin(self);
             dashEffect.ReadyCount--;
             dashEffect.UsingCount++;
