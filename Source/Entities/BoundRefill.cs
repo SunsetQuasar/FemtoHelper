@@ -6,28 +6,23 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/BoundRefill")]
 public class BoundRefill : CustomRefill
 {
-    public class Bounder() : Component(false, false)
+    public class Bounder() : DashEffect()
     {
+        public override void OnDashBegin(Player player)
+        {
+            base.OnDashBegin(player);
+            player.Add(new Coroutine(BoundRoutine(player)));
+        }
     }
 
     [OnLoad]
     public static void LoadHooks()
     {
-        On.Celeste.Player.DashBegin += Player_DashBegin;
-    }
-
-    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
-    {
-        orig(self);
-        if (self.Get<Bounder>() is not { } b) return;
-        b.RemoveSelf();
-        self.Add(new Coroutine(BoundRoutine(self)));
     }
 
     [OnUnload]
     public static void UnloadHooks()
     {
-        On.Celeste.Player.DashBegin -= Player_DashBegin;
     }
 
     public static IEnumerator BoundRoutine(Player player)
@@ -56,17 +51,20 @@ public class BoundRefill : CustomRefill
         Color2 = Calc.HexToColor("b95fb7")
     };
 
+    public readonly bool StrictDashCheck;
+
     public BoundRefill(Vector2 position, EntityData data)
         : base(position, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         this.SetTexture("objects/FemtoHelper/boundRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => player.Get<Bounder>() is null)
+            .SetCollectLogic((player) => DashEffect.ShouldUseRefill<Bounder>(player, 1))
             .SetOnCollect(OnCollect);
 
         RespawnTime = data.Float("respawnTime", 2.5f);
 
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
+        StrictDashCheck = data.Bool("strictDashCheck", false);
     }
 
 
@@ -78,6 +76,6 @@ public class BoundRefill : CustomRefill
     private void OnCollect(Player player)
     {
         player.UseRefill(false);
-        player.Add(new Bounder());
+        DashEffect.GiveToPlayer<Bounder>(player, 1, StrictDashCheck);
     }
 }

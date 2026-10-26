@@ -3,19 +3,88 @@ using Celeste.Mod.Roslyn.ModLifecycleAttributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Celeste.Mod.FemtoHelper.Entities.BlinkRefill;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
 [CustomEntity("FemtoHelper/BlinkRefill")]
 public class BlinkRefill : CustomRefill
 {
-    public class AirDash(List<(Type, string)> inactive, List<(Type, string)> uncollidable, bool strict) : Component(false, false)
+    public class BlinkDash() : DashEffect()
     {
-        internal List<(Type, string)> inactiveTypesAndSIDs = inactive;
-        internal List<(Type, string)> uncollidableTypesAndSIDs = uncollidable;
-        internal readonly bool strict = strict;
-        public bool CurrentlyDashing;
-        public int Count;
+        internal List<(Type, string)> inactiveTypesAndSIDs = [];
+        internal List<(Type, string)> uncollidableTypesAndSIDs = [];
+        internal bool? strict;
+
+        public override void OnDashBegin(Player player)
+        {
+            base.OnDashBegin(player);
+
+            (player.Scene as Level).Session.SetFlag("blink_refill", true);
+            Entity flagHelper = [];
+            player.Scene.Add(flagHelper);
+            Alarm.Set(flagHelper, 0.5f, () =>
+            {
+                (flagHelper.Scene as Level).Session.SetFlag("blink_refill", false);
+                flagHelper.RemoveSelf();
+            });
+
+            foreach (var (type, str) in inactiveTypesAndSIDs)
+            {
+                List<Entity> l = player.Scene.Tracker.GetEntitiesTrackIfNeeded(type);
+                foreach (Entity e in l)
+                {
+                    if (!(strict ?? false) || str.Equals(e.SourceData?.Name ?? "", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        bool prev = e.Active;
+                        e.Active = false;
+
+                        Entity helper = [];
+                        e.Scene.Add(helper);
+
+                        Alarm.Set(helper, 0.5f, () =>
+                        {
+                            e?.Active |= prev;
+                            helper.RemoveSelf();
+                        });
+                    }
+                }
+            }
+
+            foreach (var (type, str) in uncollidableTypesAndSIDs)
+            {
+                List<Entity> l = player.Scene.Tracker.GetEntitiesTrackIfNeeded(type);
+                foreach (Entity e in l)
+                {
+                    if (!(strict ?? false) || str.Equals(e.SourceData?.Name ?? "", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        bool prev = e.Collidable;
+                        e.Collidable = false;
+
+                        Entity helper = [];
+                        e.Scene.Add(helper);
+
+                        Alarm.Set(helper, 0.5f, () => {
+                            e?.Collidable |= prev;
+                            helper.RemoveSelf();
+                        });
+                    }
+                }
+            }
+
+            if ((ReadyCount - 1) == 0)
+            {
+                inactiveTypesAndSIDs.Clear();
+                uncollidableTypesAndSIDs.Clear();
+                strict = null;
+            }
+
+        }
+
+        public override void OnDashEnd(Player player)
+        {
+            base.OnDashEnd(player);
+        }
     }
 
     private static readonly ParticleType _pShatter = new(P_Shatter)
@@ -38,6 +107,8 @@ public class BlinkRefill : CustomRefill
     private readonly List<(Type, string)> inactiveTypesAndSIDs;
     private readonly List<(Type, string)> uncollidableTypesAndSIDs;
     private readonly bool strict;
+
+    public readonly bool StrictDashCheck;
 
     public BlinkRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
@@ -62,8 +133,10 @@ public class BlinkRefill : CustomRefill
 
         this.SetTexture("objects/FemtoHelper/blinkRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => player.Get<AirDash>() is not { } s || (s.CurrentlyDashing && s.Count <= 1))
+            .SetCollectLogic((player) => DashEffect.ShouldUseRefill<BlinkDash>(player, 1))
             .SetOnCollect(OnCollect);
+
+        StrictDashCheck = data.Bool("strictDashCheck", false);
     }
 
     public override void Awake(Scene scene)
@@ -82,105 +155,23 @@ public class BlinkRefill : CustomRefill
     {
         player.UseRefill(false);
 
-        if (player.Get<AirDash>() is AirDash blinkDash)
-        {
-            blinkDash.Count++;
-            blinkDash.inactiveTypesAndSIDs = [.. blinkDash.inactiveTypesAndSIDs.Union(inactiveTypesAndSIDs)];
-            blinkDash.uncollidableTypesAndSIDs = [.. blinkDash.inactiveTypesAndSIDs.Union(uncollidableTypesAndSIDs)];
-        }
-        else
-        {
-            player.Add(new AirDash(inactiveTypesAndSIDs, uncollidableTypesAndSIDs, strict));
-        }
+        BlinkDash blinkDash = DashEffect.GiveToPlayer<BlinkDash>(player, 1, StrictDashCheck);
+        blinkDash.inactiveTypesAndSIDs = [.. blinkDash.inactiveTypesAndSIDs.Union(inactiveTypesAndSIDs)];
+        blinkDash.uncollidableTypesAndSIDs = [.. blinkDash.inactiveTypesAndSIDs.Union(uncollidableTypesAndSIDs)];
+
+        blinkDash.strict ??= strict;
     }
 
     [OnLoad]
     public static void LoadHooks()
     {
 
-        On.Celeste.Player.DashEnd += Player_DashEnd;
-        On.Celeste.Player.DashBegin += Player_DashBegin;
     }
 
-    private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
-    {
-        orig(self);
-
-        if (self.Get<AirDash>() is { } blinkDash && blinkDash.CurrentlyDashing)
-        {
-            blinkDash.CurrentlyDashing = false;
-            if (--blinkDash.Count < 1)
-            {
-                blinkDash.RemoveSelf();
-            }
-        }
-    }
-    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
-    {
-        orig(self);
-
-        if (self.Get<AirDash>() is { } blinkDash)
-        {
-            blinkDash.CurrentlyDashing = true;
-            (self.Scene as Level).Session.SetFlag("blink_refill", true);
-            Entity flagHelper = [];
-            self.Scene.Add(flagHelper);
-            Alarm.Set(flagHelper, 0.5f, () =>
-            {
-                (flagHelper.Scene as Level).Session.SetFlag("blink_refill", false);
-                flagHelper.RemoveSelf();
-            });
-
-            foreach (var (type, str) in blinkDash.inactiveTypesAndSIDs)
-            {
-                List<Entity> l = self.Scene.Tracker.GetEntitiesTrackIfNeeded(type);
-                foreach (Entity e in l)
-                {
-                    if (!blinkDash.strict || str.Equals(e.SourceData?.Name ?? "", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        bool prev = e.Active;
-                        e.Active = false;
-
-                        Entity helper = [];
-                        e.Scene.Add(helper);
-
-                        Alarm.Set(helper, 0.5f, () =>
-                        {
-                            e?.Active |= prev;
-                            helper.RemoveSelf();
-                        });
-                    }
-                }
-            }
-
-            foreach (var (type, str) in blinkDash.uncollidableTypesAndSIDs)
-            {
-                List<Entity> l = self.Scene.Tracker.GetEntitiesTrackIfNeeded(type);
-                foreach (Entity e in l)
-                {
-                    if (!blinkDash.strict || str.Equals(e.SourceData?.Name ?? "", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        bool prev = e.Collidable;
-                        e.Collidable = false;
-
-                        Entity helper = [];
-                        e.Scene.Add(helper);
-
-                        Alarm.Set(helper, 0.5f, () => {
-                            e?.Collidable |= prev;
-                            helper.RemoveSelf();
-                        });
-                    }
-                }
-            }
-        }
-    }
 
     [OnUnload]
     public static void UnloadHooks()
     {
 
-        On.Celeste.Player.DashEnd -= Player_DashEnd;
-        On.Celeste.Player.DashBegin -= Player_DashBegin;
     }
 }

@@ -14,7 +14,8 @@ FemtoHelperSlashRefill.placements = {
             visualOffsetY = 0,
             brittleTypes = "refill,FemtoHelper/MinusRefill,crumbleBlock",
             strictWhitelist = true,
-            pulseFlag = ""
+            pulseFlag = "",
+            strictDashCheck = true,
         }
     },
 }

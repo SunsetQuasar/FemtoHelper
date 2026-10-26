@@ -53,13 +53,15 @@ public abstract class DashEffect : Component
 
     }
 
-    public static void GiveToPlayer<T>(Player player, int amount, bool strict = false) where T : DashEffect, new()
+    public static T GiveToPlayer<T>(Player player, int amount, bool strict = false) where T : DashEffect, new()
     {
         if (player.Get<T>() is T t)
         {
             t.ReadyCount = Math.Max(t.ReadyCount, amount);
             t.StrictDashCheck = strict;
             t.GivenToPlayer(player, amount);
+
+            return t;
         } 
         else
         {
@@ -70,6 +72,8 @@ public abstract class DashEffect : Component
             };
             player.Add(newT);
             newT.GivenToPlayer(player, amount);
+
+            return newT;
         }
     }
 

@@ -15,7 +15,8 @@ FemtoHelperBlinkRefill.placements = {
             inactiveTypes = "crumbleBlock",
             uncollidableTypes = "refill,FemtoHelper/MinusRefill",
             strictWhitelist = true,
-            pulseFlag = ""
+            pulseFlag = "",
+            strictDashCheck = true,
         }
     },
 }

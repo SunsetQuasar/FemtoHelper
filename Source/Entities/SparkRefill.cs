@@ -9,11 +9,9 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/SparkRefill")]
 public class SparkRefill : CustomRefill
 {
-    public class SparkDash() : Component(false, true)
+    public class SparkDash() : DashEffect()
     {
-        public bool CurrentlyDashing = false;
 
-        public int Count = 1;
     }
     private static ParticleType _pShatter;
 
@@ -21,16 +19,19 @@ public class SparkRefill : CustomRefill
 
     private static ParticleType _pGlow;
 
+    public readonly bool StrictDashCheck;
+
     public SparkRefill(Vector2 position, EntityData data)
         : base(position, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
         this.SetTexture("objects/FemtoHelper/sparkRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => player.Get<SparkDash>() is not { } s || (s.CurrentlyDashing && s.Count <= 1))
+            .SetCollectLogic((player) => DashEffect.ShouldUseRefill<SparkDash>(player, 1))
             .SetOnCollect(OnCollect);
 
         RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
+        StrictDashCheck = data.Bool("strictDashCheck", false);
     }
     public SparkRefill(EntityData data, Vector2 offset)
         : this(data.Position + offset, data)
@@ -39,14 +40,7 @@ public class SparkRefill : CustomRefill
     private void OnCollect(Player player)
     {
         player.UseRefill(false);
-        if (player.Get<SparkDash>() is SparkDash s)
-        {
-            s.Count++;
-        }
-        else
-        {
-            player.Add(new SparkDash());
-        }
+        DashEffect.GiveToPlayer<SparkDash>(player, 1, StrictDashCheck);
     }
 
     private static ILHook _dashCoroutineHook;
@@ -69,25 +63,6 @@ public class SparkRefill : CustomRefill
     {
         if (player.Get<SparkDash>() is { } s) return s.CurrentlyDashing ? 2f : 1f;
         return 1f;
-    }
-
-    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
-    {
-        orig(self);
-        if (self.Get<SparkDash>() is { } s) s.CurrentlyDashing = true;
-    }
-
-    private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
-    {
-        orig(self);
-        if (self.Get<SparkDash>() is { } s && s.CurrentlyDashing)
-        {
-            s.CurrentlyDashing = false;
-            if (--s.Count < 1)
-            {
-                s.RemoveSelf();
-            }
-        }
     }
 
     [OnLoadContent]
@@ -117,8 +92,6 @@ public class SparkRefill : CustomRefill
     {
         _dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);
         _redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget(), ModDashSpeed);
-        On.Celeste.Player.DashEnd += Player_DashEnd;
-        On.Celeste.Player.DashBegin += Player_DashBegin;
     }
 
     [OnUnload]
@@ -129,8 +102,5 @@ public class SparkRefill : CustomRefill
 
         _redDashCoroutineHook?.Dispose();
         _redDashCoroutineHook = null;
-
-        On.Celeste.Player.DashEnd -= Player_DashEnd;
-        On.Celeste.Player.DashBegin -= Player_DashBegin;
     }
 }

@@ -16,11 +16,19 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 public class SlashRefill : CustomRefill
 {
     [Tracked]
-    public class SlashDash() : Component(false, false)
+    public class SlashDash() : DashEffect()
     {
-        public bool CurrentlyDashing = false;
+        public override void OnDashBegin(Player player)
+        {
+            base.OnDashBegin(player);
 
-        public int Count = 1;
+            bool superDash = SaveData.Instance.Assists.SuperDashing;
+
+            const float factor = 1.5f;
+
+            player.dashAttackTimer = (superDash ? 0.3f : 0.15f) * factor + 0.15f;
+            player.gliderBoostTimer = (superDash ? 0.3f : 0.15f) * factor + (superDash ? 0.25f : 0.4f);
+        }
     }
     [Tracked]
     public class Brittle() : Component(false, false)
@@ -36,6 +44,8 @@ public class SlashRefill : CustomRefill
 
     private readonly bool strict;
 
+    public readonly bool StrictDashCheck;
+
     public SlashRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
 
@@ -49,13 +59,14 @@ public class SlashRefill : CustomRefill
 
         this.SetTexture("objects/FemtoHelper/crashRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => player.Get<SlashDash>() is not { } s || (s.CurrentlyDashing && s.Count <= 1))
+            .SetCollectLogic((player) => DashEffect.ShouldUseRefill<SlashDash>(player, 1))
             .SetOnCollect(OnCollect);
 
         strict = data.Bool("strictWhitelist", true);
 
         RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
+        StrictDashCheck = data.Bool("strictDashCheck", false);
     }
 
     public override void Awake(Scene scene)
@@ -85,14 +96,7 @@ public class SlashRefill : CustomRefill
     {
         player.UseRefill(false);
 
-        if (player.Get<SlashDash>() is SlashDash s)
-        {
-            s.Count++;
-        }
-        else
-        {
-            player.Add(new SlashDash());
-        }
+        DashEffect.GiveToPlayer<SlashDash>(player, 1, StrictDashCheck);
 
         // adding these modifies the tracker, which is a no-no within this method, since it's currently being called by the player iterating through PlayerColliders in the tracker
         // so we delay it until the end of the frame. maybe there's a better alternative? 
@@ -153,8 +157,6 @@ public class SlashRefill : CustomRefill
 
         IL.Celeste.Actor.MoveHExact += Actor_MoveHExact;
         IL.Celeste.Actor.MoveVExact += Actor_MoveVExact;
-        On.Celeste.Player.DashEnd += Player_DashEnd;
-        On.Celeste.Player.DashBegin += Player_DashBegin;
     }
     private static void Actor_MoveHExact(ILContext il)
     {
@@ -180,7 +182,7 @@ public class SlashRefill : CustomRefill
 
     private static bool InjectBrittleCheckH(Actor self, int num, int num2)
     {
-        if (self is Player { DashAttacking: true, Dead: false } player && player.Get<SlashDash>() is { } slashDash)
+        if (self is Player { DashAttacking: true, Dead: false } player && player.Get<SlashDash>() is { CurrentlyDashing: true } slashDash)
         {
             Component brittle = player.CollideFirstByComponent<Brittle>(player.Position + Vector2.UnitX * num);
             if (brittle is { Entity: { } entity })
@@ -222,7 +224,7 @@ public class SlashRefill : CustomRefill
 
     private static bool InjectBrittleCheckV(Actor self, int num, int num2)
     {
-        if (self is Player { DashAttacking: true, Dead: false } player && player.Get<SlashDash>() is { } slashDash)
+        if (self is Player { DashAttacking: true, Dead: false } player && player.Get<SlashDash>() is { CurrentlyDashing: true } slashDash)
         {
             Component brittle = player.CollideFirstByComponent<Brittle>(player.Position + Vector2.UnitY * num);
             if (brittle is { Entity: { } entity })
@@ -265,36 +267,6 @@ public class SlashRefill : CustomRefill
         entity.RemoveSelf();
     }
 
-    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
-    {
-        orig(self);
-
-        if (self.Get<SlashDash>() is { } s)
-        {
-            bool superDash = SaveData.Instance.Assists.SuperDashing;
-
-            const float factor = 1.5f;
-
-            self.dashAttackTimer = (superDash ? 0.3f : 0.15f) * factor + 0.15f;
-            self.gliderBoostTimer = (superDash ? 0.3f : 0.15f) * factor + (superDash ? 0.25f : 0.4f);
-
-            s.CurrentlyDashing = true;
-        }
-    }
-
-    private static void Player_DashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
-    {
-        orig(self);
-        if (self.Get<SlashDash>() is { } s && s.CurrentlyDashing)
-        {
-            s.CurrentlyDashing = false;
-            if (--s.Count < 1)
-            {
-                s.RemoveSelf();
-            }
-        }
-    }
-
     private static void ModDashLength(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -323,12 +295,12 @@ public class SlashRefill : CustomRefill
 
     private static float DetermineDashLengthFactor(Player player)
     {
-        return player.Get<SlashDash>() != null ? 1.5f : 1f;
+        return player.Get<SlashDash>() is { CurrentlyDashing: true } ? 1.5f : 1f;
     }
 
     private static int ApplyDashTrailCounter(int dashTrailCounter, Player player)
     {
-        if (player.Get<SlashDash>() != null)
+        if (player.Get<SlashDash>() is { CurrentlyDashing: true })
         {
             float lastDashDuration = SaveData.Instance.Assists.SuperDashing ? 0.3f : 0.15f;
             return (int)Math.Round(lastDashDuration * 1.5f) - 1;
@@ -348,7 +320,5 @@ public class SlashRefill : CustomRefill
 
         IL.Celeste.Actor.MoveHExact -= Actor_MoveHExact;
         IL.Celeste.Actor.MoveVExact -= Actor_MoveVExact;
-        On.Celeste.Player.DashEnd -= Player_DashEnd;
-        On.Celeste.Player.DashBegin -= Player_DashBegin;
     }
 }

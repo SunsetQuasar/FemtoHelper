@@ -222,6 +222,7 @@ entities.FemtoHelper/BoundRefill.attributes.description.respawnTime=The time it 
 entities.FemtoHelper/BoundRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/BoundRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/BoundRefill.attributes.description.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
+entities.FemtoHelper/BoundRefill.attributes.description.strictDashCheck=Limits the refill's effects only to when the player dashes with the Dash input, excluding boosters, and forced dashes.
 
 # Delay Refill
 entities.FemtoHelper/DelayRefill.placements.name.delayUp=Delay Refill (Up)
@@ -251,6 +252,7 @@ entities.FemtoHelper/BlinkRefill.attributes.description.respawnTime=The time it 
 entities.FemtoHelper/BlinkRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/BlinkRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/BlinkRefill.attributes.description.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
+entities.FemtoHelper/BlinkRefill.attributes.description.strictDashCheck=Limits the refill's effects only to when the player dashes with the Dash input, excluding boosters, and forced dashes.
 
 # Float Refill
 entities.FemtoHelper/FloatRefill.placements.name.float=Float Refill
@@ -306,6 +308,7 @@ entities.FemtoHelper/SlashRefill.attributes.description.respawnTime=The time it 
 entities.FemtoHelper/SlashRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/SlashRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/SlashRefill.attributes.description.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
+entities.FemtoHelper/SlashRefill.attributes.description.strictDashCheck=Limits the refill's effects only to when the player dashes with the Dash input, excluding boosters, and forced dashes.
 
 # Step Mover
 entities.FemtoHelper/StepMover.placements.name.step_mover=Step Mover
