@@ -34,11 +34,6 @@ internal class FrogelineTrigger(EntityData data, Vector2 offset) : Trigger(data,
 				Scene.Add(new FsCs0HubIntro(Scene, player));
 				RemoveSelf();
 				break;
-			case "funy_meme" when !level.Session.GetFlag("funy_meme"):
-				level.Session.SetFlag("funy_meme");
-				Scene.Add(new CsFunnyAsHell(player));
-				RemoveSelf();
-				break;
 			case "fs_hub_out":
 				Add(new Coroutine(FS_BackgroundHRT(player)));
 				break;
