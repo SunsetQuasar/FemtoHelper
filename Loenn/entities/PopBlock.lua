@@ -1,5 +1,6 @@
 local drawableSprite = require("structs.drawable_sprite")
 local drawableRectangle = require("structs.drawable_rectangle")
+local enums = require("consts.celeste_enums")
 local FemtoHelperPopBlock = {}
 
 FemtoHelperPopBlock.name = "FemtoHelper/PopBlock"
@@ -34,6 +35,10 @@ FemtoHelperPopBlock.fieldInformation = {
         },
         editable = false
     },
+    surfaceIndex = {
+        options = enums.tileset_sound_ids,
+        fieldType = "integer"
+    }
 }
 FemtoHelperPopBlock.placements = {
     {
@@ -50,6 +55,9 @@ FemtoHelperPopBlock.placements = {
             height = 16,
             refillDash = false,
             path = "objects/FemtoHelper/PopBlock/",
+            soundPath = "event:/FemtoHelper/",
+            soundVolume = 2,
+            surfaceIndex = 35,
         }
     },
     {
@@ -66,6 +74,9 @@ FemtoHelperPopBlock.placements = {
             height = 16,
             refillDash = true,
             path = "objects/FemtoHelper/PopBlock/",
+            soundPath = "event:/FemtoHelper/",
+            soundVolume = 2,
+            surfaceIndex = 35,
         }
     }
 }

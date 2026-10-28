@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using static Celeste.Mod.FemtoHelper.Entities.EntityKillZone;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
@@ -64,6 +65,7 @@ public class PopBlock : Solid
 
             foreach (var (block, up) in soundList)
             {
+                if (block.SoundVolume <= 0) continue;
                 block.PlaySound(volume, up);
                 volume *= 0.4f;
             }
@@ -137,6 +139,9 @@ public class PopBlock : Solid
     private readonly SoundSource sfxUp = new();
     private readonly SoundSource sfxDown = new();
 
+    public readonly float SoundVolume = 2f;
+    public readonly string SoundPath = "event:/FemtoHelper/";
+
     public PopBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, false)
     {
         Depth = 500;
@@ -158,6 +163,11 @@ public class PopBlock : Solid
         staticMoverDisabledColor = data.HexColor("staticMoverDisabledColor", disabledColor);
 
         RefillDash = data.Bool("refillDash");
+
+        SoundPath = data.String("soundPath", "event:/FemtoHelper/");
+        SoundVolume = data.Float("soundVolume", 2f);
+
+        SurfaceSoundIndex = data.Int("surfaceIndex", 35);
 
         sfxUp.Position = new Vector2(Width, Height) / 2f;
         Add(sfxUp);
@@ -551,7 +561,8 @@ public class PopBlock : Solid
         var source = up ? sfxUp : sfxDown;
 
         source.Play(up ? "event:/FemtoHelper/pop_block_switch_2" : "event:/FemtoHelper/pop_block_switch_1");
-        source.instance.setVolume(volume * 2f);
+        source.instance.getVolume(out _, out float finalvolume);
+        source.instance.setVolume(finalvolume * SoundVolume * volume);
     }
 
     public override void Update()

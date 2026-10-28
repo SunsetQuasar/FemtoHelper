@@ -131,6 +131,10 @@ entities.FemtoHelper/PopBlock.attributes.description.delay=The duration (in seco
 entities.FemtoHelper/PopBlock.attributes.description.refillDash=Refills the player's dash when they are pushed.
 entities.FemtoHelper/PopBlock.attributes.description.path=The path to the block's textures.\nShould be the path to a folder containing two files: 'solid.png' and 'pressed.png'.
 
+entities.FemtoHelper/PopBlock.attributes.description.soundPath=The event directory path for the switching sounds.\nThe folder should contain two events named "pop_block_switch_1" and "pop_block_switch_2" for turning off and on respectively.\nOne sound instance exists per Pop Block group, inidcated by the small purple square when viewing hitboxes.
+entities.FemtoHelper/PopBlock.attributes.description.soundVolume=Volume multiplier for the switching sounds. 
+entities.FemtoHelper/PopBlock.attributes.description.surfaceIndex=The surface sound index to be used for the block.
+
 # Pop Refill
 entities.FemtoHelper/PopRefill.placements.name.PopRefill=Pop Refill
 entities.FemtoHelper/PopRefill.placements.description.PopRefill=Refill that spawns some time only after being touched.
@@ -152,6 +156,7 @@ entities.FemtoHelper/SparkRefill.attributes.description.respawnTime=The time it 
 entities.FemtoHelper/SparkRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/SparkRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/SparkRefill.attributes.description.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
+entities.FemtoHelper/SparkRefill.attributes.description.strictDashCheck=Limits the refill's effects only to when the player dashes with the Dash input, excluding boosters, and forced dashes.
 
 # Avert Refill
 entities.FemtoHelper/AvertRefill.placements.name.avertUp=Avert Refill (Up)

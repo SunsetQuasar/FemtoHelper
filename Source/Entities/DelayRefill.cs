@@ -95,7 +95,8 @@ public class DelayRefill : CustomRefill
             Alarm.Set(player, i * (delay / 4f), () =>
             {
                 EventInstance instance = Audio.Play("event:/FemtoHelper/clock", player.Position);
-                instance.setVolume(0.3f + (0.2f * (iRightNow / 4f)));
+                instance.getVolume(out _, out float finalvolume);
+                instance.setVolume(finalvolume * (0.3f + (0.2f * (iRightNow / 4f))));
                 instance.setPitch(Calc.ClampedMap(iRightNow / 4f, 0, 1, 0.9f, 1.1f));
             }, Alarm.AlarmMode.Oneshot);
         }

@@ -154,7 +154,8 @@ public class MucusStrand : Entity
 
                         EventInstance e = Audio.Play("event:/char/madeline/water_out", player.Position);
                         e.setPitch(0.6f);
-                        e.setVolume(2.2f);
+                        e.getVolume(out _, out float finalvolume);
+                        e.setVolume(finalvolume * 2.2f);
                         for (int i = -3; i <= 3; i++)
                         {
                             (Scene as Level).Particles.Emit(snotty, player.Center + new Vector2(Calc.Random.Range(-3, 3), Calc.Random.Range(-3, 3)), Calc.Random.NextAngle());
@@ -168,7 +169,8 @@ public class MucusStrand : Entity
                 {
                     EventInstance e = Audio.Play("event:/char/madeline/water_out", player.Position);
                     e.setPitch(0.5f);
-                    e.setVolume(2f);
+                    e.getVolume(out _, out float finalvolume);
+                    e.setVolume(finalvolume * 2f);
 
                     float closestPercent = ClosestPointOnLine_PercentEdition(Position, endpoint, player.Center);
 
