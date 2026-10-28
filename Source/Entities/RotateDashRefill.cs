@@ -1,13 +1,19 @@
 ﻿using Celeste.Mod.Roslyn.ModLifecycleAttributes;
 using System;
-using System.Linq;
 using System.Collections;
+using System.Linq;
+using static Celeste.ClutterBlock;
 
 namespace Celeste.Mod.FemtoHelper.Entities;
 
 [Tracked]
-public class RotateDash() : Component(true, true)
+public class RotateDash : DashEffect
 {
+    public RotateDash() : base()
+    {
+        Visible = true;
+    }
+
     public readonly MTexture Texture = GFX.Game["objects/FemtoHelper/rotateRefillCCW/indicator_a"];
     private float angleTarget;
     private float displayAngle;
@@ -15,9 +21,15 @@ public class RotateDash() : Component(true, true)
     private float sineTimer = Calc.Random.NextAngle();
     public float AngleOffset = 0;
     public float SpeedScalar = 1;
-    public bool HasStartedRotateDashing = false;
-
+    public Vector2 TempSpeed = Vector2.Zero;
     public Color[] Colors;
+
+    public override void OnDashBegin(Player player)
+    {
+        base.OnDashBegin(player);
+        player.Speed = TempSpeed;
+    }
+
     public override void Update()
     {
         base.Update();
@@ -37,7 +49,7 @@ public class RotateDash() : Component(true, true)
 
     public override void Render()
     {
-        if (displayPercent > 0)
+        if (displayPercent > 0 && ReadyCount > 0)
         {
             Texture.DrawOutlineCentered(Entity.Center + Vector2.UnitY, Color.Black, Ease.CubeInOut(displayPercent), displayAngle);
             Texture.DrawOutlineCentered(Entity.Center, Color.Black, Ease.CubeInOut(displayPercent), displayAngle);
@@ -92,7 +104,7 @@ public class ExtraTrailManager() : Component(true, true)
                 Player.level.ParticlesFG.Emit(type, Player.Center + Calc.Random.Range(Vector2.One * -2f, Vector2.One * 2f), Player.DashDir.Angle());
                 DashParticleCount--;
             }
-        } 
+        }
         else
         {
             DashTrailTimer = 0f;
@@ -117,6 +129,8 @@ public class RotateDashRefill : CustomRefill
     public readonly float Scalar;
 
     public readonly Color[] EffectColors;
+
+    public readonly bool StrictDashCheck;
 
     public RotateDashRefill(EntityData data, Vector2 offset) : base(data.Position + offset, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
     {
@@ -145,6 +159,8 @@ public class RotateDashRefill : CustomRefill
 
         RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
+
+        StrictDashCheck = data.Bool("strictDashCheck", false);
     }
 
     public override void Added(Scene scene)
@@ -165,26 +181,26 @@ public class RotateDashRefill : CustomRefill
 
     public bool CollectCheck(Player player)
     {
-        if (player.Get<RotateDash>() is RotateDash rotateDash)
-        {
-            if (rotateDash.AngleOffset == Angle.ToRad() && rotateDash.SpeedScalar == Scalar)
-            {
-                return false;
-            }
-            player.Remove(rotateDash);
-        }
-        return true;
+        return (player.Get<RotateDash>() is RotateDash rotateDash && (rotateDash.AngleOffset != Angle.ToRad() || rotateDash.SpeedScalar != Scalar)) || DashEffect.ShouldUseRefill<RotateDash>(player, 1);
     }
 
     private void OnCollect(Player player)
     {
         player.UseRefill(false);
-        player.Add(new RotateDash()
+
+        RotateDash d;
+        if (player.Get<RotateDash>() is RotateDash rotateDash && (rotateDash.AngleOffset != Angle.ToRad() || rotateDash.SpeedScalar != Scalar))
         {
-            AngleOffset = Angle.ToRad(),
-            SpeedScalar = Scalar,
-            Colors = EffectColors
-        });
+            d = DashEffect.SetCharges<RotateDash>(player, 1, StrictDashCheck);
+        }
+        else
+        {
+            d = DashEffect.GiveToPlayer<RotateDash>(player, 1, StrictDashCheck);
+        }
+
+        d.AngleOffset = Angle.ToRad();
+        d.SpeedScalar = Scalar;
+        d.Colors = EffectColors;
     }
 
     [OnLoad]
@@ -210,7 +226,7 @@ public class RotateDashRefill : CustomRefill
     }
     private static IEnumerator RotateDashCoroutineHook(On.Celeste.Player.orig_DashCoroutine orig, Player self)
     {
-        if (self.Get<RotateDash>() is RotateDash rotateDash)
+        if (self.Get<RotateDash>() is { CurrentlyDashing: true } rotateDash)
         {
             Celeste.Freeze(0.1f);
 
@@ -218,9 +234,9 @@ public class RotateDashRefill : CustomRefill
             (self.Scene as Level).DirectionalShake(self.Speed.SafeNormalize());
             self.Speed *= rotateDash.SpeedScalar;
             self.StateMachine.State = 0;
-            self.Remove(rotateDash);
+            rotateDash.UsingCount = 0;
             ExtraTrailManager t = self.Get<ExtraTrailManager>();
-            if(t == null)
+            if (t == null)
             {
                 self.Add(t = new ExtraTrailManager());
             }
@@ -237,26 +253,23 @@ public class RotateDashRefill : CustomRefill
             yield return new SwapImmediately(orig(self));
         }
     }
-        
+
 
     private static void RotateDashBeginHook(On.Celeste.Player.orig_DashBegin orig, Player self)
     {
-        Vector2 tempSpeed = self.Speed;
-
-        orig(self);
-
         if (self.Get<RotateDash>() is RotateDash rotateDash)
         {
-            self.Speed = tempSpeed;
-            rotateDash.HasStartedRotateDashing = true;
+            rotateDash.TempSpeed = self.Speed;
         }
+
+        orig(self);
     }
 
     private static void RotateDashBugCheck(On.Celeste.Player.orig_Update orig, Player self)
     {
-        if (self.Get<RotateDash>() is RotateDash rotateDash && rotateDash.HasStartedRotateDashing && self.StateMachine.State != 2)
+        if (self.Get<RotateDash>() is RotateDash rotateDash && rotateDash.CurrentlyDashing && self.StateMachine.State != 2)
         {
-            self.Remove(rotateDash);
+            rotateDash.UsingCount = 0;
         }
         orig(self);
     }

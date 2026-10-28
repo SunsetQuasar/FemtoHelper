@@ -17,7 +17,8 @@ FemtoHelperRotateDashRefill.placements = {
             angle = 90,
             visualOffsetX = 0,
             visualOffsetY = 0,
-            pulseFlag = ""
+            pulseFlag = "",
+            strictDashCheck = true,
         }
     },
 }

@@ -997,6 +997,7 @@ entities.FemtoHelper/RotateDashRefill.attributes.description.particleColors=The 
 entities.FemtoHelper/RotateDashRefill.attributes.description.angle=How much the player's speed should be rotated counter-clockwise, or clockwise if the angle value is negative.\nMeasured in degrees.
 entities.FemtoHelper/RotateDashRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
 entities.FemtoHelper/RotateDashRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.FemtoHelper/RotateDashRefill.attributes.description.strictDashCheck=Limits the refill's effects only to when the player dashes with the Dash input, excluding boosters, and forced dashes.
 
 # Monopticon
 

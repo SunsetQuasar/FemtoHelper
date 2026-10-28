@@ -94,8 +94,9 @@ public abstract class DashEffect : Component
     {
         orig(self);
 
-        foreach(DashEffect dashEffect in self.Components.GetAll<DashEffect>())
+        foreach (DashEffect dashEffect in self.Components.GetAll<DashEffect>())
         {
+            //Debug($"CurrentBooster: {(self.CurrentBooster is null ? "null" : self.CurrentBooster.GetType().Name)}");
             if ((dashEffect.StrictDashCheck && (!CanDashStorage || self.CurrentBooster != null)) || dashEffect.ReadyCount <= 0) continue;
 
             dashEffect.OnDashBegin(self);
