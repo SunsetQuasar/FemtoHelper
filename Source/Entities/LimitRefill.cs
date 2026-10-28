@@ -8,13 +8,14 @@ namespace Celeste.Mod.FemtoHelper.Entities;
 [CustomEntity("FemtoHelper/LimitRefill")]
 public class LimitRefill : CustomRefill
 {
-    public class DirectionConstraint : Component
+    public class DirectionConstraint : DashEffect
     {
         public bool[,] Dirs = new bool[3, 3];
 
         public Vector2? lastAim = null;
         public Vector2? dashOverrideReturn = null;
-        public DirectionConstraint(Directions dir) : base(false, false)
+
+        public void SetConstraint(Directions dir)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -51,6 +52,29 @@ public class LimitRefill : CustomRefill
                     break;
             }
         }
+
+        public DirectionConstraint() : base()
+        {
+
+        }
+
+        public DirectionConstraint(Directions dir) : this()
+        {
+            SetConstraint(dir);
+        }
+
+        public override void OnDashBegin(Player player)
+        {
+            lastAim = player.lastAim;
+            dashOverrideReturn = player.OverrideDashDirection;
+            Alarm.Set(player, 0f, () =>
+            {
+                lastAim = null;
+                player.OverrideDashDirection = dashOverrideReturn;
+            });
+
+            base.OnDashBegin(player);
+        }
     }
     private static ParticleType _pShatter;
     private static ParticleType _pRegen;
@@ -69,6 +93,8 @@ public class LimitRefill : CustomRefill
     }
 
     private readonly Directions direction;
+
+    public readonly bool StrictDashCheck;
 
     public LimitRefill(Vector2 position, EntityData data)
         : base(position, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
@@ -93,6 +119,8 @@ public class LimitRefill : CustomRefill
         RespawnTime = data.Float("respawnTime", 2.5f);
 
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
+
+        StrictDashCheck = data.Bool("strictDashCheck", false);
     }
 
     public LimitRefill(EntityData data, Vector2 offset)
@@ -103,8 +131,7 @@ public class LimitRefill : CustomRefill
     private void OnCollect(Player player)
     {
         player.UseRefill(false);
-        if (player.Get<DirectionConstraint>() is DirectionConstraint d) d.RemoveSelf();
-        player.Add(new DirectionConstraint(direction));
+        DashEffect.SetCharges<DirectionConstraint>(player, 1, StrictDashCheck).SetConstraint(direction);
     }
     private static Hook CanDashHook;
     private delegate bool OrigCanDash(Player self);
@@ -135,13 +162,12 @@ public class LimitRefill : CustomRefill
     public static void LoadHooks()
     {
         CanDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), ModCanDash);
-        On.Celeste.Player.DashBegin += Player_DashBegin;
         On.Celeste.Player.DashCoroutine += Player_DashCoroutine;
     }
 
     private static bool ModCanDash(OrigCanDash orig, Player self)
     {
-        if (self.Get<DirectionConstraint>() is { } d)
+        if (self.Get<DirectionConstraint>() is { } d && d.ReadyCount > 0)
         {
             Vector2 aim = Input.GetAimVector();
 
@@ -172,28 +198,12 @@ public class LimitRefill : CustomRefill
         self.lastAim = temp;
     }
 
-    private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
-    {
-        if (self.Get<DirectionConstraint>() is { } d)
-        {
-            d.lastAim = self.lastAim;
-            d.dashOverrideReturn = self.OverrideDashDirection;
-            Alarm.Set(self, 0f, () =>
-            {
-                d.RemoveSelf();
-                self.OverrideDashDirection = d.dashOverrideReturn;
-            });
-        }
-        orig(self);
-    }
-
     [OnUnload]
     public static void UnloadHooks()
     {
         CanDashHook?.Dispose();
         CanDashHook = null;
 
-        On.Celeste.Player.DashBegin -= Player_DashBegin;
         On.Celeste.Player.DashCoroutine -= Player_DashCoroutine;
     }
 }

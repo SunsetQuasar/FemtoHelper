@@ -34,6 +34,7 @@ for k, v in ipairs(FemtoHelperLimitRefill.fieldInformation.direction.options) do
             visualOffsetX = 0,
             visualOffsetY = 0,
             pulseFlag = ""
+            strictDashCheck = true,
         }
     }
     table.insert(FemtoHelperLimitRefill.placements, placement)

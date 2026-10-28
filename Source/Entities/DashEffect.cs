@@ -77,6 +77,16 @@ public abstract class DashEffect : Component
         }
     }
 
+    public static T SetCharges<T>(Player player, int amount, bool strict = false) where T : DashEffect, new()
+    {
+        if (player.Get<T>() is T t)
+        {
+            t.ReadyCount = 0;
+        }
+
+        return GiveToPlayer<T>(player, amount, strict);
+    }
+
     private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
     {
         orig(self);
