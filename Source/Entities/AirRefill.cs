@@ -13,14 +13,14 @@ public class AirRefill : CustomRefill
 
     private static ParticleType _pBubbly;
 
-    public class AirDash() : Component(true, false)
-    {
-        public int Count;
+    public readonly bool StrictDashCheck;
 
+    public class AirDash() : DashEffect()
+    {
         public override void Update()
         {
             base.Update();
-            if (Entity is Player player)
+            if (Entity is Player player && (ReadyCount != 0 || UsingCount != 0))
             {
                 if (Scene.OnInterval(0.1f) && Calc.Random.Chance(0.75f))
                 {
@@ -36,25 +36,20 @@ public class AirRefill : CustomRefill
 
         this.SetTexture("objects/FemtoHelper/airRefill/")
             .SetParticles(_pShatter, _pRegen, _pGlow)
-            .SetCollectLogic((player) => player.Get<AirDash>() is not { } s)
+            .SetCollectLogic((player) => DashEffect.ShouldUseRefill<AirDash>(player, 1))
             .SetOnCollect(OnCollect);
 
         RespawnTime = data.Float("respawnTime", 2.5f);
         VisualOffset = data.Vector2("visualOffsetX", "visualOffsetY", Vector2.Zero);
+
+        StrictDashCheck = data.Bool("strictDashCheck", false);
     }
 
     public void OnCollect(Player player)
     {
         player.UseRefill(false);
 
-        if (player.Get<AirDash>() is AirDash airDash)
-        {
-            airDash.Count++;
-        }
-        else
-        {
-            player.Add(new AirDash());
-        }
+        DashEffect.GiveToPlayer<AirDash>(player, 1, StrictDashCheck).GiveBackUsed = true;
     }
 
     [OnLoad]
@@ -131,13 +126,10 @@ public class AirRefill : CustomRefill
     }
     private static bool CheckForWalllessWallbounce(bool walljumpcheck, Player player)
     {
-        if (!walljumpcheck && player.Get<AirDash>() is { } airDash && player.DashAttacking && player.SuperWallJumpAngleCheck)
+        if (!walljumpcheck && player.Get<AirDash>() is { CurrentlyDashing: true } airDash && player.DashAttacking && player.SuperWallJumpAngleCheck)
         {
             player.SuperWallJump((int)player.Facing);
-            if (--airDash.Count < 1)
-            {
-                airDash.RemoveSelf();
-            }
+            airDash.UsingCount = 0;
             return true;
         }
 
@@ -146,12 +138,12 @@ public class AirRefill : CustomRefill
 
     private static float CheckForMidairTech(float orig, Player player)
     {
-        if (player.Get<AirDash>() is { } airDash)
+        if (player.Get<AirDash>() is { CurrentlyDashing: true } airDash)
         {
             // only consume if grounded
-            if (orig <= 0 && --airDash.Count < 1)
+            if (orig <= 0)
             {
-                airDash.RemoveSelf();
+                airDash.UsingCount = 0;
             }
             return 1f;
         }
@@ -164,6 +156,7 @@ public class AirRefill : CustomRefill
     {
         IL.Celeste.Player.DashUpdate -= Player_DashUpdate;
         IL.Celeste.Player.RedDashUpdate -= Player_DashUpdate;
+        IL.Celeste.Player.NormalUpdate -= Player_NormalUpdate;
     }
 
     [OnLoadContent]

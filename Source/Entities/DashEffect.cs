@@ -16,6 +16,8 @@ public abstract class DashEffect : Component
     public bool CurrentlyDashing => UsingCount > 0;
     internal static bool CanDashStorage;
     public bool StrictDashCheck;
+    // gives back the using charge when the dash ends (AirRefill only consumes the effect when tech succeeds)
+    public bool GiveBackUsed = false;
     public virtual void OnDashBegin(Player player)
     {
 
@@ -45,7 +47,8 @@ public abstract class DashEffect : Component
 
     public static bool ShouldUseRefill<T>(Player player, int amount) where T : DashEffect
     {
-        return player.Get<T>() is not { } t || (t.ReadyCount < amount);
+        // if it gives back, assume it will
+        return player.Get<T>() is not { } t || ((t.GiveBackUsed ? (t.ReadyCount + t.UsingCount) : t.ReadyCount) < amount);
     }
 
     public virtual void GivenToPlayer(Player player, int amount)
@@ -108,6 +111,10 @@ public abstract class DashEffect : Component
             if (dashEffect.UsingCount <= 0) continue;
 
             dashEffect.OnDashEnd(self);
+            if (dashEffect.GiveBackUsed)
+            {
+                dashEffect.ReadyCount += dashEffect.UsingCount;
+            }
             dashEffect.UsingCount = 0;
         }
     }
