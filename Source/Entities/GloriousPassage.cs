@@ -199,11 +199,11 @@ public class GloriousPassage : Entity
 
             leader = player.Get<Leader>();
 
-            foreach (Follower item in leader.Followers.Where(f => f.Entity != null && f.ParentEntityID.Key != null && f.ParentEntityID.Level != null))
+            foreach (Follower item in leader.Followers.Where(f => f.Entity != null && f.Entity.SourceId.Key != null && f.Entity.SourceId.Level != null))
             {
                 item.Entity.AddTag(Tags.Global);
 
-                if (!level.Session.DoNotLoad.Add(item.ParentEntityID))
+                if (!level.Session.DoNotLoad.Add(item.Entity.SourceId))
                 {
                     item.Entity.Add(new AlreadyGone());
                 }
@@ -283,13 +283,13 @@ public class GloriousPassage : Entity
                 }
             }
 
-            foreach (Follower item2 in leader.Followers.Where(f => f.Entity != null))
+            foreach (Follower item2 in leader.Followers.Where(f => f.Entity != null && f.Entity.SourceId.Key != null && f.Entity.SourceId.Level != null))
             {
                 item2.Entity.Position += playerDelta;
                 item2.Entity.RemoveTag(Tags.Global);
                 if (item2.Entity.Get<AlreadyGone>() is not { } c)
                 {
-                    level.Session.DoNotLoad.Remove(item2.ParentEntityID);
+                    level.Session.DoNotLoad.Remove(item2.Entity.SourceId);
                 }
                 else c.RemoveSelf();
             }
