@@ -152,7 +152,7 @@ public class GloriousPassage : Entity
             Vector2 pos, playerDelta;
             Leader leader;
 
-            Leader.StoreStrawberries(player.Leader);
+            StoreFollowers(player.Leader);
 
             if (level.Session.Level == RoomName && SameRoom)
             {
@@ -193,7 +193,7 @@ public class GloriousPassage : Entity
 
                 Done = false;
 
-                Leader.RestoreStrawberries(player.Leader);
+                RestoreFollowers(player.Leader);
 
                 return;
             }
@@ -233,7 +233,17 @@ public class GloriousPassage : Entity
             level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(SpawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
             level.Session.FirstLevel = false;
 
-            level.LoadLevel(Player.IntroTypes.None);
+            level.Add(player);
+            level.LoadLevel(Player.IntroTypes.Transition);
+
+            float lightingStart = level.Lighting.Alpha;
+            float lightingEnd = (level.DarkRoom ? level.Session.DarkRoomAlpha : (level.BaseLightingAlpha + level.Session.LightingAlphaAdd));
+            bool lightingWait = lightingStart >= level.Session.DarkRoomAlpha || lightingEnd >= level.Session.DarkRoomAlpha;
+            if ((lightingEnd != lightingStart) && lightingWait)
+            {
+                level.Lighting.Alpha = lightingEnd;
+            }
+
             level.Wipe?.Cancel();
 
             level.Entities.UpdateLists();
@@ -260,7 +270,7 @@ public class GloriousPassage : Entity
                 }
             }
 
-            Leader.RestoreStrawberries(player.Leader);
+            RestoreFollowers(player.Leader);
 
             level.Session.SetFlag("transition_assist", true);
             player.Speed = Vector2.Zero;

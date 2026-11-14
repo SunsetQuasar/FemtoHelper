@@ -4,11 +4,49 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Celeste.Mod.FemtoHelper;
 
 public static class Utils
 {
+    private static List<Entity> storedFollowers;
+    private static List<Vector2> storedOffsets;
+
+    public static void StoreFollowers(Leader leader)
+    {
+        storedFollowers = [];
+        storedOffsets = [];
+        foreach (Follower follower in leader.Followers)
+        {
+            if (follower.Entity is not null)
+            {
+                storedFollowers.Add(follower.Entity);
+                storedOffsets.Add(follower.Entity.Position - leader.Entity.Position);
+            }
+        }
+        foreach (Entity storedEntity in storedFollowers)
+        {
+            if (storedEntity.Get<Follower>() is Follower follower)
+            {
+                leader.Followers.Remove(follower);
+                follower.Leader = null;
+                storedEntity.AddTag(Tags.Global);
+            }
+        }
+    }
+    public static void RestoreFollowers(Leader leader)
+    {
+        leader.PastPoints.Clear();
+        for (int i = 0; i < storedFollowers.Count; i++)
+        {
+            Entity entity = storedFollowers[i];
+            leader.GainFollower(entity.Get<Follower>());
+            entity.Position = leader.Entity.Position + storedOffsets[i];
+            entity.RemoveTag(Tags.Global);
+        }
+    }
+
     public static bool LeftPressed => Input.Aim.Left.Pressed(Input.Gamepad, 0.25f);
     public static bool RightPressed => Input.Aim.Right.Pressed(Input.Gamepad, 0.25f);
     public static bool UpPressed => Input.Aim.Up.Pressed(Input.Gamepad, 0.25f);
