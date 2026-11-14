@@ -150,6 +150,8 @@ public class GloriousPassage : Entity
             Vector2 pos, playerDelta;
             Leader leader;
 
+            Leader.StoreStrawberries(player.Leader);
+
             if (level.Session.Level == RoomName && SameRoom)
             {
                 level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(SpawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
@@ -198,16 +200,6 @@ public class GloriousPassage : Entity
             pos = player.Position;
 
             leader = player.Get<Leader>();
-
-            foreach (Follower item in leader.Followers.Where(f => f.Entity != null && f.Entity.SourceId.Key != null && f.Entity.SourceId.Level != null))
-            {
-                item.Entity.AddTag(Tags.Global);
-
-                if (!level.Session.DoNotLoad.Add(item.Entity.SourceId))
-                {
-                    item.Entity.Add(new AlreadyGone());
-                }
-            }
 
             Holdable hold = null;
             if (CarryHoldablesOver)
@@ -283,25 +275,18 @@ public class GloriousPassage : Entity
                 }
             }
 
-            foreach (Follower item2 in leader.Followers.Where(f => f.Entity != null && f.Entity.SourceId.Key != null && f.Entity.SourceId.Level != null))
-            {
-                item2.Entity.Position += playerDelta;
-                item2.Entity.RemoveTag(Tags.Global);
-                if (item2.Entity.Get<AlreadyGone>() is not { } c)
-                {
-                    level.Session.DoNotLoad.Remove(item2.Entity.SourceId);
-                }
-                else c.RemoveSelf();
-            }
             for (int i = 0; i < leader.PastPoints.Count; i++)
             {
                 leader.PastPoints[i] += playerDelta;
             }
-            leader.TransferFollowers();
+
+            Leader.RestoreStrawberries(player.Leader);
+
             level.Session.SetFlag("transition_assist", true);
             player.Speed = Vector2.Zero;
             level.DoScreenWipe(wipeIn: true);
             level.Add(new DelayedCameraRequest(player, error));
+            leader.TransferFollowers();
         };
     }
 
