@@ -3,7 +3,6 @@ using Celeste.Mod.Helpers;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Celeste.Mod.FemtoHelper;
@@ -30,27 +29,9 @@ public static class Utils
         return (x % m + m) % m;
     }
 
-    public static Dictionary<string, object> ExpressionCache;
-
-    public static bool TryGetExpression(string str, [NotNullWhen(true)] out object expression)
-    {
-        if (ExpressionCache.TryGetValue(str, out object exp))
-        {
-            expression = exp;
-            return true;
-        }
-        else if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(str, out object newexp) ?? false)
-        {
-            expression = newexp;
-            return true;
-        }
-        expression = null;
-        return false;
-    }
-
     public static int EvaluateExpressionAsInt(string exp, Session session)
     {
-        if (TryGetExpression(exp, out object obj))
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
         {
             return FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue?.Invoke(obj, session) ?? 0;
         }
@@ -59,7 +40,7 @@ public static class Utils
 
     public static bool EvaluateExpressionAsBool(string exp, Session session)
     {
-        if (TryGetExpression(exp, out object obj))
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
         {
             return (FemtoModule.FrostHelperSupport.GetBoolSessionExpressionValue?.Invoke(obj, session) ?? false);
         }
@@ -68,7 +49,7 @@ public static class Utils
 
     public static bool EvaluateExpressionAsBoolOrFancyFlag(string exp, Session session)
     {
-        if (TryGetExpression(exp, out object obj))
+        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
         {
             return (FemtoModule.FrostHelperSupport.GetBoolSessionExpressionValue?.Invoke(obj, session) ?? false);
         }
