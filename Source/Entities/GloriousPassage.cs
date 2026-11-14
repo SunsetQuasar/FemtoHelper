@@ -30,6 +30,7 @@ public class GloriousPassage : Entity
     public readonly TalkComponent Talk;
     private TimeRateModifier timeRateModifier;
     private readonly string enableFlag;
+    public bool Enabled;
     private readonly string visibilityFlag;
     public GloriousPassage(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
@@ -73,7 +74,7 @@ public class GloriousPassage : Entity
 
     public void OnPlayer(Player player)
     {
-        if (Simple && !Done && Player != null && !PlayerInside && EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
+        if (Simple && !Done && Player != null && !PlayerInside && Enabled)
         {
             Add(new Coroutine(Routine(player)));
             return;
@@ -84,7 +85,8 @@ public class GloriousPassage : Entity
 
     public override void Update()
     {
-        if (!EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session))
+        Enabled = EvaluateExpressionAsBoolOrFancyFlag(enableFlag, SceneAs<Level>().Session);
+        if (!Enabled)
         {
             if (Talk != null && Talk.UI != null)
             {
@@ -159,6 +161,7 @@ public class GloriousPassage : Entity
                 pos = player.Position;
 
                 player.Position = level.Session.RespawnPoint.Value;
+                player.MuffleLanding = true;
 
                 playerDelta = player.Position - pos;
 
@@ -189,31 +192,17 @@ public class GloriousPassage : Entity
                 level.Add(new DelayedCameraRequest(player, false));
 
                 Done = false;
+
+                Leader.RestoreStrawberries(player.Leader);
+
                 return;
             }
 
-            //what is this?
-            //new Vector2(level.LevelOffset.X + level.Bounds.Width - player.X, player.Y - level.LevelOffset.Y);
-            Vector2 levelOffset = level.LevelOffset;
-            Vector2 vector2 = level.Camera.Position - level.LevelOffset;
-            Facings facing = FaceLeft ? Facings.Left : Facings.Right;
             pos = player.Position;
-
-            leader = player.Get<Leader>();
-
-            Holdable hold = null;
-            if (CarryHoldablesOver)
-            {
-                hold = player.Holding;
-
-                hold?.Entity.AddTag(Tags.Global);
-            }
-            
-
-            Vector2 cameraDelta = level.Camera.Position - pos;
             int dashes = player.Dashes;
-            level.Remove(player);
-            level.UnloadLevel();
+            Vector2 levelOffset = level.LevelOffset;
+            Facings facing = FaceLeft ? Facings.Left : Facings.Right;
+
             bool error = true;
             LevelData newLevelData = level.Session.MapData.Get(RoomName);
             if (newLevelData != null)
@@ -230,38 +219,34 @@ public class GloriousPassage : Entity
                 }
             }
 
-            level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(SpawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
-
-            level.Session.FirstLevel = false;
-            level.Add(player);
-            level.LoadLevel(Player.IntroTypes.Transition);
-
-            //handle dark-nondark room transitions
-            float lightingStart = level.Lighting.Alpha;
-            float lightingEnd = (level.DarkRoom ? level.Session.DarkRoomAlpha : (level.BaseLightingAlpha + level.Session.LightingAlphaAdd));
-            bool lightingWait = lightingStart >= level.Session.DarkRoomAlpha || lightingEnd >= level.Session.DarkRoomAlpha;
-            if ((lightingEnd != lightingStart) && lightingWait)
+            Holdable hold = null;
+            if (CarryHoldablesOver)
             {
-                level.Lighting.Alpha = lightingEnd;
+                hold = player.Holding;
+
+                hold?.Entity.AddTag(Tags.Global);
             }
 
-            player.Position = level.Session.RespawnPoint.Value;
+            level.Remove(player);
+            level.UnloadLevel();
 
+            level.Session.RespawnPoint = level.Session.LevelData.Spawns[Calc.Clamp(SpawnIndex, 0, level.Session.LevelData.Spawns.Count - 1)];
+            level.Session.FirstLevel = false;
+
+            level.LoadLevel(Player.IntroTypes.None);
+            level.Wipe?.Cancel();
+
+            level.Entities.UpdateLists();
+            player = level.Tracker.GetEntity<Player>();
+
+            player.Position = level.Session.RespawnPoint.Value;
+            player.MuffleLanding = true;
             playerDelta = player.Position - pos;
-            level.Camera.Position = player.Position + cameraDelta;
-            if (level.Camera.Position.X < level.Bounds.Left) level.Camera.Position = new Vector2(level.Bounds.Left, level.Camera.Position.Y);
-            if (level.Camera.Position.Y < level.Bounds.Top) level.Camera.Position = new Vector2(level.Camera.Position.X, level.Bounds.Top);
-            if (level.Camera.Position.X + 320 > level.Bounds.Right) level.Camera.Position = new Vector2(level.Bounds.Right, level.Camera.Position.Y);
-            if (level.Camera.Position.Y + 180 > level.Bounds.Bottom) level.Camera.Position = new Vector2(level.Camera.Position.X, level.Bounds.Bottom);
+            player.JustRespawned = true;
 
             player.Facing = facing;
             player.Hair.MoveHairBy(level.LevelOffset - levelOffset);
-            /*
-                if (level.Wipe != null)
-                {
-                    level.Wipe.Cancel();
-                }
-                */
+
             player.Visible = true;
             player.Sprite.Visible = true;
             if (KeepDashes) player.Dashes = dashes;
@@ -275,18 +260,13 @@ public class GloriousPassage : Entity
                 }
             }
 
-            for (int i = 0; i < leader.PastPoints.Count; i++)
-            {
-                leader.PastPoints[i] += playerDelta;
-            }
-
             Leader.RestoreStrawberries(player.Leader);
 
             level.Session.SetFlag("transition_assist", true);
             player.Speed = Vector2.Zero;
             level.DoScreenWipe(wipeIn: true);
             level.Add(new DelayedCameraRequest(player, error));
-            leader.TransferFollowers();
+            player.Leader.TransferFollowers();
         };
     }
 

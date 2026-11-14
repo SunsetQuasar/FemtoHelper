@@ -29,31 +29,36 @@ public static class Utils
         return (x % m + m) % m;
     }
 
-    public static int EvaluateExpressionAsInt(string exp, Session session)
+    private static Dictionary<string, Delegate> cachedExpressions = [];
+
+    public static Delegate TryGetExpression(string str, Type type)
     {
-        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
+        if (cachedExpressions.TryGetValue(str, out Delegate exp))
         {
-            return FemtoModule.FrostHelperSupport.GetIntSessionExpressionValue?.Invoke(obj, session) ?? 0;
-        }
-        else return 0;
+            return exp;
+        } 
+
+        Delegate newexp = FemtoModule.FrostHelperSupport.CreateTypedSessionExpressionOrNull(str, null, type);
+        cachedExpressions.Add(str, newexp);
+        return newexp;
     }
 
-    public static bool EvaluateExpressionAsBool(string exp, Session session)
+    public static int EvaluateExpressionAsInt(string str, Session session)
     {
-        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
-        {
-            return (FemtoModule.FrostHelperSupport.GetBoolSessionExpressionValue?.Invoke(obj, session) ?? false);
-        }
-        else return false;
+        var expression = (Func<Session, object, int>)TryGetExpression(str, typeof(int));
+        return expression?.Invoke(session, null) ?? 0;
     }
 
-    public static bool EvaluateExpressionAsBoolOrFancyFlag(string exp, Session session)
+    public static bool EvaluateExpressionAsBool(string str, Session session)
     {
-        if (FemtoModule.FrostHelperSupport.TryCreateSessionExpression?.Invoke(exp, out object obj) ?? false)
-        {
-            return (FemtoModule.FrostHelperSupport.GetBoolSessionExpressionValue?.Invoke(obj, session) ?? false);
-        }
-        else return session.FancyCheckFlag(exp);
+        var expression = (Func<Session, object, bool>)TryGetExpression(str, typeof(bool));
+        return expression?.Invoke(session, null) ?? false;
+    }
+
+    public static bool EvaluateExpressionAsBoolOrFancyFlag(string str, Session session)
+    {
+        var expression = (Func<Session, object, bool>)TryGetExpression(str, typeof(bool));
+        return expression?.Invoke(session, null) ?? session.FancyCheckFlag(str);
     }
 
     public static void Log(string str, LogLevel level = LogLevel.Debug)
